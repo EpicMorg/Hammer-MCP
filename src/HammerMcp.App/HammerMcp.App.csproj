@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>HammerMcp.App</RootNamespace>
+    <AssemblyName>hammer-mcp</AssemblyName>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HammerMcp.Server\HammerMcp.Server.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\registry\hammers.json" Link="registry\hammers.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

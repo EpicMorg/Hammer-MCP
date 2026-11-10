@@ -1,0 +1,67 @@
+{
+  // Known Hammer builds. Match = sha256 of the editor DLL. "verified" = what was checked live and when.
+  // Static facts (arch, link date, shell-channel strings) come from the binary analysis in the private workspace.
+  "builds": [
+    {
+      "id": "hpp-tf2-8873-x64",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8873, "arch": "x64",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "a34149879cdf5f91f417063163c52ece898c087bc86e20773f00b722c4bf573b", "linked": "2026-10-27" },
+      "shell": { "present": true, "versionRule": "file", "checkVersionOnlyInSession": true },
+      "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt",
+      "verified": { "liveShell": "2026-11-10" },
+      "notes": "Also shipped by TF2 Classified's toolslauncher. No 'modified' marker in the title."
+    },
+    {
+      "id": "hpp-2013sp-8873-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8873, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "7af77189243ea622aa722323a7dfa31a7eb8cf759b1c949b2c9631ac5e048754", "linked": "2026-10-27" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "valve-sdk2013sp-upcoming-2014",
+      "family": "valve", "branch": "sdk2013sp", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "3d974ecadbed34353ca3b81444bebb3e520e08e92d9f82b6d999640aa4fd33ea", "linked": "2014-09-30" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Source SDK Base 2013 Singleplayer, 'upcoming' beta. Also shipped by many SP mods (Entropy: Zero, Prospekt, ...)."
+    },
+    {
+      "id": "valve-sdk2013sp-default-2014",
+      "family": "valve", "branch": "sdk2013sp", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "f70d8bae1d6c8fef774b2acf59b2a5b476aa06f1ca06ca6cafbb1e74a1ed8b0f", "linked": "2014-05-15" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt"
+    },
+    {
+      "id": "valve-hl2-2024",
+      "family": "valve", "branch": "hl2", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "cd5a5ea66671a75ada435265d7633435720f6da91d89d26b724f1cc1c7c44d12", "linked": "2024-11-26" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Half-Life 2 20th anniversary; also Portal, Portal: Revolution (bin/), Lost in Aperture."
+    },
+    {
+      "id": "valve-tf2-2026-x86",
+      "family": "valve", "branch": "tf2", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "7de77c5c882f10056c73853631567c582b6fdcb1bf6a93c65b5cbaafd82c323b", "linked": "2026-10-05" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt"
+    },
+    {
+      "id": "valve-tf2-2026-x64",
+      "family": "valve", "branch": "tf2", "arch": "x64",
+      "match": { "dll": "hammer_dll.dll", "sha256": "211028d2755c1adc254221840af4e160c9c410e270e4a74a5a75134dc2bd6fd6", "linked": "2026-10-05" },
+      "shell": { "present": true },
+      "gameConfig": "bin/x64/GameConfig.txt"
+    },
+    {
+      "id": "slammin-5.2",
+      "family": "slammin", "branch": "sdk2013sp", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "d996063369ec653d845480c70ea35d9229229273f7078d9ab7defe09b7de5c1c", "linked": "2019-03-01" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Slammin' Hammer 5.2 (Slammin' Source Map Tools, Slartibarty)."
+    }
+  ]
+}
