@@ -40,6 +40,19 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
             SavedMapVersion: mapVersion);
     }
 
+    [McpServerTool(Name = "map_summary", ReadOnly = true)]
+    [Description("Summary of the map open in Hammer, read from the SAVED .vmf: mapversion, editor build, entity and brush counts, entity classes with counts, skybox, visgroups. Unsaved edits are not included - call save_map first.")]
+    public object MapSummary()
+    {
+        var map = target.Current()?.OpenMapPath;
+        if (map is null)
+            return new { error = "no Hammer with an open map is attached / running" };
+        if (!map.EndsWith(".vmf", StringComparison.OrdinalIgnoreCase) || !File.Exists(map))
+            return new { error = $"not a saved .vmf: {map}" };
+        var file = new FileInfo(map);
+        return new { path = map, saved = file.LastWriteTime, sizeBytes = file.Length, summary = VmfSummary.Read(map) };
+    }
+
     /// <summary>Finds the editor DLL next to the exe and looks its sha256 up in the registry.</summary>
     public static (HammerBuild? Build, string? Dll) Identify(HammerRegistry registry, string exePath)
     {

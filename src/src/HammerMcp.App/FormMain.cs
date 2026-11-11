@@ -35,6 +35,9 @@ public partial class FormMain : Form
     private readonly Icon _iconStarted = LoadIcon("hammer-mcp-started.ico");
     private readonly Icon _iconStopped = LoadIcon("hammer-mcp-stopped.ico");
 
+    private readonly VmfSummaryCache _mapCache = new();
+    private (int Pid, Image? Icon)? _processIcon;
+
     private AppSettings _settings = AppSettings.Load();
     private WebApplication? _server;
     private bool _exiting;
@@ -134,7 +137,7 @@ public partial class FormMain : Form
         if (_target.AttachedPid is not { } pid)
         {
             labelProcessName.Text = "<not attached>";
-            pictureBoxProcessImage.Image = Properties.Resources.hammer_mcp_red_48;
+            UpdateProcessImage(null);
             dataGridViewMetaInfoFromHammer.Rows.Clear();
             SetStatus("Process not selected", Properties.Resources.warning_circle_16);
             return;
@@ -150,59 +153,101 @@ public partial class FormMain : Form
             return;
         }
 
+        var (build, dll) = StatusTools.Identify(_registry, process.ExePath);
         labelProcessName.Text = process.MainTitle;
-        pictureBoxProcessImage.Image = process.HasShellChannel
-            ? Properties.Resources.hammer_mcp_green_48
-            : Properties.Resources.hammer_mcp_red_48;
-        SetStatus(process.HasShellChannel
-                ? $"Attached to {process.Name} ({process.ProcessId}), shell channel OK"
-                : $"Attached to {process.Name} ({process.ProcessId}), no shell channel",
-            process.HasShellChannel ? Properties.Resources.check_circle_16 : Properties.Resources.warning_circle_16);
-        ShowMetaInfo(process);
+        UpdateProcessImage(process);
+        var who = $"{process.Name} ({process.ProcessId})";
+        if (process.HasShellChannel)
+            SetStatus($"Attached to {who}, shell channel OK", Properties.Resources.check_circle_16);
+        else if (dll is not null || process.IsKnownEditorName)
+            SetStatus($"Attached to {who}: map editor without shell channel (read-only + menu)", Properties.Resources.warning_circle_16);
+        else
+            SetStatus($"Attached to {who}: not a Hammer editor", Properties.Resources.deny_circle_16);
+        ShowMetaInfo(process, build, dll);
     }
 
-    private void ShowMetaInfo(HammerProcess process)
+    /// <summary>Icon of the attached exe; otherwise green while the server runs, red when it is stopped.</summary>
+    private void UpdateProcessImage(HammerProcess? process)
+    {
+        if (process is not null && _processIcon?.Pid != process.ProcessId)
+            _processIcon = (process.ProcessId, ExtractExeIcon(process.ExePath));
+        var image = process is not null ? _processIcon?.Icon : null;
+        image ??= _server is not null ? Properties.Resources.hammer_mcp_green_48 : Properties.Resources.hammer_mcp_red_48;
+        if (!ReferenceEquals(pictureBoxProcessImage.Image, image))
+            pictureBoxProcessImage.Image = image;
+    }
+
+    private static Image? ExtractExeIcon(string exePath)
+    {
+        try
+        {
+            using var icon = Icon.ExtractIcon(exePath, 0, 48);
+            return icon?.ToBitmap();
+        }
+        catch (Exception e) when (e is IOException or ArgumentException or UnauthorizedAccessException)
+        {
+            return null;
+        }
+    }
+
+    private void ShowMetaInfo(HammerProcess process, HammerBuild? build, string? dll)
     {
         var pe = PeHeader.TryRead(process.ExePath);
-        var (build, dll) = StatusTools.Identify(_registry, process.ExePath);
-        var map = process.OpenMapPath;
-        string? mapVersion = null;
-        if (map is not null && File.Exists(map))
-        {
-            try
-            {
-                mapVersion = VmfVersionInfo.Read(map).MapVersion.ToString();
-            }
-            catch (InvalidDataException e)
-            {
-                mapVersion = e.Message;
-            }
-        }
-
-        var rows = new (string Key, string? Value)[]
+        var rows = new List<(string Key, string? Value)>
         {
             ("Process", $"{process.Name} ({process.ProcessId})"),
             ("Executable", process.ExePath),
             ("Architecture", pe?.Arch),
             ("Linked", pe?.Linked.ToString("yyyy-MM-dd")),
             ("Editor DLL", dll),
-            ("Known build", build is null ? "unknown (not in registry)" : $"{build.Id} ({build.Family})"),
+            ("Known build", build is null ? (dll is null ? null : "unknown (not in registry)") : $"{build.Id} ({build.Family})"),
             ("Shell channel", process.HasShellChannel ? $"yes (0x{process.ShellWindow:X})" : "no"),
-            ("Main window", process.MainWindow == 0 ? "-" : $"0x{process.MainWindow:X}"),
-            ("Open map", map ?? "-"),
-            ("Saved mapversion", mapVersion ?? "-"),
+            ("Main window", process.MainWindow == 0 ? null : $"0x{process.MainWindow:X}"),
+            ("Open map", process.OpenMapPath),
         };
+        AddMapRows(rows, process.OpenMapPath);
 
         var grid = dataGridViewMetaInfoFromHammer;
-        if (grid.Rows.Count != rows.Length)
+        if (grid.Rows.Count != rows.Count)
         {
             grid.Rows.Clear();
             foreach (var (key, value) in rows)
                 grid.Rows.Add(key, value ?? "-");
             return;
         }
-        for (var i = 0; i < rows.Length; i++)
+        for (var i = 0; i < rows.Count; i++)
+        {
+            grid.Rows[i].Cells[0].Value = rows[i].Key;
             grid.Rows[i].Cells[1].Value = rows[i].Value ?? "-";
+        }
+    }
+
+    /// <summary>Map rows from the saved .vmf (re-read only when the file changes).</summary>
+    private void AddMapRows(List<(string Key, string? Value)> rows, string? mapPath)
+    {
+        if (mapPath is null || !mapPath.EndsWith(".vmf", StringComparison.OrdinalIgnoreCase) || !File.Exists(mapPath))
+            return;
+        VmfSummary? map;
+        try
+        {
+            map = _mapCache.Get(mapPath);
+        }
+        catch (IOException e)
+        {
+            rows.Add(("Map", $"cannot read: {e.Message}"));
+            return;
+        }
+        if (map is null)
+            return;
+        var file = new FileInfo(mapPath);
+        rows.Add(("Map: saved", $"{file.LastWriteTime:yyyy-MM-dd HH:mm:ss}, {file.Length / 1024.0 / 1024.0:0.0} MiB"));
+        rows.Add(("Map: mapversion", map.MapVersion?.ToString()));
+        rows.Add(("Map: editor", $"version {map.EditorVersion}, build {map.EditorBuild}, format {map.FormatVersion}{(map.Prefab ? ", prefab" : "")}"));
+        rows.Add(("Map: entities", $"{map.Entities} (point {map.PointEntities}, brush {map.BrushEntities}), {map.EntityClasses} classes"));
+        rows.Add(("Map: brushes", $"{map.Brushes} (world {map.WorldBrushes})"));
+        rows.Add(("Map: top classes", string.Join(", ", map.Classes.Take(5).Select(c => $"{c.Key} {c.Value}"))));
+        rows.Add(("Map: skybox", map.SkyName));
+        rows.Add(("Map: visgroups / hidden", $"{map.Visgroups} / {map.HiddenObjects}"));
     }
 
     private void SetStatus(string text, Image icon)
@@ -260,6 +305,7 @@ public partial class FormMain : Form
         Icon = started ? _iconStarted : _iconStopped;
         var text = started ? $"Hammer-MCP {running!.Url}" : "Hammer-MCP (stopped)";
         _tray.Text = text.Length > 63 ? text[..63] : text; // NotifyIcon limit
+        RefreshAttached(); // the process image falls back to green/red by server state
     }
 
     private void CopyClientConfig()

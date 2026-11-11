@@ -16,6 +16,9 @@ public sealed record HammerProcess(int ProcessId, string Name, string ExePath, n
 
     public bool HasShellChannel => ShellWindow != 0;
 
+    /// <summary>Exe name is one of the known map editors (Hammer, Hammer++, Worldcraft, J.A.C.K., Sledge).</summary>
+    public bool IsKnownEditorName => EditorNames.Contains(Name);
+
     /// <summary>Map path from a title like "Hammer++ - 64 Bit - [B:\...\map.vmf - Textured Shaded]".</summary>
     public string? OpenMapPath =>
         WindowTitles.Select(HammerWindowTitle.ParseMapPath).FirstOrDefault(p => p is not null);
