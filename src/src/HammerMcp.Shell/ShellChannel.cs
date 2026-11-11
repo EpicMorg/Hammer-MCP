@@ -22,6 +22,16 @@ public sealed class ShellChannel
 {
     public const string WindowName = "Worldcraft_ShellMessageWnd";
 
+    private readonly Func<nint> _window;
+
+    /// <summary>Talks to the first Hammer with a shell window.</summary>
+    public ShellChannel() : this(FindWindow)
+    {
+    }
+
+    /// <summary>Talks to a specific shell window (e.g. of the attached Hammer process).</summary>
+    public ShellChannel(Func<nint> window) => _window = window;
+
     // Commands are ANSI in Hammer; the system code page keeps non-ASCII keyvalues as Hammer expects them.
     private static readonly Encoding CommandEncoding = CodePagesEncoding();
 
@@ -29,7 +39,7 @@ public sealed class ShellChannel
 
     public ShellResult Send(string command)
     {
-        var hwnd = FindWindow();
+        var hwnd = _window();
         if (hwnd == 0)
             return ShellResult.NotRunning;
 

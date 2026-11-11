@@ -1,23 +1,98 @@
+using System.Diagnostics;
 using System.Runtime.Versioning;
 using HammerMcp.Core.Maps;
 
 namespace HammerMcp.Shell;
 
-/// <summary>The running Hammer that owns the shell window: process, exe path and the open map from the main window title.</summary>
+/// <summary>A running editor process: exe, its shell window (if any), main window and the open map from the title.</summary>
 [SupportedOSPlatform("windows")]
-public sealed record HammerProcess(int ProcessId, string ExePath, IReadOnlyList<string> WindowTitles)
+public sealed record HammerProcess(int ProcessId, string Name, string ExePath, nint ShellWindow, nint MainWindow, IReadOnlyList<string> WindowTitles)
 {
+    /// <summary>Process names of known editors (without .exe), used besides shell-window owners.</summary>
+    private static readonly HashSet<string> EditorNames = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "hammer", "hammerplusplus", "wc", "jack", "jackhammer", "Sledge.Editor",
+    };
+
+    public bool HasShellChannel => ShellWindow != 0;
+
     /// <summary>Map path from a title like "Hammer++ - 64 Bit - [B:\...\map.vmf - Textured Shaded]".</summary>
     public string? OpenMapPath =>
         WindowTitles.Select(HammerWindowTitle.ParseMapPath).FirstOrDefault(p => p is not null);
 
-    public static HammerProcess? FindShellOwner()
+    public string MainTitle => WindowTitles.FirstOrDefault(t => t.Contains('[')) ?? WindowTitles.FirstOrDefault() ?? Name;
+
+    /// <summary>The first process that owns a shell window (what the Python smoke scripts use).</summary>
+    public static HammerProcess? FindShellOwner() =>
+        ShellOwners().Select(o => FromPid(o.Pid, o.Shell)).FirstOrDefault(p => p is not null);
+
+    /// <summary>Editors: shell-window owners + known editor exe names; with <paramref name="allProcesses"/> every process with a window.</summary>
+    public static List<HammerProcess> List(bool allProcesses)
     {
-        var hwnd = ShellChannel.FindWindow();
-        if (hwnd == 0)
-            return null;
-        NativeMethods.GetWindowThreadProcessId(hwnd, out var pid);
-        return new HammerProcess((int)pid, QueryExePath(pid) ?? "?", VisibleTitles(pid));
+        var shells = ShellOwners().GroupBy(o => o.Pid).ToDictionary(g => g.Key, g => g.First().Shell);
+        var result = new Dictionary<int, HammerProcess>();
+        foreach (var process in Process.GetProcesses())
+        {
+            using (process)
+            {
+                var pid = process.Id;
+                var interesting = shells.ContainsKey(pid)
+                                  || EditorNames.Contains(process.ProcessName)
+                                  || (allProcesses && SafeMainWindow(process) != 0);
+                if (!interesting)
+                    continue;
+                if (FromPid(pid, shells.GetValueOrDefault(pid)) is { } info)
+                    result[pid] = info;
+            }
+        }
+        return [.. result.Values.OrderByDescending(p => p.HasShellChannel).ThenBy(p => p.Name, StringComparer.OrdinalIgnoreCase)];
+    }
+
+    /// <summary>Re-reads windows and titles of a process; null if it exited.</summary>
+    public static HammerProcess? Refresh(int pid)
+    {
+        var shell = ShellOwners().FirstOrDefault(o => o.Pid == pid).Shell;
+        return FromPid(pid, shell);
+    }
+
+    private static HammerProcess? FromPid(int pid, nint shellWindow)
+    {
+        try
+        {
+            using var process = Process.GetProcessById(pid);
+            var windows = VisibleWindows((uint)pid);
+            var main = windows.FirstOrDefault(w => w.Title.Contains('[')).Hwnd;
+            if (main == 0)
+                main = windows.FirstOrDefault().Hwnd;
+            return new HammerProcess(pid, process.ProcessName, QueryExePath((uint)pid) ?? "?", shellWindow, main,
+                [.. windows.Select(w => w.Title)]);
+        }
+        catch (ArgumentException)
+        {
+            return null; // exited
+        }
+    }
+
+    private static nint SafeMainWindow(Process process)
+    {
+        try
+        {
+            return process.MainWindowHandle;
+        }
+        catch (InvalidOperationException)
+        {
+            return 0;
+        }
+    }
+
+    private static IEnumerable<(int Pid, nint Shell)> ShellOwners()
+    {
+        nint hwnd = 0;
+        while ((hwnd = NativeMethods.FindWindowEx(0, hwnd, ShellChannel.WindowName, ShellChannel.WindowName)) != 0)
+        {
+            NativeMethods.GetWindowThreadProcessId(hwnd, out var pid);
+            yield return ((int)pid, hwnd);
+        }
     }
 
     private static unsafe string? QueryExePath(uint pid)
@@ -37,9 +112,9 @@ public sealed record HammerProcess(int ProcessId, string ExePath, IReadOnlyList<
         }
     }
 
-    private static unsafe List<string> VisibleTitles(uint pid)
+    private static unsafe List<(nint Hwnd, string Title)> VisibleWindows(uint pid)
     {
-        var titles = new List<string>();
+        var windows = new List<(nint, string)>();
         NativeMethods.EnumWindows((hwnd, _) =>
         {
             NativeMethods.GetWindowThreadProcessId(hwnd, out var owner);
@@ -52,10 +127,10 @@ public sealed record HammerProcess(int ProcessId, string ExePath, IReadOnlyList<
             fixed (char* p = buffer)
             {
                 var n = NativeMethods.GetWindowText(hwnd, p, buffer.Length);
-                titles.Add(new string(buffer, 0, n));
+                windows.Add((hwnd, new string(buffer, 0, n)));
             }
             return true;
         }, 0);
-        return titles;
+        return windows;
     }
 }

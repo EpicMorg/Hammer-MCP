@@ -1,17 +1,407 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Security.Cryptography;
+using HammerMcp.Core.Maps;
+using HammerMcp.Core.Pe;
+using HammerMcp.Core.Registry;
+using HammerMcp.Server;
+using HammerMcp.Server.Tools;
+using HammerMcp.Shell;
+using Microsoft.AspNetCore.Builder;
 
 namespace HammerMcp.App;
 
 public partial class FormMain : Form
 {
+    private const int MaxLogChars = 200_000;
+
+    private static readonly Dictionary<McpMode, string> ModeHelp = new()
+    {
+        [McpMode.Auto] = "Best available for the attached Hammer: live edits through the shell channel and menu commands "
+                         + "where a shell channel exists, otherwise read-only.",
+        [McpMode.Basic] = "Read-only: the agent sees Hammer status and map files, but cannot change anything in Hammer.",
+        [McpMode.Shell] = "Live edits through Hammer's shell channel (create / keyvalue / rotate / delete entities) "
+                          + "and menu commands (save, undo, redo, run map, check for problems). The map must be saved.",
+        [McpMode.Advanced] = "Expert mode with an injected adapter (live read, selection, camera, geometry). "
+                             + "Not implemented yet - works as Shell.",
+    };
+
+    private readonly HammerTarget _target = new();
+    private readonly ActivityLog _log = new();
+    private readonly HammerRegistry _registry = LoadRegistry();
+    private readonly System.Windows.Forms.Timer _refreshTimer = new() { Interval = 2000 };
+    private readonly NotifyIcon _tray;
+    private readonly ToolStripMenuItem _trayStartStop;
+    private readonly Icon _iconStarted = LoadIcon("hammer-mcp-started.ico");
+    private readonly Icon _iconStopped = LoadIcon("hammer-mcp-stopped.ico");
+
+    private AppSettings _settings = AppSettings.Load();
+    private WebApplication? _server;
+    private bool _exiting;
+
     public FormMain()
     {
         InitializeComponent();
+
+        _trayStartStop = new ToolStripMenuItem("Start server", null, async (_, _) => await ToggleServerAsync());
+        var trayMenu = new ContextMenuStrip();
+        trayMenu.Items.Add("Show", null, (_, _) => ShowFromTray());
+        trayMenu.Items.Add(_trayStartStop);
+        trayMenu.Items.Add("Copy client config", null, (_, _) => CopyClientConfig());
+        trayMenu.Items.Add(new ToolStripSeparator());
+        trayMenu.Items.Add("Exit", null, async (_, _) => await ExitAsync());
+        _tray = new NotifyIcon { Icon = _iconStopped, Text = "Hammer-MCP (stopped)", ContextMenuStrip = trayMenu, Visible = true };
+        _tray.DoubleClick += (_, _) => ShowFromTray();
+
+        _log.Line += AppendLog;
+        WireEvents();
+        FillAddresses();
+        comboBoxMCPMode.DataSource = Enum.GetValues<McpMode>();
+        ShowSettings(_settings);
+        RefreshProcessList();
+        UpdateAttachUi();
+        _log.Write($"registry: {_registry.Builds.Count} known Hammer builds");
+    }
+
+    private void WireEvents()
+    {
+        buttonServerStartStop.Click += async (_, _) => await ToggleServerAsync();
+        buttonAttachOrDetach.Click += (_, _) => ToggleAttach();
+        checkBoxShowProcess.CheckedChanged += (_, _) => RefreshProcessList();
+        comboBoxProcessList.DropDown += (_, _) => RefreshProcessList();
+        comboBoxMCPMode.SelectedIndexChanged += (_, _) =>
+            textBoxMCPModeHelpText.Text = comboBoxMCPMode.SelectedItem is McpMode m ? ModeHelp[m] : "";
+        buttonGenerateSecurityToken.Click += (_, _) => textBoxSecurityToken.Text = NewToken();
+        buttonCopySecurityToken.Click += (_, _) => CopyText(textBoxSecurityToken.Text, "token");
+        buttonApply.Click += async (_, _) => await ApplySettingsAsync();
+        button1.Click += (_, _) => ShowSettings(new AppSettings());
+        exitToolStripMenuItem.Click += async (_, _) => await ExitAsync();
+        aboutToolStripMenuItem.Click += (_, _) => MessageBox.Show(this,
+            $"Hammer-MCP {Application.ProductVersion}\nMCP server that connects AI agents to Valve Hammer Editor.\n\n(c) 2026 EpicMorg, MIT license",
+            "About Hammer-MCP", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        _refreshTimer.Tick += (_, _) => RefreshAttached();
+        FormClosing += OnFormClosing;
+    }
+
+    // ---- process / attach ------------------------------------------------------------------------------------
+
+    private sealed record ProcessItem(HammerProcess Process)
+    {
+        public override string ToString() =>
+            $"{Process.Name} ({Process.ProcessId}){(Process.HasShellChannel ? " [shell]" : "")} - {Process.MainTitle}";
+    }
+
+    private void RefreshProcessList()
+    {
+        var selectedPid = (comboBoxProcessList.SelectedItem as ProcessItem)?.Process.ProcessId ?? _target.AttachedPid;
+        var items = HammerProcess.List(checkBoxShowProcess.Checked).Select(p => new ProcessItem(p)).ToArray();
+        comboBoxProcessList.BeginUpdate();
+        comboBoxProcessList.Items.Clear();
+        comboBoxProcessList.Items.AddRange(items);
+        comboBoxProcessList.SelectedItem = items.FirstOrDefault(i => i.Process.ProcessId == selectedPid) ?? items.FirstOrDefault();
+        comboBoxProcessList.EndUpdate();
+    }
+
+    private void ToggleAttach()
+    {
+        if (_target.AttachedPid is not null)
+        {
+            _log.Write($"detached from pid {_target.AttachedPid}");
+            _target.Detach();
+        }
+        else if (comboBoxProcessList.SelectedItem is ProcessItem item)
+        {
+            _target.Attach(item.Process.ProcessId);
+            _log.Write($"attached to {item.Process.Name} ({item.Process.ProcessId}) {item.Process.ExePath}"
+                       + (item.Process.HasShellChannel ? "" : " - no shell channel: read-only + menu commands"));
+        }
+        UpdateAttachUi();
+    }
+
+    private void UpdateAttachUi()
+    {
+        var attached = _target.AttachedPid is not null;
+        buttonAttachOrDetach.Text = attached ? "Detach" : "Attach";
+        comboBoxProcessList.Enabled = !attached;
+        checkBoxShowProcess.Enabled = !attached;
+        groupBoxMetaInfoFromHammer.Enabled = attached;
+        _refreshTimer.Enabled = attached;
+        RefreshAttached();
+    }
+
+    private void RefreshAttached()
+    {
+        if (_target.AttachedPid is not { } pid)
+        {
+            labelProcessName.Text = "<not attached>";
+            pictureBoxProcessImage.Image = Properties.Resources.hammer_mcp_red_48;
+            dataGridViewMetaInfoFromHammer.Rows.Clear();
+            SetStatus("Process not selected", Properties.Resources.warning_circle_16);
+            return;
+        }
+
+        var process = HammerProcess.Refresh(pid);
+        if (process is null)
+        {
+            _log.Write($"process {pid} exited - detached");
+            _target.Detach();
+            UpdateAttachUi();
+            SetStatus($"Process {pid} exited", Properties.Resources.deny_circle_16);
+            return;
+        }
+
+        labelProcessName.Text = process.MainTitle;
+        pictureBoxProcessImage.Image = process.HasShellChannel
+            ? Properties.Resources.hammer_mcp_green_48
+            : Properties.Resources.hammer_mcp_red_48;
+        SetStatus(process.HasShellChannel
+                ? $"Attached to {process.Name} ({process.ProcessId}), shell channel OK"
+                : $"Attached to {process.Name} ({process.ProcessId}), no shell channel",
+            process.HasShellChannel ? Properties.Resources.check_circle_16 : Properties.Resources.warning_circle_16);
+        ShowMetaInfo(process);
+    }
+
+    private void ShowMetaInfo(HammerProcess process)
+    {
+        var pe = PeHeader.TryRead(process.ExePath);
+        var (build, dll) = StatusTools.Identify(_registry, process.ExePath);
+        var map = process.OpenMapPath;
+        string? mapVersion = null;
+        if (map is not null && File.Exists(map))
+        {
+            try
+            {
+                mapVersion = VmfVersionInfo.Read(map).MapVersion.ToString();
+            }
+            catch (InvalidDataException e)
+            {
+                mapVersion = e.Message;
+            }
+        }
+
+        var rows = new (string Key, string? Value)[]
+        {
+            ("Process", $"{process.Name} ({process.ProcessId})"),
+            ("Executable", process.ExePath),
+            ("Architecture", pe?.Arch),
+            ("Linked", pe?.Linked.ToString("yyyy-MM-dd")),
+            ("Editor DLL", dll),
+            ("Known build", build is null ? "unknown (not in registry)" : $"{build.Id} ({build.Family})"),
+            ("Shell channel", process.HasShellChannel ? $"yes (0x{process.ShellWindow:X})" : "no"),
+            ("Main window", process.MainWindow == 0 ? "-" : $"0x{process.MainWindow:X}"),
+            ("Open map", map ?? "-"),
+            ("Saved mapversion", mapVersion ?? "-"),
+        };
+
+        var grid = dataGridViewMetaInfoFromHammer;
+        if (grid.Rows.Count != rows.Length)
+        {
+            grid.Rows.Clear();
+            foreach (var (key, value) in rows)
+                grid.Rows.Add(key, value ?? "-");
+            return;
+        }
+        for (var i = 0; i < rows.Length; i++)
+            grid.Rows[i].Cells[1].Value = rows[i].Value ?? "-";
+    }
+
+    private void SetStatus(string text, Image icon)
+    {
+        toolStripStatusAttaching.Text = text;
+        toolStripStatusAttaching.Image = icon;
+    }
+
+    // ---- server ----------------------------------------------------------------------------------------------
+
+    private async Task ToggleServerAsync()
+    {
+        if (_server is null)
+            await StartServerAsync();
+        else
+            await StopServerAsync();
+    }
+
+    private async Task StartServerAsync()
+    {
+        var options = _settings.ToServerOptions();
+        try
+        {
+            _server = HammerMcpHost.Build(options, _target, _log);
+            await _server.StartAsync();
+        }
+        catch (Exception e)
+        {
+            _server = null;
+            _log.Write($"server failed to start: {e.Message}");
+            MessageBox.Show(this, e.Message, "Hammer-MCP: server failed to start", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
+        _log.Write($"server started: {options.Url} (mode {options.Mode}{(string.IsNullOrEmpty(options.Token) ? ", no token" : ", token required")})");
+        UpdateServerUi(options);
+    }
+
+    private async Task StopServerAsync()
+    {
+        if (_server is null)
+            return;
+        await _server.StopAsync();
+        await _server.DisposeAsync();
+        _server = null;
+        _log.Write("server stopped");
+        UpdateServerUi(null);
+    }
+
+    private void UpdateServerUi(HammerMcpServerOptions? running)
+    {
+        var started = running is not null;
+        buttonServerStartStop.Text = started ? "Stop" : "Start";
+        _trayStartStop.Text = started ? "Stop server" : "Start server";
+        _tray.Icon = started ? _iconStarted : _iconStopped;
+        Icon = started ? _iconStarted : _iconStopped;
+        var text = started ? $"Hammer-MCP {running!.Url}" : "Hammer-MCP (stopped)";
+        _tray.Text = text.Length > 63 ? text[..63] : text; // NotifyIcon limit
+    }
+
+    private void CopyClientConfig()
+    {
+        var options = _settings.ToServerOptions();
+        var header = string.IsNullOrEmpty(options.Token) ? "" : $" --header \"Authorization: Bearer {options.Token}\"";
+        CopyText($"claude mcp add --transport http hammer {options.Url}{header}", "client config");
+    }
+
+    // ---- settings --------------------------------------------------------------------------------------------
+
+    private sealed record AddressItem(string Address, string Label)
+    {
+        public override string ToString() => Label;
+    }
+
+    private void FillAddresses()
+    {
+        var items = new List<AddressItem>
+        {
+            new("127.0.0.1", "localhost (127.0.0.1)"),
+            new("0.0.0.0", "All interfaces (0.0.0.0)"),
+        };
+        foreach (var nic in NetworkInterface.GetAllNetworkInterfaces().Where(n => n.OperationalStatus == OperationalStatus.Up))
+        {
+            foreach (var ip in nic.GetIPProperties().UnicastAddresses)
+            {
+                if (ip.Address.AddressFamily == AddressFamily.InterNetwork && !System.Net.IPAddress.IsLoopback(ip.Address))
+                    items.Add(new AddressItem(ip.Address.ToString(), $"{ip.Address} ({nic.Name})"));
+            }
+        }
+        comboBoxAdaptersAndAdresses.Items.Clear();
+        comboBoxAdaptersAndAdresses.Items.AddRange([.. items]);
+    }
+
+    private void ShowSettings(AppSettings settings)
+    {
+        comboBoxMCPMode.SelectedItem = settings.Mode;
+        var address = comboBoxAdaptersAndAdresses.Items.Cast<AddressItem>().FirstOrDefault(a => a.Address == settings.BindAddress);
+        if (address is null)
+        {
+            address = new AddressItem(settings.BindAddress, $"{settings.BindAddress} (not available now)");
+            comboBoxAdaptersAndAdresses.Items.Add(address);
+        }
+        comboBoxAdaptersAndAdresses.SelectedItem = address;
+        textBoxPort.Text = settings.Port.ToString();
+        textBoxSecurityToken.Text = settings.Token;
+    }
+
+    private async Task ApplySettingsAsync()
+    {
+        if (!int.TryParse(textBoxPort.Text, out var port) || port is < 1 or > 65535)
+        {
+            MessageBox.Show(this, "Port must be a number 1-65535.", "Hammer-MCP", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+        var address = (comboBoxAdaptersAndAdresses.SelectedItem as AddressItem)?.Address ?? "127.0.0.1";
+        var token = textBoxSecurityToken.Text.Trim();
+        if (address != "127.0.0.1" && token.Length == 0)
+        {
+            token = NewToken();
+            textBoxSecurityToken.Text = token;
+            _log.Write("a security token was generated: it is required when listening beyond localhost");
+        }
+
+        _settings = new AppSettings
+        {
+            Mode = comboBoxMCPMode.SelectedItem is McpMode m ? m : McpMode.Auto,
+            BindAddress = address,
+            Port = port,
+            Token = token,
+        };
+        _settings.Save();
+        _log.Write($"settings saved: {address}:{port}, mode {_settings.Mode}");
+
+        if (_server is not null)
+        {
+            await StopServerAsync();
+            await StartServerAsync();
+        }
+    }
+
+    private static string NewToken() =>
+        Convert.ToBase64String(RandomNumberGenerator.GetBytes(32)).TrimEnd('=').Replace('+', '-').Replace('/', '_');
+
+    // ---- logs / tray / helpers -------------------------------------------------------------------------------
+
+    private void AppendLog(string line)
+    {
+        if (InvokeRequired)
+        {
+            BeginInvoke(() => AppendLog(line));
+            return;
+        }
+        if (textBoxLiveLogs.TextLength > MaxLogChars)
+            textBoxLiveLogs.Text = textBoxLiveLogs.Text[(MaxLogChars / 2)..];
+        textBoxLiveLogs.AppendText(line + Environment.NewLine);
+    }
+
+    private void CopyText(string text, string what)
+    {
+        if (string.IsNullOrEmpty(text))
+            return;
+        Clipboard.SetText(text);
+        _log.Write($"{what} copied to clipboard");
+    }
+
+    private void ShowFromTray()
+    {
+        Show();
+        WindowState = FormWindowState.Normal;
+        Activate();
+    }
+
+    private void OnFormClosing(object? sender, FormClosingEventArgs e)
+    {
+        if (_exiting || e.CloseReason != CloseReason.UserClosing)
+            return;
+        e.Cancel = true; // the close button hides to tray; File > Exit or the tray menu quits
+        Hide();
+        _tray.ShowBalloonTip(2000, "Hammer-MCP", "Still running in the tray.", ToolTipIcon.Info);
+    }
+
+    private async Task ExitAsync()
+    {
+        _exiting = true;
+        await StopServerAsync();
+        _tray.Visible = false;
+        _tray.Dispose();
+        Close();
+    }
+
+    private static HammerRegistry LoadRegistry()
+    {
+        var path = Path.Combine(AppContext.BaseDirectory, "registry", "hammers.json");
+        return File.Exists(path) ? HammerRegistry.Load(path) : new HammerRegistry([]);
+    }
+
+    private static Icon LoadIcon(string name)
+    {
+        using var stream = typeof(FormMain).Assembly.GetManifestResourceStream(name)
+                           ?? throw new InvalidOperationException($"embedded icon {name} not found");
+        return new Icon(stream);
     }
 }

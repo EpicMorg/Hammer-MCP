@@ -10,6 +10,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="media\hammer-mcp-stopped.ico" />
+    <EmbeddedResource Include="media\hammer-mcp-started.ico" LogicalName="hammer-mcp-started.ico" />
+    <EmbeddedResource Include="media\hammer-mcp-stopped.ico" LogicalName="hammer-mcp-stopped.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HammerMcp.Server\HammerMcp.Server.csproj" />

@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Numerics;
+using System.Runtime.Versioning;
 using HammerMcp.Shell;
 using ModelContextProtocol.Server;
 
@@ -10,7 +11,8 @@ namespace HammerMcp.Server.Tools;
 /// the map must be saved so the session version matches the .vmf. One session per call for now.
 /// </summary>
 [McpServerToolType]
-public sealed class EntityTools(ShellChannel channel)
+[SupportedOSPlatform("windows")]
+public sealed class EntityTools(HammerTarget target, ActivityLog log)
 {
     [McpServerTool(Name = "create_entity", Destructive = false)]
     [Description("Create a point entity in the map open in Hammer, optionally setting keyvalues. Brush entities (trigger_*, func_*) cannot be created this way.")]
@@ -46,18 +48,23 @@ public sealed class EntityTools(ShellChannel channel)
 
     private EditResult Edit(Func<ShellSession, List<string>> action)
     {
-        var mapPath = HammerProcess.FindShellOwner()?.OpenMapPath;
+        var process = target.Current();
+        if (process is null || !process.HasShellChannel)
+            return new EditResult(false, "no Hammer with a shell channel is attached / running", []);
+        var mapPath = process.OpenMapPath;
         if (mapPath is null)
             return new EditResult(false, "Hammer with a shell channel is not running or no map is open", []);
         if (!File.Exists(mapPath))
             return new EditResult(false, $"map file not found: {mapPath} (save the map first)", []);
 
-        using var session = ShellSession.Begin(channel, mapPath);
+        using var session = ShellSession.Begin(target.Channel, mapPath);
         if (session is null)
             return new EditResult(false, "Hammer refused the session: save the map (Ctrl+S) and retry", []);
-        var log = action(session);
-        var ok = log.All(l => l.EndsWith("= Ok", StringComparison.Ordinal));
-        return new EditResult(ok, ok ? $"done (session version {session.AcceptedVersion})" : "some commands were refused", log);
+        var commands = action(session);
+        foreach (var line in commands)
+            log.Write($"shell: {line}");
+        var ok = commands.All(l => l.EndsWith("= Ok", StringComparison.Ordinal));
+        return new EditResult(ok, ok ? $"done (session version {session.AcceptedVersion})" : "some commands were refused", commands);
     }
 
     private static string Run(ShellSession session, string command) => $"{command} = {session.Send(command)}";
