@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>HammerMcp.Core</RootNamespace>
+    <ApplicationIcon>hammer-mcp-stopped.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="hammer-mcp-stopped.ico" />
+  </ItemGroup>
+</Project>

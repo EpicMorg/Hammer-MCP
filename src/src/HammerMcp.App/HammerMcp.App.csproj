@@ -6,11 +6,28 @@
     <RootNamespace>HammerMcp.App</RootNamespace>
     <AssemblyName>hammer-mcp</AssemblyName>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <ApplicationIcon>media\hammer-mcp-stopped.ico</ApplicationIcon>
   </PropertyGroup>
+  <ItemGroup>
+    <Content Include="media\hammer-mcp-stopped.ico" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HammerMcp.Server\HammerMcp.Server.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\registry\hammers.json" Link="registry\hammers.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

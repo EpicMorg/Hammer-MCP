@@ -2,7 +2,11 @@
   <PropertyGroup>
     <RootNamespace>HammerMcp.Shell</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ApplicationIcon>hammer-mcp-stopped.ico</ApplicationIcon>
   </PropertyGroup>
+  <ItemGroup>
+    <Content Include="hammer-mcp-stopped.ico" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HammerMcp.Core\HammerMcp.Core.csproj" />
   </ItemGroup>
