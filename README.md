@@ -1,51 +1,130 @@
-# Hammer-MCP
+<p align="center">
+  <img src="docs/media/hammer-mcp-red-green-v2.png" alt="Hammer-MCP" width="200">
+</p>
 
-MCP server (proof of concept) that connects AI agents to Valve Hammer Editor.
+<h1 align="center">Hammer-MCP</h1>
 
-The server runs as a tray app on the Windows PC with Hammer and speaks MCP over HTTP.
-In the **basic mode** it drives a running Hammer through its built-in shell channel
-(`Worldcraft_ShellMessageWnd` + `WM_COPYDATA`, the mechanism from the Source SDK `editor_sendcommand.cpp`)
-and reads the map from the saved `.vmf`. An **expert mode** with per-build inject adapters is planned.
+<p align="center">
+  <b>Let AI agents see and edit maps in Valve Hammer Editor — live.</b><br>
+  An <a href="https://modelcontextprotocol.io">MCP</a> server for Hammer (Source 1), Hammer++ and friends.
+</p>
 
-Status: early PoC. Verified live on Hammer++ 8873 x64: create / keyvalue / rotate / delete entities, undo works.
+<p align="center">
+  <img alt="status" src="https://img.shields.io/badge/status-proof%20of%20concept-orange">
+  <img alt="platform" src="https://img.shields.io/badge/platform-Windows%2010%2F11%20x64-0078D6">
+  <img alt=".NET" src="https://img.shields.io/badge/.NET-10-512BD4">
+  <img alt="MCP" src="https://img.shields.io/badge/MCP-Streamable%20HTTP-6f42c1">
+  <img alt="license" src="https://img.shields.io/badge/license-MIT-green">
+</p>
 
-## Layout
+---
+
+Ask your agent *"put a warm light at each corner of the room and name them by the scheme"* — and watch the entities
+appear in the Hammer you already have open. No plugins, no patched editor: Hammer-MCP talks to Hammer through the
+**shell channel** that Valve built into the editor 20 years ago (`Worldcraft_ShellMessageWnd`, the mechanism behind
+`editor_sendcommand.cpp` in the Source SDK) and through Hammer's own menu commands.
 
 ```
-src/HammerMcp.sln            solution (+ Directory.Build.props, global.json)
-src/src/HammerMcp.Core       map model, .vmf versioninfo, Hammer build registry, menu command ids, PE header
-src/src/HammerMcp.Shell      shell channel (WM_COPYDATA), menu commands (WM_COMMAND), sessions, Hammer process discovery
-src/src/HammerMcp.Server     MCP server (Streamable HTTP, optional Bearer token) and tools
-src/src/HammerMcp.App        hammer-mcp.exe: WinForms window + tray (process attach, meta info, settings, logs)
-src/tests/HammerMcp.Tests    unit tests
-src/registry/hammers.json    known Hammer builds
-src/native/                  C++ injector and adapters (planned, CMake)
-docs/media/                  icons and artwork
+ AI agent (Claude Code, Cursor, …)
+        │  MCP over HTTP (+ optional Bearer token, LAN-capable)
+        ▼
+ ┌────────────────────────────┐      WM_COPYDATA  (shell channel: entities, keyvalues, nodes)
+ │  hammer-mcp.exe  (tray)    │ ───► WM_COMMAND   (menu: save, undo, redo, run map, …)        ──►  Hammer / Hammer++
+ │  process attach · settings │ ───► reads the saved .vmf (map summary, mapversion)
+ │  live log                  │
+ └────────────────────────────┘
 ```
 
-## Build
+## What works today
 
-.NET 10 SDK, from `src/`: `dotnet build HammerMcp.sln`, `dotnet test --solution HammerMcp.sln`
-(Microsoft.Testing.Platform, see `global.json`). App and server target `net10.0-windows`: they build on Linux too
-(`EnableWindowsTargeting`), but run on Windows 10/11 x64 only.
+Verified live on **Hammer++ 8873 x64** (TF2 Classified), from an agent on another machine over the LAN:
 
-## Use
+| | |
+|---|---|
+| ✅ Create point entities with keyvalues (`light`, `info_target`, `prop_dynamic` with a model, …) | ✅ Rotate entities (a spinning locker at ~28 edits/s, Hammer stays responsive) |
+| ✅ Set keyvalues, delete entities | ✅ Edits land in Hammer's **undo** history — Ctrl+Z works |
+| ✅ Save / undo / redo / Run Map / Check for Problems via menu commands | ✅ Map summary from the saved `.vmf` (entities, brushes, classes, skybox…) |
+| ✅ Recognises the running Hammer build by hash (registry of known builds) | ✅ Token auth, localhost by default |
 
-1. Run `hammer-mcp.exe`. Settings tab: mode, address (localhost / all / a LAN address), port, token → Apply.
-   A token is required for anything but localhost.
-2. Main tab: pick the Hammer process → Attach (meta info shows exe, arch, known build, shell channel, open map, mapversion).
-   Without attaching, the server uses the first Hammer that has a shell channel.
-3. Start. Tray menu → "Copy client config" gives e.g.
-   `claude mcp add --transport http hammer http://127.0.0.1:47800/mcp --header "Authorization: Bearer <token>"`.
-4. Open a map in Hammer and **save it** — sessions use the `mapversion` from the saved `.vmf`.
+## Supported editors
 
-Modes: Auto (live edits where a shell channel exists), Basic (read-only), Shell (live edits + menu commands),
-Advanced (injected adapter — not implemented yet, works as Shell).
+The shell channel exists in **every stock Source Hammer since 2006** and in **Hammer++ since build 8867**;
+menu command ids are identical across **all 152 Source Hammer builds** we analysed.
 
-Tools: `hammer_status`; live edits `create_entity`, `set_keyvalue`, `rotate_entity`, `delete_entity`;
-menu `save_map`, `undo`, `redo`, `open_run_map_dialog`, `open_check_for_problems`.
-Closing the window hides it to the tray; File > Exit or tray > Exit quits.
+| Editor | Live edits (shell) | Menu commands | Map files |
+|---|:---:|:---:|:---:|
+| Stock Hammer — Source SDK 2013 SP/MP, HL2, Portal, TF2, CS:S, DoD:S, L4D/L4D2, Portal 2, GMod, … (x86 & x64) | ✅ | ✅ | ✅ |
+| Hammer++ 8867+ (all games) | ✅ | ✅ | ✅ |
+| Slammin' Hammer 5.2, Black Mesa, Nuclear Dawn | ✅ | ✅ | ✅ |
+| Hammer++ ≤ 8866 | — | ✅ | ✅ |
+| Strata Hammer (Portal: Revolution, P2CE, …) | — | ✅ | ✅ |
+| GoldSrc: Worldcraft / Hammer 3.x, J.A.C.K. | — | partly | planned |
 
-## License
+Static analysis; live tests so far on Hammer++ 8873 x64. Reports for other builds are very welcome.
 
-MIT, see `LICENSE`.
+## Quick start
+
+1. Download/build `hammer-mcp.exe` and run it — it lives in the tray.
+2. **Settings:** pick a mode, address (`localhost` by default), port (`47800`), generate a token for LAN use → **Apply**.
+3. **Main:** choose your Hammer process → **Attach** (meta info shows the build, shell channel, open map) → **Start**.
+4. Connect your agent — tray menu → *Copy client config*:
+   ```bash
+   claude mcp add --transport http hammer http://127.0.0.1:47800/mcp
+   # LAN:   ... http://10.0.0.5:47800/mcp --header "Authorization: Bearer <token>"
+   ```
+5. Open a map in Hammer and **save it** (sessions are bound to the saved `mapversion`). Ask away.
+
+## Tools for the agent
+
+| Tool | What it does |
+|---|---|
+| `hammer_status` | Which Hammer is attached, its build, shell channel, open map, saved `mapversion`, allowed mode |
+| `map_summary` | Saved `.vmf`: versions, entity/brush counts, classes, skybox, visgroups |
+| `create_entity` | Point entity at x y z, with keyvalues |
+| `set_keyvalue` · `rotate_entity` · `delete_entity` | Edit the entity of a class at an origin |
+| `save_map` · `undo` · `redo` | Hammer menu commands |
+| `open_run_map_dialog` · `open_check_for_problems` | Open those Hammer dialogs for the user |
+
+**Modes:** *Auto* (live edits where a shell channel exists) · *Basic* (read-only) · *Shell* (live edits + menu) ·
+*Advanced* (planned: injected adapters for live reading, selection, camera, geometry).
+
+### Limits of the shell channel
+It is write-only and entity-level: entities are addressed by **class + origin** (no ids), brushes and brush entities
+can't be created, there is no "move", and unsaved state can't be read back — the server reads the saved `.vmf`.
+The planned *Advanced* mode lifts these limits for selected builds.
+
+## Building
+
+```bash
+cd src
+dotnet build HammerMcp.sln
+dotnet test --solution HammerMcp.sln
+```
+.NET 10 SDK. App and server target `net10.0-windows` (they build on Linux via `EnableWindowsTargeting`, run on Windows 10/11 x64).
+
+```
+src/src/HammerMcp.Core      map summary, .vmf versioninfo, Hammer build registry, menu ids, PE header
+src/src/HammerMcp.Shell     shell channel (WM_COPYDATA), menu commands (WM_COMMAND), sessions, process discovery
+src/src/HammerMcp.Server    MCP server (Streamable HTTP, Bearer token) and tools
+src/src/HammerMcp.App       hammer-mcp.exe — WinForms window + tray
+src/tests/HammerMcp.Tests   unit tests
+src/registry/hammers.json   known Hammer builds
+src/native/                 C++ injector and adapters (planned, CMake)
+```
+
+## Roadmap
+
+- [x] Shell channel: entities, keyvalues, rotation, deletion · menu commands · build registry · tray app · LAN + token
+- [ ] Full `.vmf` reading: list/get entities, I/O graph, FGD-aware validation; ambiguity checks before edits
+- [ ] Compile pipeline (vbsp / vvis / vrad) with parsed logs and leak tracing
+- [ ] Release 0.1: single-file `win-x64` build
+- [ ] *Advanced* mode: C++ inject adapters per build (live read, selection, camera, geometry, in-editor UI)
+
+## Credits & legal
+
+Built by [EpicMorg](https://github.com/EpicMorg). Shell-channel protocol as published by Valve in the Source SDK
+(`src/public/editor_sendcommand.{h,cpp}`). Thanks to ficool2 for Hammer++ and to the Valve Developer Community.
+Hammer-MCP contains no Valve source code and no leaked code; it talks to editors only through their public, built-in
+interfaces. Not affiliated with or endorsed by Valve. Hammer, Source and related marks belong to Valve Corporation.
+
+MIT — see [LICENSE](LICENSE).

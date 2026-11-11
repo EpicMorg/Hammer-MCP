@@ -28,7 +28,11 @@ public static class HammerMcpHost
             : new HammerRegistry([]));
 
         var mcp = builder.Services
-            .AddMcpServer(mcp => mcp.ServerInfo = new() { Name = "hammer-mcp", Version = typeof(HammerMcpHost).Assembly.GetName().Version?.ToString(3) ?? "0" })
+            .AddMcpServer(mcp =>
+            {
+                mcp.ServerInfo = new() { Name = "hammer-mcp", Version = typeof(HammerMcpHost).Assembly.GetName().Version?.ToString(3) ?? "0" };
+                mcp.ServerInstructions = AgentInstructions.Text;
+            })
             .WithHttpTransport()
             .WithTools<StatusTools>();
         if (options.AllowsLiveEdits)
