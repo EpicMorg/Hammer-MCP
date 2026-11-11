@@ -26,6 +26,20 @@ public sealed class HammerRegistry
 
     public static HammerRegistry Load(string path) => Parse(File.ReadAllText(path));
 
+    /// <summary>
+    /// registry/hammers.json next to the app if present (lets users add builds without a rebuild),
+    /// otherwise the copy embedded in this assembly.
+    /// </summary>
+    public static HammerRegistry LoadDefault(string? overridePath = null)
+    {
+        if (overridePath is not null && File.Exists(overridePath))
+            return Load(overridePath);
+        using var stream = typeof(HammerRegistry).Assembly.GetManifestResourceStream("hammers.json")
+                           ?? throw new InvalidOperationException("embedded hammers.json not found");
+        using var reader = new StreamReader(stream);
+        return Parse(reader.ReadToEnd());
+    }
+
     public static HammerRegistry Parse(string json)
     {
         var doc = JsonSerializer.Deserialize<RegistryFile>(json, JsonOptions)

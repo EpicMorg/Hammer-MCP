@@ -53,6 +53,43 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
         return new { path = map, saved = file.LastWriteTime, sizeBytes = file.Length, summary = VmfSummary.Read(map) };
     }
 
+    [McpServerTool(Name = "list_entities", ReadOnly = true)]
+    [Description("Entities of the map open in Hammer, from the SAVED .vmf: id, class, origin, targetname, hidden, brush entity. Filters are optional and combined; results are capped by 'limit'.")]
+    public object ListEntities(
+        [Description("Exact class name, e.g. light")] string? className = null,
+        [Description("Substring of targetname")] string? nameContains = null,
+        [Description("Only entities within 'radius' units of x y z")] float? x = null, float? y = null, float? z = null,
+        float radius = 256,
+        int limit = 200)
+    {
+        var map = target.Current()?.OpenMapPath;
+        if (map is null || !File.Exists(map) || !map.EndsWith(".vmf", StringComparison.OrdinalIgnoreCase))
+            return new { error = "no saved .vmf open in the attached Hammer" };
+        var center = x is { } cx && y is { } cy && z is { } cz ? new System.Numerics.Vector3(cx, cy, cz) : (System.Numerics.Vector3?)null;
+        var query = VmfEntities.Read(map).AsEnumerable();
+        if (className is not null)
+            query = query.Where(e => string.Equals(e.ClassName, className, StringComparison.OrdinalIgnoreCase));
+        if (nameContains is not null)
+            query = query.Where(e => e.TargetName?.Contains(nameContains, StringComparison.OrdinalIgnoreCase) == true);
+        if (center is { } c)
+            query = query.Where(e => e.Origin is { } o && System.Numerics.Vector3.Distance(o, c) <= radius);
+        var all = query.ToList();
+        return new
+        {
+            map,
+            total = all.Count,
+            entities = all.Take(Math.Clamp(limit, 1, 2000)).Select(e => new
+            {
+                e.Id,
+                className = e.ClassName,
+                origin = e.Origin is { } o ? new[] { o.X, o.Y, o.Z } : null,
+                targetName = e.TargetName,
+                e.Hidden,
+                brushEntity = e.HasBrushes,
+            }),
+        };
+    }
+
     /// <summary>Finds the editor DLL next to the exe and looks its sha256 up in the registry.</summary>
     public static (HammerBuild? Build, string? Dll) Identify(HammerRegistry registry, string exePath)
     {

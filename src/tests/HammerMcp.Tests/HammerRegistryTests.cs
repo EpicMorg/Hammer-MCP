@@ -23,6 +23,10 @@ public class HammerRegistryTests
     }
 
     [Fact]
+    public void EmbeddedRegistryMatchesTheFile() =>
+        Assert.Equal(HammerRegistry.Load(RegistryPath).Builds.Count, HammerRegistry.LoadDefault().Builds.Count);
+
+    [Fact]
     public void RejectsDuplicateIds()
     {
         const string json = """

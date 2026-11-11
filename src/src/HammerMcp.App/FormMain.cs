@@ -438,11 +438,8 @@ public partial class FormMain : Form
         Close();
     }
 
-    private static HammerRegistry LoadRegistry()
-    {
-        var path = Path.Combine(AppContext.BaseDirectory, "registry", "hammers.json");
-        return File.Exists(path) ? HammerRegistry.Load(path) : new HammerRegistry([]);
-    }
+    private static HammerRegistry LoadRegistry() =>
+        HammerRegistry.LoadDefault(Path.Combine(AppContext.BaseDirectory, "registry", "hammers.json"));
 
     private static Icon LoadIcon(string name)
     {

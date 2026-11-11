@@ -120,6 +120,12 @@ src/native/                 C++ injector and adapters (planned, CMake)
 - [ ] Release 0.1: single-file `win-x64` build
 - [ ] *Advanced* mode: C++ inject adapters per build (live read, selection, camera, geometry, in-editor UI)
 
+## Releases
+
+Tag `vX.Y.Z[-suffix]` on GitHub → the `release` workflow builds a self-contained single-file `hammer-mcp.exe`
+(win-x64, ~65 MB) and attaches a zip to a GitHub release (`-alpha` / `-beta` tags become pre-releases).
+Components and licenses: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
 ## Credits & legal
 
 Built by [EpicMorg](https://github.com/EpicMorg). Shell-channel protocol as published by Valve in the Source SDK

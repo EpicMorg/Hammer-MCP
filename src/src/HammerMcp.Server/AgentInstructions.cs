@@ -16,8 +16,8 @@ internal static class AgentInstructions
         - The map must be saved first: sessions are bound to the mapversion of the saved .vmf. If an edit is refused,
           call save_map and retry.
         - Entities are addressed by class + origin (x y z), there are no ids. Two entities of the same class at the
-          same origin cannot be told apart, and deleting there removes one of them. Place new entities at distinct
-          coordinates and check map_summary / the user before deleting.
+          same origin cannot be told apart: the server refuses such edits and refuses to create a second entity at an
+          occupied address. Use list_entities to find exact origins; place new entities at distinct coordinates.
         - Only point entities can be created (light, info_target, prop_dynamic, ...). Brush entities (trigger_*,
           func_*) need brushes and cannot be created; you can still set keyvalues on existing ones.
         - There is no move command; outputs (I/O connections) cannot be set through this channel yet.

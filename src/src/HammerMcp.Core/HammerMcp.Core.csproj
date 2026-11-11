@@ -6,4 +6,7 @@
   <ItemGroup>
     <Content Include="hammer-mcp-stopped.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\registry\hammers.json" LogicalName="hammers.json" Link="registry\hammers.json" />
+  </ItemGroup>
 </Project>

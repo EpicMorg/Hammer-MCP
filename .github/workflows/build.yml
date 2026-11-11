@@ -1,0 +1,23 @@
+name: build
+
+on:
+  push:
+    branches: [develop, master]
+  pull_request:
+    branches: [develop, master]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: src/global.json
+      - name: Build
+        run: dotnet build HammerMcp.sln -c Release
+      - name: Test
+        run: dotnet test --solution HammerMcp.sln -c Release --no-build

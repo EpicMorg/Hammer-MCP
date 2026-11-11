@@ -8,7 +8,7 @@
     <Company>EpicMorg</Company>
     <Product>Hammer-MCP</Product>
     <Copyright>Copyright (c) 2026 EpicMorg</Copyright>
-    <Version>0.1.0</Version>
+    <Version>0.1.0-alpha</Version>
     <!-- allow building the WinForms app on Linux CI / dev boxes -->
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>

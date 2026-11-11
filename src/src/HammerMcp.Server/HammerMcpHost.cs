@@ -1,4 +1,5 @@
 using System.Runtime.Versioning;
+using HammerMcp.Core.Maps;
 using HammerMcp.Core.Registry;
 using HammerMcp.Server.Tools;
 using Microsoft.AspNetCore.Builder;
@@ -23,9 +24,8 @@ public static class HammerMcpHost
         builder.Services.AddSingleton(options);
         builder.Services.AddSingleton(target);
         builder.Services.AddSingleton(log);
-        builder.Services.AddSingleton(_ => File.Exists(options.RegistryPath)
-            ? HammerRegistry.Load(options.RegistryPath)
-            : new HammerRegistry([]));
+        builder.Services.AddSingleton<EditJournal>();
+        builder.Services.AddSingleton(_ => HammerRegistry.LoadDefault(options.RegistryPath));
 
         var mcp = builder.Services
             .AddMcpServer(mcp =>

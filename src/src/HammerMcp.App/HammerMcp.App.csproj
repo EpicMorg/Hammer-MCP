@@ -17,9 +17,6 @@
     <ProjectReference Include="..\HammerMcp.Server\HammerMcp.Server.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\registry\hammers.json" Link="registry\hammers.json" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
