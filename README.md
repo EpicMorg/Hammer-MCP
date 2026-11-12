@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>Let AI agents see and edit maps in Valve Hammer Editor — live.</b><br>
-  An <a href="https://modelcontextprotocol.io">MCP</a> server for Hammer (Source 1), Hammer++ and friends.
+  An <a href="https://modelcontextprotocol.io">MCP</a> server for Hammer (Source 1), <a href="https://github.com/ficool2/HammerPlusPlus-Website">Hammer++</a> and friends.
 </p>
 
 <p align="center">
@@ -22,7 +22,7 @@
 Ask your agent *"put a warm light at each corner of the room and name them by the scheme"* — and watch the entities
 appear in the Hammer you already have open. No plugins, no patched editor: Hammer-MCP talks to Hammer through the
 **shell channel** that Valve built into the editor 20 years ago (`Worldcraft_ShellMessageWnd`, the mechanism behind
-`editor_sendcommand.cpp` in the Source SDK) and through Hammer's own menu commands.
+[`editor_sendcommand.cpp`](https://github.com/ValveSoftware/source-sdk-2013/blob/master/src/public/editor_sendcommand.cpp) in the Source SDK) and through Hammer's own menu commands.
 
 ```
  AI agent (Claude Code, Cursor, …)
@@ -37,7 +37,7 @@ appear in the Hammer you already have open. No plugins, no patched editor: Hamme
 
 ## What works today
 
-Verified live on **Hammer++ 8873 x64** (TF2 Classified), from an agent on another machine over the LAN:
+Verified live on **[Hammer++](https://github.com/ficool2/HammerPlusPlus-Website) 8873 x64** ([TF2 Classified](https://store.steampowered.com/app/3545060/)), from an agent on another machine over the LAN:
 
 | | |
 |---|---|
@@ -54,11 +54,11 @@ menu command ids are identical across **all 152 Source Hammer builds** we analys
 | Editor | Live edits (shell) | Menu commands | Map files |
 |---|:---:|:---:|:---:|
 | Stock Hammer — Source SDK 2013 SP/MP, HL2, Portal, TF2, CS:S, DoD:S, L4D/L4D2, Portal 2, GMod, … (x86 & x64) | ✅ | ✅ | ✅ |
-| Hammer++ 8867+ (all games) | ✅ | ✅ | ✅ |
-| Slammin' Hammer 5.2, Black Mesa, Nuclear Dawn | ✅ | ✅ | ✅ |
+| [Hammer++](https://github.com/ficool2/HammerPlusPlus-Website) 8867+ (all games) | ✅ | ✅ | ✅ |
+| [Slammin' Hammer 5.2](https://developer.valvesoftware.com/wiki/Slammin'_Source_Map_Tools), Black Mesa, Nuclear Dawn | ✅ | ✅ | ✅ |
 | Hammer++ ≤ 8866 | — | ✅ | ✅ |
-| Strata Hammer (Portal: Revolution, P2CE, …) | — | ✅ | ✅ |
-| GoldSrc: Worldcraft / Hammer 3.x, J.A.C.K. | — | partly | planned |
+| [Strata](https://github.com/StrataSource) Hammer (Portal: Revolution, P2CE, …) | — | ✅ | ✅ |
+| GoldSrc: Worldcraft / Hammer 3.x, [J.A.C.K.](https://store.steampowered.com/app/496450/) | — | partly | planned |
 
 Static analysis; live tests so far on Hammer++ 8873 x64. Reports for other builds are very welcome.
 
@@ -128,8 +128,10 @@ Components and licenses: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 
 ## Credits & legal
 
-Built by [EpicMorg](https://github.com/EpicMorg). Shell-channel protocol as published by Valve in the Source SDK
-(`src/public/editor_sendcommand.{h,cpp}`). Thanks to ficool2 for Hammer++ and to the Valve Developer Community.
+Built by [EpicMorg](https://github.com/EpicMorg). Shell-channel protocol as published by Valve in the
+[Source SDK 2013](https://github.com/ValveSoftware/source-sdk-2013) (`src/public/editor_sendcommand.{h,cpp}`).
+Thanks to [ficool2](https://github.com/ficool2) for [Hammer++](https://github.com/ficool2/HammerPlusPlus-Website) and to the
+[Valve Developer Community](https://developer.valvesoftware.com/wiki/Hammer).
 Hammer-MCP contains no Valve source code and no leaked code; it talks to editors only through their public, built-in
 interfaces. Not affiliated with or endorsed by Valve. Hammer, Source and related marks belong to Valve Corporation.
 
