@@ -43,15 +43,13 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
 
     [McpServerTool(Name = "map_summary", ReadOnly = true)]
     [Description("Summary of the map open in Hammer, read from the SAVED .vmf: mapversion, editor build, entity and brush counts, entity classes with counts, skybox, visgroups. Unsaved edits are not included - call save_map first.")]
-    public object MapSummary()
+    public object MapSummary([Description("Read Hammer++'s newest autosave if it is newer than the saved map")] bool fromAutosave = false)
     {
-        var map = target.Current()?.OpenMapPath;
+        var (map, source) = target.MapSource(fromAutosave);
         if (map is null)
-            return new { error = "no Hammer with an open map is attached" };
-        if (!map.EndsWith(".vmf", StringComparison.OrdinalIgnoreCase) || !File.Exists(map))
-            return new { error = $"not a saved .vmf: {map}" };
+            return new { error = "no saved map open in the attached Hammer" };
         var file = new FileInfo(map);
-        return new { path = map, saved = file.LastWriteTime, sizeBytes = file.Length, summary = VmfSummary.Read(map) };
+        return new { path = map, source, saved = file.LastWriteTime, sizeBytes = file.Length, summary = VmfSummary.Read(map) };
     }
 
     [McpServerTool(Name = "list_entities", ReadOnly = true)]
@@ -61,11 +59,12 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
         [Description("Substring of targetname")] string? nameContains = null,
         [Description("Only entities within 'radius' units of x y z")] float? x = null, float? y = null, float? z = null,
         float radius = 256,
-        int limit = 200)
+        int limit = 200,
+        [Description("Read Hammer++'s newest autosave if it is newer than the saved map")] bool fromAutosave = false)
     {
-        var map = target.Current()?.OpenMapPath;
-        if (map is null || !File.Exists(map) || !map.EndsWith(".vmf", StringComparison.OrdinalIgnoreCase))
-            return new { error = "no saved .vmf open in the attached Hammer (or nothing attached)" };
+        var (map, source) = target.MapSource(fromAutosave);
+        if (map is null)
+            return new { error = "no saved map open in the attached Hammer (or nothing attached)" };
         var center = x is { } cx && y is { } cy && z is { } cz ? new System.Numerics.Vector3(cx, cy, cz) : (System.Numerics.Vector3?)null;
         var query = VmfEntities.Read(map).AsEnumerable();
         if (className is not null)
@@ -78,6 +77,7 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
         return new
         {
             map,
+            source,
             total = all.Count,
             entities = all.Take(Math.Clamp(limit, 1, 2000)).Select(e => new
             {

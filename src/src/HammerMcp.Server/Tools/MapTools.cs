@@ -85,9 +85,9 @@ public sealed class MapTools(HammerTarget target, GameData gameData)
 
     [McpServerTool(Name = "get_entity", ReadOnly = true)]
     [Description("One entity of the SAVED map by id (from list_entities): all keyvalues, its outputs, and outputs of other entities that target it by name.")]
-    public object GetEntity(int id)
+    public object GetEntity(int id, [Description("Read Hammer++'s newest autosave if it is newer than the saved map")] bool fromAutosave = false)
     {
-        var (entities, error) = LoadMap();
+        var (entities, error) = LoadMap(fromAutosave);
         if (entities is null)
             return new { error };
         var e = entities.FirstOrDefault(x => x.Id == id);
@@ -95,6 +95,7 @@ public sealed class MapTools(HammerTarget target, GameData gameData)
             return new { error = $"no entity with id {id} in the saved map" };
         return new
         {
+            source = _source,
             e.Id,
             className = e.ClassName,
             origin = e.Origin is { } o ? new[] { o.X, o.Y, o.Z } : null,
@@ -108,14 +109,15 @@ public sealed class MapTools(HammerTarget target, GameData gameData)
 
     [McpServerTool(Name = "find_io", ReadOnly = true)]
     [Description("Map logic around a name in the SAVED map: entities with that targetname, their outputs, and every output that targets the name (wildcards like door_* in targets are matched).")]
-    public object FindIo(string targetName)
+    public object FindIo(string targetName, [Description("Read Hammer++'s newest autosave if it is newer than the saved map")] bool fromAutosave = false)
     {
-        var (entities, error) = LoadMap();
+        var (entities, error) = LoadMap(fromAutosave);
         if (entities is null)
             return new { error };
         var named = entities.Where(e => string.Equals(e.TargetName, targetName, StringComparison.OrdinalIgnoreCase)).ToList();
         return new
         {
+            source = _source,
             entities = named.Select(e => new { e.Id, className = e.ClassName, outputs = e.Connections.Select(Format) }),
             targetedBy = Inbound(entities, targetName),
         };
@@ -123,9 +125,9 @@ public sealed class MapTools(HammerTarget target, GameData gameData)
 
     [McpServerTool(Name = "validate_map", ReadOnly = true)]
     [Description("Checks the SAVED map against the game's FGD: unknown entity classes, outputs to names that do not exist, output / input names the FGD does not know, keyvalues missing from the FGD. Returns problems grouped by kind (capped by 'limit').")]
-    public object ValidateMap(int limit = 50, string? configName = null)
+    public object ValidateMap(int limit = 50, string? configName = null, bool fromAutosave = false)
     {
-        var (entities, error) = LoadMap();
+        var (entities, error) = LoadMap(fromAutosave);
         if (entities is null)
             return new { error };
         var (fgd, fgdError) = LoadFgd(configName);
@@ -136,6 +138,7 @@ public sealed class MapTools(HammerTarget target, GameData gameData)
         var cap = Math.Clamp(limit, 1, 1000);
         return new
         {
+            source = _source,
             entities = entities.Count,
             fgdClasses = fgd.Classes.Count(),
             unknownClasses = new { count = r.UnknownClasses.Count, items = r.UnknownClasses.Take(cap) },
@@ -169,11 +172,12 @@ public sealed class MapTools(HammerTarget target, GameData gameData)
         return (gameData.Fgd(s.Active), null);
     }
 
-    private (List<VmfEntity>? Entities, string? Error) LoadMap()
+    private (List<VmfEntity>? Entities, string? Error) LoadMap(bool fromAutosave = false)
     {
-        var map = target.Current()?.OpenMapPath;
-        if (map is null || !File.Exists(map))
-            return (null, "no saved map open in the attached Hammer");
-        return (MapEntities.Read(map), null);
+        var (path, source) = target.MapSource(fromAutosave);
+        _source = source;
+        return path is null ? (null, "no saved map open in the attached Hammer") : (MapEntities.Read(path), null);
     }
+
+    private string _source = "";
 }

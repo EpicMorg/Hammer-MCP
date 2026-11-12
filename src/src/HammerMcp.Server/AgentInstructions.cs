@@ -23,7 +23,8 @@ internal static class AgentInstructions
         - Only point entities can be created (light, info_target, prop_dynamic, ...). Brush entities (trigger_*,
           func_*) need brushes and cannot be created; you can still set keyvalues on existing ones.
         - There is no move command; outputs (I/O connections) cannot be set through this channel yet.
-        - Reading reflects the SAVED .vmf only. After your edits, call save_map before reading the map again.
+        - Reading reflects the SAVED .vmf. With Hammer++, read tools accept fromAutosave=true to use its newest autosave
+          when that is newer (a few minutes old at most). After your edits, call save_map before reading the map again.
 
         Units: Hammer units (1 unit = 0.75 inch for player scale, a player is 72 units tall, a standard door 112).
         Coordinates are world x y z; angles are pitch yaw roll in degrees.

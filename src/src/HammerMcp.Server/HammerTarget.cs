@@ -22,6 +22,26 @@ public sealed class HammerTarget
     public HammerProcess? Current() =>
         _attachedPid is { } pid ? HammerProcess.Refresh(pid) : null;
 
+    /// <summary>
+    /// The file to read the open map from: the saved .vmf, or - with <paramref name="fromAutosave"/> - Hammer++'s newest
+    /// autosave of it if that is newer (fresher than the last Ctrl+S). Null path = no saved map open.
+    /// </summary>
+    public (string? Path, string Source) MapSource(bool fromAutosave)
+    {
+        var process = Current();
+        var map = process?.OpenMapPath;
+        if (process is null || map is null || !File.Exists(map))
+            return (null, "none");
+        if (fromAutosave)
+        {
+            var (dir, enabled) = HammerMcp.Core.Maps.Autosaves.HammerPlusPlusFolder(process.ExePath);
+            if (dir is not null && enabled && HammerMcp.Core.Maps.Autosaves.NewerThanMap(dir, map) is { } autosave)
+                return (autosave.Path, $"autosave {System.IO.Path.GetFileName(autosave.Path)} ({autosave.Written:HH:mm:ss}, newer than the saved map)");
+            return (map, dir is null ? "saved map (no Hammer++ autosave folder known)" : "saved map (no newer autosave)");
+        }
+        return (map, "saved map");
+    }
+
     /// <summary>Shell channel bound to the target's shell window, resolved on every command.</summary>
     public ShellChannel Channel => new(() => Current()?.ShellWindow ?? 0);
 }
