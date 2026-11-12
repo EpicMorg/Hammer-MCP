@@ -20,7 +20,8 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
     {
         var process = target.Current();
         if (process is null)
-            return new HammerStatus(Running: false, Mode: options.Mode.ToString(), LiveEdits: false);
+            return new HammerStatus(Running: false, Mode: options.Mode.ToString(), LiveEdits: false,
+                Note: "no Hammer is attached - ask the user to pick the Hammer process in Hammer-MCP and press Attach");
 
         var mapPath = process.OpenMapPath;
         int? mapVersion = mapPath is not null && File.Exists(mapPath) ? VmfVersionInfo.Read(mapPath).MapVersion : null;
@@ -46,7 +47,7 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
     {
         var map = target.Current()?.OpenMapPath;
         if (map is null)
-            return new { error = "no Hammer with an open map is attached / running" };
+            return new { error = "no Hammer with an open map is attached" };
         if (!map.EndsWith(".vmf", StringComparison.OrdinalIgnoreCase) || !File.Exists(map))
             return new { error = $"not a saved .vmf: {map}" };
         var file = new FileInfo(map);
@@ -64,7 +65,7 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
     {
         var map = target.Current()?.OpenMapPath;
         if (map is null || !File.Exists(map) || !map.EndsWith(".vmf", StringComparison.OrdinalIgnoreCase))
-            return new { error = "no saved .vmf open in the attached Hammer" };
+            return new { error = "no saved .vmf open in the attached Hammer (or nothing attached)" };
         var center = x is { } cx && y is { } cy && z is { } cz ? new System.Numerics.Vector3(cx, cy, cz) : (System.Numerics.Vector3?)null;
         var query = VmfEntities.Read(map).AsEnumerable();
         if (className is not null)
@@ -124,4 +125,5 @@ public sealed record HammerStatus(
     string? Family = null,
     bool ShellChannel = false,
     string? OpenMap = null,
-    int? SavedMapVersion = null);
+    int? SavedMapVersion = null,
+    string? Note = null);

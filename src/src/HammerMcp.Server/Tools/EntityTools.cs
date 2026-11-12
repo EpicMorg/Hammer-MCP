@@ -71,7 +71,7 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
     {
         var process = target.Current();
         if (process is null || !process.HasShellChannel)
-            return new EditResult(false, "no Hammer with a shell channel is attached / running", []);
+            return new EditResult(false, "no Hammer with a shell channel is attached - ask the user to attach a Hammer process in Hammer-MCP", []);
         var mapPath = process.OpenMapPath;
         if (mapPath is null)
             return new EditResult(false, "no map is open in Hammer", []);

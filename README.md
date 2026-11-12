@@ -66,7 +66,8 @@ Static analysis; live tests so far on Hammer++ 8873 x64. Reports for other build
 
 1. Download/build `hammer-mcp.exe` and run it — it lives in the tray.
 2. **Settings:** pick a mode, address (`localhost` by default), port (`47800`), generate a token for LAN use → **Apply**.
-3. **Main:** choose your Hammer process → **Attach** (meta info shows the build, shell channel, open map) → **Start**.
+3. **Main:** choose your Hammer process → **Attach** (meta info shows the build, shell channel, open map) → **Start**
+   (Start needs an attached process; Apply on the Settings tab lights up only when something changed).
 4. Connect your agent — tray menu → *Copy client config*:
    ```bash
    claude mcp add --transport http hammer http://127.0.0.1:47800/mcp

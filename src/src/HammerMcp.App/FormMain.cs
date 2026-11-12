@@ -61,6 +61,7 @@ public partial class FormMain : Form
         FillAddresses();
         comboBoxMCPMode.DataSource = Enum.GetValues<McpMode>();
         ShowSettings(_settings);
+        UpdateApplyButton();
         RefreshProcessList();
         UpdateAttachUi();
         _log.Write($"registry: {_registry.Builds.Count} known Hammer builds");
@@ -78,6 +79,10 @@ public partial class FormMain : Form
         buttonCopySecurityToken.Click += (_, _) => CopyText(textBoxSecurityToken.Text, "token");
         buttonApply.Click += async (_, _) => await ApplySettingsAsync();
         button1.Click += (_, _) => ShowSettings(new AppSettings());
+        comboBoxMCPMode.SelectedIndexChanged += (_, _) => UpdateApplyButton();
+        comboBoxAdaptersAndAdresses.SelectedIndexChanged += (_, _) => UpdateApplyButton();
+        textBoxPort.TextChanged += (_, _) => UpdateApplyButton();
+        textBoxSecurityToken.TextChanged += (_, _) => UpdateApplyButton();
         exitToolStripMenuItem.Click += async (_, _) => await ExitAsync();
         aboutToolStripMenuItem.Click += (_, _) =>
         {
@@ -131,6 +136,7 @@ public partial class FormMain : Form
         checkBoxShowProcess.Enabled = !attached;
         groupBoxMetaInfoFromHammer.Enabled = attached;
         _refreshTimer.Enabled = attached;
+        UpdateStartButton();
         RefreshAttached();
     }
 
@@ -260,8 +266,18 @@ public partial class FormMain : Form
 
     // ---- server ----------------------------------------------------------------------------------------------
 
+    /// <summary>Start needs an attached Hammer; Stop is always available.</summary>
+    private void UpdateStartButton()
+    {
+        var canToggle = _server is not null || _target.AttachedPid is not null;
+        buttonServerStartStop.Enabled = canToggle;
+        _trayStartStop.Enabled = canToggle;
+    }
+
     private async Task ToggleServerAsync()
     {
+        if (_server is null && _target.AttachedPid is null)
+            return;
         if (_server is null)
             await StartServerAsync();
         else
@@ -308,6 +324,7 @@ public partial class FormMain : Form
         var text = started ? $"Hammer-MCP {running!.Url}" : "Hammer-MCP (stopped)";
         _tray.Text = text.Length > 63 ? text[..63] : text; // NotifyIcon limit
         RefreshAttached(); // the process image falls back to green/red by server state
+        UpdateStartButton();
     }
 
     private void CopyClientConfig()
@@ -357,6 +374,18 @@ public partial class FormMain : Form
         textBoxSecurityToken.Text = settings.Token;
     }
 
+    /// <summary>Settings as currently shown on the Settings tab (token trimmed; port 0 if not a number).</summary>
+    private AppSettings SettingsFromForm() => new()
+    {
+        Mode = comboBoxMCPMode.SelectedItem is McpMode m ? m : McpMode.Auto,
+        BindAddress = (comboBoxAdaptersAndAdresses.SelectedItem as AddressItem)?.Address ?? "127.0.0.1",
+        Port = int.TryParse(textBoxPort.Text, out var port) ? port : 0,
+        Token = textBoxSecurityToken.Text.Trim(),
+    };
+
+    /// <summary>Apply is enabled only when the form differs from the saved settings.</summary>
+    private void UpdateApplyButton() => buttonApply.Enabled = SettingsFromForm() != _settings;
+
     private async Task ApplySettingsAsync()
     {
         if (!int.TryParse(textBoxPort.Text, out var port) || port is < 1 or > 65535)
@@ -381,6 +410,7 @@ public partial class FormMain : Form
             Token = token,
         };
         _settings.Save();
+        UpdateApplyButton();
         _log.Write($"settings saved: {address}:{port}, mode {_settings.Mode}");
 
         if (_server is not null)
