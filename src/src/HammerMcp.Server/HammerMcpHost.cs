@@ -25,6 +25,7 @@ public static class HammerMcpHost
         builder.Services.AddSingleton(target);
         builder.Services.AddSingleton(log);
         builder.Services.AddSingleton<EditJournal>();
+        builder.Services.AddSingleton<GameData>();
         builder.Services.AddSingleton(_ => HammerRegistry.LoadDefault(options.RegistryPath));
 
         var mcp = builder.Services
@@ -34,7 +35,8 @@ public static class HammerMcpHost
                 mcp.ServerInstructions = AgentInstructions.Text;
             })
             .WithHttpTransport()
-            .WithTools<StatusTools>();
+            .WithTools<StatusTools>()
+            .WithTools<MapTools>();
         if (options.AllowsLiveEdits)
             mcp.WithTools<EntityTools>().WithTools<MenuTools>();
 

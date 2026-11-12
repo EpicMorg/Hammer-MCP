@@ -9,7 +9,9 @@ internal static class AgentInstructions
     public const string Text = """
         You are connected to Valve Hammer Editor (Source engine map editor) running on the user's PC.
         Start with hammer_status: it tells which Hammer is attached, whether live edits are allowed, which map is open
-        and its saved mapversion. Use map_summary to see what the saved map contains.
+        and its saved mapversion. Use map_summary / list_entities / get_entity / find_io to read the saved map, and
+        fgd_class / fgd_search for the game's entity reference (keyvalues, choices, inputs, outputs) before creating or
+        changing entities. validate_map finds broken outputs and unknown classes.
 
         How live edits work (shell channel):
         - Edits go into the map currently open in Hammer and appear immediately; the user can undo them with Ctrl+Z.

@@ -81,6 +81,9 @@ Static analysis; live tests so far on Hammer++ 8873 x64. Reports for other build
 |---|---|
 | `hammer_status` | Which Hammer is attached, its build, shell channel, open map, saved `mapversion`, allowed mode |
 | `map_summary` | Saved `.vmf`: versions, entity/brush counts, classes, skybox, visgroups |
+| `list_entities` · `get_entity` · `find_io` | Saved map: entities with keyvalues and outputs, who triggers whom |
+| `game_configs` · `fgd_class` · `fgd_search` | Hammer's game config and the game's FGD as an entity reference (keyvalues, choices, inputs, outputs) |
+| `validate_map` | Saved map vs FGD: unknown classes, outputs to missing names, unknown inputs / outputs, extra keyvalues |
 | `create_entity` | Point entity at x y z, with keyvalues |
 | `set_keyvalue` · `rotate_entity` · `delete_entity` | Edit the entity of a class at an origin |
 | `save_map` · `undo` · `redo` | Hammer menu commands |
@@ -104,7 +107,8 @@ dotnet test --solution HammerMcp.sln
 .NET 10 SDK. App and server target `net10.0-windows` (they build on Linux via `EnableWindowsTargeting`, run on Windows 10/11 x64).
 
 ```
-src/src/HammerMcp.Core      map summary, .vmf versioninfo, Hammer build registry, menu ids, PE header
+src/src/HammerMcp.Core      formats (VMF with outputs, RMF/MAP via Sledge, tolerant FGD parser incl. Hammer++/GMod
+                            extensions, VMT, Hammer game configs), map validation, build registry, menu ids
 src/src/HammerMcp.Shell     shell channel (WM_COPYDATA), menu commands (WM_COMMAND), sessions, process discovery
 src/src/HammerMcp.Server    MCP server (Streamable HTTP, Bearer token) and tools
 src/src/HammerMcp.App       hammer-mcp.exe — WinForms window + tray
@@ -116,7 +120,7 @@ src/native/                 C++ injector and adapters (planned, CMake)
 ## Roadmap
 
 - [x] Shell channel: entities, keyvalues, rotation, deletion · menu commands · build registry · tray app · LAN + token
-- [ ] Full `.vmf` reading: list/get entities, I/O graph, FGD-aware validation; ambiguity checks before edits
+- [x] Map reading: entities, outputs, I/O graph; FGD reference from Hammer's own game config; map validation; ambiguity checks before edits
 - [ ] Compile pipeline (vbsp / vvis / vrad) with parsed logs and leak tracing
 - [ ] Release 0.1: single-file `win-x64` build
 - [ ] *Advanced* mode: C++ inject adapters per build (live read, selection, camera, geometry, in-editor UI)

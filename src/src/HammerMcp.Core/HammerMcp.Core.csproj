@@ -7,6 +7,11 @@
     <Content Include="hammer-mcp-stopped.ico" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Sledge.Formats.GameData" Version="1.1.8" />
+    <PackageReference Include="Sledge.Formats.Map" Version="1.2.9" />
+    <PackageReference Include="ValveKeyValue" Version="0.80.0.542" />
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="..\..\registry\hammers.json" LogicalName="hammers.json" Link="registry\hammers.json" />
   </ItemGroup>
 </Project>

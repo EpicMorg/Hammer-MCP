@@ -3,9 +3,28 @@ using System.Numerics;
 
 namespace HammerMcp.Core.Maps;
 
-/// <summary>One entity of a .vmf (only what addressing and listing need).</summary>
+/// <summary>One entity of a map file: keyvalues and outputs (connections), plus what addressing needs.</summary>
 public sealed record VmfEntity(int Id, string ClassName, Vector3? Origin, string? TargetName, bool Hidden, bool HasBrushes,
-    IReadOnlyDictionary<string, string> KeyValues);
+    IReadOnlyDictionary<string, string> KeyValues)
+{
+    /// <summary>Outputs from the entity's "connections" block (Source maps only).</summary>
+    public IReadOnlyList<VmfConnection> Connections { get; init; } = [];
+}
+
+/// <summary>An output: OnTrigger -> target.Input(parameter) after delay, fired TimesToFire times (-1 = always).</summary>
+public sealed record VmfConnection(string Output, string Target, string Input, string Parameter, float Delay, int TimesToFire)
+{
+    /// <summary>Parses the value of a connections line: "target,input,param,delay,times" (older Hammer) or the same with ESC (0x1B) separators (newer).</summary>
+    public static VmfConnection? Parse(string output, string value)
+    {
+        var parts = value.Split(value.Contains('\u001b') ? '\u001b' : ',');
+        if (parts.Length < 5)
+            return null;
+        float.TryParse(parts[3], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var delay);
+        int.TryParse(parts[4], out var times);
+        return new VmfConnection(output, parts[0], parts[1], parts[2], delay, times);
+    }
+}
 
 /// <summary>Reads all entities of a .vmf, including those inside hidden blocks (Hammer's shell channel sees them too).</summary>
 public static class VmfEntities
@@ -25,6 +44,7 @@ public static class VmfEntities
         var stack = new List<string>();
         string? pending = null;
         Dictionary<string, string>? kv = null;
+        List<VmfConnection>? connections = null;
         var entityDepth = -1;
         var hasBrushes = false;
 
@@ -42,6 +62,7 @@ public static class VmfEntities
                 {
                     entityDepth = stack.Count;
                     kv = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                    connections = [];
                     hasBrushes = false;
                 }
                 else if (name == "solid" && entityDepth > 0 && stack.Count == entityDepth + 1)
@@ -59,7 +80,7 @@ public static class VmfEntities
                         kv.GetValueOrDefault("targetname"),
                         Hidden: entityDepth == 2,
                         hasBrushes,
-                        kv));
+                        kv) { Connections = connections ?? [] });
                     entityDepth = -1;
                     kv = null;
                 }
@@ -69,8 +90,13 @@ public static class VmfEntities
             }
             if (line[0] == '"')
             {
-                if (kv is not null && stack.Count == entityDepth && TryKeyValue(line, out var key, out var value))
-                    kv[key] = value;
+                if (kv is not null && TryKeyValue(line, out var key, out var value))
+                {
+                    if (stack.Count == entityDepth)
+                        kv[key] = value;
+                    else if (stack.Count == entityDepth + 1 && stack[^1] == "connections" && VmfConnection.Parse(key, value) is { } c)
+                        connections!.Add(c);
+                }
                 continue;
             }
             pending = line;

@@ -9,6 +9,8 @@ Hammer-MCP is MIT-licensed (see [LICENSE](LICENSE)). It is built with and redist
 | .NET runtime, ASP.NET Core, Windows Forms | 10 | MIT | https://github.com/dotnet/runtime · https://github.com/dotnet/aspnetcore · https://github.com/dotnet/winforms |
 | Model Context Protocol C# SDK (`ModelContextProtocol`, `.Core`, `.AspNetCore`) | 2.4.0 | Apache-2.0 | https://github.com/modelcontextprotocol/csharp-sdk |
 | Microsoft.Extensions.AI.Abstractions and other `Microsoft.Extensions.*` packages | 10.x | MIT | https://github.com/dotnet/extensions |
+| Sledge.Formats, Sledge.Formats.Map, Sledge.Formats.GameData (`.rmf` / `.map` / `.jmf`; FGD as an alternative parser) | 1.2.9 / 1.1.8 | MIT | https://github.com/LogicAndTrick/sledge-formats |
+| ValveKeyValue (`.vmt`, `GameConfig.txt`, KeyValues) | 0.80 | MIT | https://github.com/ValveResourceFormat/ValveKeyValue |
 
 ## Build and tests only (not shipped)
 
@@ -21,8 +23,6 @@ Hammer-MCP is MIT-licensed (see [LICENSE](LICENSE)). It is built with and redist
 
 | Component | License | Use |
 |---|---|---|
-| Sledge.Formats | MIT | reading `.vmf` / `.rmf` / `.map`, FGD, BSP |
-| ValveKeyValue | MIT | KeyValues: `gameinfo.txt`, `GameConfig.txt` |
 | MinHook or Microsoft Detours | BSD-2-Clause / MIT | expert-mode inject adapters (C++) |
 | Zydis | MIT | signature scanning in adapters (C++) |
 
