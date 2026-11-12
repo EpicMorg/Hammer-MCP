@@ -1,4 +1,5 @@
 using System.Runtime.Versioning;
+using HammerMcp.Core.Assets;
 using HammerMcp.Core.Config;
 using HammerMcp.Core.Fgd;
 
@@ -14,6 +15,8 @@ public sealed class GameData(HammerTarget target)
     private readonly Lock _lock = new();
     private string? _cacheKey;
     private FgdDocument? _cache;
+    private string? _assetsKey;
+    private AssetResolver? _assets;
 
     public sealed record Selection(string? ConfigFile, IReadOnlyList<HammerGameConfig> Configs, HammerGameConfig? Active, string? Problem);
 
@@ -35,6 +38,31 @@ public sealed class GameData(HammerTarget target)
                 : "several game configs and the open map is not under any MapDir: pass configName (see game_configs)"
             : null;
         return new Selection(file, configs, active, problem);
+    }
+
+    /// <summary>
+    /// Content lookup for a config: GameDir\gameinfo.txt search paths; |all_source_engine_paths| = GameExeDir (the folder of
+    /// the game exe, e.g. ...\Half-Life 2). Rebuilt when gameinfo.txt changes.
+    /// </summary>
+    public AssetResolver? Assets(HammerGameConfig config)
+    {
+        if (config.GameDir is null)
+            return null;
+        var gameinfo = Path.Combine(config.GameDir, "gameinfo.txt");
+        if (!File.Exists(gameinfo))
+            return null;
+        var root = config.GameExeDir is { Length: > 0 } exeDir ? exeDir
+            : config.Tools.TryGetValue("GameExe", out var exe) && exe.Length > 0 ? Path.GetDirectoryName(exe) : null;
+        var key = $"{gameinfo}@{File.GetLastWriteTimeUtc(gameinfo).Ticks}@{root}";
+        lock (_lock)
+        {
+            if (_assetsKey != key || _assets is null)
+            {
+                _assets = new AssetResolver(GameInfo.Load(gameinfo, root));
+                _assetsKey = key;
+            }
+            return _assets;
+        }
     }
 
     /// <summary>FGDs of a config, merged in Hammer's order.</summary>

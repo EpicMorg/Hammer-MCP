@@ -1,3 +1,4 @@
+using HammerMcp.Core.Compile;
 using HammerMcp.Core.Config;
 using HammerMcp.Core.Fgd;
 using HammerMcp.Core.Maps;
@@ -42,5 +43,16 @@ public class CorpusTests
         foreach (var f in Directory.EnumerateFiles(Root!, "*", SearchOption.AllDirectories)
                      .Where(f => Path.GetFileName(f) is "GameConfig.txt" or "hammerplusplus_gameconfig.txt"))
             HammerGameConfig.Load(f);
+    }
+
+    [Fact]
+    public void EveryCompileSequenceAndLogReads()
+    {
+        Assert.SkipWhen(Root is null, "HAMMER_MCP_CORPUS not set");
+        foreach (var f in Directory.EnumerateFiles(Root!, "*", SearchOption.AllDirectories)
+                     .Where(f => Path.GetFileName(f).ToLowerInvariant() is "cmdseq.wc" or "cmdseqdefault.wc" or "hammerplusplus_sequences.cfg"))
+            Assert.NotEmpty(CompileSequences.Load(f));
+        foreach (var f in Files(".log"))
+            CompileLog.Read(f);
     }
 }

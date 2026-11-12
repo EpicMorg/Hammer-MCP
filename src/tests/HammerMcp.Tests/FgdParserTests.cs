@@ -94,7 +94,8 @@ public class FgdParserTests
     {
         var ammo = Parse().Get("item_ammo_pistol")!;
         Assert.Equal("Redefined: replaces the earlier class", ammo.Description);
-        Assert.Empty(ammo.Properties);
+        Assert.DoesNotContain(ammo.Properties, p => p.Name is "rendermode" or "model"); // nothing left of the first definition
+        Assert.Contains(ammo.Properties, p => p.Name == "targetname");                 // its own bases are still inherited
     }
 
     [Fact]

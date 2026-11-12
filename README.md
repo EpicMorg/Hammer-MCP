@@ -84,6 +84,9 @@ Static analysis; live tests so far on Hammer++ 8873 x64. Reports for other build
 | `list_entities` · `get_entity` · `find_io` | Saved map: entities with keyvalues and outputs, who triggers whom |
 | `game_configs` · `fgd_class` · `fgd_search` | Hammer's game config and the game's FGD as an entity reference (keyvalues, choices, inputs, outputs) |
 | `validate_map` | Saved map vs FGD: unknown classes, outputs to missing names, unknown inputs / outputs, extra keyvalues |
+| `check_assets` | Materials, models, overlays, decals, skybox of the saved map vs the game's search paths (gameinfo.txt, folders, VPKs) |
+| `compile_sequences` · `compile_log` · `leak_trace` | Hammer's own Run Map sequences (CmdSeq.wc / Hammer++ / Strata), parsed compile log, leak path from the .lin |
+| `run_compile` | Runs one of those sequences (vbsp / vvis / vrad, copy .bsp); edit modes only |
 | `create_entity` | Point entity at x y z, with keyvalues |
 | `set_keyvalue` · `rotate_entity` · `delete_entity` | Edit the entity of a class at an origin |
 | `save_map` · `undo` · `redo` | Hammer menu commands |
@@ -121,7 +124,7 @@ src/native/                 C++ injector and adapters (planned, CMake)
 
 - [x] Shell channel: entities, keyvalues, rotation, deletion · menu commands · build registry · tray app · LAN + token
 - [x] Map reading: entities, outputs, I/O graph; FGD reference from Hammer's own game config; map validation; ambiguity checks before edits
-- [ ] Compile pipeline (vbsp / vvis / vrad) with parsed logs and leak tracing
+- [x] Compile pipeline: Hammer's Run Map sequences, run_compile, parsed logs, leak tracing; asset checks via gameinfo.txt + VPK
 - [ ] Release 0.1: single-file `win-x64` build
 - [ ] *Advanced* mode: C++ inject adapters per build (live read, selection, camera, geometry, in-editor UI)
 
