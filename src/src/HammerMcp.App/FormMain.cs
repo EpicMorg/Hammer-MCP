@@ -79,9 +79,11 @@ public partial class FormMain : Form
         buttonApply.Click += async (_, _) => await ApplySettingsAsync();
         button1.Click += (_, _) => ShowSettings(new AppSettings());
         exitToolStripMenuItem.Click += async (_, _) => await ExitAsync();
-        aboutToolStripMenuItem.Click += (_, _) => MessageBox.Show(this,
-            $"Hammer-MCP {Application.ProductVersion}\nMCP server that connects AI agents to Valve Hammer Editor.\n\n(c) 2026 EpicMorg, MIT license",
-            "About Hammer-MCP", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        aboutToolStripMenuItem.Click += (_, _) =>
+        {
+            using var about = new FormAbout();
+            about.ShowDialog(this);
+        };
         _refreshTimer.Tick += (_, _) => RefreshAttached();
         FormClosing += OnFormClosing;
     }
