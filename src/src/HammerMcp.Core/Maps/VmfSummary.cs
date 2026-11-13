@@ -24,6 +24,8 @@ public sealed record VmfSummary
 
     public static VmfSummary Read(string path)
     {
+        if (Path.GetExtension(path).Equals(".vmap", StringComparison.OrdinalIgnoreCase))
+            return VmapMap.Read(path).Summary;
         using var reader = new StreamReader(path);
         return Parse(reader);
     }

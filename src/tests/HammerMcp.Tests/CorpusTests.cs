@@ -38,6 +38,16 @@ public class CorpusTests
     }
 
     [Fact]
+    public void EveryVmapReads()
+    {
+        Assert.SkipWhen(Root is null, "HAMMER_MCP_CORPUS not set");
+        var maps = Files(".vmap").ToList();
+        Assert.All(maps, f => Assert.True(VmapMap.Read(f).Summary.EditorBuild > 0, f));
+        // Dota tilesets are full of entities with outputs
+        Assert.Contains(maps.Select(f => VmapMap.Read(f).Entities), list => list.Any(e => e.Connections.Count > 0));
+    }
+
+    [Fact]
     public void EveryVmtAndGameConfigReads()
     {
         Assert.SkipWhen(Root is null, "HAMMER_MCP_CORPUS not set");

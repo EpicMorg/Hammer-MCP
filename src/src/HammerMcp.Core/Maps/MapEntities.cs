@@ -7,7 +7,7 @@ namespace HammerMcp.Core.Maps;
 
 /// <summary>
 /// Entities of any map file Hammer edits. Source .vmf/.vmx/.vmm: our <see cref="VmfEntities"/> reader (keeps ids, hidden
-/// entities and outputs, which Sledge drops). GoldSrc / Quake .rmf, .map, .jmf: Sledge.Formats.Map.
+/// entities and outputs, which Sledge drops). Source 2 .vmap: <see cref="VmapMap"/>. GoldSrc / Quake .rmf, .map, .jmf: Sledge.Formats.Map.
 /// </summary>
 public static class MapEntities
 {
@@ -16,6 +16,8 @@ public static class MapEntities
         var ext = Path.GetExtension(path).ToLowerInvariant();
         if (ext is ".vmf" or ".vmx" or ".vmm" or ".vmf_autosave")
             return VmfEntities.Read(path);
+        if (ext is ".vmap")
+            return VmapMap.Read(path).Entities;
 
         using var stream = File.OpenRead(path);
         MapFile map = ext switch

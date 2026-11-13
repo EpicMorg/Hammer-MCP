@@ -66,7 +66,7 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
         if (map is null)
             return new { error = "no saved map open in the attached Hammer (or nothing attached)" };
         var center = x is { } cx && y is { } cy && z is { } cz ? new System.Numerics.Vector3(cx, cy, cz) : (System.Numerics.Vector3?)null;
-        var query = VmfEntities.Read(map).AsEnumerable();
+        var query = MapEntities.Read(map).AsEnumerable();
         if (className is not null)
             query = query.Where(e => string.Equals(e.ClassName, className, StringComparison.OrdinalIgnoreCase));
         if (nameContains is not null)

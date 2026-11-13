@@ -7,6 +7,7 @@
     <Content Include="hammer-mcp-stopped.ico" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="KeyValues2" Version="1.0.0" />
     <PackageReference Include="Sledge.Formats.GameData" Version="1.1.8" />
     <PackageReference Include="Sledge.Formats.Map" Version="1.2.9" />
     <PackageReference Include="ValveKeyValue" Version="0.80.0.542" />

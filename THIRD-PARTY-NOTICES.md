@@ -11,6 +11,7 @@ Hammer-MCP is MIT-licensed (see [LICENSE](LICENSE)). It is built with and redist
 | Microsoft.Extensions.AI.Abstractions and other `Microsoft.Extensions.*` packages | 10.x | MIT | https://github.com/dotnet/extensions |
 | Sledge.Formats, Sledge.Formats.Map, Sledge.Formats.GameData (`.rmf` / `.map` / `.jmf`; FGD as an alternative parser) | 1.2.9 / 1.1.8 | MIT | https://github.com/LogicAndTrick/sledge-formats |
 | ValveKeyValue (`.vmt`, `GameConfig.txt`, KeyValues) | 0.80 | MIT | https://github.com/ValveResourceFormat/ValveKeyValue |
+| KeyValues2 / Datamodel.NET (Source 2 `.vmap`, DMX) | 1.0.0 | MIT | https://github.com/ValveResourceFormat/Datamodel.NET |
 
 ## Build and tests only (not shipped)
 
