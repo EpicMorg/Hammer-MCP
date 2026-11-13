@@ -4,6 +4,11 @@
 
 All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/); `-alpha` releases are pre-releases.
 
+## [Unreleased]
+
+### Added
+- **Strata (Portal: Revolution)**: game config from `hammer/cfg/gameconfig.txt` (paths with `..\..` as shipped are normalised), autosave folder from `hammer/cfg/HammerConfig.vdf` (KV3) for `fromAutosave`; `revolution.fgd` reads cleanly (563 classes).
+
 ## [0.3.0] - 2026-11-13
 
 Source 2 maps and game data (read-only), verified live on CS2 Workshop Tools; stock Hammer verified live on TF2; safety rules around game processes.

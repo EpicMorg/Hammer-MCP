@@ -36,7 +36,7 @@ public sealed class HammerTarget
         {
             var (dir, enabled) = HammerMcp.Core.Maps.Autosaves.HammerPlusPlusFolder(process.ExePath);
             if (dir is null)
-                (dir, enabled) = StockAutosaveFolder();
+                (dir, enabled) = HammerMcp.Core.Maps.Autosaves.StrataFolder(process.ExePath) is { Dir: not null } strata ? strata : StockAutosaveFolder();
             if (dir is not null && enabled && HammerMcp.Core.Maps.Autosaves.NewerThanMap(dir, map) is { } autosave)
                 return (autosave.Path, $"autosave {System.IO.Path.GetFileName(autosave.Path)} ({autosave.Written:HH:mm:ss}, newer than the saved map)");
             return (map, dir is null ? "saved map (autosave folder unknown: Hammer++ settings / registry 'Autosave Dir' empty)" : "saved map (no newer autosave)");

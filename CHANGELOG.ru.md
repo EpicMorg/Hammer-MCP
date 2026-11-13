@@ -4,6 +4,11 @@
 
 Все заметные изменения Hammer-MCP. Версии — по [SemVer](https://semver.org/lang/ru/); релизы `-alpha` — пре-релизы.
 
+## [Unreleased]
+
+### Добавлено
+- **Strata (Portal: Revolution)**: игровой конфиг из `hammer/cfg/gameconfig.txt` (пути с `..\..`, как в поставке, нормализуются), папка автосейвов из `hammer/cfg/HammerConfig.vdf` (KV3) для `fromAutosave`; `revolution.fgd` читается чисто (563 класса).
+
 ## [0.3.0] - 2026-11-13
 
 Карты и игровые данные Source 2 (только чтение), проверено вживую на CS2 Workshop Tools; стоковый Hammer проверен вживую на TF2; правила безопасности для игровых процессов.

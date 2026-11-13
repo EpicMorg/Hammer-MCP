@@ -35,6 +35,32 @@ public static partial class Autosaves
         return (dir, enabled);
     }
 
+    /// <summary>
+    /// Strata Hammer: "Autosave Dir" / "Autosaves Enabled" in &lt;game&gt;\hammer\cfg\HammerConfig.vdf (KV3 text); a dir that
+    /// starts with a backslash ("\\autosave\\") is relative to the hammer folder.
+    /// </summary>
+    public static (string? Dir, bool Enabled) StrataFolder(string hammerExe)
+    {
+        var hammerDir = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(hammerExe) ?? ".", "..", "..", "hammer"));
+        var vdf = Path.Combine(hammerDir, "cfg", "HammerConfig.vdf");
+        if (!File.Exists(vdf))
+            return (null, false);
+        var text = File.ReadAllText(vdf);
+        var dir = KvString().Match(text) is { Success: true } m ? m.Groups[1].Value.Replace("\\\\", "\\") : null;
+        var enabled = KvEnabled().Match(text) is not { Success: true } e || e.Groups[1].Value != "0";
+        if (string.IsNullOrWhiteSpace(dir))
+            return (null, enabled);
+        if (dir.StartsWith('\\') || dir.StartsWith('/'))
+            dir = Path.Combine(hammerDir, dir.Trim('\\', '/'));
+        return (dir, enabled);
+    }
+
+    [GeneratedRegex(@"""Autosave Dir""\s*=\s*""([^""]*)""")]
+    private static partial Regex KvString();
+
+    [GeneratedRegex(@"""Autosaves Enabled""\s*=\s*(\d+)")]
+    private static partial Regex KvEnabled();
+
     /// <summary>Autosaves of <paramref name="mapPath"/> in <paramref name="folder"/>, newest first.</summary>
     public static List<Autosave> ForMap(string folder, string mapPath)
     {

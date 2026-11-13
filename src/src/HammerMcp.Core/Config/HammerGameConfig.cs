@@ -19,6 +19,8 @@ public sealed record HammerGameConfig(
         yield return Path.Combine(dir, "hammerplusplus", "hammerplusplus_gameconfig.txt");
         yield return Path.Combine(dir, "GameConfig.txt");
         yield return Path.Combine(dir, "..", "GameConfig.txt");
+        // Strata: <game>\bin\win64\hammer.exe, config in <game>\hammer\cfg\gameconfig.txt
+        yield return Path.Combine(dir, "..", "..", "hammer", "cfg", "gameconfig.txt");
     }
 
     /// <summary>All game configurations of the Hammer at <paramref name="exePath"/>, from the first config file that exists.</summary>
@@ -143,7 +145,21 @@ public sealed record HammerGameConfig(
         return own.Count == 1 ? own[0] : null;
     }
 
-    private static string Normalize(string p) => p.Replace('/', '\\').TrimEnd('\\') + "\\";
+    /// <summary>Backslashes, ".." / "." collapsed (Strata writes "...\\bin\\win64\\..\\..\\sdk_content\\maps"), trailing backslash.</summary>
+    private static string Normalize(string p)
+    {
+        var parts = new List<string>();
+        foreach (var part in p.Replace('/', '\\').Split('\\'))
+        {
+            if (part == "." || (part.Length == 0 && parts.Count > 0))
+                continue;
+            if (part == ".." && parts.Count > 1 && parts[^1] != "..")
+                parts.RemoveAt(parts.Count - 1);
+            else
+                parts.Add(part);
+        }
+        return string.Join('\\', parts).TrimEnd('\\') + "\\";
+    }
 
     private static KVObject? Child(KVObject obj, string name) =>
         obj.Children.FirstOrDefault(c => c.Key.Equals(name, StringComparison.OrdinalIgnoreCase)).Value;
