@@ -18,7 +18,12 @@ public class VConsoleTests
         return m;
     }
 
-    private static byte[] Prnt(string text) => [.. new byte[] { 0, 0, 0, 1, 0, 0, 0, 0 }, .. Encoding.UTF8.GetBytes(text + "\0")];
+    /// <summary>PRNT as CS2 sends it: 28-byte header (channel, flags, colour, time, a field that is not always zero) + text + NUL.</summary>
+    private static byte[] Prnt(string text) =>
+    [
+        0xD2, 0xDB, 0xB6, 0x02, 0, 0, 0, 0, 0, 0, 0, 2, 0xFF, 0xFF, 0, 0xFF, 0, 7, 0x5D, 0x3A, 0, 0, 0, 0, 0x72, 0x65, 0x63, 0x65,
+        .. Encoding.UTF8.GetBytes(text + "\n\0"),
+    ];
 
     [Fact]
     public void CommandPacketMatchesTheProtocol()

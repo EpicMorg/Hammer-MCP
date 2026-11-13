@@ -22,8 +22,11 @@ public sealed class VConsoleClient : IDisposable
 
     public sealed record Message(string Type, byte[] Payload)
     {
-        /// <summary>Printable text of the payload (PRNT starts with a small binary header: channel, colour...).</summary>
-        public string Text => ExtractText(Payload);
+        /// <summary>
+        /// Text of the message. PRNT (verified on CS2, 2026-11): 28-byte header (channel id, flags, verbosity, RGBA colour,
+        /// time...) then UTF-8 text up to NUL. Other types: printable runs of the payload.
+        /// </summary>
+        public string Text => Type == "PRNT" && Payload.Length >= PrntHeader ? PrntText(Payload) : ExtractText(Payload);
     }
 
     /// <summary>The game's process info sent on connect (AINF): exe, command line...</summary>
@@ -147,6 +150,15 @@ public sealed class VConsoleClient : IDisposable
                 best = at + 1;
         }
         return best;
+    }
+
+    public const int PrntHeader = 28;
+
+    private static string PrntText(byte[] payload)
+    {
+        var text = payload.AsSpan(PrntHeader);
+        var nul = text.IndexOf((byte)0);
+        return Encoding.UTF8.GetString(nul < 0 ? text : text[..nul]).TrimEnd('\n', '\r');
     }
 
     public static string ExtractText(byte[] payload)
