@@ -42,6 +42,11 @@ public sealed class RunCompileTools(HammerTarget target, CompileTools reader, Ac
                 steps.Add(new { step = $"{run} {args}", skipped = "launches the game (launchGame=false)" });
                 continue;
             }
+            if (Path.GetFileNameWithoutExtension(run).Equals("viewlog", StringComparison.OrdinalIgnoreCase))
+            {
+                steps.Add(new { step = $"{run} {args}", skipped = "log viewer window (the log is parsed below)" });
+                continue;
+            }
             log.Write($"compile [{seq.Name}]: {cmd.Kind} {run} {args}");
             try
             {
