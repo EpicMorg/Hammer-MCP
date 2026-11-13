@@ -41,6 +41,9 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
             OpenMap: mapPath,
             SavedMapVersion: mapVersion,
             WindowTitle: process.MainTitle,
+            CommandLine: process.CommandLine,
+            // -insecure = started without VAC (for the inject policy); reported, not trusted on its own
+            Insecure: process.CommandLine is { } cl ? cl.Contains("-insecure", StringComparison.OrdinalIgnoreCase) : null,
             // unknown build: report the hash so it can be added to registry/hammers.json
             EditorSha256: build is null && dll is not null ? Sha256Of(dll) : null,
             Note: process.IsSource2
@@ -138,5 +141,7 @@ public sealed record HammerStatus(
     string? OpenMap = null,
     int? SavedMapVersion = null,
     string? WindowTitle = null,
+    string? CommandLine = null,
+    bool? Insecure = null,
     string? EditorSha256 = null,
     string? Note = null);

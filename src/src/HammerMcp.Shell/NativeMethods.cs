@@ -52,6 +52,12 @@ internal static partial class NativeMethods
     [LibraryImport("kernel32.dll", SetLastError = true)]
     public static partial nint OpenProcess(uint access, [MarshalAs(UnmanagedType.Bool)] bool inherit, uint processId);
 
+    /// <summary>ProcessCommandLineInformation (60, Windows 8.1+): UNICODE_STRING header followed by the text.</summary>
+    public const int ProcessCommandLineInformation = 60;
+
+    [LibraryImport("ntdll.dll")]
+    public static unsafe partial int NtQueryInformationProcess(nint process, int infoClass, void* buffer, int length, out int returnLength);
+
     [LibraryImport("kernel32.dll", EntryPoint = "QueryFullProcessImageNameW", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static unsafe partial bool QueryFullProcessImageName(nint process, uint flags, char* buffer, ref uint size);

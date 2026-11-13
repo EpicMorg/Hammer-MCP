@@ -214,6 +214,7 @@ public partial class FormMain : Form
         {
             ("Process", $"{process.Name} ({process.ProcessId})"),
             ("Executable", process.ExePath),
+            ("Command line", process.CommandLine),
             ("Architecture", pe?.Arch),
             ("Linked", pe?.Linked.ToString("yyyy-MM-dd")),
             ("Editor DLL", dll),

@@ -131,6 +131,36 @@ public sealed record HammerProcess(int ProcessId, string Name, string ExePath, n
         }
     }
 
+    /// <summary>Command line of the process (e.g. to see -insecure / -tools of a Source 2 game); null if it cannot be read.</summary>
+    public string? CommandLine => QueryCommandLine((uint)ProcessId);
+
+    private static unsafe string? QueryCommandLine(uint pid)
+    {
+        var process = NativeMethods.OpenProcess(NativeMethods.PROCESS_QUERY_LIMITED_INFORMATION, false, pid);
+        if (process == 0)
+            return null;
+        try
+        {
+            NativeMethods.NtQueryInformationProcess(process, NativeMethods.ProcessCommandLineInformation, null, 0, out var needed);
+            if (needed <= 0 || needed > 1 << 20)
+                return null;
+            var buffer = new byte[needed];
+            fixed (byte* p = buffer)
+            {
+                if (NativeMethods.NtQueryInformationProcess(process, NativeMethods.ProcessCommandLineInformation, p, needed, out _) != 0)
+                    return null;
+                // UNICODE_STRING { ushort Length; ushort MaximumLength; (padding) char* Buffer } then the characters
+                var length = *(ushort*)p;
+                var text = *(char**)(p + IntPtr.Size);
+                return text == null ? null : new string(text, 0, length / 2);
+            }
+        }
+        finally
+        {
+            NativeMethods.CloseHandle(process);
+        }
+    }
+
     private static unsafe List<(nint Hwnd, string Title)> VisibleWindows(uint pid)
     {
         var windows = new List<(nint, string)>();
