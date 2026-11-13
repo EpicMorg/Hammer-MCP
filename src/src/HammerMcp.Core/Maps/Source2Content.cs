@@ -107,7 +107,7 @@ public static class Source2Content
         return Path.Combine([content, "_toolsautosave", "hammer", .. rest]);
     }
 
-    /// <summary>Newest autosave of <paramref name="mapPath"/> (a file named after the map in <see cref="AutosaveFolder"/>), if newer than the map.</summary>
+    /// <summary>Newest autosave of <paramref name="mapPath"/> ("&lt;map&gt;NNN.vmap_autosave" in <see cref="AutosaveFolder"/>), if newer than the map.</summary>
     public static string? NewestAutosave(string mapPath)
     {
         if (AutosaveFolder(mapPath) is not { } folder || !Directory.Exists(folder))
@@ -115,7 +115,9 @@ public static class Source2Content
         var stem = Path.GetFileNameWithoutExtension(mapPath);
         var saved = File.Exists(mapPath) ? File.GetLastWriteTimeUtc(mapPath) : DateTime.MinValue;
         return Directory.EnumerateFiles(folder)
-            .Where(f => Path.GetFileName(f).StartsWith(stem, StringComparison.OrdinalIgnoreCase) && f.Contains(".vmap", StringComparison.OrdinalIgnoreCase))
+            // "<map>NNN.vmap_autosave", e.g. cs_script_demo002.vmap_autosave (seen on CS2)
+            .Where(f => System.Text.RegularExpressions.Regex.IsMatch(Path.GetFileName(f),
+                $@"^{System.Text.RegularExpressions.Regex.Escape(stem)}\d*\.vmap(_autosave)?$", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
             .Where(f => File.GetLastWriteTimeUtc(f) > saved)
             .OrderByDescending(File.GetLastWriteTimeUtc)
             .FirstOrDefault();

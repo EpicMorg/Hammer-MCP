@@ -59,10 +59,13 @@ public class Source2ConfigTests
         var folder = HammerMcp.Core.Maps.Source2Content.AutosaveFolder(map)!;
         Assert.Equal(Path.Combine(root, "content", "_toolsautosave", "hammer", "csgo_addons", "x", "maps"), folder);
         Directory.CreateDirectory(folder);
-        var older = Path.Combine(folder, "demo.vmap_autosave_1");
-        var newer = Path.Combine(folder, "demo.vmap_autosave_2");
+        var older = Path.Combine(folder, "demo001.vmap_autosave");
+        var newer = Path.Combine(folder, "demo002.vmap_autosave");
+        var otherMap = Path.Combine(folder, "demo_v2003.vmap_autosave");
         File.WriteAllText(older, "");
         File.WriteAllText(newer, "");
+        File.WriteAllText(otherMap, "");
+        File.SetLastWriteTimeUtc(otherMap, DateTime.UtcNow.AddMinutes(1));
         File.SetLastWriteTimeUtc(older, DateTime.UtcNow.AddMinutes(-1));
         Assert.Equal(newer, HammerMcp.Core.Maps.Source2Content.NewestAutosave(map));
         Assert.Equal(map, HammerMcp.Core.Maps.Source2Content.FromAutosaveTree(Path.Combine(folder, "demo.vmap")));
