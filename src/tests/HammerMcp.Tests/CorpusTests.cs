@@ -1,3 +1,4 @@
+using HammerMcp.Core.Assets;
 using HammerMcp.Core.Compile;
 using HammerMcp.Core.Config;
 using HammerMcp.Core.Fgd;
@@ -22,8 +23,10 @@ public class CorpusTests
     public void EveryFgdParsesWithoutCrashing()
     {
         Assert.SkipWhen(Root is null, "HAMMER_MCP_CORPUS not set");
-        foreach (var f in Files(".fgd"))
-            Assert.NotEmpty(FgdParser.ParseFile(f).Classes);
+        // Source 2 data FGDs (@ModelGameData, @VData) legitimately have no entity classes
+        var empty = Files(".fgd").Where(f => !FgdParser.ParseFile(f).Classes.Any()).ToList();
+        Assert.All(empty, f => Assert.True(File.ReadAllText(f).Contains("@ModelGameData") || File.ReadAllText(f).Contains("@VData")
+                                          || File.ReadAllText(f).Contains("models_base.fgd"), f));
     }
 
     [Fact]
@@ -43,6 +46,17 @@ public class CorpusTests
         foreach (var f in Directory.EnumerateFiles(Root!, "*", SearchOption.AllDirectories)
                      .Where(f => Path.GetFileName(f) is "GameConfig.txt" or "hammerplusplus_gameconfig.txt"))
             HammerGameConfig.Load(f);
+    }
+
+    [Fact]
+    public void EveryGameinfoAndVpkDirectoryReads()
+    {
+        Assert.SkipWhen(Root is null, "HAMMER_MCP_CORPUS not set");
+        foreach (var f in Directory.EnumerateFiles(Root!, "*", SearchOption.AllDirectories)
+                     .Where(f => Path.GetFileName(f).Equals("gameinfo.txt", StringComparison.OrdinalIgnoreCase)))
+            _ = new AssetResolver(GameInfo.Load(f));
+        foreach (var f in Directory.EnumerateFiles(Root!, "*_dir.vpk", SearchOption.AllDirectories).Where(f => new FileInfo(f).Length >= 12))
+            Assert.NotNull(VpkDirectory.Open(f));
     }
 
     [Fact]

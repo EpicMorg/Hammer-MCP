@@ -27,6 +27,8 @@ public sealed class VpkDirectory
 
     public static VpkDirectory Read(byte[] data, string path = "<vpk>")
     {
+        if (data.Length < 12)
+            throw new InvalidDataException($"{path}: truncated VPK ({data.Length} bytes)");
         using var reader = new BinaryReader(new MemoryStream(data));
         if (reader.ReadUInt32() != Signature)
             throw new InvalidDataException($"{path}: not a VPK");

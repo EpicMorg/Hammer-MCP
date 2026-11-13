@@ -35,11 +35,22 @@ public sealed class HammerTarget
         if (fromAutosave)
         {
             var (dir, enabled) = HammerMcp.Core.Maps.Autosaves.HammerPlusPlusFolder(process.ExePath);
+            if (dir is null)
+                (dir, enabled) = StockAutosaveFolder();
             if (dir is not null && enabled && HammerMcp.Core.Maps.Autosaves.NewerThanMap(dir, map) is { } autosave)
                 return (autosave.Path, $"autosave {System.IO.Path.GetFileName(autosave.Path)} ({autosave.Written:HH:mm:ss}, newer than the saved map)");
-            return (map, dir is null ? "saved map (no Hammer++ autosave folder known)" : "saved map (no newer autosave)");
+            return (map, dir is null ? "saved map (autosave folder unknown: Hammer++ settings / registry 'Autosave Dir' empty)" : "saved map (no newer autosave)");
         }
         return (map, "saved map");
+    }
+
+    /// <summary>Stock Hammer: HKCU\Software\Valve\Hammer\General "Autosave Dir" / "Autosaves Enabled".</summary>
+    private static (string? Dir, bool Enabled) StockAutosaveFolder()
+    {
+        const string key = @"HKEY_CURRENT_USER\Software\Valve\Hammer\General";
+        var dir = Microsoft.Win32.Registry.GetValue(key, "Autosave Dir", null) as string;
+        var enabled = Microsoft.Win32.Registry.GetValue(key, "Autosaves Enabled", 1) is not 0;
+        return (string.IsNullOrWhiteSpace(dir) ? null : dir, enabled);
     }
 
     /// <summary>Shell channel bound to the target's shell window, resolved on every command.</summary>

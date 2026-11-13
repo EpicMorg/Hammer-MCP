@@ -12,8 +12,20 @@ public sealed record VmtMaterial(string Shader, IReadOnlyDictionary<string, stri
 
     public static VmtMaterial Read(string path)
     {
-        using var stream = File.OpenRead(path);
-        return Parse(stream);
+        var bytes = File.ReadAllBytes(path);
+        try
+        {
+            return Parse(new MemoryStream(bytes));
+        }
+        catch (KeyValueException)
+        {
+            // the engine accepts materials with missing closing braces (seen in shipped Portal 2 DLC VMTs); so do we
+            var text = System.Text.Encoding.UTF8.GetString(bytes);
+            var missing = text.Count(c => c == '{') - text.Count(c => c == '}');
+            if (missing <= 0)
+                throw;
+            return Parse(new MemoryStream(System.Text.Encoding.UTF8.GetBytes(text + new string('}', missing))));
+        }
     }
 
     public static VmtMaterial Parse(Stream stream)

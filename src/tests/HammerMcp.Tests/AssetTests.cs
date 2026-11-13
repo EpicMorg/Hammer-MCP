@@ -90,6 +90,16 @@ public class AssetTests
     }
 
     [Fact]
+    public void ResolvesAppIdSearchPathsAndRejectsTruncatedVpk()
+    {
+        var gameDir = Path.Combine(Path.GetTempPath(), "mod");
+        Assert.Equal([Path.GetFullPath(Path.Combine("/steam/common/Team Fortress 2", "tf", "tf2_textures.vpk"))],
+            GameInfo.Resolve("|appid_440|tf/tf2_textures.vpk", gameDir, "/engine", id => id == 440 ? "/steam/common/Team Fortress 2" : null));
+        Assert.Empty(GameInfo.Resolve("|appid_999|x", gameDir, "/engine", _ => null));
+        Assert.Throws<InvalidDataException>(() => VpkDirectory.Read([0x34, 0x12, 0xAA, 0x55, 1, 0, 0, 0]));
+    }
+
+    [Fact]
     public void CollectsMapAssets()
     {
         var path = Path.GetTempFileName();

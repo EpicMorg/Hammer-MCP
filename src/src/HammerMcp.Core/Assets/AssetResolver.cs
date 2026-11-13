@@ -14,6 +14,8 @@ public sealed class AssetResolver
     {
         foreach (var sp in info.SearchPaths.Where(s => s.IsGame))
         {
+            if (sp.Locations.Count == 0)
+                Problems.Add($"search path not resolved: {sp.Value}");
             foreach (var location in sp.Locations)
             {
                 if (location.EndsWith(".vpk", StringComparison.OrdinalIgnoreCase))

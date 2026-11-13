@@ -58,12 +58,17 @@ public sealed class GameData(HammerTarget target)
         {
             if (_assetsKey != key || _assets is null)
             {
-                _assets = new AssetResolver(GameInfo.Load(gameinfo, root));
+                var steam = SteamRoot() is { } steamRoot ? new SteamLibrary(steamRoot) : null;
+                _assets = new AssetResolver(GameInfo.Load(gameinfo, root, steam is null ? null : steam.AppFolder));
                 _assetsKey = key;
             }
             return _assets;
         }
     }
+
+    /// <summary>Steam folder from HKCU\Software\Valve\Steam\SteamPath (for |appid_NNN| search paths).</summary>
+    private static string? SteamRoot() =>
+        Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Valve\Steam", "SteamPath", null) is string p && Directory.Exists(p) ? p : null;
 
     /// <summary>FGDs of a config, merged in Hammer's order.</summary>
     public FgdDocument Fgd(HammerGameConfig config)
