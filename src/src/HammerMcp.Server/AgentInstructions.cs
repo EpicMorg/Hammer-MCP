@@ -34,6 +34,10 @@ internal static class AgentInstructions
         SAVED map (ask the user first), compile_log / leak_trace explain the result, bsp_entities shows what ended up
         in the compiled .bsp.
 
+        Source 2 Hammer (CS2, Dota 2, HL: Alyx; runs inside the game process): read-only. Map tools read the saved
+        .vmap (entities, keyvalues, outputs, validation); there is no shell channel and no menu commands, so ask the user
+        to make changes in Hammer and save (Ctrl+S) before you read again.
+
         Units: Hammer units (1 unit = 0.75 inch for player scale, a player is 72 units tall, a standard door 112).
         Coordinates are world x y z; angles are pitch yaw roll in degrees.
         Be careful with the user's map: prefer small, reversible steps and say what you changed.

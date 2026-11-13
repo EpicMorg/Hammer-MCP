@@ -18,8 +18,10 @@ public partial class FormMain : Form
     private static readonly Dictionary<McpMode, string> ModeHelp = new()
     {
         [McpMode.Auto] = "Best available for the attached Hammer: live edits through the shell channel and menu commands "
-                         + "where a shell channel exists, otherwise read-only.",
-        [McpMode.Basic] = "Read-only: the agent sees Hammer status and map files, but cannot change anything in Hammer.",
+                         + "where a shell channel exists, otherwise read-only. Source 2 (CS2, Dota 2, HL:A): read-only "
+                         + "from the .vmap and game files - its Hammer has no shell channel and no Win32 menus.",
+        [McpMode.Basic] = "Read-only: the agent sees Hammer status and map files, but cannot change anything in Hammer. "
+                          + "Works the same for Source 1, Source 2 (.vmap) and GoldSrc maps.",
         [McpMode.Shell] = "Live edits through Hammer's shell channel (create / keyvalue / rotate / delete entities) "
                           + "and menu commands (save, undo, redo, run map, check for problems). The map must be saved.",
         [McpMode.Advanced] = "Expert mode with an injected adapter (live read, selection, camera, geometry). "
@@ -124,7 +126,9 @@ public partial class FormMain : Form
         {
             _target.Attach(item.Process.ProcessId);
             _log.Write($"attached to {item.Process.Name} ({item.Process.ProcessId}) {item.Process.ExePath}"
-                       + (item.Process.HasShellChannel ? "" : " - no shell channel: read-only + menu commands"));
+                       + (item.Process.HasShellChannel ? ""
+                           : item.Process.IsSource2 ? " - Source 2 Hammer: read-only from map and game files"
+                           : " - no shell channel: read-only + menu commands"));
         }
         UpdateAttachUi();
     }
@@ -168,6 +172,9 @@ public partial class FormMain : Form
         var who = $"{process.Name} ({process.ProcessId})";
         if (process.HasShellChannel)
             SetStatus($"Attached to {who}, shell channel OK", Properties.Resources.check_circle_16);
+        else if (process.IsSource2)
+            SetStatus($"Attached to {who}: Source 2 Hammer - read-only (maps and game files; live channel via VConsole planned)",
+                Properties.Resources.warning_circle_16);
         else if (dll is not null || process.IsKnownEditorName)
             SetStatus($"Attached to {who}: map editor without shell channel (read-only + menu)", Properties.Resources.warning_circle_16);
         else

@@ -36,6 +36,8 @@ public sealed class MenuTools(HammerTarget target, ActivityLog log)
         var process = target.Current();
         if (process is null || process.MainWindow == 0)
             return new MenuResult(false, "no Hammer is attached - ask the user to attach a Hammer process in Hammer-MCP");
+        if (process.IsSource2)
+            return new MenuResult(false, "Source 2 Hammer (Qt, inside the game process) has no Win32 menu commands; ask the user to do it in Hammer");
         var ok = MenuChannel.Post(process.MainWindow, id);
         log.Write($"menu: {name} ({id}) -> {(ok ? "posted" : "failed")}");
         return new MenuResult(ok, ok ? $"{name} posted to '{process.MainTitle}'" : "PostMessage failed");

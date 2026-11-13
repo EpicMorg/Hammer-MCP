@@ -42,7 +42,10 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
             SavedMapVersion: mapVersion,
             WindowTitle: process.MainTitle,
             // unknown build: report the hash so it can be added to registry/hammers.json
-            EditorSha256: build is null && dll is not null ? Sha256Of(dll) : null);
+            EditorSha256: build is null && dll is not null ? Sha256Of(dll) : null,
+            Note: process.IsSource2
+                ? "Source 2 Hammer: read-only. Map tools read the saved .vmap, fgd_* use game/<mod>/<mod>.fgd; no live edits, no menu commands."
+                : null);
     }
 
     [McpServerTool(Name = "map_summary", ReadOnly = true)]

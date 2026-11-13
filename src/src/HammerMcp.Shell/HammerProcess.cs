@@ -22,6 +22,9 @@ public sealed record HammerProcess(int ProcessId, string Name, string ExePath, n
 
     public bool HasShellChannel => ShellWindow != 0;
 
+    /// <summary>A Source 2 game process with Workshop Tools Hammer (game/bin/win64/tools/hammer.dll): no shell channel, no Win32 menus.</summary>
+    public bool IsSource2 => Path.GetDirectoryName(ExePath) is { } dir && File.Exists(Path.Combine(dir, "tools", "hammer.dll"));
+
     /// <summary>Exe name is one of the known map editors (Hammer, Hammer++, Worldcraft, J.A.C.K., Sledge).</summary>
     public bool IsKnownEditorName => EditorNames.Contains(Name);
 
