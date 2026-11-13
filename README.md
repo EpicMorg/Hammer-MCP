@@ -105,7 +105,9 @@ It is write-only and entity-level: entities are addressed by **class + origin** 
 can't be created, there is no "move", and unsaved state can't be read back — the server reads the saved `.vmf`.
 Outputs set with `set_keyvalue` are stored by Hammer as plain keyvalues: they are not shown on the Outputs tab, but
 vbsp writes them into the `.bsp` as real outputs and they fire in game.
-The planned *Advanced* mode lifts these limits for selected builds.
+The planned *Advanced* mode lifts these limits for selected builds. It will only ever inject into a standalone
+Hammer executable of a known build (`hammer.exe`, `hammerplusplus.exe`) — **never into a game process**: Source 2
+Hammer runs inside `cs2.exe` / `dota2.exe`, and touching a VAC-protected process can get a Steam account banned.
 
 ## Building
 

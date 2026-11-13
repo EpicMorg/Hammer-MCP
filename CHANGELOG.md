@@ -11,6 +11,7 @@ All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/)
 - **Source 2 FGD**: class metadata blocks (`{ entity_tool_name = ... }`, shown by `fgd_class`), per-member `[ ]` / `{ }` metadata, `@OverrideClass`, escaped quotes, includes from `game/core/`; model / VData definitions are skipped.
 - Source 2 Workshop Tools processes (`cs2`, `dota2`, `hlvr`, ... with `tools/hammer.dll`) are listed for Attach; an absolute map path anywhere in the window title is recognised (`.vmap` included). Not verified live yet.
 - Source 2 game data without a GameConfig.txt: one config per mod with `game/<mod>/<mod>.fgd` (CS2 `csgo`: 469 classes, Dota 2 `dota`: 427), picked by the open map's `content/<mod>` folder (`csgo_addons` → `csgo`).
+- Inject policy for the future Advanced mode (`InjectPolicy`): only standalone Hammer executables of a known build with an adapter; never game processes (VAC / anti-cheat), never Source 2, never unknown builds.
 
 ## [0.2.0] - 2026-11-13
 

@@ -25,7 +25,8 @@ public partial class FormMain : Form
         [McpMode.Shell] = "Live edits through Hammer's shell channel (create / keyvalue / rotate / delete entities) "
                           + "and menu commands (save, undo, redo, run map, check for problems). The map must be saved.",
         [McpMode.Advanced] = "Expert mode with an injected adapter (live read, selection, camera, geometry). "
-                             + "Not implemented yet - works as Shell.",
+                             + "Only ever into a standalone Hammer exe of a known build - never into a game process "
+                             + "(VAC / anti-cheat), so never for Source 2. Not implemented yet - works as Shell.",
     };
 
     private readonly HammerTarget _target = new();
