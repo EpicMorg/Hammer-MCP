@@ -28,6 +28,7 @@ public static class VmapMap
         var world = G<Element>(root, "world") ?? throw new InvalidDataException("vmap without a world element");
 
         var hidden = HiddenNodes(root);
+        List<VmfEntity>? entitiesWithWorld = null;
         var entities = new List<VmfEntity>();
         var classes = new Dictionary<string, int>(StringComparer.Ordinal);
         int meshes = 0, worldMeshes = 0, brushEntities = 0, hiddenCount = 0;
@@ -78,6 +79,19 @@ public static class VmapMap
             Walk(c, Local(world), parentHidden: false, inEntity: false, direct: true);
 
         var worldProps = G<Element>(world, "entity_properties");
+        // the world itself can be an I/O target (prefabs relay their inputs / outputs through it), as in the engine;
+        // listed last and not counted in the summary
+        if (worldProps is not null)
+        {
+            var kv = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var a in worldProps)
+                kv[a.Key] = Text(a.Value);
+            var worldId = Attr<int>(world, "nodeID");
+            kv["id"] = worldId.ToString(CultureInfo.InvariantCulture);
+            var worldEntity = new VmfEntity(worldId, kv.GetValueOrDefault("classname") ?? "worldspawn", null,
+                kv.GetValueOrDefault("targetname") is { Length: > 0 } wn ? wn : null, false, worldMeshes > 0, kv) { Connections = Connections(world) };
+            entitiesWithWorld = [.. entities, worldEntity];
+        }
         var summary = new VmfSummary
         {
             EditorVersion = Attr<int?>(root, "editorversion"),
@@ -94,7 +108,7 @@ public static class VmapMap
             HiddenObjects = hiddenCount,
             Classes = [.. classes.OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key)],
         };
-        return new Result(summary, entities);
+        return new Result(summary, entitiesWithWorld ?? entities);
     }
 
     private static List<VmfConnection> Connections(Element entity)

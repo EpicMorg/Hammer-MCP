@@ -48,14 +48,16 @@ public static class MapValidator
                 r.UnknownClasses.Add(new Issue(e.Id, e.ClassName, ""));
                 continue;
             }
-            foreach (var key in e.KeyValues.Keys)
+            // Source 2 prefabs: the world carries user-named relay plugs (X_Input / X_Output) that no FGD describes
+            var isWorld = e.ClassName.Equals("worldspawn", StringComparison.OrdinalIgnoreCase);
+            foreach (var key in isWorld ? [] : e.KeyValues.Keys)
             {
                 if (!CommonKeys.Contains(key) && !cls.Properties.Any(p => p.Name.Equals(key, StringComparison.OrdinalIgnoreCase)))
                     r.UnknownKeyValues.Add(new Issue(e.Id, e.ClassName, key));
             }
             foreach (var c in e.Connections)
             {
-                if (!cls.Outputs.Any(o => o.Name.Equals(c.Output, StringComparison.OrdinalIgnoreCase)))
+                if (!isWorld && !cls.Outputs.Any(o => o.Name.Equals(c.Output, StringComparison.OrdinalIgnoreCase)))
                     r.UnknownOutputs.Add(new Issue(e.Id, e.ClassName, c.Output));
                 var targets = Targets(names, c.Target) ?? Targets(classes, c.Target)
                     ?? (Cls(c.Target) is { IsBase: false } ? [] : null); // a class spawned at runtime (player, ...)
@@ -64,7 +66,8 @@ public static class MapValidator
                     r.MissingTargets.Add(new Issue(e.Id, e.ClassName, Format(c)));
                     continue;
                 }
-                foreach (var t in targets.Select(t => t.ClassName).Distinct(StringComparer.OrdinalIgnoreCase))
+                foreach (var t in targets.Select(t => t.ClassName).Distinct(StringComparer.OrdinalIgnoreCase)
+                             .Where(t => !t.Equals("worldspawn", StringComparison.OrdinalIgnoreCase)))
                 {
                     if (Cls(t) is { } tc && !tc.Inputs.Any(i => i.Name.Equals(c.Input, StringComparison.OrdinalIgnoreCase)))
                         r.UnknownInputs.Add(new Issue(e.Id, e.ClassName, $"{Format(c)} (target is {t})"));

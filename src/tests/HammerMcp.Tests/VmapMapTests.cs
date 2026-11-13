@@ -56,13 +56,13 @@ public class VmapMapTests
         var r = VmapMap.Read(path);
         Assert.Equal(9999, r.Summary.EditorBuild);
         Assert.Equal("sky_test", r.Summary.SkyName);
-        var e = Assert.Single(r.Entities);
+        var e = Assert.Single(r.Entities, x => x.ClassName != "worldspawn");
         Assert.Equal(7, e.Id);
         Assert.Equal("logic_relay", e.ClassName);
         Assert.Equal("relay", e.TargetName);
         Assert.True(VmfEntities.SameOrigin(new Vector3(100, 10, 0), e.Origin!.Value), e.KeyValues["origin"]);
         var c = Assert.Single(e.Connections);
         Assert.Equal(("OnTrigger", "door", "Open", 0.5f), (c.Output, c.Target, c.Input, c.Delay));
-        Assert.Equal(7, Assert.Single(MapEntities.Read(path)).Id);
+        Assert.Equal([7, 0], MapEntities.Read(path).Select(x => x.Id));
     }
 }
