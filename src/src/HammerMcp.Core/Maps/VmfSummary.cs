@@ -19,6 +19,11 @@ public sealed record VmfSummary
     public int Visgroups { get; init; }
     public int HiddenObjects { get; init; }
 
+    /// <summary>Source 2: prefab nodes in the map and entities that came from expanded prefabs / instances.</summary>
+    public int? Prefabs { get; init; }
+
+    public int? PrefabEntities { get; init; }
+
     /// <summary>Counts per entity class, most frequent first.</summary>
     public IReadOnlyList<KeyValuePair<string, int>> Classes { get; init; } = [];
 

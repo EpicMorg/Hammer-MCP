@@ -17,6 +17,8 @@ public static class MapValidator
         "id", "classname", "origin", "angles", "spawnflags", "targetname", "parentname", "hammerid", "model",
         // Source 2 editor keys present on every entity
         "local.origin", "local.angles", "local.scales", "useLocalOffset", "parentAttachmentName", "vscripts",
+        // added by VmapMap for entities from expanded prefabs / instances
+        "prefab", "prefab_node",
     };
 
     public sealed record Issue(int Id, string ClassName, string Detail);

@@ -10,40 +10,51 @@ namespace HammerMcp.Core.Maps;
 /// The node tree under <c>world.children</c> holds CMapEntity / CMapMesh / CMapGroup / CMapPrefab / CMapInstance...;
 /// node transforms are relative to the parent, so origins here are converted to world space.
 /// Entities come out as <see cref="VmfEntity"/> so the Source 1 tools (list, get, I/O graph, validation) work unchanged.
-/// Prefabs and instances referencing other .vmap files are not expanded.
+/// Prefabs (CMapPrefab → targetMapPath, another .vmap) and instances (CMapInstance → a group) are expanded with their
+/// transforms; their entities get ids from <see cref="PrefabIdBase"/> and a "prefab" keyvalue.
 /// </summary>
 public static class VmapMap
 {
     public sealed record Result(VmfSummary Summary, List<VmfEntity> Entities);
 
-    public static Result Read(string path)
+    /// <summary>Nested prefabs deeper than this are not expanded (Hammer allows nesting; this guards against cycles too).</summary>
+    public const int MaxPrefabDepth = 6;
+
+    /// <summary>
+    /// Entities of prefabs / instances get ids from here up (their own nodeIDs would collide with the map's);
+    /// the original prefab node and file are kept in the "prefab" / "prefab_node" keyvalues.
+    /// </summary>
+    public const int PrefabIdBase = 1_000_000;
+
+    public static Result Read(string path, bool expandPrefabs = true)
     {
         using var dm = Datamodel.Datamodel.Load(path, Datamodel.Codecs.DeferredMode.Disabled);
-        return Read(dm);
+        return Read(dm, expandPrefabs ? path : null);
     }
 
-    public static Result Read(Datamodel.Datamodel dm)
+    /// <param name="mapPath">Path of the map: needed to resolve prefab files (maps/prefabs/x.vmap in the same mod / addon); null = do not expand prefabs.</param>
+    public static Result Read(Datamodel.Datamodel dm, string? mapPath = null)
     {
         var root = dm.Root ?? throw new InvalidDataException("vmap without a root element");
         var world = G<Element>(root, "world") ?? throw new InvalidDataException("vmap without a world element");
 
-        var hidden = HiddenNodes(root);
-        List<VmfEntity>? entitiesWithWorld = null;
         var entities = new List<VmfEntity>();
         var classes = new Dictionary<string, int>(StringComparer.Ordinal);
-        int meshes = 0, worldMeshes = 0, brushEntities = 0, hiddenCount = 0;
+        int meshes = 0, worldMeshes = 0, brushEntities = 0, hiddenCount = 0, prefabs = 0, nextId = PrefabIdBase;
+        var opened = new List<Datamodel.Datamodel>();
 
-        void Walk(Element node, Matrix4x4 parent, bool parentHidden, bool inEntity, bool direct)
+        void Walk(Element node, Element ownWorld, HashSet<Element> hidden, Matrix4x4 parent, bool parentHidden, bool inEntity, bool direct,
+                  string? file, (string Path, int Node)? prefab, int depth, HashSet<string> chain)
         {
             var transform = Local(node) * parent;
             var isHidden = parentHidden || hidden.Contains(node) || Attr<bool>(node, "force_hidden");
-            if (isHidden && !parentHidden)
+            if (isHidden && !parentHidden && prefab is null)
                 hiddenCount++;
             switch (node.ClassName)
             {
                 case "CMapMesh":
                     meshes++;
-                    if (!inEntity && direct)
+                    if (!inEntity && direct && prefab is null)
                         worldMeshes++;
                     break;
                 case "CMapEntity":
@@ -61,26 +72,85 @@ public static class VmapMap
                     var hasMesh = Children(node).Any(c => c.ClassName == "CMapMesh");
                     if (hasMesh)
                         brushEntities++;
-                    var id = Attr<int>(node, "nodeID");
+                    var id = prefab is null ? Attr<int>(node, "nodeID") : nextId++;
                     kv["id"] = id.ToString(CultureInfo.InvariantCulture);
+                    if (prefab is { } p)
+                    {
+                        kv["prefab"] = p.Path;
+                        kv["prefab_node"] = p.Node.ToString(CultureInfo.InvariantCulture);
+                    }
                     entities.Add(new VmfEntity(id, className, origin, kv.GetValueOrDefault("targetname") is { Length: > 0 } tn ? tn : null,
                         isHidden, hasMesh, kv) { Connections = Connections(node) });
                     classes[className] = classes.GetValueOrDefault(className) + 1;
                     foreach (var c in Children(node))
-                        Walk(c, transform, isHidden, inEntity: true, direct: false);
+                        Walk(c, ownWorld, hidden, transform, isHidden, inEntity: true, direct: false, file, prefab, depth, chain);
                     return;
+                }
+                case "CMapPrefab":
+                {
+                    prefabs++;
+                    var target = G<string>(node, "targetMapPath");
+                    if (file is null || string.IsNullOrEmpty(target) || depth >= MaxPrefabDepth || ResolvePrefab(file, target) is not { } sub
+                        || !chain.Add(Path.GetFullPath(sub)))
+                        break;
+                    try
+                    {
+                        var subDm = Datamodel.Datamodel.Load(sub, Datamodel.Codecs.DeferredMode.Disabled);
+                        opened.Add(subDm);
+                        if (subDm.Root is { } subRoot && G<Element>(subRoot, "world") is { } subWorld)
+                        {
+                            var mark = prefab ?? (target, Attr<int>(node, "nodeID"));
+                            var subHidden = HiddenNodes(subRoot);
+                            var at = Local(subWorld) * transform;
+                            foreach (var c in Children(subWorld))
+                                Walk(c, subWorld, subHidden, at, isHidden, inEntity, direct: false, sub, mark, depth + 1, chain);
+                        }
+                    }
+                    catch (Exception e) when (e is IOException or InvalidDataException or Datamodel.CodecException or UnauthorizedAccessException)
+                    {
+                        // a broken or missing prefab file: the map itself still reads
+                    }
+                    finally
+                    {
+                        chain.Remove(Path.GetFullPath(sub));
+                    }
+                    break;
+                }
+                case "CMapInstance":
+                {
+                    // a placed copy of a group (or prefab) of the same map: walk the target's children at the instance's transform
+                    if (G<Element>(node, "target") is { } instanceOf && depth < MaxPrefabDepth)
+                    {
+                        var mark = prefab ?? ($"instance of node {Attr<int>(instanceOf, "nodeID")}", Attr<int>(node, "nodeID"));
+                        foreach (var c in Children(instanceOf))
+                            Walk(c, ownWorld, hidden, transform, isHidden, inEntity, direct: false, file, mark, depth + 1, chain);
+                    }
+                    break;
                 }
             }
             foreach (var c in Children(node))
-                Walk(c, transform, isHidden, inEntity, direct: node == world);
+                Walk(c, ownWorld, hidden, transform, isHidden, inEntity, direct: node == ownWorld, file, prefab, depth, chain);
         }
 
-        foreach (var c in Children(world))
-            Walk(c, Local(world), parentHidden: false, inEntity: false, direct: true);
+        try
+        {
+            var chain = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            if (mapPath is not null)
+                chain.Add(Path.GetFullPath(mapPath));
+            var rootHidden = HiddenNodes(root);
+            foreach (var c in Children(world))
+                Walk(c, world, rootHidden, Local(world), parentHidden: false, inEntity: false, direct: true, mapPath, null, 0, chain);
+        }
+        finally
+        {
+            foreach (var d in opened)
+                d.Dispose();
+        }
 
         var worldProps = G<Element>(world, "entity_properties");
         // the world itself can be an I/O target (prefabs relay their inputs / outputs through it), as in the engine;
         // listed last and not counted in the summary
+        List<VmfEntity>? entitiesWithWorld = null;
         if (worldProps is not null)
         {
             var kv = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -106,9 +176,35 @@ public static class VmapMap
             Brushes = meshes,
             EntityClasses = classes.Count,
             HiddenObjects = hiddenCount,
+            Prefabs = prefabs,
+            PrefabEntities = entities.Count(e => e.Id >= PrefabIdBase),
             Classes = [.. classes.OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key)],
         };
         return new Result(summary, entitiesWithWorld ?? entities);
+    }
+
+    /// <summary>
+    /// File of a prefab's targetMapPath ("maps/prefabs/x.vmap"): relative to the mod / addon folder that holds the map's
+    /// "maps" folder (content/dota/, content/csgo_addons/my_addon/), then to the stock mod folder (content/csgo/).
+    /// </summary>
+    public static string? ResolvePrefab(string mapPath, string targetMapPath)
+    {
+        var rel = targetMapPath.Replace('\\', '/').TrimStart('/');
+        var dir = Path.GetDirectoryName(Path.GetFullPath(mapPath));
+        while (dir is not null && !Path.GetFileName(dir).Equals("maps", StringComparison.OrdinalIgnoreCase))
+            dir = Path.GetDirectoryName(dir);
+        var modDir = dir is null ? null : Path.GetDirectoryName(dir);
+        var candidates = new List<string>();
+        if (modDir is not null)
+        {
+            candidates.Add(Path.Combine(modDir, rel));
+            // an addon (content/csgo_addons/x) also sees the stock mod's content (content/csgo)
+            var parent = Path.GetDirectoryName(modDir);
+            if (parent is not null && Path.GetFileName(parent).EndsWith("_addons", StringComparison.OrdinalIgnoreCase) && Path.GetDirectoryName(parent) is { } content)
+                candidates.Add(Path.Combine(content, Path.GetFileName(parent)[..^"_addons".Length], rel));
+        }
+        candidates.Add(Path.Combine(Path.GetDirectoryName(Path.GetFullPath(mapPath)) ?? ".", Path.GetFileName(rel)));
+        return candidates.FirstOrDefault(File.Exists);
     }
 
     private static List<VmfConnection> Connections(Element entity)
