@@ -4,7 +4,9 @@
 
 Все заметные изменения Hammer-MCP. Версии — по [SemVer](https://semver.org/lang/ru/); релизы `-alpha` — пре-релизы.
 
-## [Unreleased]
+## [0.4.0] - 2026-11-13
+
+Source 2: несохранённое состояние Hammer через консоль разработчика, раскрытие префабов; игровой конфиг и автосейвы Strata.
 
 ### Добавлено
 - **Strata (Portal: Revolution)**: игровой конфиг из `hammer/cfg/gameconfig.txt` (пути с `..\..`, как в поставке, нормализуются), папка автосейвов из `hammer/cfg/HammerConfig.vdf` (KV3) для `fromAutosave`; `revolution.fgd` читается чисто (563 класса).
@@ -72,6 +74,7 @@
 - Чтение сохранённой карты: `hammer_status`, `map_summary`, `list_entities`.
 - Встроенный реестр сборок (`registry/hammers.json`, переопределяется файлом рядом с exe).
 
+[0.4.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.1.0-alpha...v0.2.0
 [0.1.0-alpha]: https://github.com/EpicMorg/Hammer-MCP/releases/tag/v0.1.0-alpha

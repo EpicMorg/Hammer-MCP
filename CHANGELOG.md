@@ -4,7 +4,9 @@
 
 All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/); `-alpha` releases are pre-releases.
 
-## [Unreleased]
+## [0.4.0] - 2026-11-13
+
+Source 2: unsaved Hammer state through the developer console, prefabs expanded; Strata game config and autosaves.
 
 ### Added
 - **Strata (Portal: Revolution)**: game config from `hammer/cfg/gameconfig.txt` (paths with `..\..` as shipped are normalised), autosave folder from `hammer/cfg/HammerConfig.vdf` (KV3) for `fromAutosave`; `revolution.fgd` reads cleanly (563 classes).
@@ -72,6 +74,7 @@ First public pre-release.
 - Reading the saved map: `hammer_status`, `map_summary`, `list_entities`.
 - Embedded build registry (`registry/hammers.json`, overridable by a file next to the exe).
 
+[0.4.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.1.0-alpha...v0.2.0
 [0.1.0-alpha]: https://github.com/EpicMorg/Hammer-MCP/releases/tag/v0.1.0-alpha
