@@ -5,6 +5,7 @@ using System.Text;
 using HammerMcp.Core.Assets;
 using HammerMcp.Core.Compile;
 using HammerMcp.Core.Config;
+using HammerMcp.Core.Maps;
 using ModelContextProtocol.Server;
 
 namespace HammerMcp.Server.Tools;
@@ -226,6 +227,51 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
                 v["bspdir"] = b;
         }
         return v;
+    }
+
+    [McpServerTool(Name = "bsp_entities", ReadOnly = true)]
+    [Description("Entities as they ended up in a COMPILED map (.bsp entity lump): what vbsp actually wrote, with outputs as repeated keys. Default file: the open map's .bsp next to the .vmf, else <GameDir>/maps/<name>.bsp. Filter by classname / targetname (prefix with *), or pass a .bsp path.")]
+    public object BspEntitiesTool(string? className = null, string? targetName = null, string? bspPath = null, int limit = 50, string? configName = null)
+    {
+        var path = bspPath;
+        if (path is null)
+        {
+            var map = target.Current()?.OpenMapPath;
+            if (map is null)
+                return new { error = "no map open in the attached Hammer; pass bspPath" };
+            path = Path.ChangeExtension(map, ".bsp");
+            if (!File.Exists(path) && gameData.Select(configName).Active is { GameDir: { } gameDir })
+                path = Path.Combine(gameDir, "maps", Path.GetFileName(path));
+        }
+        if (!File.Exists(path))
+            return new { error = $"no {path}" };
+        BspEntities.Result bsp;
+        try
+        {
+            bsp = BspEntities.Read(path);
+        }
+        catch (Exception e) when (e is InvalidDataException or NotSupportedException or IOException)
+        {
+            return new { error = e.Message, path };
+        }
+        static bool Like(string? value, string? pattern) => pattern is null || (value is not null &&
+            (pattern.EndsWith('*') ? value.StartsWith(pattern[..^1], StringComparison.OrdinalIgnoreCase) : value.Equals(pattern, StringComparison.OrdinalIgnoreCase)));
+        var hits = bsp.Entities.Where(e => Like(e.ClassName, className) && Like(e.Get("targetname"), targetName)).ToList();
+        return new
+        {
+            path,
+            written = File.GetLastWriteTime(path),
+            bspVersion = bsp.Version,
+            total = bsp.Entities.Count,
+            matched = hits.Count,
+            entities = hits.Take(Math.Clamp(limit, 1, 500)).Select(e => new
+            {
+                e.Index,
+                e.ClassName,
+                keyValues = e.KeyValues.Where(kv => VmfConnection.Parse(kv.Key, kv.Value) is null).Select(kv => $"{kv.Key} = {kv.Value}"),
+                outputs = e.KeyValues.Select(kv => VmfConnection.Parse(kv.Key, kv.Value)).OfType<VmfConnection>().Select(MapValidator.Format),
+            }),
+        };
     }
 
     internal (string? Map, HammerGameConfig? Config, string? Error) MapAndConfig(string? configName)

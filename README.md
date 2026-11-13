@@ -86,6 +86,7 @@ Static analysis; live tests so far on Hammer++ 8873 x64. Reports for other build
 | `validate_map` | Saved map vs FGD: unknown classes, outputs to missing names, unknown inputs / outputs, extra keyvalues |
 | `check_assets` | Materials, models, overlays, decals, skybox of the saved map vs the game's search paths (gameinfo.txt, folders, VPKs) |
 | `compile_sequences` · `compile_log` · `leak_trace` | Hammer's own Run Map sequences (CmdSeq.wc / Hammer++ / Strata), parsed compile log, leak path from the .lin |
+| `bsp_entities` | Entities as vbsp wrote them into the compiled .bsp (entity lump), outputs included |
 | `run_compile` | Runs one of those sequences (vbsp / vvis / vrad, copy .bsp); edit modes only |
 | `create_entity` | Point entity at x y z, with keyvalues |
 | `set_keyvalue` · `rotate_entity` · `delete_entity` | Edit the entity of a class at an origin |
