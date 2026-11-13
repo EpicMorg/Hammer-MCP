@@ -22,9 +22,17 @@ internal static class AgentInstructions
           occupied address. Use list_entities to find exact origins; place new entities at distinct coordinates.
         - Only point entities can be created (light, info_target, prop_dynamic, ...). Brush entities (trigger_*,
           func_*) need brushes and cannot be created; you can still set keyvalues on existing ones.
-        - There is no move command; outputs (I/O connections) cannot be set through this channel yet.
+        - There is no move command.
+        - Outputs (I/O): set_keyvalue with the output name as key and "target,Input,parameter,delay,times" as value
+          (e.g. OnTrigger = "door1,Open,,0,-1"; times -1 = always). Hammer keeps it as a plain keyvalue, so it is not
+          shown on the Outputs tab, but vbsp compiles it into a real output and it fires in game; tell the user.
+          Never put double quotes inside a value: Hammer and the compilers cut the value there.
         - Reading reflects the SAVED .vmf. With Hammer++, read tools accept fromAutosave=true to use its newest autosave
           when that is newer (a few minutes old at most). After your edits, call save_map before reading the map again.
+
+        Compiling (edit modes only): compile_sequences shows Hammer's own Run Map sequences; run_compile runs one on the
+        SAVED map (ask the user first), compile_log / leak_trace explain the result, bsp_entities shows what ended up
+        in the compiled .bsp.
 
         Units: Hammer units (1 unit = 0.75 inch for player scale, a player is 72 units tall, a standard door 112).
         Coordinates are world x y z; angles are pitch yaw roll in degrees.
