@@ -36,7 +36,7 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
     }
 
     [McpServerTool(Name = "set_keyvalue")]
-    [Description("Set one keyvalue on the entity of this class at this origin. Refused if several entities of this class share the origin.")]
+    [Description("Set one keyvalue on the entity of this class at this origin. Refused if several entities of this class share the origin. Not recorded in Hammer's undo history (Ctrl+Z will not revert it): note the old value (get_entity) if you may need to restore it. Also sets angles directly, e.g. key angles = \"0 90 0\".")]
     public EditResult SetKeyValue(string className, float x, float y, float z, string key, string value)
     {
         var origin = new Vector3(x, y, z);
@@ -45,7 +45,7 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
     }
 
     [McpServerTool(Name = "rotate_entity")]
-    [Description("Rotate the entity of this class at this origin by pitch/yaw/roll degrees (incremental). Refused if several entities of this class share the origin.")]
+    [Description("Rotate the entity of this class at this origin by pitch/yaw/roll degrees (incremental). Refused if several entities of this class share the origin. Stock Hammer applies it only to entities with a model (prop_*); for others (info_target, ...) set the angles keyvalue with set_keyvalue.")]
     public EditResult RotateEntity(string className, float x, float y, float z, float pitch, float yaw, float roll)
     {
         var origin = new Vector3(x, y, z);

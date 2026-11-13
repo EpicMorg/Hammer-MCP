@@ -16,7 +16,7 @@ public sealed class MenuTools(HammerTarget target, ActivityLog log)
     public MenuResult SaveMap() => Post("save", MenuCommands.Save);
 
     [McpServerTool(Name = "undo")]
-    [Description("Edit > Undo in Hammer (also undoes edits made through the shell channel).")]
+    [Description("Edit > Undo in Hammer. Undoes entity creation, deletion and rotation made through the shell channel; keyvalue changes (set_keyvalue) are NOT in Hammer's undo history - restore the old value with set_keyvalue instead.")]
     public MenuResult Undo() => Post("undo", MenuCommands.Undo);
 
     [McpServerTool(Name = "redo")]

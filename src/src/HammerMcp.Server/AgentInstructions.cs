@@ -14,7 +14,8 @@ internal static class AgentInstructions
         changing entities. validate_map finds broken outputs and unknown classes.
 
         How live edits work (shell channel):
-        - Edits go into the map currently open in Hammer and appear immediately; the user can undo them with Ctrl+Z.
+        - Edits go into the map currently open in Hammer and appear immediately. Creation, deletion and rotation can be
+          undone (undo / Ctrl+Z); keyvalue changes cannot - read the old value with get_entity first if it matters.
         - The map must be saved first: sessions are bound to the mapversion of the saved .vmf. If an edit is refused,
           call save_map and retry.
         - Entities are addressed by class + origin (x y z), there are no ids. Two entities of the same class at the
