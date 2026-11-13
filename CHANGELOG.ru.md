@@ -11,6 +11,7 @@
 - `validate_map` показывает outputs, записанные как обычные keyvalues (`outputsAsKeyValues`, заданные через shell-канал), и проверяет их цели и inputs; `get_entity` / `find_io` показывают их как outputs.
 - Карты Source 2 кэшируются по пути, времени записи и размеру: инструменты больше не перечитывают большую `.vmap` с префабами на каждый вызов.
 - Брашевые сущности (`trigger_*`, `func_*`) адресуются центром своих брашей: Hammer++ пишет его как их `origin` (проверено вживую: `set_keyvalue` и outputs на `trigger_multiple` / `func_brush`); для .vmf без него центр считается по плоскостям брашей (`center` в `list_entities` / `get_entity`).
+- Strata проверен вживую (Portal: Revolution x64): сборка, игровой конфиг, FGD, `validate_map`, последовательности Run Map; подставляются `$postcompiler_exe` и `$bsp`, а `|all_source_engine_paths|` указывает на корень игры, когда exe игры лежит в `bin\win64`.
 
 ## [0.4.0] - 2026-11-13
 

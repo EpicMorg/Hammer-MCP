@@ -218,6 +218,9 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
             Set("light_exe", "Light");
             Set("game_exe", "GameExe");
             Set("csg_exe", "CSG");
+            // Strata: post-compiler step ($postcompiler_exe) and $bsp = the compiled file's extension
+            Set("postcompiler_exe", "PostCompiler");
+            v["bsp"] = "bsp";
             if (config.GameDir is { } g)
             {
                 v["gamedir"] = g;

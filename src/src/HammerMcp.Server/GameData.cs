@@ -60,8 +60,8 @@ public sealed class GameData(HammerTarget target)
         var gameinfo = Path.Combine(config.GameDir, "gameinfo.txt");
         if (!File.Exists(gameinfo))
             return null;
-        var root = config.GameExeDir is { Length: > 0 } exeDir ? exeDir
-            : config.Tools.TryGetValue("GameExe", out var exe) && exe.Length > 0 ? Path.GetDirectoryName(exe) : null;
+        var root = EngineRoot(config.GameExeDir is { Length: > 0 } exeDir ? exeDir
+            : config.Tools.TryGetValue("GameExe", out var exe) && exe.Length > 0 ? Path.GetDirectoryName(exe) : null);
         var key = $"{gameinfo}@{File.GetLastWriteTimeUtc(gameinfo).Ticks}@{root}";
         lock (_lock)
         {
@@ -73,6 +73,23 @@ public sealed class GameData(HammerTarget target)
             }
             return _assets;
         }
+    }
+
+    /// <summary>
+    /// |all_source_engine_paths| is the game install root. Most games keep their exe there (hl2.exe, tf_win64.exe), but
+    /// Strata (revolution.exe) and other 64-bit builds keep it in bin\win64 / bin\x64 - step up to the root then.
+    /// </summary>
+    internal static string? EngineRoot(string? exeDir)
+    {
+        if (exeDir is null)
+            return null;
+        var dir = exeDir.TrimEnd('\\', '/');
+        var name = Path.GetFileName(dir);
+        if (name.Equals("win64", StringComparison.OrdinalIgnoreCase) || name.Equals("x64", StringComparison.OrdinalIgnoreCase))
+            dir = Path.GetDirectoryName(dir) ?? dir;
+        if (Path.GetFileName(dir).Equals("bin", StringComparison.OrdinalIgnoreCase))
+            dir = Path.GetDirectoryName(dir) ?? dir;
+        return dir;
     }
 
     /// <summary>Steam folder from HKCU\Software\Valve\Steam\SteamPath (for |appid_NNN| search paths).</summary>

@@ -11,6 +11,7 @@ All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/)
 - `validate_map` reports outputs written as plain keyvalues (`outputsAsKeyValues`, set through the shell channel) and checks their targets and inputs; `get_entity` / `find_io` show them as outputs.
 - Source 2 maps are cached by path + write time + size: tools no longer re-read a big `.vmap` with its prefabs on every call.
 - Brush entities (`trigger_*`, `func_*`) are addressed by the centre of their brushes: Hammer++ writes it as their `origin` (verified live: `set_keyvalue` and outputs on `trigger_multiple` / `func_brush`); for .vmf files without it the centre is computed from the brush planes (`center` in `list_entities` / `get_entity`).
+- Strata verified live (Portal: Revolution x64): build, game config, FGD, `validate_map`, Run Map sequences; `$postcompiler_exe` and `$bsp` are expanded, and `|all_source_engine_paths|` points to the game root when the game exe lives in `bin\win64`.
 
 ## [0.4.0] - 2026-11-13
 
