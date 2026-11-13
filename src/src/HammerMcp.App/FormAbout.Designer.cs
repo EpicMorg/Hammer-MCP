@@ -111,7 +111,7 @@ partial class FormAbout
         // 
         // linkLabelSiteAuthor
         // 
-        linkLabelSiteAuthor.AccessibleDescription = "https://epicm.org/";
+        linkLabelSiteAuthor.AccessibleDescription = "https://ww.epicm.org/";
         linkLabelSiteAuthor.AutoSize = true;
         linkLabelSiteAuthor.Location = new Point(12, 177);
         linkLabelSiteAuthor.Name = "linkLabelSiteAuthor";

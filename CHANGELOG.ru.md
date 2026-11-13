@@ -13,7 +13,6 @@ MCP-сервер без приложения в трее (`hammer-mcp-cli`, stdi
 
 ### Изменено
 - Публичный репозиторий: статус **beta**, `SECURITY.md` (приватные сообщения об уязвимостях), `CONTRIBUTING.md` (как сообщить о неизвестной сборке Hammer), шаблоны issue, демо-GIF / видео и скриншоты в README, статьи на Valve Developer Community ([EN](https://developer.valvesoftware.com/wiki/Hammer_MCP_Server), [RU](https://developer.valvesoftware.com/wiki/Ru/Hammer_MCP_Server)).
-- «О программе»: исправлена ссылка на epicm.org.
 
 ## [0.5.0] - 2026-11-14
 

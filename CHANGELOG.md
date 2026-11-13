@@ -13,7 +13,6 @@ The MCP server without the tray app (`hammer-mcp-cli`, stdio / HTTP) and a conta
 
 ### Changed
 - Public repository: status **beta**, `SECURITY.md` (private vulnerability reports), `CONTRIBUTING.md` (how to report an unknown Hammer build), issue templates, demo GIF / video and screenshots in the README, articles on the Valve Developer Community ([EN](https://developer.valvesoftware.com/wiki/Hammer_MCP_Server), [RU](https://developer.valvesoftware.com/wiki/Ru/Hammer_MCP_Server)).
-- About: fixed the link to epicm.org.
 
 ## [0.5.0] - 2026-11-14
 
