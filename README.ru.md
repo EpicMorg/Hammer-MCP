@@ -176,7 +176,7 @@ src/native/                 C++ инжектор и адаптеры (в пла�
 
 Сделано [EpicMorg](https://github.com/EpicMorg). Протокол shell-канала — в том виде, в каком Valve опубликовала его в
 [Source SDK 2013](https://github.com/ValveSoftware/source-sdk-2013) (`src/public/editor_sendcommand.{h,cpp}`).
-Статья на Valve Developer Community: [Hammer MCP Server](https://developer.valvesoftware.com/wiki/Hammer_MCP_Server).
+Статья на Valve Developer Community: [Hammer MCP Server](https://developer.valvesoftware.com/wiki/Ru/Hammer_MCP_Server) ([на английском](https://developer.valvesoftware.com/wiki/Hammer_MCP_Server)).
 Спасибо [ficool2](https://github.com/ficool2) за [Hammer++](https://github.com/ficool2/HammerPlusPlus-Website) и
 [Valve Developer Community](https://developer.valvesoftware.com/wiki/Hammer).
 Hammer-MCP не содержит исходного кода Valve и утёкшего кода; с редакторами он общается только через их открытые
