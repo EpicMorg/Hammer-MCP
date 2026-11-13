@@ -304,7 +304,7 @@ public sealed class FgdParser
                 depth++;
             else if (tok.Text == ")" && tok.Kind == TokenKind.Symbol && --depth == 0)
                 return sb.ToString();
-            if (sb.Length > 0 && tok.Text is not "," && sb[^1] is not '(')
+            if (sb.Length > 0 && tok.Text is not "," and not ":" && sb[^1] is not '(' and not ':')
                 sb.Append(' ');
             sb.Append(tok.Kind == TokenKind.String ? $"\"{tok.Text}\"" : tok.Text);
         }

@@ -9,9 +9,10 @@
 ### Добавлено
 - **Карты Source 2**: `.vmap` (DMX, чтение через KeyValues2 / Datamodel.NET) — сущности в мировых координатах с keyvalues и outputs, скрытые узлы, сводка; `map_summary`, `list_entities`, `get_entity`, `find_io`, `validate_map` работают на картах Source 2. Префабы и инстансы пока не раскрываются.
 - **FGD Source 2**: блоки метаданных класса (`{ entity_tool_name = ... }`, их показывает `fgd_class`), метаданные свойств `[ ]` / `{ }`, `@OverrideClass`, экранированные кавычки, include из `game/core/`; определения моделей и VData пропускаются.
-- Процессы Workshop Tools Source 2 (`cs2`, `dota2`, `hlvr`, … с `tools/hammer.dll`) показываются для Attach; распознаётся абсолютный путь к карте в любом месте заголовка окна (включая `.vmap`). Вживую ещё не проверено.
+- Процессы Workshop Tools Source 2 (`cs2`, `dota2`, `hlvr`, … с `tools/hammer.dll`) показываются для Attach; распознаётся абсолютный путь к карте в любом месте заголовка окна (включая `.vmap`). Проверено вживую на CS2.
 - Игровые данные Source 2 без GameConfig.txt: по конфигу на каждый мод с `game/<mod>/<mod>.fgd` (CS2 `csgo`: 469 классов, Dota 2 `dota`: 427), выбор по папке `content/<mod>` открытой карты (`csgo_addons` → `csgo`).
 - Политика внедрения для будущего режима Advanced (`InjectPolicy`): только отдельный exe Hammer известной сборки с адаптером; никогда в игровые процессы (VAC / античит), никогда в Source 2 и неизвестные сборки.
+- Проверено вживую на CS2 Workshop Tools (2026-11-13): Attach к `cs2.exe`, имя карты из заголовка найдено в `content/csgo_addons/<аддон>/maps`, `map_summary` / `list_entities` / `get_entity` / `find_io` / `validate_map` / `fgd_class` на `.vmap` в 69 МБ (формат 40); новая `hammer.dll` CS2 в реестре; командная строка процесса в `hammer_status`.
 
 ## [0.2.0] - 2026-11-13
 

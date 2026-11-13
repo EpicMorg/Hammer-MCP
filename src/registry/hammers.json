@@ -971,6 +971,14 @@
       "notes": "Seen in: alien-swarm"
     },
     {
+      "id": "source2-cs2-2026-11-13-x64",
+      "family": "source2", "branch": "cs2", "arch": "x64",
+      "match": { "dll": "hammer.dll", "sha256": "a0909b95ae283f3b259ec634d8a5f797256d26239f87859bd1459d4598224fa0" },
+      "shell": { "present": false },
+      "verified": { "liveRead": "2026-11-13" },
+      "notes": "CS2 Workshop Tools as of 2026-11-13 (seen live: cs2.exe -addon <name> -tools -steam -retail); .vmap format 40, editor build 10953."
+    },
+    {
       "id": "source2-cs2-2026-11-02-x64",
       "family": "source2", "branch": "cs2", "arch": "x64",
       "match": { "dll": "hammer.dll", "sha256": "b34998a67b78af1ae39cf4174e85547f90cd8d9015df2314175e350129abccf4", "linked": "2026-11-02" },
