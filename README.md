@@ -17,6 +17,7 @@
   <img alt=".NET" src="https://img.shields.io/badge/.NET-10-512BD4">
   <img alt="MCP" src="https://img.shields.io/badge/MCP-Streamable%20HTTP-6f42c1">
   <img alt="license" src="https://img.shields.io/badge/license-MIT-green">
+  <a href="https://glama.ai/mcp/servers/EpicMorg/Hammer-MCP"><img alt="Glama MCP server score" src="https://glama.ai/mcp/servers/EpicMorg/Hammer-MCP/badges/score.svg"></a>
 </p>
 
 ---
