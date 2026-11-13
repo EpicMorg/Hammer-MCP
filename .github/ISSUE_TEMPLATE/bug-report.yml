@@ -1,0 +1,31 @@
+name: Bug report
+description: Something does not work as described
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Hammer-MCP version
+      description: From the window title or Help → About
+    validations:
+      required: true
+  - type: input
+    id: hammer
+    attributes:
+      label: Hammer and game
+      description: e.g. "Hammer++ 8873 x64, TF2" (buildId from hammer_status if known)
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you / the agent did, what you expected, what happened instead. Tool calls and their answers help a lot.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: The Logs tab of the app around the problem
+      render: text

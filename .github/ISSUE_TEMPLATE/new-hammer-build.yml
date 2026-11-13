@@ -1,0 +1,29 @@
+name: New Hammer build
+description: Hammer-MCP does not recognise my Hammer (unknown build in hammer_status / Meta info)
+labels: [registry]
+body:
+  - type: input
+    id: game
+    attributes:
+      label: Game / mod and editor
+      description: e.g. "Team Fortress 2, stock Hammer x64", "Hammer++ 8873 for Garry's Mod", "CS2 Workshop Tools"
+    validations:
+      required: true
+  - type: textarea
+    id: status
+    attributes:
+      label: hammer_status
+      description: Output of the hammer_status tool (or the Meta info grid - right-click → Copy all). Must include editorSha256.
+      render: json
+    validations:
+      required: true
+  - type: dropdown
+    id: shell
+    attributes:
+      label: Do live edits work?
+      options: ["Not tried", "Yes", "No - shell channel missing", "No - something else (describe below)"]
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Where the build comes from (Steam app / beta branch / download link), anything unusual.

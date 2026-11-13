@@ -12,7 +12,7 @@
 <p align="center"><b>English</b> · <a href="README.ru.md">Русский</a></p>
 
 <p align="center">
-  <img alt="status" src="https://img.shields.io/badge/status-proof%20of%20concept-orange">
+  <img alt="status" src="https://img.shields.io/badge/status-beta-yellow">
   <img alt="platform" src="https://img.shields.io/badge/platform-Windows%2010%2F11%20x64-0078D6">
   <img alt=".NET" src="https://img.shields.io/badge/.NET-10-512BD4">
   <img alt="MCP" src="https://img.shields.io/badge/MCP-Streamable%20HTTP-6f42c1">
@@ -159,7 +159,7 @@ src/native/                 C++ injector and adapters (planned, CMake)
 
 Tag `vX.Y.Z[-suffix]` on GitHub → the `release` workflow builds a self-contained single-file `hammer-mcp.exe`
 (win-x64, ~65 MB) and attaches a zip to a GitHub release (`-alpha` / `-beta` tags become pre-releases).
-Release notes come from [CHANGELOG.md](CHANGELOG.md). Components and licenses: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+Release notes come from [CHANGELOG.md](CHANGELOG.md). Contributing, new Hammer builds, bug reports: [CONTRIBUTING.md](CONTRIBUTING.md); security: [SECURITY.md](SECURITY.md). Components and licenses: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 
 ## Credits & legal
 

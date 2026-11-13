@@ -12,7 +12,7 @@
 <p align="center"><a href="README.md">English</a> · <b>Русский</b></p>
 
 <p align="center">
-  <img alt="status" src="https://img.shields.io/badge/status-proof%20of%20concept-orange">
+  <img alt="status" src="https://img.shields.io/badge/status-beta-yellow">
   <img alt="platform" src="https://img.shields.io/badge/platform-Windows%2010%2F11%20x64-0078D6">
   <img alt=".NET" src="https://img.shields.io/badge/.NET-10-512BD4">
   <img alt="MCP" src="https://img.shields.io/badge/MCP-Streamable%20HTTP-6f42c1">
@@ -159,7 +159,7 @@ src/native/                 C++ инжектор и адаптеры (в пла�
 
 Тег `vX.Y.Z[-suffix]` на GitHub → workflow `release` собирает самодостаточный однофайловый `hammer-mcp.exe`
 (win-x64, ~65 МБ) и прикладывает zip к релизу GitHub (теги `-alpha` / `-beta` становятся пре-релизами).
-Текст релиза берётся из [CHANGELOG.md](CHANGELOG.md). Компоненты и лицензии: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+Текст релиза берётся из [CHANGELOG.md](CHANGELOG.md). Как помочь, сообщить о новой сборке Hammer или баге: [CONTRIBUTING.md](CONTRIBUTING.md); безопасность: [SECURITY.md](SECURITY.md). Компоненты и лицензии: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 
 ## Благодарности и правовое
 
