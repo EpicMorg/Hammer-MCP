@@ -4,7 +4,9 @@
 
 Все заметные изменения Hammer-MCP. Версии — по [SemVer](https://semver.org/lang/ru/); релизы `-alpha` — пре-релизы.
 
-## [Unreleased]
+## [0.6.0] - 2026-11-14
+
+MCP-сервер без приложения в трее (`hammer-mcp-cli`, stdio / HTTP) и образ контейнера для каталогов MCP.
 
 ### Добавлено
 - **`hammer-mcp-cli`**: MCP-сервер без приложения в трее — stdio (по умолчанию) или HTTP, Hammer выбирается через `--auto` / `--pid`, `--mode`; входит в архив релиза. `Dockerfile` запускает его в контейнере (без Hammer он стартует и отдаёт список инструментов — это проверяют каталоги MCP, например Glama).
@@ -96,6 +98,7 @@ Source 2: несохранённое состояние Hammer через кон
 - Чтение сохранённой карты: `hammer_status`, `map_summary`, `list_entities`.
 - Встроенный реестр сборок (`registry/hammers.json`, переопределяется файлом рядом с exe).
 
+[0.6.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.2.0...v0.3.0
