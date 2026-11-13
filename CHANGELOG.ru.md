@@ -4,16 +4,29 @@
 
 Все заметные изменения Hammer-MCP. Версии — по [SemVer](https://semver.org/lang/ru/); релизы `-alpha` — пре-релизы.
 
-## [Unreleased]
+## [0.3.0] - 2026-11-13
+
+Карты и игровые данные Source 2 (только чтение), проверено вживую на CS2 Workshop Tools; стоковый Hammer проверен вживую на TF2; правила безопасности для игровых процессов.
 
 ### Добавлено
-- **Карты Source 2**: `.vmap` (DMX, чтение через KeyValues2 / Datamodel.NET) — сущности в мировых координатах с keyvalues и outputs, скрытые узлы, сводка; `map_summary`, `list_entities`, `get_entity`, `find_io`, `validate_map` работают на картах Source 2. Префабы и инстансы пока не раскрываются.
-- **FGD Source 2**: блоки метаданных класса (`{ entity_tool_name = ... }`, их показывает `fgd_class`), метаданные свойств `[ ]` / `{ }`, `@OverrideClass`, экранированные кавычки, include из `game/core/`; определения моделей и VData пропускаются.
-- Процессы Workshop Tools Source 2 (`cs2`, `dota2`, `hlvr`, … с `tools/hammer.dll`) показываются для Attach; распознаётся абсолютный путь к карте в любом месте заголовка окна (включая `.vmap`). Проверено вживую на CS2.
-- Игровые данные Source 2 без GameConfig.txt: по конфигу на каждый мод с `game/<mod>/<mod>.fgd` (CS2 `csgo`: 469 классов, Dota 2 `dota`: 427), выбор по папке `content/<mod>` открытой карты (`csgo_addons` → `csgo`).
-- Политика внедрения для будущего режима Advanced (`InjectPolicy`): только отдельный exe Hammer известной сборки с адаптером; никогда в игровые процессы (VAC / античит), никогда в Source 2 и неизвестные сборки.
-- Проверено вживую на CS2 Workshop Tools (2026-11-13): Attach к `cs2.exe`, имя карты из заголовка найдено в `content/csgo_addons/<аддон>/maps`, `map_summary` / `list_entities` / `get_entity` / `find_io` / `validate_map` / `fgd_class` на `.vmap` в 69 МБ (формат 40); новая `hammer.dll` CS2 в реестре; командная строка процесса в `hammer_status`.
+- **Карты Source 2**: `.vmap` (DMX, чтение через KeyValues2 / Datamodel.NET) — сущности в мировых координатах с keyvalues и outputs, скрытые узлы, сводка. На картах Source 2 работают `map_summary`, `list_entities`, `get_entity`, `find_io`, `validate_map`; мир — цель I/O (проброс через префабы). Префабы и инстансы пока не раскрываются.
+- **FGD Source 2**: блоки метаданных класса (`{ entity_tool_name = ... }`, их показывает `fgd_class`), метаданные свойств `[ ]` / `{ }`, `@OverrideClass`, экранированные кавычки, include из `game/core/`; определения моделей / VData / helpinfo пропускаются. CS2 `csgo.fgd`: 469 классов, Dota 2 `dota.fgd`: 427, без предупреждений.
+- **Игровые данные Source 2** без GameConfig.txt: по конфигу на каждый мод с `game/<mod>/<mod>.fgd`, выбор по папке `content/<mod>` открытой карты (`csgo_addons` → `csgo`).
+- **Процессы Workshop Tools Source 2** (`cs2`, `dota2`, `hlvr`, … с `tools/hammer.dll`) показываются для Attach. Имя карты из заголовка Hammer ищется в `content/<mod>/maps` и `content/<mod>_addons/<аддон>/maps`.
+- `hammer_status`: заголовок окна, командная строка процесса (флаг `insecure`) и для неизвестных сборок — sha256 DLL редактора для реестра.
+- **Политика внедрения** для будущего режима Advanced (`InjectPolicy`): только отдельный exe Hammer известной сборки с адаптером; никогда в игровые процессы (VAC / античит), никогда в Source 2 и неизвестные сборки.
+- README: раздел **Безопасность и VAC** (EN / RU).
+- Реестр: `hammer.dll` CS2 от 2026-11-13.
+
+### Изменено
 - Для карты вне всех MapDir берётся игровой конфиг установки самого Hammer (единственный, чья папка игры лежит внутри неё и содержит gameinfo.txt, например `tf` для Hammer TF2), вместо требования `configName`.
+- Тексты для Source 2 в окне и для агента: свой статус Attach («только чтение карты и файлов игры»), подсказки режимов, инструменты меню вежливо отказывают, инструкции агенту.
+- Описания инструментов после живого теста стокового Hammer (TF2): `set_keyvalue` не попадает в историю Undo Hammer; `rotate_entity` поворачивает только сущности с моделью — для остальных задавайте keyvalue `angles`.
+- Типы FGD выводятся без пробелов (`resource:vjs`); служебные ключи редактора Source 2 (`local.origin`, `useLocalOffset`, …) не считаются неизвестными keyvalues.
+
+### Проверено вживую
+- **CS2 Workshop Tools**: Attach к `cs2.exe`, прочитана и проверена `.vmap` в 69 МБ (формат 40) из аддона. Workshop Tools ведут себя как insecure-клиент (VAC-серверы закрыты).
+- **Стоковый Hammer TF2 x86**: create / keyvalue / delete / save через shell-канал, outputs как keyvalues, `validate_map`, `check_assets` (gameinfo + VPK), `compile_sequences` из бинарного `CmdSeq.wc`.
 
 ## [0.2.0] - 2026-11-13
 
@@ -50,5 +63,6 @@
 - Чтение сохранённой карты: `hammer_status`, `map_summary`, `list_entities`.
 - Встроенный реестр сборок (`registry/hammers.json`, переопределяется файлом рядом с exe).
 
+[0.3.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.1.0-alpha...v0.2.0
 [0.1.0-alpha]: https://github.com/EpicMorg/Hammer-MCP/releases/tag/v0.1.0-alpha
