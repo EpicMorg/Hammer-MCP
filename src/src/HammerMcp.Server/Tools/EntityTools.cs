@@ -54,7 +54,7 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
     }
 
     [McpServerTool(Name = "delete_entity", Destructive = true)]
-    [Description("Delete the entity of this class at this origin. Refused if several entities of this class share the origin (it is not possible to choose which one).")]
+    [Description("Delete the entity of this class at this origin. Refused if several entities of this class share the origin (it is not possible to choose which one). A brush entity (trigger_*, func_*) is deleted together with its brushes; undo brings it back.")]
     public EditResult DeleteEntity(string className, float x, float y, float z)
     {
         var origin = new Vector3(x, y, z);
