@@ -26,6 +26,11 @@ appear in the Hammer you already have open. No plugins, no patched editor: Hamme
 **shell channel** that Valve built into the editor 20 years ago (`Worldcraft_ShellMessageWnd`, the mechanism behind
 [`editor_sendcommand.cpp`](https://github.com/ValveSoftware/source-sdk-2013/blob/master/src/public/editor_sendcommand.cpp) in the Source SDK) and through Hammer's own menu commands.
 
+<p align="center">
+  <img src="docs/media/demo/demo.gif" alt="An agent spawns a prop in Hammer++ and spins it, live" width="720"><br>
+  <sub>An agent spawns a <code>prop_dynamic</code> in Hammer++ and spins it - live, over MCP (<a href="docs/media/demo/demo.mp4">video</a>).</sub>
+</p>
+
 ```
  AI agent (Claude Code, Cursor, …)
         │  MCP over HTTP (+ optional Bearer token, LAN-capable)
@@ -48,6 +53,12 @@ Verified live on **[Hammer++](https://github.com/ficool2/HammerPlusPlus-Website)
 | ✅ Save / undo / redo / Run Map / Check for Problems via menu commands | ✅ Map summary from the saved `.vmf` (entities, brushes, classes, skybox…) |
 | ✅ Recognises the running Hammer build by hash (registry of 179 known builds) | ✅ Token auth, localhost by default |
 | ✅ Map knowledge: entities, outputs, I/O graph, validation against the game's FGD | ✅ Compile with Hammer's own Run Map sequences, parsed log, leak trace, compiled `.bsp` entities |
+
+### Screenshots
+
+| Pick a Hammer process | Attached: build, shell channel | Live log of the demo |
+|---|---|---|
+| <img src="docs/media/screenshot-1.png" width="260"> | <img src="docs/media/screenshot-2.png" width="260"> | <img src="docs/media/screenshot-3.png" width="260"> |
 
 ## Supported editors
 

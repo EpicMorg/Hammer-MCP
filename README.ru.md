@@ -26,6 +26,11 @@
 Valve встроила в редактор 20 лет назад (`Worldcraft_ShellMessageWnd`, механизм за
 [`editor_sendcommand.cpp`](https://github.com/ValveSoftware/source-sdk-2013/blob/master/src/public/editor_sendcommand.cpp) в Source SDK), и через собственные команды меню Hammer.
 
+<p align="center">
+  <img src="docs/media/demo/demo.gif" alt="Агент создаёт проп в Hammer++ и вращает его вживую" width="720"><br>
+  <sub>Агент создаёт <code>prop_dynamic</code> в Hammer++ и вращает его — вживую, через MCP (<a href="docs/media/demo/demo.mp4">видео</a>).</sub>
+</p>
+
 ```
  ИИ-агент (Claude Code, Cursor, …)
         │  MCP поверх HTTP (+ необязательный Bearer-токен, работает по локальной сети)
@@ -48,6 +53,12 @@ Valve встроила в редактор 20 лет назад (`Worldcraft_She
 | ✅ Save / undo / redo / Run Map / Check for Problems через команды меню | ✅ Сводка карты из сохранённого `.vmf` (сущности, браши, классы, skybox…) |
 | ✅ Узнаёт запущенную сборку Hammer по хэшу (реестр из 179 известных сборок) | ✅ Авторизация по токену, по умолчанию только localhost |
 | ✅ Знание карты: сущности, outputs, граф логики, проверка по FGD игры | ✅ Компиляция собственными Run Map-последовательностями Hammer, разбор лога, путь утечки, сущности скомпилированного `.bsp` |
+
+### Скриншоты
+
+| Выбор процесса Hammer | Подключено: сборка, shell-канал | Живой лог демо |
+|---|---|---|
+| <img src="docs/media/screenshot-1.png" width="260"> | <img src="docs/media/screenshot-2.png" width="260"> | <img src="docs/media/screenshot-3.png" width="260"> |
 
 ## Поддерживаемые редакторы
 
