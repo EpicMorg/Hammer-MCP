@@ -61,7 +61,7 @@ menu command ids are identical across **all 152 Source Hammer builds** we analys
 | [Slammin' Hammer 5.2](https://developer.valvesoftware.com/wiki/Slammin'_Source_Map_Tools), Black Mesa, Nuclear Dawn | ✅ | ✅ | ✅ |
 | Hammer++ ≤ 8866 | — | ✅ | ✅ |
 | [Strata](https://github.com/StrataSource) Hammer (Portal: Revolution, P2CE, …) | — | ✅ | ✅ |
-| Source 2 Hammer (CS2, Dota 2, …) — recognised only | — | — | planned |
+| Source 2 Hammer (CS2, Dota 2, …) — recognised, `.vmap` and FGD read | — | — | ✅ read |
 | GoldSrc: Worldcraft 1.1–3.3, Hammer 3.4 / 3.5 and its mods (Neon, Neo, CSM) — recognised; [J.A.C.K.](https://store.steampowered.com/app/496450/) | — | partly | RMF / MAP read |
 
 Static analysis; live tests so far on Hammer++ 8873 (x64 and x86). Reports for other builds are very welcome.

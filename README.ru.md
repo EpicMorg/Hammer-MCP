@@ -61,7 +61,7 @@ Shell-канал есть во **всех стоковых Source-Hammer с 2006
 | [Slammin' Hammer 5.2](https://developer.valvesoftware.com/wiki/Slammin'_Source_Map_Tools), Black Mesa, Nuclear Dawn | ✅ | ✅ | ✅ |
 | Hammer++ ≤ 8866 | — | ✅ | ✅ |
 | [Strata](https://github.com/StrataSource) Hammer (Portal: Revolution, P2CE, …) | — | ✅ | ✅ |
-| Hammer Source 2 (CS2, Dota 2, …) — только распознаётся | — | — | в планах |
+| Hammer Source 2 (CS2, Dota 2, …) — распознаётся, `.vmap` и FGD читаются | — | — | ✅ чтение |
 | GoldSrc: Worldcraft 1.1–3.3, Hammer 3.4 / 3.5 и его моды (Neon, Neo, CSM) — распознаются; [J.A.C.K.](https://store.steampowered.com/app/496450/) | — | частично | чтение RMF / MAP |
 
 Статический анализ; вживую пока проверен Hammer++ 8873 (x64 и x86). Отчёты по другим сборкам очень приветствуются.

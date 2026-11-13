@@ -14,6 +14,12 @@ public sealed record HammerProcess(int ProcessId, string Name, string ExePath, n
         "hammer", "hammerplusplus", "wc", "jack", "jackhammer", "Sledge.Editor",
     };
 
+    /// <summary>Source 2 games whose Workshop Tools run Hammer inside the game process (game/bin/win64/tools/hammer.dll).</summary>
+    private static readonly HashSet<string> Source2Games = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "cs2", "dota2", "hlvr", "project8", "deadlock",
+    };
+
     public bool HasShellChannel => ShellWindow != 0;
 
     /// <summary>Exe name is one of the known map editors (Hammer, Hammer++, Worldcraft, J.A.C.K., Sledge).</summary>
@@ -41,6 +47,7 @@ public sealed record HammerProcess(int ProcessId, string Name, string ExePath, n
                 var pid = process.Id;
                 var interesting = shells.ContainsKey(pid)
                                   || EditorNames.Contains(process.ProcessName)
+                                  || (Source2Games.Contains(process.ProcessName) && HasSource2Hammer(pid))
                                   || (allProcesses && SafeMainWindow(process) != 0);
                 if (!interesting)
                     continue;
@@ -75,6 +82,9 @@ public sealed record HammerProcess(int ProcessId, string Name, string ExePath, n
             return null; // exited
         }
     }
+
+    private static bool HasSource2Hammer(int pid) =>
+        QueryExePath((uint)pid) is { } exe && Path.GetDirectoryName(exe) is { } dir && File.Exists(Path.Combine(dir, "tools", "hammer.dll"));
 
     private static nint SafeMainWindow(Process process)
     {
