@@ -60,9 +60,10 @@ public static class VmapMap
         var classes = new Dictionary<string, int>(StringComparer.Ordinal);
         int meshes = 0, worldMeshes = 0, brushEntities = 0, hiddenCount = 0, prefabs = 0, nextId = PrefabIdBase;
         var opened = new List<Datamodel.Datamodel>();
+        var relays = new List<VmfEntity>();
 
         void Walk(Element node, Element ownWorld, HashSet<Element> hidden, Matrix4x4 parent, bool parentHidden, bool inEntity, bool direct,
-                  string? file, (string Path, int Node)? prefab, int depth, HashSet<string> chain)
+                  string? file, (string Path, int Node)? prefab, int depth, HashSet<string> chain, Dictionary<string, string>? vars = null)
         {
             var transform = Local(node) * parent;
             var isHidden = parentHidden || hidden.Contains(node) || Attr<bool>(node, "force_hidden");
@@ -83,6 +84,13 @@ public static class VmapMap
                     if (props is not null)
                         foreach (var a in props)
                             kv[a.Key] = Text(a.Value);
+                    // keyvalues bound to prefab variables (variableTargetKeys[i] ← variableNames[i]) take the variable's value
+                    if (vars is not null && G<StringArray>(node, "variableTargetKeys") is { } bound && G<StringArray>(node, "variableNames") is { } names)
+                    {
+                        for (var i = 0; i < bound.Count && i < names.Count; i++)
+                            if (bound[i] is { Length: > 0 } key && names[i] is { } varName && vars.TryGetValue(varName, out var value))
+                                kv[key] = value;
+                    }
                     var origin = Vector3.Transform(Vector3.Zero, transform);
                     kv["origin"] = Text(origin);
                     if (node.ContainsKey("angles"))
@@ -101,7 +109,7 @@ public static class VmapMap
                         isHidden, hasMesh, kv) { Connections = Connections(node) });
                     classes[className] = classes.GetValueOrDefault(className) + 1;
                     foreach (var c in Children(node))
-                        Walk(c, ownWorld, hidden, transform, isHidden, inEntity: true, direct: false, file, prefab, depth, chain);
+                        Walk(c, ownWorld, hidden, transform, isHidden, inEntity: true, direct: false, file, prefab, depth, chain, vars);
                     return;
                 }
                 case "CMapPrefab":
@@ -120,8 +128,22 @@ public static class VmapMap
                             var mark = prefab ?? (target, Attr<int>(node, "nodeID"));
                             var subHidden = HiddenNodes(subRoot);
                             var at = Local(subWorld) * transform;
+                            var subVars = PrefabVariables(subRoot, node);
                             foreach (var c in Children(subWorld))
-                                Walk(c, subWorld, subHidden, at, isHidden, inEntity, direct: false, sub, mark, depth + 1, chain);
+                                Walk(c, subWorld, subHidden, at, isHidden, inEntity, direct: false, sub, mark, depth + 1, chain, subVars);
+                            // a named prefab is an I/O target of the outer map: its world relays the inputs inside (relayPlugData)
+                            if (G<string>(node, "targetName") is { Length: > 0 } prefabName)
+                            {
+                                var origin = Vector3.Transform(Vector3.Zero, transform);
+                                var kv = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+                                {
+                                    ["classname"] = "worldspawn", ["targetname"] = prefabName, ["origin"] = Text(origin),
+                                    ["prefab"] = target!, ["prefab_node"] = Attr<int>(node, "nodeID").ToString(CultureInfo.InvariantCulture),
+                                };
+                                var id = nextId++;
+                                kv["id"] = id.ToString(CultureInfo.InvariantCulture);
+                                relays.Add(new VmfEntity(id, "worldspawn", origin, prefabName, isHidden, false, kv) { Connections = Connections(subWorld) });
+                            }
                         }
                     }
                     catch (Exception e) when (e is IOException or InvalidDataException or Datamodel.CodecException or UnauthorizedAccessException)
@@ -141,13 +163,13 @@ public static class VmapMap
                     {
                         var mark = prefab ?? ($"instance of node {Attr<int>(instanceOf, "nodeID")}", Attr<int>(node, "nodeID"));
                         foreach (var c in Children(instanceOf))
-                            Walk(c, ownWorld, hidden, transform, isHidden, inEntity, direct: false, file, mark, depth + 1, chain);
+                            Walk(c, ownWorld, hidden, transform, isHidden, inEntity, direct: false, file, mark, depth + 1, chain, vars);
                     }
                     break;
                 }
             }
             foreach (var c in Children(node))
-                Walk(c, ownWorld, hidden, transform, isHidden, inEntity, direct: node == ownWorld, file, prefab, depth, chain);
+                Walk(c, ownWorld, hidden, transform, isHidden, inEntity, direct: node == ownWorld, file, prefab, depth, chain, vars);
         }
 
         try
@@ -178,7 +200,7 @@ public static class VmapMap
             kv["id"] = worldId.ToString(CultureInfo.InvariantCulture);
             var worldEntity = new VmfEntity(worldId, kv.GetValueOrDefault("classname") ?? "worldspawn", null,
                 kv.GetValueOrDefault("targetname") is { Length: > 0 } wn ? wn : null, false, worldMeshes > 0, kv) { Connections = Connections(world) };
-            entitiesWithWorld = [.. entities, worldEntity];
+            entitiesWithWorld = [.. entities, .. relays, worldEntity];
         }
         var summary = new VmfSummary
         {
@@ -198,7 +220,43 @@ public static class VmapMap
             PrefabEntities = entities.Count(e => e.Id >= PrefabIdBase),
             Classes = [.. classes.OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key)],
         };
-        return new Result(summary, entitiesWithWorld ?? entities);
+        return new Result(summary, entitiesWithWorld ?? [.. entities, .. relays]);
+    }
+
+    /// <summary>
+    /// Variables of a placed prefab: the prefab map's defaults (mapVariables: variableNames / variableValues) overridden
+    /// by the placing node (variableOverrideNames / variableOverrideValues).
+    /// </summary>
+    private static Dictionary<string, string> PrefabVariables(Element prefabRoot, Element placement)
+    {
+        var vars = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var set = G<Element>(prefabRoot, "mapVariables");
+        if (G<StringArray>(set, "variableNames") is { } names && G<StringArray>(set, "variableValues") is { } values)
+            for (var i = 0; i < names.Count && i < values.Count; i++)
+                if (names[i] is { } n)
+                    vars[n] = values[i] ?? "";
+        var overrides = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        if (G<StringArray>(placement, "variableOverrideNames") is { } on && G<StringArray>(placement, "variableOverrideValues") is { } ov)
+            for (var i = 0; i < on.Count && i < ov.Count; i++)
+                if (on[i] is { } n)
+                    overrides[n] = ov[i] ?? "";
+        // choice groups (e.g. TowerLocation = middle_tier_3) set several variables at once; the placement picks the choice
+        var groups = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var group in G<ElementArray>(set, "m_ChoiceGroups")?.OfType<Element>() ?? [])
+        {
+            groups.Add(group.Name ?? "");
+            var picked = overrides.GetValueOrDefault(group.Name ?? "") ?? G<string>(group, "m_ActiveValue");
+            if (G<ElementArray>(group, "m_Choices")?.OfType<Element>().FirstOrDefault(c => string.Equals(c.Name, picked, StringComparison.OrdinalIgnoreCase)) is not { } choice)
+                continue;
+            if (G<StringArray>(group, "m_ChoiceVariables") is { } cv && G<StringArray>(choice, "m_ChoiceValues") is { } values2)
+                for (var i = 0; i < cv.Count && i < values2.Count; i++)
+                    if (cv[i] is { } n)
+                        vars[n] = values2[i] ?? "";
+        }
+        foreach (var (n, v) in overrides)
+            if (!groups.Contains(n))
+                vars[n] = v;
+        return vars;
     }
 
     /// <summary>

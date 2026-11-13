@@ -84,7 +84,21 @@ public class VmapMapTests
         tprops["classname"] = "info_target";
         tprops["targetname"] = "inside";
         target["entity_properties"] = tprops;
+        // targetname bound to the variable "Name", set through the choice group "Where"
+        target["variableTargetKeys"] = new StringArray { "targetname" };
+        target["variableNames"] = new StringArray { "Name" };
         ((ElementArray)pworld["children"]!).Add(target);
+        var vars = new Element(pdm, "", null, "CMapVariableSet");
+        vars["variableNames"] = new StringArray { "Name" };
+        vars["variableValues"] = new StringArray { "inside" };
+        var group = new Element(pdm, "Where", null, "CMapVariableChoiceGroup");
+        group["m_ChoiceVariables"] = new StringArray { "Name" };
+        var choice = new Element(pdm, "left", null, "CMapVariableChoice");
+        choice["m_ChoiceValues"] = new StringArray { "inside_left" };
+        group["m_Choices"] = new ElementArray { choice };
+        group["m_ActiveValue"] = "";
+        vars["m_ChoiceGroups"] = new ElementArray { group };
+        proot["mapVariables"] = vars;
         pdm.Save(Path.Combine(dir, "prefabs", "box.vmap"), "binary", 9);
 
         // map: an entity with nodeID 2 and the prefab placed at 100 0 0 rotated 90 degrees
@@ -101,6 +115,9 @@ public class VmapMapTests
         var prefab = Node(dm, "CMapPrefab", new Vector3(100, 0, 0), yaw: 90);
         prefab["nodeID"] = 5;
         prefab["targetMapPath"] = "maps/prefabs/box.vmap";
+        prefab["targetName"] = "box1";
+        prefab["variableOverrideNames"] = new StringArray { "Where" };
+        prefab["variableOverrideValues"] = new StringArray { "left" };
         ((ElementArray)world["children"]!).Add(own);
         ((ElementArray)world["children"]!).Add(prefab);
         var path = Path.Combine(dir, "main.vmap");
@@ -109,7 +126,8 @@ public class VmapMapTests
         var r = VmapMap.Read(path);
         Assert.Equal(1, r.Summary.Prefabs);
         Assert.Equal(1, r.Summary.PrefabEntities);
-        var inside = Assert.Single(r.Entities, e => e.TargetName == "inside");
+        var inside = Assert.Single(r.Entities, e => e.TargetName == "inside_left");
+        Assert.Single(r.Entities, e => e.TargetName == "box1" && e.ClassName == "worldspawn"); // the named prefab as an I/O target
         Assert.True(inside.Id >= VmapMap.PrefabIdBase);
         Assert.Equal("maps/prefabs/box.vmap", inside.KeyValues["prefab"]);
         Assert.True(VmfEntities.SameOrigin(new Vector3(100, 10, 0), inside.Origin!.Value), inside.KeyValues["origin"]);

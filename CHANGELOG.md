@@ -4,6 +4,11 @@
 
 All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/); `-alpha` releases are pre-releases.
 
+## [Unreleased]
+
+### Added
+- **vmap prefab variables**: keyvalues bound to prefab variables get the placed prefab's values - defaults, choice groups (e.g. `TowerLocation = middle_tier_3` sets the tower's name and unit) and overrides; a named prefab is an I/O target of the outer map (its world relays the inputs). Dota towers now get their real names. `fixupEntityNames` is not applied (no evidence of the renaming rule in the data).
+
 ## [0.4.0] - 2026-11-13
 
 Source 2: unsaved Hammer state through the developer console, prefabs expanded; Strata game config and autosaves.
