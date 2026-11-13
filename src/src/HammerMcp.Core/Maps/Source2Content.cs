@@ -89,4 +89,43 @@ public static class Source2Content
             return [];
         }
     }
+
+    /// <summary>
+    /// Folder of Source 2 Hammer autosaves for a map: content\_toolsautosave\hammer\&lt;map folder relative to content&gt;
+    /// (e.g. content\csgo_addons\x\maps → content\_toolsautosave\hammer\csgo_addons\x\maps). Null if the map is not under content\.
+    /// </summary>
+    public static string? AutosaveFolder(string mapPath)
+    {
+        var full = Path.GetFullPath(mapPath);
+        var dir = Path.GetDirectoryName(full);
+        var parts = (dir ?? "").Split(Path.DirectorySeparatorChar);
+        var at = Array.FindLastIndex(parts, p => p.Equals("content", StringComparison.OrdinalIgnoreCase));
+        if (at < 0)
+            return null;
+        var content = string.Join(Path.DirectorySeparatorChar, parts[..(at + 1)]);
+        var rest = parts[(at + 1)..];
+        return Path.Combine([content, "_toolsautosave", "hammer", .. rest]);
+    }
+
+    /// <summary>Newest autosave of <paramref name="mapPath"/> (a file named after the map in <see cref="AutosaveFolder"/>), if newer than the map.</summary>
+    public static string? NewestAutosave(string mapPath)
+    {
+        if (AutosaveFolder(mapPath) is not { } folder || !Directory.Exists(folder))
+            return null;
+        var stem = Path.GetFileNameWithoutExtension(mapPath);
+        var saved = File.Exists(mapPath) ? File.GetLastWriteTimeUtc(mapPath) : DateTime.MinValue;
+        return Directory.EnumerateFiles(folder)
+            .Where(f => Path.GetFileName(f).StartsWith(stem, StringComparison.OrdinalIgnoreCase) && f.Contains(".vmap", StringComparison.OrdinalIgnoreCase))
+            .Where(f => File.GetLastWriteTimeUtc(f) > saved)
+            .OrderByDescending(File.GetLastWriteTimeUtc)
+            .FirstOrDefault();
+    }
+
+    /// <summary>An autosave path mapped back to where the map lives (content\_toolsautosave\hammer\x → content\x), else unchanged.</summary>
+    public static string FromAutosaveTree(string path)
+    {
+        var marker = $"{Path.DirectorySeparatorChar}_toolsautosave{Path.DirectorySeparatorChar}hammer{Path.DirectorySeparatorChar}";
+        var at = path.IndexOf(marker, StringComparison.OrdinalIgnoreCase);
+        return at < 0 ? path : path[..at] + Path.DirectorySeparatorChar + path[(at + marker.Length)..];
+    }
 }

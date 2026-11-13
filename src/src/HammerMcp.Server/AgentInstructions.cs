@@ -38,7 +38,8 @@ internal static class AgentInstructions
         Source 2 Hammer (CS2, Dota 2, HL: Alyx; runs inside the game process): read-only. Map tools read the saved
         .vmap (entities, keyvalues, outputs, validation); there is no shell channel and no menu commands, so ask the user
         to make changes in Hammer and save (Ctrl+S) before you read again. source2_console talks to the game's developer
-        console: hammer_map_files lists the open maps, hammer_force_autosave writes Hammer's unsaved state to an autosave.
+        console: hammer_map_files lists the open maps. Read tools with fromAutosave=true force an autosave and read it, so
+        you see the user's unsaved edits without asking them to save.
 
         Units: Hammer units (1 unit = 0.75 inch for player scale, a player is 72 units tall, a standard door 112).
         Coordinates are world x y z; angles are pitch yaw roll in degrees.

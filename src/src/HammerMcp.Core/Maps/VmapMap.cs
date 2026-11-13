@@ -26,6 +26,24 @@ public static class VmapMap
     /// </summary>
     public const int PrefabIdBase = 1_000_000;
 
+    /// <summary>True for .vmap files and anything that starts like a DMX file (Source 2 autosaves may use other names).</summary>
+    public static bool IsVmap(string path)
+    {
+        if (Path.GetExtension(path).Equals(".vmap", StringComparison.OrdinalIgnoreCase))
+            return true;
+        try
+        {
+            using var f = File.OpenRead(path);
+            var head = new byte[16];
+            var n = f.Read(head);
+            return System.Text.Encoding.ASCII.GetString(head, 0, n).StartsWith("<!-- dmx", StringComparison.Ordinal);
+        }
+        catch (IOException)
+        {
+            return false;
+        }
+    }
+
     public static Result Read(string path, bool expandPrefabs = true)
     {
         using var dm = Datamodel.Datamodel.Load(path, Datamodel.Codecs.DeferredMode.Disabled);
@@ -190,7 +208,9 @@ public static class VmapMap
     public static string? ResolvePrefab(string mapPath, string targetMapPath)
     {
         var rel = targetMapPath.Replace('\\', '/').TrimStart('/');
-        var dir = Path.GetDirectoryName(Path.GetFullPath(mapPath));
+        // an autosave (content\_toolsautosave\hammer\...) uses the prefabs of the real map's folder
+        mapPath = Source2Content.FromAutosaveTree(Path.GetFullPath(mapPath));
+        var dir = Path.GetDirectoryName(mapPath);
         while (dir is not null && !Path.GetFileName(dir).Equals("maps", StringComparison.OrdinalIgnoreCase))
             dir = Path.GetDirectoryName(dir);
         var modDir = dir is null ? null : Path.GetDirectoryName(dir);

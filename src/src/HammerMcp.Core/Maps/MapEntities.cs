@@ -16,7 +16,7 @@ public static class MapEntities
         var ext = Path.GetExtension(path).ToLowerInvariant();
         if (ext is ".vmf" or ".vmx" or ".vmm" or ".vmf_autosave")
             return VmfEntities.Read(path);
-        if (ext is ".vmap")
+        if (ext is ".vmap" || (ext is not (".rmf" or ".map" or ".jmf") && VmapMap.IsVmap(path)))
             return VmapMap.Read(path).Entities;
 
         using var stream = File.OpenRead(path);

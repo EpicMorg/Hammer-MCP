@@ -47,4 +47,24 @@ public class Source2ConfigTests
         Assert.Equal(addon, HammerMcp.Core.Maps.Source2Content.FindMap(exe, "maps/de_mine.vmap"));
         Assert.Null(HammerMcp.Core.Maps.Source2Content.FindMap(exe, "nope.vmap"));
     }
+
+    [Fact]
+    public void FindsSource2AutosavesInTheToolsAutosaveTree()
+    {
+        var root = Path.Combine(Path.GetTempPath(), $"hammermcp-s2a-{Guid.NewGuid():N}");
+        var map = Path.Combine(root, "content", "csgo_addons", "x", "maps", "demo.vmap");
+        Directory.CreateDirectory(Path.GetDirectoryName(map)!);
+        File.WriteAllText(map, "");
+        File.SetLastWriteTimeUtc(map, DateTime.UtcNow.AddMinutes(-5));
+        var folder = HammerMcp.Core.Maps.Source2Content.AutosaveFolder(map)!;
+        Assert.Equal(Path.Combine(root, "content", "_toolsautosave", "hammer", "csgo_addons", "x", "maps"), folder);
+        Directory.CreateDirectory(folder);
+        var older = Path.Combine(folder, "demo.vmap_autosave_1");
+        var newer = Path.Combine(folder, "demo.vmap_autosave_2");
+        File.WriteAllText(older, "");
+        File.WriteAllText(newer, "");
+        File.SetLastWriteTimeUtc(older, DateTime.UtcNow.AddMinutes(-1));
+        Assert.Equal(newer, HammerMcp.Core.Maps.Source2Content.NewestAutosave(map));
+        Assert.Equal(map, HammerMcp.Core.Maps.Source2Content.FromAutosaveTree(Path.Combine(folder, "demo.vmap")));
+    }
 }

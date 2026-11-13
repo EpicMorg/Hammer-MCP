@@ -53,7 +53,7 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
 
     [McpServerTool(Name = "map_summary", ReadOnly = true)]
     [Description("Summary of the map open in Hammer, read from the SAVED .vmf: mapversion, editor build, entity and brush counts, entity classes with counts, skybox, visgroups. Unsaved edits are not included - call save_map first.")]
-    public object MapSummary([Description("Read Hammer++'s newest autosave if it is newer than the saved map")] bool fromAutosave = false)
+    public object MapSummary([Description("Read the newest autosave if it is newer than the saved map (Hammer++, stock, Strata); Source 2: forces an autosave first, i.e. reads Hammer's current unsaved state")] bool fromAutosave = false)
     {
         var (map, source) = target.MapSource(fromAutosave);
         if (map is null)
@@ -70,7 +70,7 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
         [Description("Only entities within 'radius' units of x y z")] float? x = null, float? y = null, float? z = null,
         float radius = 256,
         int limit = 200,
-        [Description("Read Hammer++'s newest autosave if it is newer than the saved map")] bool fromAutosave = false)
+        [Description("Read the newest autosave if it is newer than the saved map (Hammer++, stock, Strata); Source 2: forces an autosave first, i.e. reads Hammer's current unsaved state")] bool fromAutosave = false)
     {
         var (map, source) = target.MapSource(fromAutosave);
         if (map is null)

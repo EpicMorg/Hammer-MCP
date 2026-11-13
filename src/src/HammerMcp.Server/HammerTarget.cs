@@ -32,6 +32,14 @@ public sealed class HammerTarget
         var map = process?.OpenMapPath;
         if (process is null || map is null || !File.Exists(map))
             return (null, "none");
+        if (fromAutosave && process.IsSource2)
+        {
+            // Source 2: ask Hammer to autosave now (developer console), then read that autosave = the unsaved state
+            var forced = HammerMcp.Core.Source2.VConsoleMaps.ForceAutosave();
+            if (HammerMcp.Core.Maps.Source2Content.NewestAutosave(map) is { } s2)
+                return (s2, $"autosave {System.IO.Path.GetFileName(s2)} ({System.IO.File.GetLastWriteTime(s2):HH:mm:ss}{(forced ? ", forced now" : "")})");
+            return (map, forced ? "saved map (autosave forced, but no newer autosave found)" : "saved map (developer console not reachable: no autosave forced)");
+        }
         if (fromAutosave)
         {
             var (dir, enabled) = HammerMcp.Core.Maps.Autosaves.HammerPlusPlusFolder(process.ExePath);

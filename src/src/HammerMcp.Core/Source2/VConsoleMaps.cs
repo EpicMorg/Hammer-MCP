@@ -35,4 +35,23 @@ public static class VConsoleMaps
             _cache = (maps, DateTime.UtcNow);
         return maps;
     }
+
+    /// <summary>Runs hammer_force_autosave and waits for it (Hammer writes the autosave in well under a second); false if the console is not reachable.</summary>
+    public static bool ForceAutosave()
+    {
+        try
+        {
+            return Task.Run(async () =>
+            {
+                using var client = await VConsoleClient.ConnectAsync(timeout: TimeSpan.FromSeconds(2));
+                var output = await client.RunAsync("hammer_force_autosave", TimeSpan.FromSeconds(2));
+                _ = output;
+                return true;
+            }).GetAwaiter().GetResult();
+        }
+        catch (Exception e) when (e is System.Net.Sockets.SocketException or OperationCanceledException or IOException)
+        {
+            return false;
+        }
+    }
 }

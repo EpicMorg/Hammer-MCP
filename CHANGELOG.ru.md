@@ -8,8 +8,9 @@
 
 ### Добавлено
 - **Strata (Portal: Revolution)**: игровой конфиг из `hammer/cfg/gameconfig.txt` (пути с `..\..`, как в поставке, нормализуются), папка автосейвов из `hammer/cfg/HammerConfig.vdf` (KV3) для `fromAutosave`; `revolution.fgd` читается чисто (563 класса).
-- **Консоль разработчика Source 2** (`source2_console`): команды из белого списка через VConsole2 (TCP 127.0.0.1:29000, тот же канал, что у `vconsole2.exe`) — `hammer_map_files`, `hammer_force_autosave`, `hammer_prefab_tree`, `find`, `help`, `status`, …; ничего не внедряется. Вживую ещё не проверено.
+- **Консоль разработчика Source 2** (`source2_console`): команды из белого списка через VConsole2 (TCP 127.0.0.1:29000, тот же канал, что у `vconsole2.exe`) — `hammer_map_files`, `hammer_force_autosave`, `hammer_prefab_tree`, `find`, `help`, `status`, …; ничего не внедряется. Проверено вживую на CS2 (`-vconsole` не нужен).
 - **Префабы и инстансы vmap раскрываются**: `CMapPrefab` (другая `.vmap`, ищется в папке мода / аддона карты, затем в стоковом моде) и `CMapInstance` со своими трансформациями, вложенность до 6 уровней; их сущности получают id от 1000000 и keyvalues `prefab` / `prefab_node`. `dota.vmap` из Dota: 69 своих сущностей, 1734 вместе с 67 префабами.
+- **Несохранённое состояние Source 2**: инструменты чтения с `fromAutosave=true` выполняют `hammer_force_autosave` в консоли разработчика и читают самый свежий автосейв из `content\_toolsautosave\hammer\<папка карты>` (префабы ищутся в настоящем content). Открытая карта берётся из `hammer_map_files`, если в заголовке окна её нет. Проверено: консоль в Workshop Tools работает без `-vconsole`.
 
 ## [0.3.0] - 2026-11-13
 

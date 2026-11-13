@@ -86,7 +86,7 @@ public sealed class MapTools(HammerTarget target, GameData gameData)
 
     [McpServerTool(Name = "get_entity", ReadOnly = true)]
     [Description("One entity of the SAVED map by id (from list_entities): all keyvalues, its outputs, and outputs of other entities that target it by name.")]
-    public object GetEntity(int id, [Description("Read Hammer++'s newest autosave if it is newer than the saved map")] bool fromAutosave = false)
+    public object GetEntity(int id, [Description("Read the newest autosave if it is newer than the saved map (Hammer++, stock, Strata); Source 2: forces an autosave first, i.e. reads Hammer's current unsaved state")] bool fromAutosave = false)
     {
         var (entities, error) = LoadMap(fromAutosave);
         if (entities is null)
@@ -110,7 +110,7 @@ public sealed class MapTools(HammerTarget target, GameData gameData)
 
     [McpServerTool(Name = "find_io", ReadOnly = true)]
     [Description("Map logic around a name in the SAVED map: entities with that targetname, their outputs, and every output that targets the name (wildcards like door_* in targets are matched).")]
-    public object FindIo(string targetName, [Description("Read Hammer++'s newest autosave if it is newer than the saved map")] bool fromAutosave = false)
+    public object FindIo(string targetName, [Description("Read the newest autosave if it is newer than the saved map (Hammer++, stock, Strata); Source 2: forces an autosave first, i.e. reads Hammer's current unsaved state")] bool fromAutosave = false)
     {
         var (entities, error) = LoadMap(fromAutosave);
         if (entities is null)
