@@ -38,7 +38,7 @@ public sealed class Source2Tools(HammerTarget target, ActivityLog log)
             return new { error = $"'{word}' is not allowed (one command, no ';')", allowed = Allowed.Order() };
         try
         {
-            using var client = await VConsoleClient.ConnectAsync(cancellationToken: cancellationToken);
+            using var client = await VConsoleClient.ConnectAsync(ct: cancellationToken);
             var output = await client.RunAsync(command.Trim(), TimeSpan.FromSeconds(Math.Clamp(waitSeconds, 0.5, 15)), cancellationToken);
             log.Write($"vconsole: {command.Trim()} -> {output.Length} chars");
             return new { command = command.Trim(), output, game = client.AppInfo };
