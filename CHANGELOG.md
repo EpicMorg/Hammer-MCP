@@ -4,7 +4,7 @@
 
 All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/); `-alpha` releases are pre-releases.
 
-## [0.2.0-alpha] - 2026-11-13
+## [0.2.0] - 2026-11-13
 
 Reading maps, game data and the compile pipeline; first live edits of logic; a much larger build registry.
 
@@ -18,6 +18,7 @@ Reading maps, game data and the compile pipeline; first live edits of logic; a m
 - **Build registry**: 179 known editor builds - every Hammer++ release 8846-8873 (all branches), stock Source 1 Hammer of Valve games and SDKs (x86 and x64), mods (Portal Stories: Mel, Aperture Tag, Portal Reloaded, Black Mesa, ...), Slammin' Hammer, Strata (Portal: Revolution), Source 2 (`tools/hammer.dll` of CS2 and Dota 2) and GoldSrc (Worldcraft 1.1-3.3, Hammer 3.4 / 3.5, Neon / Neo / CSM Hammer 3.5). Source 2 and GoldSrc builds are recognised (GoldSrc by the editor exe itself); live editing still needs the shell channel.
 
 ### Changed
+- The main window title shows the app version; About and the title take it from the exe's version resource (About showed 0.1.0-alpha in local builds).
 - `run_compile` / `compile_sequences` quote expanded arguments that contain spaces, like Hammer does (`-game "...\Bestiarium Project\bst"`), and `run_compile` ignores a compile log left over from an earlier run.
 - `validate_map` resolves output targets by targetname, then by classname (as the engine does), and accepts classes that exist only at runtime (`player`, ...).
 - Outputs are formatted with the invariant culture (`delay 0.5`, not `0,5`).
@@ -38,5 +39,5 @@ First public pre-release.
 - Reading the saved map: `hammer_status`, `map_summary`, `list_entities`.
 - Embedded build registry (`registry/hammers.json`, overridable by a file next to the exe).
 
-[0.2.0-alpha]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.1.0-alpha...v0.2.0-alpha
+[0.2.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.1.0-alpha...v0.2.0
 [0.1.0-alpha]: https://github.com/EpicMorg/Hammer-MCP/releases/tag/v0.1.0-alpha

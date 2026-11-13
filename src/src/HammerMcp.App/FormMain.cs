@@ -45,6 +45,7 @@ public partial class FormMain : Form
     public FormMain()
     {
         InitializeComponent();
+        Text = $"Hammer MCP Server {FormAbout.AppVersion}";
 
         _trayStartStop = new ToolStripMenuItem("Start server", null, async (_, _) => await ToggleServerAsync());
         var trayMenu = new ContextMenuStrip();

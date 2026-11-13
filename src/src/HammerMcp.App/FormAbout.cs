@@ -23,13 +23,18 @@ public partial class FormAbout : Form
         linkLabelSiteAuthor.LinkClicked += (_, _) => OpenUrl(AuthorUrl);
     }
 
-    /// <summary>Informational version without the "+commit" build metadata, e.g. "0.1.0-alpha".</summary>
+    /// <summary>
+    /// Product version of hammer-mcp.exe (its version resource), without the "+commit" build metadata, e.g. "0.2.0";
+    /// falls back to the assembly's informational version.
+    /// </summary>
     public static string AppVersion
     {
         get
         {
-            var version = typeof(FormAbout).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
-                          ?? Application.ProductVersion;
+            var file = Environment.ProcessPath is { } exe && File.Exists(exe) ? FileVersionInfo.GetVersionInfo(exe).ProductVersion : null;
+            var version = !string.IsNullOrWhiteSpace(file) ? file
+                : typeof(FormAbout).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+                  ?? Application.ProductVersion;
             var plus = version.IndexOf('+');
             return plus < 0 ? version : version[..plus];
         }

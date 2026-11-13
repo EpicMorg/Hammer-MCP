@@ -4,7 +4,7 @@
 
 Все заметные изменения Hammer-MCP. Версии — по [SemVer](https://semver.org/lang/ru/); релизы `-alpha` — пре-релизы.
 
-## [0.2.0-alpha] - 2026-11-13
+## [0.2.0] - 2026-11-13
 
 Чтение карт, игровых данных и конвейер компиляции; первые живые правки логики; намного больший реестр сборок.
 
@@ -18,6 +18,7 @@
 - **Реестр сборок**: 179 известных сборок редакторов — все релизы Hammer++ 8846–8873 (все ветки), стоковый Hammer Source 1 из игр и SDK Valve (x86 и x64), моды (Portal Stories: Mel, Aperture Tag, Portal Reloaded, Black Mesa, …), Slammin' Hammer, Strata (Portal: Revolution), Source 2 (`tools/hammer.dll` из CS2 и Dota 2) и GoldSrc (Worldcraft 1.1–3.3, Hammer 3.4 / 3.5, Neon / Neo / CSM Hammer 3.5). Сборки Source 2 и GoldSrc распознаются (GoldSrc — по самому exe редактора); для живых правок по-прежнему нужен shell-канал.
 
 ### Изменено
+- В заголовке главного окна показывается версия приложения; «О программе» и заголовок берут её из ресурса версии exe (в локальных сборках «О программе» показывало 0.1.0-alpha).
 - `run_compile` / `compile_sequences` берут в кавычки подставленные аргументы с пробелами, как это делает Hammer (`-game "...\Bestiarium Project\bst"`), а `run_compile` не читает лог, оставшийся от прошлой компиляции.
 - `validate_map` ищет цель output'а по targetname, затем по classname (как движок) и принимает классы, которые появляются только в игре (`player`, …).
 - Outputs выводятся в инвариантной культуре (`delay 0.5`, а не `0,5`).
@@ -38,5 +39,5 @@
 - Чтение сохранённой карты: `hammer_status`, `map_summary`, `list_entities`.
 - Встроенный реестр сборок (`registry/hammers.json`, переопределяется файлом рядом с exe).
 
-[0.2.0-alpha]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.1.0-alpha...v0.2.0-alpha
+[0.2.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.1.0-alpha...v0.2.0
 [0.1.0-alpha]: https://github.com/EpicMorg/Hammer-MCP/releases/tag/v0.1.0-alpha
