@@ -62,6 +62,7 @@ public partial class FormMain : Form
 
         _log.Line += AppendLog;
         WireEvents();
+        AddGridCopyMenu(dataGridViewMetaInfoFromHammer);
         FillAddresses();
         comboBoxMCPMode.DataSource = Enum.GetValues<McpMode>();
         ShowSettings(_settings);
@@ -69,6 +70,42 @@ public partial class FormMain : Form
         RefreshProcessList();
         UpdateAttachUi();
         _log.Write($"registry: {_registry.Builds.Count} known Hammer builds");
+    }
+
+    /// <summary>Right-click menu on a read-only grid: Copy (cell), Copy row ("key: value"), Copy all. Right-click selects the cell first.</summary>
+    private static void AddGridCopyMenu(DataGridView grid)
+    {
+        static string Cell(DataGridViewCell? c) => c?.Value?.ToString() ?? "";
+        static string Row(DataGridViewRow r) => string.Join(": ", r.Cells.Cast<DataGridViewCell>().Select(Cell));
+        static void Put(string text)
+        {
+            if (text.Length > 0)
+                Clipboard.SetText(text);
+        }
+
+        var menu = new ContextMenuStrip();
+        var copy = new ToolStripMenuItem("Copy", null, (_, _) => Put(Cell(grid.CurrentCell))) { ShortcutKeyDisplayString = "Ctrl+C" };
+        var copyRow = new ToolStripMenuItem("Copy row", null, (_, _) =>
+        {
+            if (grid.CurrentCell is { RowIndex: >= 0 } c)
+                Put(Row(grid.Rows[c.RowIndex]));
+        });
+        var copyAll = new ToolStripMenuItem("Copy all", null, (_, _) =>
+            Put(string.Join(Environment.NewLine, grid.Rows.Cast<DataGridViewRow>().Where(r => !r.IsNewRow).Select(Row))));
+        menu.Items.AddRange([copy, copyRow, new ToolStripSeparator(), copyAll]);
+        menu.Opening += (_, e) =>
+        {
+            var any = grid.Rows.Count > 0;
+            copy.Enabled = copyRow.Enabled = any && grid.CurrentCell is not null;
+            copyAll.Enabled = any;
+        };
+        grid.ContextMenuStrip = menu;
+        // select the cell under the mouse before the menu opens
+        grid.CellMouseDown += (_, e) =>
+        {
+            if (e.Button == MouseButtons.Right && e.RowIndex >= 0 && e.ColumnIndex >= 0)
+                grid.CurrentCell = grid.Rows[e.RowIndex].Cells[e.ColumnIndex];
+        };
     }
 
     private void WireEvents()
