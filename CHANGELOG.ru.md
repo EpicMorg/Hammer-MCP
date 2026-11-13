@@ -13,6 +13,7 @@
 - Игровые данные Source 2 без GameConfig.txt: по конфигу на каждый мод с `game/<mod>/<mod>.fgd` (CS2 `csgo`: 469 классов, Dota 2 `dota`: 427), выбор по папке `content/<mod>` открытой карты (`csgo_addons` → `csgo`).
 - Политика внедрения для будущего режима Advanced (`InjectPolicy`): только отдельный exe Hammer известной сборки с адаптером; никогда в игровые процессы (VAC / античит), никогда в Source 2 и неизвестные сборки.
 - Проверено вживую на CS2 Workshop Tools (2026-11-13): Attach к `cs2.exe`, имя карты из заголовка найдено в `content/csgo_addons/<аддон>/maps`, `map_summary` / `list_entities` / `get_entity` / `find_io` / `validate_map` / `fgd_class` на `.vmap` в 69 МБ (формат 40); новая `hammer.dll` CS2 в реестре; командная строка процесса в `hammer_status`.
+- Для карты вне всех MapDir берётся игровой конфиг установки самого Hammer (единственный, чья папка игры лежит внутри неё и содержит gameinfo.txt, например `tf` для Hammer TF2), вместо требования `configName`.
 
 ## [0.2.0] - 2026-11-13
 

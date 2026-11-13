@@ -40,7 +40,7 @@ public sealed class GameData(HammerTarget target)
             return new Selection(null, [], null, $"no GameConfig.txt / hammerplusplus_gameconfig.txt next to {process.ExePath}");
         var active = configName is not null
             ? configs.FirstOrDefault(c => c.Name.Equals(configName, StringComparison.OrdinalIgnoreCase))
-            : HammerGameConfig.ForMap(configs, process.OpenMapPath);
+            : HammerGameConfig.ForMap(configs, process.OpenMapPath) ?? HammerGameConfig.ForHammer(configs, process.ExePath);
         var problem = active is null
             ? configName is not null
                 ? $"no game config named '{configName}'"

@@ -123,6 +123,26 @@ public sealed record HammerGameConfig(
                ?? configs.FirstOrDefault(c => c.GameDir is { Length: > 0 } g && full.StartsWith(Normalize(Path.GetDirectoryName(g) ?? g), StringComparison.OrdinalIgnoreCase));
     }
 
+    /// <summary>
+    /// The config of the game this Hammer ships with, for maps outside every MapDir: the only config whose GameDir is
+    /// inside the Hammer's install (the folder above bin/) and has a gameinfo.txt. In the TF2 install that is "tf" -
+    /// its "hl2" folder is shared content without a gameinfo.txt. Null if none or several qualify.
+    /// </summary>
+    public static HammerGameConfig? ForHammer(IReadOnlyList<HammerGameConfig> configs, string exePath)
+    {
+        var bin = Path.GetDirectoryName(exePath);
+        if (bin is null)
+            return null;
+        // bin/ or bin/x64/
+        var root = Path.GetFileName(bin).Equals("bin", StringComparison.OrdinalIgnoreCase) ? Path.GetDirectoryName(bin) : Path.GetDirectoryName(Path.GetDirectoryName(bin));
+        if (root is null)
+            return null;
+        var own = configs.Where(c => c.GameDir is { Length: > 0 } g
+                                     && Normalize(g).StartsWith(Normalize(root), StringComparison.OrdinalIgnoreCase)
+                                     && File.Exists(Path.Combine(g, "gameinfo.txt"))).ToList();
+        return own.Count == 1 ? own[0] : null;
+    }
+
     private static string Normalize(string p) => p.Replace('/', '\\').TrimEnd('\\') + "\\";
 
     private static KVObject? Child(KVObject obj, string name) =>

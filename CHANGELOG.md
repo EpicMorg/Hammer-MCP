@@ -13,6 +13,7 @@ All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/)
 - Source 2 game data without a GameConfig.txt: one config per mod with `game/<mod>/<mod>.fgd` (CS2 `csgo`: 469 classes, Dota 2 `dota`: 427), picked by the open map's `content/<mod>` folder (`csgo_addons` → `csgo`).
 - Inject policy for the future Advanced mode (`InjectPolicy`): only standalone Hammer executables of a known build with an adapter; never game processes (VAC / anti-cheat), never Source 2, never unknown builds.
 - Verified live on CS2 Workshop Tools (2026-11-13): attach to `cs2.exe`, map name from the title resolved in `content/csgo_addons/<addon>/maps`, `map_summary` / `list_entities` / `get_entity` / `find_io` / `validate_map` / `fgd_class` on a 69 MB `.vmap` (format 40); new CS2 `hammer.dll` in the registry; process command line in `hammer_status`.
+- A map outside every MapDir uses the game config of the Hammer's own install (the only config whose game folder is inside it and has a gameinfo.txt, e.g. `tf` for the TF2 Hammer) instead of asking for `configName`.
 
 ## [0.2.0] - 2026-11-13
 
