@@ -9,6 +9,9 @@ public sealed record VmfEntity(int Id, string ClassName, Vector3? Origin, string
 {
     /// <summary>Outputs from the entity's "connections" block (Source maps only).</summary>
     public IReadOnlyList<VmfConnection> Connections { get; init; } = [];
+
+    /// <summary>Keyvalue / output lines with extra double quotes inside the value (e.g. echo "text"): Hammer and vbsp split them.</summary>
+    public IReadOnlyList<string> BrokenLines { get; init; } = [];
 }
 
 /// <summary>An output: OnTrigger -> target.Input(parameter) after delay, fired TimesToFire times (-1 = always).</summary>
@@ -45,6 +48,7 @@ public static class VmfEntities
         string? pending = null;
         Dictionary<string, string>? kv = null;
         List<VmfConnection>? connections = null;
+        List<string>? broken = null;
         var entityDepth = -1;
         var hasBrushes = false;
 
@@ -63,6 +67,7 @@ public static class VmfEntities
                     entityDepth = stack.Count;
                     kv = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                     connections = [];
+                    broken = [];
                     hasBrushes = false;
                 }
                 else if (name == "solid" && entityDepth > 0 && stack.Count == entityDepth + 1)
@@ -80,7 +85,7 @@ public static class VmfEntities
                         kv.GetValueOrDefault("targetname"),
                         Hidden: entityDepth == 2,
                         hasBrushes,
-                        kv) { Connections = connections ?? [] });
+                        kv) { Connections = connections ?? [], BrokenLines = broken ?? [] });
                     entityDepth = -1;
                     kv = null;
                 }
@@ -92,6 +97,8 @@ public static class VmfEntities
             {
                 if (kv is not null && TryKeyValue(line, out var key, out var value))
                 {
+                    if (value.Contains('"'))
+                        broken!.Add(line);
                     if (stack.Count == entityDepth)
                         kv[key] = value;
                     else if (stack.Count == entityDepth + 1 && stack[^1] == "connections" && VmfConnection.Parse(key, value) is { } c)

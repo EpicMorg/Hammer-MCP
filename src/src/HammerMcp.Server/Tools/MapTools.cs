@@ -146,6 +146,7 @@ public sealed class MapTools(HammerTarget target, GameData gameData)
             unknownOutputNames = new { count = r.UnknownOutputs.Count, items = r.UnknownOutputs.Take(cap) },
             inputsTargetDoesNotHave = new { count = r.UnknownInputs.Count, items = r.UnknownInputs.Take(cap) },
             keyValuesNotInFgd = new { count = r.UnknownKeyValues.Count, items = r.UnknownKeyValues.Take(cap) },
+            quotesInsideValues = new { count = r.QuotesInsideValues.Count, note = "Hammer and vbsp cut such a value at the inner quote; use single quotes or none", items = r.QuotesInsideValues.Take(cap) },
             fgdWarnings = fgd.Warnings.Take(20),
         };
     }

@@ -23,6 +23,7 @@ public class MapValidatorTests
                 "OnTrigger" "player,SetHealth,10,0,-1"
                 "OnTrigger" "relay*,Trigger,,0,-1"
                 "OnTrigger" "nobody,Trigger,,0,-1"
+                "OnTrigger" "point_servercommand,Command,echo "hi",0,-1"
             }
         }
         entity
@@ -39,5 +40,6 @@ public class MapValidatorTests
         Assert.Single(r.MissingTargets);
         Assert.Contains("nobody", r.MissingTargets[0].Detail);
         Assert.Empty(r.UnknownInputs);
+        Assert.Single(r.QuotesInsideValues);
     }
 }

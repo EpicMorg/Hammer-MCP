@@ -24,7 +24,8 @@ public static class MapValidator
         List<Issue> MissingTargets,
         List<Issue> UnknownOutputs,
         List<Issue> UnknownInputs,
-        List<Issue> UnknownKeyValues);
+        List<Issue> UnknownKeyValues,
+        List<Issue> QuotesInsideValues);
 
     public static Result Validate(IReadOnlyList<VmfEntity> entities, FgdDocument fgd)
     {
@@ -36,9 +37,11 @@ public static class MapValidator
         var resolved = new Dictionary<string, FgdClass?>(StringComparer.OrdinalIgnoreCase);
         FgdClass? Cls(string name) => resolved.TryGetValue(name, out var c) ? c : resolved[name] = fgd.Resolve(name);
 
-        var r = new Result([], [], [], [], []);
+        var r = new Result([], [], [], [], [], []);
         foreach (var e in entities)
         {
+            foreach (var line in e.BrokenLines)
+                r.QuotesInsideValues.Add(new Issue(e.Id, e.ClassName, line));
             var cls = Cls(e.ClassName);
             if (cls is null)
             {
