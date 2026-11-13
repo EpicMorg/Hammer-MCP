@@ -19,6 +19,825 @@
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
+      "id": "hpp-2013mp-8846-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8846, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "6eb18c2da55237f9aef5bef2bd5f89155c735d1a24df13b028731c67fa6b579d", "linked": "2021-03-14" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8846-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8846, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "9f1200daa5be04c8b37041f855bb172510bfc84b28c9118df9d5f9ba8dba98c5", "linked": "2021-03-14" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8846-x86",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8846, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "c67bf296c182fdd053f599feef0ec46259b55b1cbc26bc827afeb2300beea608", "linked": "2021-03-14" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8847-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8847, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "abf018e8fc43c6b435f5cacd9f02b3294024ff558234566b9f287facfd81e17b", "linked": "2021-03-17" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8847-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8847, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "84e0634c0453b8b202fc11d46bedca4a068e816d369cabf2baafb337885073ad", "linked": "2021-03-17" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8847-x86",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8847, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "f3f19d1fe13649d6f1ed469941e515e1f21e50b098948f149929ad88d9eb420b", "linked": "2021-03-17" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8848-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8848, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "786ccc3b13586f24f2b472ce842e9695d3042ab2588f5e6dbc3e00e755561935", "linked": "2021-03-21" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8848-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8848, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "cc882fe6e80e9fab9d29e639e50bb6351394bc9ed51b2cf93212a605dcfca2f9", "linked": "2021-03-21" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8848-x86",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8848, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "b2378c97201084cb1fd2f6d8ab2c1c5ef9cdc5bcbb802cf99dea3a1e4228c6bf", "linked": "2021-03-21" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8849-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8849, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "dbd7b943c7b36ca77d4865bc51e0564079ff093eacd05df7b9467de6c2266609", "linked": "2021-03-24" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8849-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8849, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "065ccd2fcd22378f8b03b13f46842188d9aff307c91107a102954f6d9a87e4f5", "linked": "2021-03-24" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8849-x86",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8849, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "cb70752b803d6c2545a16bf4e5d9f892c0c9fbaa195ad499529189a31156fa77", "linked": "2021-03-24" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8851-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8851, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "0241967e1b4852917da780de66e6683183637912f089af9baba483bf484d0f8b", "linked": "2022-01-20" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8851-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8851, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "1718b54f5a36493482ee0abc5d0edccc89e51a1c02bfad626794bdc81c9a8d18", "linked": "2022-01-20" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-csgo-8851-x86",
+      "family": "hammerplusplus", "branch": "csgo", "build": 8851, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "3bb852d394ad0ae7c8a041dc03e1ce0278d4f2ad40bf111dde4b916c10d071ce", "linked": "2022-01-20" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8851-x86",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8851, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "57f40d6ba01b9e2729afb7ca69cb5fd83f421237ff95b3eeb2570d1e4a0f705e", "linked": "2022-01-20" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8852-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8852, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "5548b0d98b47a97c424eac975b709ce2da5ef8ac7fe7bd3e676ff4764ab3bf0a", "linked": "2022-01-21" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8852-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8852, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "42444a6c6c09ad4b51fad934d35efabf046360fb57a1e00f388bfa1281ce5a9a", "linked": "2022-01-21" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-csgo-8852-x86",
+      "family": "hammerplusplus", "branch": "csgo", "build": 8852, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "a01882256a0a5ec38a94948f20d02c1802f3a4075194ed22cba48095d06121a9", "linked": "2022-01-21" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8852-x86",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8852, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "f9d8309d8280cd5b3d8d9772b96fccbeef83237dd0083444c5947103dd821821", "linked": "2022-01-21" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8853-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8853, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "f0cf8926d3ffee2ba71a5f10568e7ea94e9a19dd3cae10b79e7df3c3f5493aa5", "linked": "2022-01-22" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8853-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8853, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "76011f1dd70be735c6cae645af81d2daa232c495119cd762cf527bf1bfeb6268", "linked": "2022-01-22" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-csgo-8853-x86",
+      "family": "hammerplusplus", "branch": "csgo", "build": 8853, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "e8dbc37e56846f90fd4a4013dd8566bfa70bf5554a5ad8a2e42ee512b3199c1c", "linked": "2022-01-22" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8853-x86",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8853, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "98079ba0a777fdbe3b5b9515e095297796adbc9c2007e716619d99bbdd41d1b2", "linked": "2022-01-22" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8854-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8854, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "690655d08f712cf185d0c4761b4206d33771a3c174cf4b8ccdfe9967a359ccd8", "linked": "2022-01-22" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8854-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8854, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "6b60489cd58d4139f3ba57b5394d31548ebbad3ce5f759afa39e03970e207614", "linked": "2022-01-22" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-csgo-8854-x86",
+      "family": "hammerplusplus", "branch": "csgo", "build": 8854, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "29e303957b21b6b0d1c84e2c3c938a10ee926bc4fe59ccf5a71de4b63ae1d90e", "linked": "2022-01-22" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8854-x86",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8854, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "762b926471993f7ddbfe6b8d87ef232edb4274090c31aa0f496ecc126f87095d", "linked": "2022-01-22" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8855-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8855, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "4f6421ddf48a43708353ccd6757b5719d27b5f781711e787928441f24952066e", "linked": "2022-01-23" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8855-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8855, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "6c275890c3b2644be36981b7577d549eee4df683365d6f6a38aff028e5259a8a", "linked": "2022-01-23" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-csgo-8855-x86",
+      "family": "hammerplusplus", "branch": "csgo", "build": 8855, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "2ae6a47fc49d7719547333258fcc7dce85842298506440e021b2781f6951b66b", "linked": "2022-01-23" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8855-x86",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8855, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "c990668c6df2829b730fbc547195e42f1c28285d5f146ed17a683076118fa8b2", "linked": "2022-01-23" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8856-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8856, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "1f8a681ebc02674070c6f4a3871b4b5ca351509b3c73021d72901a10d07154a2", "linked": "2022-01-25" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8856-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8856, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "f1aaa0f4da7001599cb6013354b8aaf66834d9fa89226e66a5ea62783805c7fc", "linked": "2022-01-25" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-csgo-8856-x86",
+      "family": "hammerplusplus", "branch": "csgo", "build": 8856, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "103c90abf24f0c06549b97f2d7e5acf5152b124b7ead0b86dd563127b437c069", "linked": "2022-01-25" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8856-x86",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8856, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "355a157477c3f9a667025a9febe7c8720c6d822583d676efe6dd6cba74ae85e3", "linked": "2022-01-25" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8857-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8857, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "bfa3b2861bfb3eaa11e207d5cfd7d222593d93db58d9b429fb1a1d7e239f6371", "linked": "2022-01-25" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8857-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8857, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "2622dbffd10e7c72f7b2980b4bf0efb885ff86fd59cf2286e93e4f174a949170", "linked": "2022-01-25" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-csgo-8857-x86",
+      "family": "hammerplusplus", "branch": "csgo", "build": 8857, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "ad44bc4af5cc064672be7d547268fe56c5fa887ce9c466d0b9d49f27ed1b9da2", "linked": "2022-01-25" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8857-x86",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8857, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "934428e534fef2c54c442e5b6c72b6833189e3fe5a73454ea8d4488f1425bc7a", "linked": "2022-01-25" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8858-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8858, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "1e13080de62e35167758c8350da5cc158c025f5cf6c1bf5651beaf4ce4ecbd0a", "linked": "2022-01-30" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8858-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8858, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "39e794b2ccb1b8ca70d137682b1ecf2ba9d2b3a34b925dacbd21e95bbb5835af", "linked": "2022-01-30" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-csgo-8858-x86",
+      "family": "hammerplusplus", "branch": "csgo", "build": 8858, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "b7fd7bc538600a86c4a98f6a61d82929a70ff0da06b8587b5d7d9f5c128efb95", "linked": "2022-01-30" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8858-x86",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8858, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "5d2653d10ba311dcf0ae684847c59eed42b4be1cc7363d750fea540cb87ea1b1", "linked": "2022-01-30" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8859-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8859, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "477608679d9ad5893fb93bbff98133600a0ab8d1ebc58d08002bb9d2c39df7b7", "linked": "2022-02-08" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8859-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8859, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "767db8eac6c600ce5f7f747aada8b1214f0ac55b584460ea6fb3e4f9e5c0c635", "linked": "2022-02-08" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-csgo-8859-x86",
+      "family": "hammerplusplus", "branch": "csgo", "build": 8859, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "8dcf1be8771cdbf40dcd353694eae99d3aab33b3fe3580c0fe9f473f7e5c37ff", "linked": "2022-02-08" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8859-x86",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8859, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "9b62cd62047b8df22545d8f49d014341516995e4268470c9d85c2cd405b58639", "linked": "2022-02-08" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8860-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8860, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "af189a0a67fbb0e54fe9120f250be7fd449aa6ff45e779c05f9245d2d25e8e39", "linked": "2022-02-10" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8860-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8860, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "33b2c163537c1da1e7d4308a63066269107d525226dcb4024806a6ee139978ec", "linked": "2022-02-10" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-csgo-8860-x86",
+      "family": "hammerplusplus", "branch": "csgo", "build": 8860, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "fe73c980d00930a4bfc1872fdcf874b662f640344459b21bb21eaa3bd32ec59b", "linked": "2022-02-10" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8860-x86",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8860, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "8514337ff2807d9d4337129248669e89a5f3c046aa23c39614bf2420d2399951", "linked": "2022-02-10" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8861-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8861, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "946f1fa830ed3be040c37f716ea20ceb2858080add12800916dd559181781d63", "linked": "2022-06-25" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8861-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8861, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "46a3011a1aa53e02d86bb7df0422275b692a857e734e5bb0d6d423e829095159", "linked": "2022-06-25" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-csgo-8861-x86",
+      "family": "hammerplusplus", "branch": "csgo", "build": 8861, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "03de68bba4ae0e373453c284567f9e7aa4308f7196cf1db4e8f71b8164b9ff78", "linked": "2022-06-25" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8861-x86",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8861, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "41edbefd87a89600a812eaeb2d8937e6133909b39eba1c00640c1bd145bdf281", "linked": "2022-06-25" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8862-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8862, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "d8060b7dd3408e7274494c34f38dddd35cc6577dd0fd05d188fe1a4301dc9c8e", "linked": "2022-07-01" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8862-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8862, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "d4a6d5f42b48c83befbae95644aa1c2d4eeb17c5a99b7a82c37659cf637e805b", "linked": "2022-07-01" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-csgo-8862-x86",
+      "family": "hammerplusplus", "branch": "csgo", "build": 8862, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "ebfdf8bf082d6fedab673ecfe98f7f06861104e4ec461a663941e814186363bc", "linked": "2022-07-01" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8862-x86",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8862, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "9ea2910ac4a47e4aba6a331c0b209dcd1d84ad2e42ddda586f3849d3e0e6b9ad", "linked": "2022-07-01" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8863-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8863, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "f22eda8541cc85e623da4607014868a59387719481b3ff77729d28694d8cb204", "linked": "2022-10-30" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8863-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8863, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "12682d40d95f14c00334f4db4719474f52c0781c03117be023a78e04989c7e58", "linked": "2022-10-30" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-csgo-8863-x86",
+      "family": "hammerplusplus", "branch": "csgo", "build": 8863, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "07a1d0a1be63f0c14dceac238bde77f38d057f393d330c90e1b4462853aadf5c", "linked": "2022-10-30" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8863-x86",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8863, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "8dc4d3954f2d9112c59f23ade65232f9a5a00e9da7e4d4197e7294201e605fe6", "linked": "2022-10-31" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8864-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8864, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "ab9bd4ec4ca1085d44e5177b43660c4b15d0491d53edc32158b85fb9b8970246", "linked": "2022-11-01" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8864-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8864, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "03113e8a2317c40d81169690f5623a0795f246b17732fd90955a366979e12c27", "linked": "2022-11-01" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-csgo-8864-x86",
+      "family": "hammerplusplus", "branch": "csgo", "build": 8864, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "ca956af53c38e0569b2aa48828ebdac3ecdb187adb5112faaa1eb7ed4f3a808a", "linked": "2022-11-01" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8864-x86",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8864, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "aa2de232427da2a129d75a7f4f02b9aa48387bdb0a09cf5111eaed0fdb872ff9", "linked": "2022-11-01" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8865-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8865, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "727efddf7ab8923410afe81af2153a8ce87cf38a0659cb21a9d495ac989fa63a", "linked": "2024-04-21" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8865-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8865, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "0cf808a68832787b7d96954a445c41daaf4980d7638ad4b0be98cf5b621e4679", "linked": "2024-04-21" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-gmod-8865-x64",
+      "family": "hammerplusplus", "branch": "gmod", "build": 8865, "arch": "x64",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "0940c3597ca3707906456d0859083eff90230c890ca738fb87212a46bf161e39", "linked": "2024-04-21" },
+      "shell": { "present": false },
+      "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-l4d2-8865-x86",
+      "family": "hammerplusplus", "branch": "l4d2", "build": 8865, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "70d3c244c4c34817ef3ed7852e9d2bd73506930d9158fd980b319eb3e14f5d62", "linked": "2024-04-21" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8865-x64",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8865, "arch": "x64",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "c32e19b8db8b51d0c31369f5b57a81b2f890620cb494da7db9d8be540b089641", "linked": "2024-04-21" },
+      "shell": { "present": false },
+      "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8866-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8866, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "9306e8ba7956f142ca26f44b98ea85d37e921589c98ceee2b3d46cdfbb71cb2e", "linked": "2024-05-19" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8866-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8866, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "c30a1e9732c34eb8c0621e66bef4bc0e1981908a7789d80fafde959cf57c53e1", "linked": "2024-05-19" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-gmod-8866-x64",
+      "family": "hammerplusplus", "branch": "gmod", "build": 8866, "arch": "x64",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "b70df981ef14955d8cb9dd291237eed3cca483019a6077d44ae72b55341d188f", "linked": "2024-05-19" },
+      "shell": { "present": false },
+      "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-l4d2-8866-x86",
+      "family": "hammerplusplus", "branch": "l4d2", "build": 8866, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "88f8a5ec7153f2aa0d56bcee3db270a8986f0a3fdbbb7077895415a6656ab05a", "linked": "2024-05-19" },
+      "shell": { "present": false },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8866-x64",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8866, "arch": "x64",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "e51fba42c957c2f9e7198a87c0473390bb21ae80520539de3a23b55b43e772fa", "linked": "2024-05-19" },
+      "shell": { "present": false },
+      "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8867-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8867, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "0d51b10e104f00ec8bf61f851726d58e1e4b6b341a892913cc491b8a1d7891b0", "linked": "2024-07-02" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8867-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8867, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "f2386ca14349010a69318fec16a9e39bce98f9c39a3ee886303b598c254008b2", "linked": "2024-07-02" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-gmod-8867-x64",
+      "family": "hammerplusplus", "branch": "gmod", "build": 8867, "arch": "x64",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "edf235e40fb2efe3c1b2a0cd7b3f18bc3e33a5769720eac352ac4eaa82594387", "linked": "2024-07-02" },
+      "shell": { "present": true },
+      "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-l4d2-8867-x86",
+      "family": "hammerplusplus", "branch": "l4d2", "build": 8867, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "448ffd972c566f986fabef7272595e63a1861cd069d46b393b97ef1adedcc4fe", "linked": "2024-07-02" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8867-x64",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8867, "arch": "x64",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "9edfddbc10cec97f107338fdec19425ad0dcf71e91482a821d52de72409a5ecd", "linked": "2024-07-02" },
+      "shell": { "present": true },
+      "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8868-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8868, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "53aa7ae607afc49c489966dd6576c5d565c966681f82b733ba5f32d1c6a0b992", "linked": "2024-07-28" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8868-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8868, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "1d300362f444c3c02c810803a61055ea22bfaea2af7b50ac961ea6326e92c926", "linked": "2024-07-28" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-gmod-8868-x64",
+      "family": "hammerplusplus", "branch": "gmod", "build": 8868, "arch": "x64",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "678f1cc5f7e1fba91d69747185fcfc6fbaf3809a9747408b1e102fe57bd48297", "linked": "2024-10-07" },
+      "shell": { "present": true },
+      "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-l4d2-8868-x86",
+      "family": "hammerplusplus", "branch": "l4d2", "build": 8868, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "724eae5d35dcff8f855976751df1fcf000ca289f4222760236e1ef1089d8b617", "linked": "2024-07-28" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8868-hotfix2-x64",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8868, "arch": "x64",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "81d4a0268c97454c030a8899000d0b4630a15815c6ed32e670ba3c3d5c82e054", "linked": "2024-10-19" },
+      "shell": { "present": true },
+      "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt", "notes": "Release 8868_hotfix2."
+    },
+    {
+      "id": "hpp-2013mp-8869-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8869, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "acfed5d42a03d69b42691282dc1ce65490fdb753faf945951f61f147b4bfe0dc", "linked": "2024-11-18" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8869-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8869, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "bd991ce935fb64efb5a7b3f4fd175e1eaaca368aace7df36660d271cdbff21b6", "linked": "2024-11-18" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-gmod-8869-x64",
+      "family": "hammerplusplus", "branch": "gmod", "build": 8869, "arch": "x64",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "f2b05d4a9d71e9030a11a081a35f4be83e04f4cfc5dab737424cbf900d41780b", "linked": "2024-11-18" },
+      "shell": { "present": true },
+      "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-l4d2-8869-x86",
+      "family": "hammerplusplus", "branch": "l4d2", "build": 8869, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "3be71ff24ada72b937913f707cb1cd46f38614b0b96b3b014a11ba6e9cc4d2c1", "linked": "2024-11-18" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-portal2-8869-x86",
+      "family": "hammerplusplus", "branch": "portal2", "build": 8869, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "de57de17f5396a3dbb60bc31b54cdd6bedacf5888d067de3164d03c38d0ca6a4", "linked": "2024-11-18" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8869-x64",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8869, "arch": "x64",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "0cb6f0be9b4cbe229bfef1eb2fcff1dd8b0b28b32f2cf1ceb4fc45efb1486eb4", "linked": "2025-03-21" },
+      "shell": { "present": true },
+      "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8870-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8870, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "f7c7fc20c8d2a7218cf33587712a71b2c01094f7af9c1e17e6e0c817baba4629", "linked": "2025-08-01" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8870-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8870, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "34bfea6aa96a85022d886a4b52283edb44d7a1b8626ea3eb036a495ac1b61412", "linked": "2025-08-01" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-gmod-8870-x64",
+      "family": "hammerplusplus", "branch": "gmod", "build": 8870, "arch": "x64",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "6783980594e18a36558292c328e4f085adafe4e189ee2beacc42831c5dcfed09", "linked": "2025-08-01" },
+      "shell": { "present": true },
+      "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-l4d2-8870-x86",
+      "family": "hammerplusplus", "branch": "l4d2", "build": 8870, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "545d8595952668bc974420a1f7d800bee63d6a42d0497ec0a1e69ef35e2436ac", "linked": "2025-08-01" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-portal2-8870-x86",
+      "family": "hammerplusplus", "branch": "portal2", "build": 8870, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "c6f4860c5bebc83bb4cf7d1eb3c2af82ff82d93deb56af3098369bfd9770b7bb", "linked": "2025-08-01" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8870-x64",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8870, "arch": "x64",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "503ed77c48187a7b54bae7575b161d0529ba027471b991fc34943d8f6d7e1284", "linked": "2025-08-01" },
+      "shell": { "present": true },
+      "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8871-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8871, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "dadfb6dac03e227727bc1ae8f016bcddf69e0b5084f9f1b03a907b91b9f4a922", "linked": "2026-04-14" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8871-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8871, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "dcb387dd85e87b1fcbd0e1ab4863c40db736507423a853b1e2a5646f1f56da0b", "linked": "2026-04-14" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-gmod-8871-x64",
+      "family": "hammerplusplus", "branch": "gmod", "build": 8871, "arch": "x64",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "1434d4b6969070ed2a79df4c4d342552c5e337204260f57612059afa7b4722fe", "linked": "2026-04-14" },
+      "shell": { "present": true },
+      "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-l4d2-8871-x86",
+      "family": "hammerplusplus", "branch": "l4d2", "build": 8871, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "d0fffc08aaad4be75fa80ae5088d488aab16fc5efaef867361d26e6c62ba418c", "linked": "2026-04-14" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-mvz-8871-x64",
+      "family": "hammerplusplus", "branch": "mvz", "build": 8871, "arch": "x64",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "8560a185993c9440a508404ca8698daf741408d110e514a42e084c4fce1043b6", "linked": "2026-09-15" },
+      "shell": { "present": true },
+      "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-portal2-8871-x86",
+      "family": "hammerplusplus", "branch": "portal2", "build": 8871, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "ae176e1f027f7792c2b697c94d1b13f8725095884befcef943a6bb8ca2772b9b", "linked": "2026-04-14" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-tf2-8871-x64",
+      "family": "hammerplusplus", "branch": "tf2", "build": 8871, "arch": "x64",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "43334b440530fd1f73162aaeca437ac4689ca46dd98440971b333056943b21f5", "linked": "2026-04-14" },
+      "shell": { "present": true },
+      "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8872-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8872, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "86c88bec344b95a6f7d6e21ce1d5d2e9f673cc8dc6035466eda1050aa3a9840d", "linked": "2026-10-01" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013sp-8872-x86",
+      "family": "hammerplusplus", "branch": "2013sp", "build": 8872, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "b4ecf459e8b4a761ac9a859c5649e2a21fc912b02b71bf838e7a71bf7130cccc", "linked": "2026-10-01" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-gmod-8872-x64",
+      "family": "hammerplusplus", "branch": "gmod", "build": 8872, "arch": "x64",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "f463ba57f4b1795f73091ab2d314bfef0b7248eceb79af2f707a7286d041a27d", "linked": "2026-10-01" },
+      "shell": { "present": true },
+      "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-l4d2-8872-x86",
+      "family": "hammerplusplus", "branch": "l4d2", "build": 8872, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "782dfab498614543a93cebf9b0a06bec2bb99730d8e31ae4c7517561579b22c6", "linked": "2026-10-01" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-mvz-8872-x64",
+      "family": "hammerplusplus", "branch": "mvz", "build": 8872, "arch": "x64",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "58c266c6576185922044031c7be8e24b567f4e2c341d85b0a3e8872c8a05686c", "linked": "2026-10-01" },
+      "shell": { "present": true },
+      "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-portal2-8872-x86",
+      "family": "hammerplusplus", "branch": "portal2", "build": 8872, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "63b339825ab7a505d890a32b571e483588f5a1300925c049b872788f60a44e5c", "linked": "2026-10-01" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-2013mp-8873-x86",
+      "family": "hammerplusplus", "branch": "2013mp", "build": 8873, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "fd3343eb374bc2cdf599b697e4c5e9dd95d3d3937f5fe600f88213e3f58d3efd", "linked": "2026-10-27" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-gmod-8873-x64",
+      "family": "hammerplusplus", "branch": "gmod", "build": 8873, "arch": "x64",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "6ea1d26b7f27ed90a91b98df76f9ff04a0d9fcdbef2a77c012bfc1af9de1d095", "linked": "2026-10-27" },
+      "shell": { "present": true },
+      "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-l4d2-8873-x86",
+      "family": "hammerplusplus", "branch": "l4d2", "build": 8873, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "d272626bb4a0ccdd37ab870ed1e3dd38ceb72f51dfc6c8a47c428d227ca4e07a", "linked": "2026-10-27" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
+      "id": "hpp-portal2-8873-x86",
+      "family": "hammerplusplus", "branch": "portal2", "build": 8873, "arch": "x86",
+      "match": { "dll": "hammerplusplus_dll.dll", "sha256": "81c086bc6e0fc4a54a0922027613b2518fe2cfb57e71bfca0e826e385e289f19", "linked": "2026-10-27" },
+      "shell": { "present": true },
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+    },
+    {
       "id": "valve-sdk2013sp-upcoming-2014",
       "family": "valve", "branch": "sdk2013sp", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "3d974ecadbed34353ca3b81444bebb3e520e08e92d9f82b6d999640aa4fd33ea", "linked": "2014-09-30" },
