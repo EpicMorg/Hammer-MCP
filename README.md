@@ -109,6 +109,23 @@ The planned *Advanced* mode lifts these limits for selected builds. It will only
 Hammer executable of a known build (`hammer.exe`, `hammerplusplus.exe`) — **never into a game process**: Source 2
 Hammer runs inside `cs2.exe` / `dota2.exe`, and touching a VAC-protected process can get a Steam account banned.
 
+## Safety and VAC
+
+Hammer-MCP is meant to be safe to run next to games with Valve Anti-Cheat.
+
+- **Source 1, Hammer++, Strata, GoldSrc:** Hammer is its own process (`hammer.exe`, `hammerplusplus.exe`, …), not a
+  game. The shell channel and menu commands are window messages to that editor process; the game you start from
+  Run Map is never touched.
+- **Source 2 (CS2, Dota 2, HL: Alyx):** Hammer runs *inside* the game process (`cs2.exe`, …). Hammer-MCP only does what
+  Task Manager or OBS do with it — reads the exe path, window titles and command line (`OpenProcess` with
+  query-only rights) — and reads map and game files from disk (`.vmap`, FGD). It never writes to the game's memory,
+  hooks or injects anything.
+- **Injection** (the planned *Advanced* mode) is limited by code (`InjectPolicy`) to standalone Hammer executables of a
+  known build — never game processes, never Source 2, never unknown builds.
+- **`-insecure` is not required.** Workshop Tools (`-tools`) already behave like an insecure client: CS2 refuses VAC
+  servers in that mode (checked live, 2026-11). You may add `-insecure` to the launch options for extra peace of
+  mind, but remove it afterwards, or you will not be able to join matchmaking / VAC servers.
+
 ## Building
 
 ```bash
