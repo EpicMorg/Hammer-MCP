@@ -24,7 +24,8 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
                 Note: "no Hammer is attached - ask the user to pick the Hammer process in Hammer-MCP and press Attach");
 
         var mapPath = process.OpenMapPath;
-        int? mapVersion = mapPath is not null && File.Exists(mapPath) ? VmfVersionInfo.Read(mapPath).MapVersion : null;
+        int? mapVersion = mapPath is not null && File.Exists(mapPath) && !mapPath.EndsWith(".vmap", StringComparison.OrdinalIgnoreCase)
+            ? VmfVersionInfo.Read(mapPath).MapVersion : null;
         var (build, dll) = Identify(registry, process.ExePath);
         return new HammerStatus(
             Running: true,
@@ -38,7 +39,10 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
             Family: build?.Family,
             ShellChannel: process.HasShellChannel,
             OpenMap: mapPath,
-            SavedMapVersion: mapVersion);
+            SavedMapVersion: mapVersion,
+            WindowTitle: process.MainTitle,
+            // unknown build: report the hash so it can be added to registry/hammers.json
+            EditorSha256: build is null && dll is not null ? Sha256Of(dll) : null);
     }
 
     [McpServerTool(Name = "map_summary", ReadOnly = true)]
@@ -130,4 +134,6 @@ public sealed record HammerStatus(
     bool ShellChannel = false,
     string? OpenMap = null,
     int? SavedMapVersion = null,
+    string? WindowTitle = null,
+    string? EditorSha256 = null,
     string? Note = null);

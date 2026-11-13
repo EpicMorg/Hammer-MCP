@@ -27,4 +27,24 @@ public class Source2ConfigTests
     [InlineData(@"C:\dota 2 beta\content\dota\maps\dota.vmap", "dota")]
     [InlineData(@"C:\maps\x.vmf", null)]
     public void ModOfMap(string path, string? mod) => Assert.Equal(mod, HammerGameConfig.Source2ModOf(path));
+
+    [Fact]
+    public void FindsMapByNameInContentAndAddons()
+    {
+        var root = Path.Combine(Path.GetTempPath(), $"hammermcp-s2c-{Guid.NewGuid():N}");
+        var bin = Path.Combine(root, "game", "bin", "win64");
+        Directory.CreateDirectory(Path.Combine(bin, "tools"));
+        File.WriteAllText(Path.Combine(bin, "tools", "hammer.dll"), "");
+        var stock = Path.Combine(root, "content", "csgo", "maps", "demo", "cs_script_demo.vmap");
+        var addon = Path.Combine(root, "content", "csgo_addons", "my addon", "maps", "de_mine.vmap");
+        Directory.CreateDirectory(Path.GetDirectoryName(stock)!);
+        Directory.CreateDirectory(Path.GetDirectoryName(addon)!);
+        File.WriteAllText(stock, "");
+        File.WriteAllText(addon, "");
+        var exe = Path.Combine(bin, "cs2.exe");
+        Assert.Equal(stock, HammerMcp.Core.Maps.Source2Content.FindMap(exe, "cs_script_demo.vmap"));
+        Assert.Equal(addon, HammerMcp.Core.Maps.Source2Content.FindMap(exe, "DE_MINE.vmap"));
+        Assert.Equal(addon, HammerMcp.Core.Maps.Source2Content.FindMap(exe, "maps/de_mine.vmap"));
+        Assert.Null(HammerMcp.Core.Maps.Source2Content.FindMap(exe, "nope.vmap"));
+    }
 }
