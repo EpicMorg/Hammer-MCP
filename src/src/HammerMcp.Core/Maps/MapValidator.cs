@@ -72,7 +72,7 @@ public static class MapValidator
     }
 
     public static string Format(VmfConnection c) =>
-        $"{c.Output} -> {c.Target}.{c.Input}({c.Parameter}) delay {c.Delay:G} times {c.TimesToFire}";
+        $"{c.Output} -> {c.Target}.{c.Input}({c.Parameter}) delay {c.Delay.ToString("G", System.Globalization.CultureInfo.InvariantCulture)} times {c.TimesToFire}";
 
     /// <summary>Entities a target refers to; empty for engine-resolved targets (!player...); null if nothing matches.</summary>
     private static List<VmfEntity>? Targets(Dictionary<string, List<VmfEntity>> names, string target)
