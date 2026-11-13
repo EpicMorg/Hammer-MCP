@@ -14,7 +14,8 @@ public sealed class AssetResolver
     {
         foreach (var sp in info.SearchPaths.Where(s => s.IsGame))
         {
-            if (sp.Locations.Count == 0)
+            // an absent custom/* folder is normal; only report other paths that resolve to nothing (e.g. unknown |appid_N|)
+            if (sp.Locations.Count == 0 && !sp.Value.TrimEnd().EndsWith('*'))
                 Problems.Add($"search path not resolved: {sp.Value}");
             foreach (var location in sp.Locations)
             {
