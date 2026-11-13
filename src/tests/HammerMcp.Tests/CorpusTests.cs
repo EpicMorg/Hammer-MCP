@@ -23,9 +23,9 @@ public class CorpusTests
     public void EveryFgdParsesWithoutCrashing()
     {
         Assert.SkipWhen(Root is null, "HAMMER_MCP_CORPUS not set");
-        // Source 2 data FGDs (@ModelGameData, @VData) legitimately have no entity classes
+        // Source 2 data FGDs (@ModelGameData, @VData) and extension-only FGDs (@ExtendClass) legitimately have no classes of their own
         var empty = Files(".fgd").Where(f => !FgdParser.ParseFile(f).Classes.Any()).ToList();
-        Assert.All(empty, f => Assert.True(File.ReadAllText(f).Contains("@ModelGameData") || File.ReadAllText(f).Contains("@VData")
+        Assert.All(empty, f => Assert.True(File.ReadAllText(f).Contains("@ModelGameData") || File.ReadAllText(f).Contains("@VData") || File.ReadAllText(f).Contains("@ExtendClass")
                                           || File.ReadAllText(f).Contains("models_base.fgd"), f));
     }
 
