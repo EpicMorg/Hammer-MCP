@@ -4,16 +4,22 @@
 
 Все заметные изменения Hammer-MCP. Версии — по [SemVer](https://semver.org/lang/ru/); релизы `-alpha` — пре-релизы.
 
-## [Unreleased]
+## [0.5.0] - 2026-11-14
+
+Брашевые сущности, outputs в виде keyvalues, переменные префабов Source 2; Strata и стоковый Hammer TF2 проверены вживую.
 
 ### Добавлено
-- **Переменные префабов vmap**: keyvalues, привязанные к переменным префаба, получают значения размещённого префаба — значения по умолчанию, группы выбора (например, `TowerLocation = middle_tier_3` задаёт имя и юнит башни) и переопределения; именованный префаб — цель I/O внешней карты (его мир пробрасывает входы). Башни Dota теперь получают настоящие имена. `fixupEntityNames` не применяется (правило переименования в данных не подтверждено).
-- `validate_map` показывает outputs, записанные как обычные keyvalues (`outputsAsKeyValues`, заданные через shell-канал), и проверяет их цели и inputs; `get_entity` / `find_io` показывают их как outputs.
-- Карты Source 2 кэшируются по пути, времени записи и размеру: инструменты больше не перечитывают большую `.vmap` с префабами на каждый вызов.
-- Брашевые сущности (`trigger_*`, `func_*`) адресуются центром своих брашей: Hammer++ пишет его как их `origin` (проверено вживую на Hammer++ и стоковом Hammer TF2: `set_keyvalue`, outputs и `delete_entity`, который удаляет сущность вместе с её брашами); для .vmf без него центр считается по плоскостям брашей (`center` в `list_entities` / `get_entity`).
-- Strata проверен вживую (Portal: Revolution x64): сборка, игровой конфиг, FGD, `validate_map`, последовательности Run Map; подставляются `$postcompiler_exe` и `$bsp`, а `|all_source_engine_paths|` указывает на корень игры, когда exe игры лежит в `bin\win64`.
-- Таблица Meta info: контекстное меню по ПКМ — Copy (ячейка), Copy row (строка), Copy all (всё).
+- **Брашевые сущности** (`trigger_*`, `func_*`) адресуются центром своих брашей: Hammer++ и стоковый Hammer пишут его как их `origin`; для .vmf без него центр считается по плоскостям брашей (`center` в `list_entities` / `get_entity`). Проверено вживую на Hammer++ и стоковом Hammer TF2: `set_keyvalue`, outputs и `delete_entity`, который удаляет сущность вместе с её брашами.
+- **Outputs в виде keyvalues**: `validate_map` показывает их (`outputsAsKeyValues`) и проверяет их цели и inputs; `get_entity` / `find_io` показывают их как outputs.
+- **Переменные префабов vmap**: keyvalues, привязанные к переменным префаба, получают значения размещённого префаба — значения по умолчанию, группы выбора (например, `TowerLocation = middle_tier_3` задаёт имя и юнит башни) и переопределения; именованный префаб — цель I/O внешней карты. Башни Dota получают настоящие имена. `fixupEntityNames` не применяется (правило переименования данными не подтверждено).
+- Приложение: контекстное меню на таблице Meta info — Copy (ячейка), Copy row, Copy all.
+- `hammer_status` показывает заголовки всех окон процесса, если открытая карта не найдена.
+
+### Изменено
+- Strata (Portal: Revolution x64) проверен вживую: сборка, игровой конфиг, FGD, `validate_map`, `check_assets`, последовательности Run Map. Подставляются `$postcompiler_exe` и `$bsp`; `|all_source_engine_paths|` указывает на корень игры, когда exe игры лежит в `bin\win64`.
+- Strata поставляется с `"Autosave Dir" = "\\autosave\\"`, который Hammer отвергает (путь не абсолютный, автосейвы отключены); теперь `fromAutosave` так и сообщает, а не ищет в угаданной папке.
 - Если в заголовке Hammer только имя файла карты (так бывает у Strata), файл ищется в MapDir игровых конфигов этого Hammer.
+- Карты Source 2 кэшируются по пути, времени записи и размеру: большая `.vmap` с префабами не перечитывается на каждый вызов.
 
 ## [0.4.0] - 2026-11-13
 
@@ -85,6 +91,7 @@ Source 2: несохранённое состояние Hammer через кон
 - Чтение сохранённой карты: `hammer_status`, `map_summary`, `list_entities`.
 - Встроенный реестр сборок (`registry/hammers.json`, переопределяется файлом рядом с exe).
 
+[0.5.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.1.0-alpha...v0.2.0

@@ -50,8 +50,13 @@ public class StrataTests
         var c = Assert.Single(configs);
         Assert.Equal("Portal: Revolution", c.Name);
         Assert.Same(c, HammerGameConfig.ForMap([c, c with { Name = "other", MapDir = @"Z:\elsewhere" }], (root + @"\sdk_content\maps\sp_test.vmf").Replace('/', '\\')));
+        // as shipped: "\autosave\" - Hammer rejects it (not absolute) and disables autosaves
         var (dir, enabled) = Autosaves.StrataFolder(exe);
-        Assert.True(enabled);
-        Assert.Equal(Path.Combine(Path.GetFullPath(Path.Combine(root, "hammer")), "autosave"), dir);
+        Assert.False(enabled);
+        Assert.Equal(@"\autosave\", dir);
+        File.WriteAllText(Path.Combine(cfg, "HammerConfig.vdf"), """
+            { General = { "Autosaves Enabled" = 1 "Autosave Dir" = "D:\\maps\\autosave\\" } }
+            """);
+        Assert.Equal((@"D:\maps\autosave\", true), Autosaves.StrataFolder(exe));
     }
 }

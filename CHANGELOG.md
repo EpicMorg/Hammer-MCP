@@ -4,16 +4,22 @@
 
 All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/); `-alpha` releases are pre-releases.
 
-## [Unreleased]
+## [0.5.0] - 2026-11-14
+
+Brush entities, outputs written as keyvalues, Source 2 prefab variables; Strata and stock TF2 Hammer verified live.
 
 ### Added
-- **vmap prefab variables**: keyvalues bound to prefab variables get the placed prefab's values - defaults, choice groups (e.g. `TowerLocation = middle_tier_3` sets the tower's name and unit) and overrides; a named prefab is an I/O target of the outer map (its world relays the inputs). Dota towers now get their real names. `fixupEntityNames` is not applied (no evidence of the renaming rule in the data).
-- `validate_map` reports outputs written as plain keyvalues (`outputsAsKeyValues`, set through the shell channel) and checks their targets and inputs; `get_entity` / `find_io` show them as outputs.
-- Source 2 maps are cached by path + write time + size: tools no longer re-read a big `.vmap` with its prefabs on every call.
-- Brush entities (`trigger_*`, `func_*`) are addressed by the centre of their brushes: Hammer++ writes it as their `origin` (verified live on Hammer++ and stock TF2 Hammer: `set_keyvalue`, outputs, and `delete_entity`, which removes the entity together with its brushes); for .vmf files without it the centre is computed from the brush planes (`center` in `list_entities` / `get_entity`).
-- Strata verified live (Portal: Revolution x64): build, game config, FGD, `validate_map`, Run Map sequences; `$postcompiler_exe` and `$bsp` are expanded, and `|all_source_engine_paths|` points to the game root when the game exe lives in `bin\win64`.
-- Meta info grid: right-click menu - Copy (cell), Copy row, Copy all.
+- **Brush entities** (`trigger_*`, `func_*`) are addressed by the centre of their brushes: Hammer++ and stock Hammer write it as their `origin`; for .vmf files without it the centre is computed from the brush planes (`center` in `list_entities` / `get_entity`). Verified live on Hammer++ and stock TF2 Hammer: `set_keyvalue`, outputs, and `delete_entity`, which removes the entity together with its brushes.
+- **Outputs written as keyvalues**: `validate_map` lists them (`outputsAsKeyValues`) and checks their targets and inputs; `get_entity` / `find_io` show them as outputs.
+- **vmap prefab variables**: keyvalues bound to prefab variables get the placed prefab's values - defaults, choice groups (e.g. `TowerLocation = middle_tier_3` sets the tower's name and unit) and overrides; a named prefab is an I/O target of the outer map. Dota towers now get their real names. `fixupEntityNames` is not applied (the renaming rule is not confirmed by the data).
+- App: right-click menu on the Meta info grid - Copy (cell), Copy row, Copy all.
+- `hammer_status` lists all window titles of the process when no open map is found.
+
+### Changed
+- Strata (Portal: Revolution x64) verified live: build, game config, FGD, `validate_map`, `check_assets`, Run Map sequences. `$postcompiler_exe` and `$bsp` are expanded; `|all_source_engine_paths|` points to the game root when the game exe lives in `bin\win64`.
+- Strata ships `"Autosave Dir" = "\\autosave\\"`, which Hammer rejects (not an absolute path, autosaves disabled); `fromAutosave` now says so instead of looking in a guessed folder.
 - A bare map file name in the Hammer title (seen on Strata) is looked up in the MapDir of the Hammer's game configs.
+- Source 2 maps are cached by path + write time + size: a big `.vmap` with prefabs is not re-read on every call.
 
 ## [0.4.0] - 2026-11-13
 
@@ -85,6 +91,7 @@ First public pre-release.
 - Reading the saved map: `hammer_status`, `map_summary`, `list_entities`.
 - Embedded build registry (`registry/hammers.json`, overridable by a file next to the exe).
 
+[0.5.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.1.0-alpha...v0.2.0

@@ -36,8 +36,9 @@ public static partial class Autosaves
     }
 
     /// <summary>
-    /// Strata Hammer: "Autosave Dir" / "Autosaves Enabled" in &lt;game&gt;\hammer\cfg\HammerConfig.vdf (KV3 text); a dir that
-    /// starts with a backslash ("\\autosave\\") is relative to the hammer folder.
+    /// Strata Hammer: "Autosave Dir" / "Autosaves Enabled" in &lt;game&gt;\hammer\cfg\HammerConfig.vdf (KV3 text).
+    /// Strata ships "\\autosave\\", which Hammer rejects ("does not have an absolute path" - autosave disabled until a
+    /// new directory is entered), so a non-absolute dir is reported as disabled.
     /// </summary>
     public static (string? Dir, bool Enabled) StrataFolder(string hammerExe)
     {
@@ -50,10 +51,12 @@ public static partial class Autosaves
         var enabled = KvEnabled().Match(text) is not { Success: true } e || e.Groups[1].Value != "0";
         if (string.IsNullOrWhiteSpace(dir))
             return (null, enabled);
-        if (dir.StartsWith('\\') || dir.StartsWith('/'))
-            dir = Path.Combine(hammerDir, dir.Trim('\\', '/'));
-        return (dir, enabled);
+        return (dir, enabled && IsAbsoluteWindowsPath(dir));
     }
+
+    /// <summary>"C:\x" or "\\\\server\\share" - what Hammer accepts as an autosave folder.</summary>
+    public static bool IsAbsoluteWindowsPath(string path) =>
+        (path.Length >= 3 && char.IsAsciiLetter(path[0]) && path[1] == ':' && path[2] is '\\' or '/') || path.StartsWith(@"\\", StringComparison.Ordinal);
 
     [GeneratedRegex(@"""Autosave Dir""\s*=\s*""([^""]*)""")]
     private static partial Regex KvString();
