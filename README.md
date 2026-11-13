@@ -165,6 +165,7 @@ Release notes come from [CHANGELOG.md](CHANGELOG.md). Contributing, new Hammer b
 
 Built by [EpicMorg](https://github.com/EpicMorg). Shell-channel protocol as published by Valve in the
 [Source SDK 2013](https://github.com/ValveSoftware/source-sdk-2013) (`src/public/editor_sendcommand.{h,cpp}`).
+Article on the Valve Developer Community: [Hammer MCP Server](https://developer.valvesoftware.com/wiki/Hammer_MCP_Server).
 Thanks to [ficool2](https://github.com/ficool2) for [Hammer++](https://github.com/ficool2/HammerPlusPlus-Website) and to the
 [Valve Developer Community](https://developer.valvesoftware.com/wiki/Hammer).
 Hammer-MCP contains no Valve source code and no leaked code; it talks to editors only through their public, built-in
