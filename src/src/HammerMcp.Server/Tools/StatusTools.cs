@@ -99,17 +99,21 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
             return (null, null);
         foreach (var name in EditorDlls)
         {
-            // Hammer++ keeps its DLL in bin/hammerplusplus/bin next to hammerplusplus.exe
-            foreach (var candidate in new[] { Path.Combine(dir, name), Path.Combine(dir, "hammerplusplus", "bin", name) })
+            // Hammer++ keeps its DLL in bin/hammerplusplus/bin next to hammerplusplus.exe; Source 2 in bin/win64/tools
+            foreach (var candidate in new[] { Path.Combine(dir, name), Path.Combine(dir, "hammerplusplus", "bin", name), Path.Combine(dir, "tools", name) })
             {
-                if (!File.Exists(candidate))
-                    continue;
-                using var stream = File.OpenRead(candidate);
-                var hash = Convert.ToHexStringLower(SHA256.HashData(stream));
-                return (registry.FindBySha256(hash), candidate);
+                if (File.Exists(candidate))
+                    return (registry.FindBySha256(Sha256Of(candidate)), candidate);
             }
         }
-        return (null, null);
+        // GoldSrc Worldcraft / Hammer 3.x: the editor is the exe itself
+        return File.Exists(exePath) && registry.FindBySha256(Sha256Of(exePath)) is { } own ? (own, exePath) : (null, null);
+    }
+
+    private static string Sha256Of(string path)
+    {
+        using var stream = File.OpenRead(path);
+        return Convert.ToHexStringLower(SHA256.HashData(stream));
     }
 }
 

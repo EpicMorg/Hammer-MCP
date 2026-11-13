@@ -881,6 +881,436 @@
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Slammin' Hammer 5.2 (Slammin' Source Map Tools, Slartibarty)."
+    },
+    {
+      "id": "valve-alien-swarm-reactive-drop-2017-02-06-x86",
+      "family": "valve", "branch": "alien-swarm-reactive-drop", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "41ff2aa74aa55766d00f50a9215a7cb1e45dafd261f161e836ccb992fded7acf", "linked": "2017-02-06" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: Alien Swarm Reactive Drop"
+    },
+    {
+      "id": "blackmesa-blackmesa-2025-06-07-x86",
+      "family": "blackmesa", "branch": "blackmesa", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "54fb98b9c4482d9bcb6d58f0a30f9ed1c01fe5492363e9532515ff399ce04842", "linked": "2025-06-07" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: Black Mesa"
+    },
+    {
+      "id": "valve-counter-strike-global-offensive-745-2023-02-02-x86",
+      "family": "valve", "branch": "counter-strike-global-offensive-745", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "38f52d5c0a6f99bb07cd624bedd5321f5598e8f1b83c559e78b774ec97ca47ff", "linked": "2023-02-02" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: Counter-Strike Global Offensive 745"
+    },
+    {
+      "id": "valve-nuclear-dawn-2018-08-30-x86",
+      "family": "valve", "branch": "nuclear-dawn", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "85f7654200da40089733fabf81c8aea59aaa741c0cd900aee8d06ca7bcfc784d", "linked": "2018-08-30" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: Nuclear Dawn"
+    },
+    {
+      "id": "valve-portal-forbidden-testing-tracks-2021-04-29-x86",
+      "family": "valve", "branch": "portal-forbidden-testing-tracks", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "692c67a7766702e30811c2e8ee5c733f85d59a6e0a9dc003f0c945ae28d9e1d2", "linked": "2021-04-29" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: Portal Forbidden Testing Tracks, Portal Reloaded"
+    },
+    {
+      "id": "valve-portal-prelude-rtx-2022-02-08-x86",
+      "family": "valve", "branch": "portal-prelude-rtx", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "d599cdf8640108cba97b5fc7a5cc4c805b4e964d1e316bbd4abbee96ce34f9e1", "linked": "2022-02-08" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: Portal Prelude RTX, hl2-vr, portal-rtx"
+    },
+    {
+      "id": "strata-portal-revolution-2025-01-05-x64",
+      "family": "strata", "branch": "portal-revolution", "arch": "x64",
+      "match": { "dll": "hammer_dll.dll", "sha256": "3f1ba613b3279fc717bab4438d9b27c93c29f32d0846975c5a1d7e87152ae4c0", "linked": "2025-01-05" },
+      "shell": { "present": false },
+      "gameConfig": "bin/win64/GameConfig.txt",
+      "notes": "Seen in: Portal Revolution"
+    },
+    {
+      "id": "valve-portal-stories-mel-2014-06-04-x86",
+      "family": "valve", "branch": "portal-stories-mel", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "db8a1bdf3fff60f4a93e6c5e77992662b578f0ef2c8319381d1eedf2d975fe03", "linked": "2014-06-04" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: Portal Stories Mel, aperturetag"
+    },
+    {
+      "id": "valve-source-sdk-base-2013-dedicated-server-2025-02-18-x86",
+      "family": "valve", "branch": "source-sdk-base-2013-dedicated-server", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "9b5e440cd4f6bc7925e9b4fd595ed03410fafa9577937c87932f7f17e8ebacf1", "linked": "2025-02-18" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: Source SDK Base 2013 Dedicated Server"
+    },
+    {
+      "id": "valve-source-sdk-base-2013-dedicated-server-2025-02-18-x64",
+      "family": "valve", "branch": "source-sdk-base-2013-dedicated-server", "arch": "x64",
+      "match": { "dll": "hammer_dll.dll", "sha256": "62cfbf9ac77a37480a19203f07d35124af3a56e74826638f3f94bc6de33e0eeb", "linked": "2025-02-18" },
+      "shell": { "present": true },
+      "gameConfig": "bin/x64/GameConfig.txt",
+      "notes": "Seen in: Source SDK Base 2013 Dedicated Server"
+    },
+    {
+      "id": "valve-alien-swarm-2020-09-24-x86",
+      "family": "valve", "branch": "alien-swarm", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "6db9f2ffdf60a59cea50da194733a9ffdacf740223c50c7fe1b4d1bae2ccbc76", "linked": "2020-09-24" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: alien-swarm"
+    },
+    {
+      "id": "source2-cs2-2026-11-02-x64",
+      "family": "source2", "branch": "cs2", "arch": "x64",
+      "match": { "dll": "hammer.dll", "sha256": "b34998a67b78af1ae39cf4174e85547f90cd8d9015df2314175e350129abccf4", "linked": "2026-11-02" },
+      "shell": { "present": false },
+      "notes": "Seen in: cs2"
+    },
+    {
+      "id": "valve-css-2026-09-07-x86",
+      "family": "valve", "branch": "css", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "4275795ad756eaaaf6362c94c271d118ae496db6b5c1b4034f2bb3cce89c7d1c", "linked": "2026-09-07" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: css, dod-source"
+    },
+    {
+      "id": "valve-css-2026-09-07-x64",
+      "family": "valve", "branch": "css", "arch": "x64",
+      "match": { "dll": "hammer_dll.dll", "sha256": "21e4fd9f45d362afc01c304151c5ccb02c313c5f4a430fdcd337df4b6fe2676a", "linked": "2026-09-07" },
+      "shell": { "present": true },
+      "gameConfig": "bin/x64/GameConfig.txt",
+      "notes": "Seen in: css, dod-source"
+    },
+    {
+      "id": "source2-dota2-2017-10-31-x64",
+      "family": "source2", "branch": "dota2", "arch": "x64",
+      "match": { "dll": "hammer.dll", "sha256": "db7788a3e35269f821826bdbb373d4affa5b8c56dd22f3724d5001e7ddf63765", "linked": "2017-10-31" },
+      "shell": { "present": false },
+      "notes": "Seen in: dota2"
+    },
+    {
+      "id": "valve-ep1-2007-11-14-x86",
+      "family": "valve", "branch": "ep1", "arch": "x86",
+      "match": { "dll": "hammer.dll", "sha256": "8f74df92f2d565c8f820e58c1394c7219687207f0db7085b93b6249702b4573e", "linked": "2007-11-14" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: ep1"
+    },
+    {
+      "id": "valve-gmod-2026-09-17-x86",
+      "family": "valve", "branch": "gmod", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "e162b0451d19112757a48092fe14993fccad5ee700de4aef38ca2224536eab16", "linked": "2026-09-17" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: gmod"
+    },
+    {
+      "id": "valve-gmod-2026-09-17-x64",
+      "family": "valve", "branch": "gmod", "arch": "x64",
+      "match": { "dll": "hammer_dll.dll", "sha256": "38cbed6050a2674eb56d1828ca03214ab61299622f19b73a3624b8df161e3790", "linked": "2026-09-17" },
+      "shell": { "present": true },
+      "gameConfig": "bin/win64/GameConfig.txt",
+      "notes": "Seen in: gmod"
+    },
+    {
+      "id": "valve-hl1sourcedm-2026-05-20-x86",
+      "family": "valve", "branch": "hl1sourcedm", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "7fc9af8b9a27d2d3100b186ad1e31eeac53022bf3651ec04b475bd4d49f6379a", "linked": "2026-05-20" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: hl1sourcedm, hl2dm"
+    },
+    {
+      "id": "valve-hl1sourcedm-2026-05-20-x64",
+      "family": "valve", "branch": "hl1sourcedm", "arch": "x64",
+      "match": { "dll": "hammer_dll.dll", "sha256": "1238b995aee6c2456c058e9b39c17fb984219ea3c5095539ca0b005afc76f510", "linked": "2026-05-20" },
+      "shell": { "present": true },
+      "gameConfig": "bin/x64/GameConfig.txt",
+      "notes": "Seen in: hl1sourcedm, hl2dm"
+    },
+    {
+      "id": "valve-insurgency2-2018-05-05-x86",
+      "family": "valve", "branch": "insurgency2", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "6dbd53f974969012c0a695f088ee3f2894a08b0236b1e76b2d523153845e8bba", "linked": "2018-05-05" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: insurgency2"
+    },
+    {
+      "id": "valve-l4d1-2024-06-09-x86",
+      "family": "valve", "branch": "l4d1", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "f193d1f00b1eb0cf4dcb2324d8311215c26d716a748e95034bce0f9ebffd4d1c", "linked": "2024-06-09" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: l4d1"
+    },
+    {
+      "id": "valve-l4d2-beta-2017-01-09-x86",
+      "family": "valve", "branch": "l4d2-beta", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "472300533328b7e12cfeebacf48ace3d58c05d4665cb3b4da9e9bd0c0f47f653", "linked": "2017-01-09" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: l4d2-beta"
+    },
+    {
+      "id": "valve-l4d2-2024-06-04-x86",
+      "family": "valve", "branch": "l4d2", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "3ac9fb17e9f6b9a9a55d5914b4c8b31541ea208ee6329be6287f73fb53843f35", "linked": "2024-06-04" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: l4d2"
+    },
+    {
+      "id": "valve-orangebox-2012-11-01-x86",
+      "family": "valve", "branch": "orangebox", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "d6624779025fca96e8db50f6663ea5c57ad309b5b9e78f41a18a623b0280f0a3", "linked": "2012-11-01" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: orangebox"
+    },
+    {
+      "id": "valve-pirates-vikings-and-knights-ii-2010-01-01-x86",
+      "family": "valve", "branch": "pirates-vikings-and-knights-ii", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "cc2572b2f17098c173e644ff6a59bf8fb3514be9fadbab5042b63663eab42b70", "linked": "2010-01-01" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: pirates, vikings and knights ii"
+    },
+    {
+      "id": "valve-pirates-vikings-and-knights-ii-2026-06-04-x64",
+      "family": "valve", "branch": "pirates-vikings-and-knights-ii", "arch": "x64",
+      "match": { "dll": "hammer_dll.dll", "sha256": "04b2e3aa7a396518a5d5965d5228c39f210f3372fbcc3e94c620cb605e4800d1", "linked": "2026-06-04" },
+      "shell": { "present": true },
+      "gameConfig": "bin/x64/GameConfig.txt",
+      "notes": "Seen in: pirates, vikings and knights ii"
+    },
+    {
+      "id": "valve-portal2-2023-04-25-x86",
+      "family": "valve", "branch": "portal2", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "baaee6d3e3c80fc8d531b233c26f8a7099d90ca55d5915473ea5724f4039ab81", "linked": "2023-04-25" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: portal2"
+    },
+    {
+      "id": "valve-sdk2013-dc-2019-09-24-x86",
+      "family": "valve", "branch": "sdk2013-dc", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "1873415686d827743c5f11fc5119d48374a92849503515b3b68ce84ba1d3133b", "linked": "2019-09-24" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: sdk2013-dc, sdk2013mp-legacy"
+    },
+    {
+      "id": "psycho-a-asw-2010-08-05-x86",
+      "family": "psycho-a", "branch": "asw", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "4e74e4a330195042ea6bcc2c99958db06e414e73b4b7e9c9da0059113f7ce152", "linked": "2010-08-05" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: Psycho-A tools pack (string edits only), asw"
+    },
+    {
+      "id": "psycho-a-csgo-2012-12-12-x86",
+      "family": "psycho-a", "branch": "csgo", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "ea1d2a164c95cc68e7a139f004d779f225f41ca7223f26c7d73a618868e8eac7", "linked": "2012-12-12" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: Psycho-A tools pack (string edits only), csgo"
+    },
+    {
+      "id": "psycho-a-ep1-2007-11-14-x86",
+      "family": "psycho-a", "branch": "ep1", "arch": "x86",
+      "match": { "dll": "hammer.dll", "sha256": "1d1619736c300301144938423443eb5f5ea5e7f9ac7814ed11aaa724cdc1f080", "linked": "2007-11-14" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: Psycho-A tools pack (string edits only), ep1"
+    },
+    {
+      "id": "psycho-a-left4dead2-2012-08-29-x86",
+      "family": "psycho-a", "branch": "left4dead2", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "baa86b3b33e1a8cf5c67c6f7d0a6a5b6fb0e284cb77edfc737f509e6a251f3bf", "linked": "2012-08-29" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: Psycho-A tools pack (string edits only), left4dead2"
+    },
+    {
+      "id": "psycho-a-orangebox-2012-11-01-x86",
+      "family": "psycho-a", "branch": "orangebox", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "033701e3cc988599c7036034cae7711c6ae49d4091542b4b8ee48e27312017e5", "linked": "2012-11-01" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: Psycho-A tools pack (string edits only), orangebox"
+    },
+    {
+      "id": "psycho-a-portal2-2012-08-14-x86",
+      "family": "psycho-a", "branch": "portal2", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "0601ea9f9aa5dedde398c1d4e84ecbfc235efe10f35712f3a05184950f16e3f8", "linked": "2012-08-14" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: Psycho-A tools pack (string edits only), portal2"
+    },
+    {
+      "id": "psycho-a-source2007-2009-09-21-x86",
+      "family": "psycho-a", "branch": "source2007", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "9b6d1c8be94091a570d10eacb65a3b849d2f0310d58aa6439ff77ae6fa68c6aa", "linked": "2009-09-21" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: Psycho-A tools pack (string edits only), source2007"
+    },
+    {
+      "id": "psycho-a-source2009-2011-09-15-x86",
+      "family": "psycho-a", "branch": "source2009", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "682b91829616065f3d8d9286f5211a04d25f78bb4bc957624ffffd67d6d5d0d3", "linked": "2011-09-15" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: Psycho-A tools pack (string edits only), source2009"
+    },
+    {
+      "id": "valve-source2007-2009-09-21-x86",
+      "family": "valve", "branch": "source2007", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "e86a36667a01a732d2285a19b5d1d6fa757384ac8116e2c19340549760087e00", "linked": "2009-09-21" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: source2007"
+    },
+    {
+      "id": "valve-source2009-2011-09-15-x86",
+      "family": "valve", "branch": "source2009", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "97d3d84af0cd1b431322cec30f980e1ecafa70957ba2e3ca61b229b41348d016", "linked": "2011-09-15" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: source2009"
+    },
+    {
+      "id": "valve-zps-2021-06-24-x86",
+      "family": "valve", "branch": "zps", "arch": "x86",
+      "match": { "dll": "hammer_dll.dll", "sha256": "d16832dbb6f8e37ac78a7b24a84d3e3cdac355016d6cffb5e2105eb3e2cfbb4d", "linked": "2021-06-24" },
+      "shell": { "present": true },
+      "gameConfig": "bin/GameConfig.txt",
+      "notes": "Seen in: zps"
+    },
+    {
+      "id": "goldsrc-worldcraft-1.1",
+      "family": "goldsrc", "branch": "worldcraft-1.1", "arch": "x86",
+      "match": { "dll": "WC.EXE", "sha256": "503149922f075d2d0b17cf7fc97eef11eab93bcdcc9ae49966414e2b294b5a7a", "linked": "1997-01-28" },
+      "shell": { "present": false },
+      "mapFormat": "map",
+      "notes": "Worldcraft 1.1 (Quake)."
+    },
+    {
+      "id": "goldsrc-worldcraft-1.1a",
+      "family": "goldsrc", "branch": "worldcraft-1.1a", "arch": "x86",
+      "match": { "dll": "WC.EXE", "sha256": "9daa6983c33593d3ac26ee3a9ead4674c83de54c4b5602ab1dbf7c13147f117a", "linked": "1997-02-20" },
+      "shell": { "present": false },
+      "mapFormat": "map",
+      "notes": "Worldcraft 1.1a (Quake)."
+    },
+    {
+      "id": "goldsrc-worldcraft-1.5",
+      "family": "goldsrc", "branch": "worldcraft-1.5", "arch": "x86",
+      "match": { "dll": "wc.exe", "sha256": "6e5cc6acc6edeed62812fdf5bfc464ea41a7619ed44df420655cda18934c0ce4", "linked": "1997-10-10" },
+      "shell": { "present": false },
+      "mapFormat": "map",
+      "notes": "Worldcraft 1.5 (Quake)."
+    },
+    {
+      "id": "goldsrc-worldcraft-1.6",
+      "family": "goldsrc", "branch": "worldcraft-1.6", "arch": "x86",
+      "match": { "dll": "Wc.exe", "sha256": "2dd24bc9daa61a22db011396c1f2f17919ba75c68cadce215e543ceb62437113", "linked": "1998-03-06" },
+      "shell": { "present": false },
+      "mapFormat": "map",
+      "notes": "Worldcraft 1.6 (Quake, Quake 2, Hexen 2)."
+    },
+    {
+      "id": "goldsrc-worldcraft-2.0",
+      "family": "goldsrc", "branch": "worldcraft-2.0", "arch": "x86",
+      "match": { "dll": "wc.exe", "sha256": "f61788d8d598cb47d6635858ea7f4207b6f8d2212e2448b9bd8e6a6e424a3c29", "linked": "1998-11-01" },
+      "shell": { "present": false },
+      "mapFormat": "rmf",
+      "notes": "Worldcraft 2.0."
+    },
+    {
+      "id": "goldsrc-worldcraft-2.1",
+      "family": "goldsrc", "branch": "worldcraft-2.1", "arch": "x86",
+      "match": { "dll": "wc.exe", "sha256": "4dd5df4ed50a3ed6f426cfb62bb4963294ecf4e250d76472e6cd6545276dbc11", "linked": "1999-04-10" },
+      "shell": { "present": false },
+      "mapFormat": "rmf",
+      "notes": "Worldcraft 2.1."
+    },
+    {
+      "id": "goldsrc-worldcraft-3.3",
+      "family": "goldsrc", "branch": "worldcraft-3.3", "arch": "x86",
+      "match": { "dll": "wc.exe", "sha256": "c02b24a3a9d3dda04827d6842bd120fdc37617e13b407b02669dc82ad1d42851", "linked": "2000-05-31" },
+      "shell": { "present": false },
+      "mapFormat": "rmf",
+      "notes": "Worldcraft 3.3 (Half-Life). Also in the HL-Lab SDK pack."
+    },
+    {
+      "id": "goldsrc-hammer-3.4",
+      "family": "goldsrc", "branch": "hammer-3.4", "arch": "x86",
+      "match": { "dll": "hammer.exe", "sha256": "ceef56a702c28eaade3c4b2d24722fe161ccff5a36580852a57e2c03dd3c90f3", "linked": "2002-04-01" },
+      "shell": { "present": false },
+      "mapFormat": "rmf",
+      "notes": "Valve Hammer Editor 3.4. Also in the HL-Lab SDK pack (hammer34.exe) and the Half-Life SDK on Steam."
+    },
+    {
+      "id": "goldsrc-hammer-3.5",
+      "family": "goldsrc", "branch": "hammer-3.5", "arch": "x86",
+      "match": { "dll": "hammer.exe", "sha256": "d8b2ee66aba52c1b1fac1628dec44d7d28a059d0470ee5a3735ec7edf804a117", "linked": "2003-04-18" },
+      "shell": { "present": false },
+      "mapFormat": "rmf",
+      "notes": "Valve Hammer Editor 3.5 (valvedev.info archive)."
+    },
+    {
+      "id": "goldsrc-hammer-3.5-hllab",
+      "family": "goldsrc", "branch": "hammer-3.5", "arch": "x86",
+      "match": { "dll": "hammer.exe", "sha256": "82f0d4413155c1ae71c95462ced1762f3d3500743837c16b1311bc324a7ff9ac", "linked": "2003-04-18" },
+      "shell": { "present": false },
+      "mapFormat": "rmf",
+      "notes": "Valve Hammer Editor 3.5 as shipped in the HL-Lab SDK pack (differs from the valvedev.info build, same link date)."
+    },
+    {
+      "id": "goldsrc-csm-hammer-3.5",
+      "family": "goldsrc", "branch": "csm-hammer-3.5", "arch": "x86",
+      "match": { "dll": "editor.exe", "sha256": "6bef0cd171d261bbc77792c071555e18774ab27848097e47a5d5326c66e8af84", "linked": "2003-04-18" },
+      "shell": { "present": false },
+      "mapFormat": "rmf",
+      "notes": "CSM Hammer Editor (0.3.8.1): community mod of Hammer 3.5."
+    },
+    {
+      "id": "goldsrc-neo-hammer-3.5.1",
+      "family": "goldsrc", "branch": "neo-hammer-3.5.1", "arch": "x86",
+      "match": { "dll": "neo.exe", "sha256": "f414d425fb05de6b2c1994f6f75a34b71914b93fcd32afa6c417ccfc09893176", "linked": "2003-04-18" },
+      "shell": { "present": false },
+      "mapFormat": "rmf",
+      "notes": "Neo Hammer Editor 3.5.1: community mod of Hammer 3.5."
+    },
+    {
+      "id": "goldsrc-neon-hammer-3.5",
+      "family": "goldsrc", "branch": "neon-hammer-3.5", "arch": "x86",
+      "match": { "dll": "neon.exe", "sha256": "3ab529ae9522b1175f6756efb2c6553b7b650e5fdab225e3ef1df9b0aad2d200", "linked": "2003-04-18" },
+      "shell": { "present": false },
+      "mapFormat": "rmf",
+      "notes": "Neon Hammer Editor 3.5: community mod of Hammer 3.5."
+    },
+    {
+      "id": "goldsrc-neon-hammer-3.5-rus",
+      "family": "goldsrc", "branch": "neon-hammer-3.5", "arch": "x86",
+      "match": { "dll": "neon_rus.exe", "sha256": "1a165e3070c7ad396aa45a553f108b76e2035021467008c8a19c0267edce2f67", "linked": "2003-04-18" },
+      "shell": { "present": false },
+      "mapFormat": "rmf",
+      "notes": "Neon Hammer Editor 3.5, Russian translation."
     }
   ]
 }
