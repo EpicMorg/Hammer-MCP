@@ -9,6 +9,8 @@
   An <a href="https://modelcontextprotocol.io">MCP</a> server for Hammer (Source 1), <a href="https://github.com/ficool2/HammerPlusPlus-Website">Hammer++</a> and friends.
 </p>
 
+<p align="center"><b>English</b> · <a href="README.ru.md">Русский</a></p>
+
 <p align="center">
   <img alt="status" src="https://img.shields.io/badge/status-proof%20of%20concept-orange">
   <img alt="platform" src="https://img.shields.io/badge/platform-Windows%2010%2F11%20x64-0078D6">
@@ -37,14 +39,15 @@ appear in the Hammer you already have open. No plugins, no patched editor: Hamme
 
 ## What works today
 
-Verified live on **[Hammer++](https://github.com/ficool2/HammerPlusPlus-Website) 8873 x64** ([TF2 Classified](https://store.steampowered.com/app/3545060/)), from an agent on another machine over the LAN:
+Verified live on **[Hammer++](https://github.com/ficool2/HammerPlusPlus-Website) 8873** x64 ([TF2 Classified](https://store.steampowered.com/app/3545060/)) and x86 (Source SDK 2013 SP mod), from an agent on another machine over the LAN:
 
 | | |
 |---|---|
 | ✅ Create point entities with keyvalues (`light`, `info_target`, `prop_dynamic` with a model, …) | ✅ Rotate entities (a spinning locker at ~28 edits/s, Hammer stays responsive) |
 | ✅ Set keyvalues, delete entities | ✅ Edits land in Hammer's **undo** history — Ctrl+Z works |
 | ✅ Save / undo / redo / Run Map / Check for Problems via menu commands | ✅ Map summary from the saved `.vmf` (entities, brushes, classes, skybox…) |
-| ✅ Recognises the running Hammer build by hash (registry of known builds) | ✅ Token auth, localhost by default |
+| ✅ Recognises the running Hammer build by hash (registry of 179 known builds) | ✅ Token auth, localhost by default |
+| ✅ Map knowledge: entities, outputs, I/O graph, validation against the game's FGD | ✅ Compile with Hammer's own Run Map sequences, parsed log, leak trace, compiled `.bsp` entities |
 
 ## Supported editors
 
@@ -58,9 +61,10 @@ menu command ids are identical across **all 152 Source Hammer builds** we analys
 | [Slammin' Hammer 5.2](https://developer.valvesoftware.com/wiki/Slammin'_Source_Map_Tools), Black Mesa, Nuclear Dawn | ✅ | ✅ | ✅ |
 | Hammer++ ≤ 8866 | — | ✅ | ✅ |
 | [Strata](https://github.com/StrataSource) Hammer (Portal: Revolution, P2CE, …) | — | ✅ | ✅ |
-| GoldSrc: Worldcraft / Hammer 3.x, [J.A.C.K.](https://store.steampowered.com/app/496450/) | — | partly | planned |
+| Source 2 Hammer (CS2, Dota 2, …) — recognised only | — | — | planned |
+| GoldSrc: Worldcraft 1.1–3.3, Hammer 3.4 / 3.5 and its mods (Neon, Neo, CSM) — recognised; [J.A.C.K.](https://store.steampowered.com/app/496450/) | — | partly | RMF / MAP read |
 
-Static analysis; live tests so far on Hammer++ 8873 x64. Reports for other builds are very welcome.
+Static analysis; live tests so far on Hammer++ 8873 (x64 and x86). Reports for other builds are very welcome.
 
 ## Quick start
 
@@ -99,6 +103,8 @@ Static analysis; live tests so far on Hammer++ 8873 x64. Reports for other build
 ### Limits of the shell channel
 It is write-only and entity-level: entities are addressed by **class + origin** (no ids), brushes and brush entities
 can't be created, there is no "move", and unsaved state can't be read back — the server reads the saved `.vmf`.
+Outputs set with `set_keyvalue` are stored by Hammer as plain keyvalues: they are not shown on the Outputs tab, but
+vbsp writes them into the `.bsp` as real outputs and they fire in game.
 The planned *Advanced* mode lifts these limits for selected builds.
 
 ## Building
@@ -126,14 +132,14 @@ src/native/                 C++ injector and adapters (planned, CMake)
 - [x] Shell channel: entities, keyvalues, rotation, deletion · menu commands · build registry · tray app · LAN + token
 - [x] Map reading: entities, outputs, I/O graph; FGD reference from Hammer's own game config; map validation; ambiguity checks before edits
 - [x] Compile pipeline: Hammer's Run Map sequences, run_compile, parsed logs, leak tracing; asset checks via gameinfo.txt + VPK
-- [ ] Release 0.1: single-file `win-x64` build
+- [x] Releases 0.1 / 0.2: single-file `win-x64` build — see [CHANGELOG.md](CHANGELOG.md)
 - [ ] *Advanced* mode: C++ inject adapters per build (live read, selection, camera, geometry, in-editor UI)
 
 ## Releases
 
 Tag `vX.Y.Z[-suffix]` on GitHub → the `release` workflow builds a self-contained single-file `hammer-mcp.exe`
 (win-x64, ~65 MB) and attaches a zip to a GitHub release (`-alpha` / `-beta` tags become pre-releases).
-Components and licenses: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+Release notes come from [CHANGELOG.md](CHANGELOG.md). Components and licenses: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 
 ## Credits & legal
 

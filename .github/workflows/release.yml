@@ -31,7 +31,7 @@ jobs:
       - name: Package
         shell: pwsh
         run: |
-          Copy-Item README.md, LICENSE, THIRD-PARTY-NOTICES.md publish/
+          Copy-Item README.md, README.ru.md, CHANGELOG.md, CHANGELOG.ru.md, LICENSE, THIRD-PARTY-NOTICES.md publish/
           Compress-Archive -Path publish/* -DestinationPath "hammer-mcp-${{ github.ref_name }}-win-x64.zip"
       - name: GitHub release
         shell: pwsh
@@ -39,5 +39,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $pre = if ("${{ github.ref_name }}".Contains("-")) { "--prerelease" } else { "" }
+          # release notes = this version's section of CHANGELOG.md, plus GitHub's generated list
+          $version = "${{ github.ref_name }}".TrimStart("v")
+          $notes = @(); $in = $false
+          foreach ($line in Get-Content CHANGELOG.md) {
+            if ($line -match '^## \[(.+?)\]') { $in = ($Matches[1] -eq $version); continue }
+            if ($line -match '^\[.+\]: ') { continue }
+            if ($in) { $notes += $line }
+          }
+          Set-Content release-notes.md ($notes -join "`n").Trim()
           gh release create "${{ github.ref_name }}" "hammer-mcp-${{ github.ref_name }}-win-x64.zip" `
-            --title "Hammer-MCP ${{ github.ref_name }}" --generate-notes $pre
+            --title "Hammer-MCP ${{ github.ref_name }}" --notes-file release-notes.md --generate-notes $pre
