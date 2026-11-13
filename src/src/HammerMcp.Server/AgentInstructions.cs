@@ -22,7 +22,8 @@ internal static class AgentInstructions
           same origin cannot be told apart: the server refuses such edits and refuses to create a second entity at an
           occupied address. Use list_entities to find exact origins; place new entities at distinct coordinates.
         - Only point entities can be created (light, info_target, prop_dynamic, ...). Brush entities (trigger_*,
-          func_*) need brushes and cannot be created; you can still set keyvalues on existing ones.
+          func_*) need brushes and cannot be created; you can still edit existing ones: address them by their origin,
+          which is the centre of their brushes (list_entities shows it as origin, or as center if the .vmf has none).
         - There is no move command.
         - Outputs (I/O): set_keyvalue with the output name as key and "target,Input,parameter,delay,times" as value
           (e.g. OnTrigger = "door1,Open,,0,-1"; times -1 = always). Hammer keeps it as a plain keyvalue, so it is not
