@@ -4,6 +4,11 @@
 
 All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/); `-alpha` releases are pre-releases.
 
+## [Unreleased]
+
+### Added
+- **`hammer-mcp-cli`**: the MCP server without the tray app - stdio (default) or HTTP, Hammer picked with `--auto` / `--pid`, `--mode`; shipped in the release zip. A `Dockerfile` runs it in a container (it starts and lists its tools without a Hammer - what MCP catalogs such as Glama check).
+
 ## [0.5.0] - 2026-11-14
 
 Brush entities, outputs written as keyvalues, Source 2 prefab variables; Strata and stock TF2 Hammer verified live.

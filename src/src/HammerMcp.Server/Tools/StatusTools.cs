@@ -21,7 +21,7 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
         var process = target.Current();
         if (process is null)
             return new HammerStatus(Running: false, Mode: options.Mode.ToString(), LiveEdits: false,
-                Note: "no Hammer is attached - ask the user to pick the Hammer process in Hammer-MCP and press Attach");
+                Note: $"no Hammer is attached - {target.AttachHint}");
 
         var mapPath = process.OpenMapPath;
         int? mapVersion = mapPath is not null && File.Exists(mapPath) && !mapPath.EndsWith(".vmap", StringComparison.OrdinalIgnoreCase)

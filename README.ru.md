@@ -90,6 +90,17 @@ Shell-канал есть во **всех стоковых Source-Hammer с 2006
    ```
 5. Откройте карту в Hammer и **сохраните её** (сессии привязаны к сохранённому `mapversion`). Можно спрашивать.
 
+### Без приложения в трее: `hammer-mcp-cli`
+
+В релизе есть и `hammer-mcp-cli.exe` — тот же сервер для MCP-клиентов, которые сами запускают серверы (stdio):
+
+```json
+{ "mcpServers": { "hammer": { "command": "C:\\Tools\\hammer-mcp-cli.exe", "args": ["--stdio", "--auto"] } } }
+```
+
+`--auto` подключается к первому запущенному Hammer с shell-каналом, `--pid N` — к заданному процессу; `--mode Basic` — только чтение;
+`--http --port 47800` — HTTP, как у приложения. `Dockerfile` собирает его для каталогов MCP (самому Hammer нужна Windows).
+
 ## Инструменты для агента
 
 | Инструмент | Что делает |
@@ -153,6 +164,7 @@ src/src/HammerMcp.Core      форматы (VMF с outputs, RMF/MAP через S
 src/src/HammerMcp.Shell     shell-канал (WM_COPYDATA), команды меню (WM_COMMAND), сессии, поиск процессов
 src/src/HammerMcp.Server    MCP-сервер (Streamable HTTP, Bearer-токен) и инструменты
 src/src/HammerMcp.App       hammer-mcp.exe — окно WinForms + трей
+src/src/HammerMcp.Cli       hammer-mcp-cli.exe — сервер без приложения в трее (stdio / HTTP)
 src/tests/HammerMcp.Tests   модульные тесты
 src/registry/hammers.json   известные сборки Hammer
 src/native/                 C++ инжектор и адаптеры (в планах, CMake)

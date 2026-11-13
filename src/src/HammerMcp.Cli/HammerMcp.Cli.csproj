@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <!-- net10.0-windows to share the server; without Windows Forms it also runs on Linux (e.g. in a container for MCP catalogs) -->
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>HammerMcp.Cli</RootNamespace>
+    <AssemblyName>hammer-mcp-cli</AssemblyName>
+    <ApplicationIcon>..\HammerMcp.Server\hammer-mcp-stopped.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="2.4.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HammerMcp.Server\HammerMcp.Server.csproj" />
+  </ItemGroup>
+</Project>

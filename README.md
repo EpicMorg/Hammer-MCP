@@ -90,6 +90,17 @@ Static analysis; live tests so far on Hammer++ 8873 (x64 and x86). Reports for o
    ```
 5. Open a map in Hammer and **save it** (sessions are bound to the saved `mapversion`). Ask away.
 
+### Without the tray app: `hammer-mcp-cli`
+
+The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that start servers themselves (stdio):
+
+```json
+{ "mcpServers": { "hammer": { "command": "C:\\Tools\\hammer-mcp-cli.exe", "args": ["--stdio", "--auto"] } } }
+```
+
+`--auto` attaches to the first running Hammer with a shell channel, `--pid N` to a given process; `--mode Basic` is read-only;
+`--http --port 47800` serves HTTP like the app. A `Dockerfile` builds it for MCP catalogs (Hammer itself needs Windows).
+
 ## Tools for the agent
 
 | Tool | What it does |
@@ -153,6 +164,7 @@ src/src/HammerMcp.Core      formats (VMF with outputs, RMF/MAP via Sledge, toler
 src/src/HammerMcp.Shell     shell channel (WM_COPYDATA), menu commands (WM_COMMAND), sessions, process discovery
 src/src/HammerMcp.Server    MCP server (Streamable HTTP, Bearer token) and tools
 src/src/HammerMcp.App       hammer-mcp.exe — WinForms window + tray
+src/src/HammerMcp.Cli       hammer-mcp-cli.exe — the server without the tray app (stdio / HTTP)
 src/tests/HammerMcp.Tests   unit tests
 src/registry/hammers.json   known Hammer builds
 src/native/                 C++ injector and adapters (planned, CMake)

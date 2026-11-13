@@ -28,6 +28,10 @@ jobs:
           dotnet publish src/HammerMcp.App/HammerMcp.App.csproj -c Release -r win-x64 --self-contained `
             -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true `
             -p:DebugType=none -p:Version=$version -o ../publish
+          # hammer-mcp-cli.exe: the same server without the tray app (MCP over stdio for clients that launch it)
+          dotnet publish src/HammerMcp.Cli/HammerMcp.Cli.csproj -c Release -r win-x64 --self-contained `
+            -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true `
+            -p:DebugType=none -p:Version=$version -o ../publish
       - name: Package
         shell: pwsh
         run: |

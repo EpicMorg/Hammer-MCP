@@ -14,6 +14,9 @@ public sealed class HammerTarget
 
     public int? AttachedPid => _attachedPid;
 
+    /// <summary>What the agent should ask the user for when nothing is attached (the app and the CLI differ).</summary>
+    public string AttachHint { get; init; } = "ask the user to pick the Hammer process in Hammer-MCP and press Attach";
+
     public void Attach(int pid) => _attachedPid = pid;
 
     public void Detach() => _attachedPid = null;

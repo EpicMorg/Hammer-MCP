@@ -6,13 +6,52 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace HammerMcp.Server;
 
-/// <summary>Builds the MCP HTTP server; the tray app starts and stops it.</summary>
+/// <summary>Builds the MCP server: HTTP (the tray app) or stdio (hammer-mcp-cli, MCP clients that launch the server).</summary>
 [SupportedOSPlatform("windows")]
 public static class HammerMcpHost
 {
+    /// <summary>Services and tools shared by every transport; the caller adds the transport.</summary>
+    public static IMcpServerBuilder AddServices(IServiceCollection services, HammerMcpServerOptions options, HammerTarget target, ActivityLog log)
+    {
+        services.AddSingleton(options);
+        services.AddSingleton(target);
+        services.AddSingleton(log);
+        services.AddSingleton<EditJournal>();
+        services.AddSingleton<GameData>();
+        services.AddSingleton(_ => HammerRegistry.LoadDefault(options.RegistryPath));
+        services.AddSingleton<CompileTools>();
+
+        var mcp = services
+            .AddMcpServer(mcp =>
+            {
+                mcp.ServerInfo = new() { Name = "hammer-mcp", Version = typeof(HammerMcpHost).Assembly.GetName().Version?.ToString(3) ?? "0" };
+                mcp.ServerInstructions = AgentInstructions.Text;
+            })
+            .WithTools<StatusTools>()
+            .WithTools<MapTools>();
+        if (options.AllowsLiveEdits)
+            mcp.WithTools<EntityTools>().WithTools<MenuTools>().WithTools<RunCompileTools>();
+        mcp.WithTools<CompileTools>().WithTools<Source2Tools>();
+        return mcp;
+    }
+
+    /// <summary>
+    /// MCP over stdin / stdout for clients that start the server themselves. Logs go to stderr - stdout is the protocol.
+    /// </summary>
+    public static IHost BuildStdio(HammerMcpServerOptions options, HammerTarget target, ActivityLog log)
+    {
+        var builder = Host.CreateApplicationBuilder();
+        builder.Logging.ClearProviders();
+        builder.Logging.AddConsole(o => o.LogToStandardErrorThreshold = LogLevel.Trace);
+        AddServices(builder.Services, options, target, log).WithStdioServerTransport();
+        return builder.Build();
+    }
+
     public static WebApplication Build(HammerMcpServerOptions options, HammerTarget target, ActivityLog log)
     {
         if (!options.IsLoopback && string.IsNullOrEmpty(options.Token))
@@ -21,26 +60,7 @@ public static class HammerMcpHost
         var builder = WebApplication.CreateSlimBuilder();
         builder.WebHost.UseUrls($"http://{options.BindAddress}:{options.Port}");
 
-        builder.Services.AddSingleton(options);
-        builder.Services.AddSingleton(target);
-        builder.Services.AddSingleton(log);
-        builder.Services.AddSingleton<EditJournal>();
-        builder.Services.AddSingleton<GameData>();
-        builder.Services.AddSingleton(_ => HammerRegistry.LoadDefault(options.RegistryPath));
-
-        var mcp = builder.Services
-            .AddMcpServer(mcp =>
-            {
-                mcp.ServerInfo = new() { Name = "hammer-mcp", Version = typeof(HammerMcpHost).Assembly.GetName().Version?.ToString(3) ?? "0" };
-                mcp.ServerInstructions = AgentInstructions.Text;
-            })
-            .WithHttpTransport()
-            .WithTools<StatusTools>()
-            .WithTools<MapTools>();
-        if (options.AllowsLiveEdits)
-            mcp.WithTools<EntityTools>().WithTools<MenuTools>().WithTools<RunCompileTools>();
-        mcp.WithTools<CompileTools>().WithTools<Source2Tools>();
-        builder.Services.AddSingleton<CompileTools>();
+        AddServices(builder.Services, options, target, log).WithHttpTransport();
 
         var app = builder.Build();
         if (!string.IsNullOrEmpty(options.Token))

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.11.12210.170 insiders
+VisualStudioVersion = 18.11.12210.170
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HammerMcp.Tests", "tests\HammerMcp.Tests\HammerMcp.Tests.csproj", "{CD03C8FB-A858-4F9E-81B5-40C28680DE7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HammerMcp.Cli", "src\HammerMcp.Cli\HammerMcp.Cli.csproj", "{BB0C32A1-CAE5-445E-AF03-17210A221005}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +89,18 @@ Global
 		{CD03C8FB-A858-4F9E-81B5-40C28680DE7C}.Release|x64.Build.0 = Release|Any CPU
 		{CD03C8FB-A858-4F9E-81B5-40C28680DE7C}.Release|x86.ActiveCfg = Release|Any CPU
 		{CD03C8FB-A858-4F9E-81B5-40C28680DE7C}.Release|x86.Build.0 = Release|Any CPU
+		{BB0C32A1-CAE5-445E-AF03-17210A221005}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB0C32A1-CAE5-445E-AF03-17210A221005}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB0C32A1-CAE5-445E-AF03-17210A221005}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BB0C32A1-CAE5-445E-AF03-17210A221005}.Debug|x64.Build.0 = Debug|Any CPU
+		{BB0C32A1-CAE5-445E-AF03-17210A221005}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BB0C32A1-CAE5-445E-AF03-17210A221005}.Debug|x86.Build.0 = Debug|Any CPU
+		{BB0C32A1-CAE5-445E-AF03-17210A221005}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB0C32A1-CAE5-445E-AF03-17210A221005}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB0C32A1-CAE5-445E-AF03-17210A221005}.Release|x64.ActiveCfg = Release|Any CPU
+		{BB0C32A1-CAE5-445E-AF03-17210A221005}.Release|x64.Build.0 = Release|Any CPU
+		{BB0C32A1-CAE5-445E-AF03-17210A221005}.Release|x86.ActiveCfg = Release|Any CPU
+		{BB0C32A1-CAE5-445E-AF03-17210A221005}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,6 +111,7 @@ Global
 		{FE40C7CB-5D31-405D-AD33-16945A1ECF17} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{37579070-7F62-457E-B804-8CF6D7238718} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{CD03C8FB-A858-4F9E-81B5-40C28680DE7C} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{BB0C32A1-CAE5-445E-AF03-17210A221005} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {16F64E5A-DDA6-4F79-8DB8-235D8DBE9B47}
