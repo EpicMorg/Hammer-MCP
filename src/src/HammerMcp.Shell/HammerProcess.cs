@@ -29,11 +29,12 @@ public sealed record HammerProcess(int ProcessId, string Name, string ExePath, n
     public bool IsKnownEditorName => EditorNames.Contains(Name);
 
     /// <summary>Map path from a title like "Hammer++ - 64 Bit - [B:\...\map.vmf - Textured Shaded]".</summary>
-    /// <remarks>Source 2 Hammer shows only the file name; it is looked up in the install's content tree.</remarks>
+    /// <remarks>Source 2 Hammer shows only the file name; it is looked up in the install's content tree.
+    /// When the title has no map, Source 2 is asked through its developer console (hammer_map_files).</remarks>
     public string? OpenMapPath =>
         WindowTitles.Select(HammerWindowTitle.ParseMapPath).FirstOrDefault(p => p is not null) is { } map
             ? Path.IsPathRooted(map) ? map : Source2Content.FindMap(ExePath, map) ?? map
-            : null;
+            : IsSource2 ? HammerMcp.Core.Source2.VConsoleMaps.OpenMaps().FirstOrDefault() : null;
 
     public string MainTitle => WindowTitles.FirstOrDefault(t => t.Contains('[')) ?? WindowTitles.FirstOrDefault() ?? Name;
 

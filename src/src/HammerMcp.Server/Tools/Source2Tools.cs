@@ -26,6 +26,7 @@ public sealed class Source2Tools(HammerTarget target, ActivityLog log)
     public async Task<object> Source2Console(
         [Description("Console command, e.g. hammer_map_files")] string command,
         [Description("Seconds to collect the output")] double waitSeconds = 2,
+        [Description("Debug: also return the first bytes of each message (hex)")] bool raw = false,
         CancellationToken cancellationToken = default)
     {
         var process = target.Current();
@@ -39,9 +40,16 @@ public sealed class Source2Tools(HammerTarget target, ActivityLog log)
         try
         {
             using var client = await VConsoleClient.ConnectAsync(ct: cancellationToken);
-            var output = await client.RunAsync(command.Trim(), TimeSpan.FromSeconds(Math.Clamp(waitSeconds, 0.5, 15)), cancellationToken);
+            var messages = await client.RunRawAsync(command.Trim(), TimeSpan.FromSeconds(Math.Clamp(waitSeconds, 0.5, 15)), cancellationToken);
+            var output = string.Join("\n", messages.Where(m => m.Type == "PRNT").Select(m => m.Text).Where(t => t.Length > 0));
             log.Write($"vconsole: {command.Trim()} -> {output.Length} chars");
-            return new { command = command.Trim(), output, game = client.AppInfo };
+            return new
+            {
+                command = command.Trim(),
+                output,
+                game = client.AppInfo,
+                rawMessages = raw ? messages.Take(12).Select(m => $"{m.Type} {m.Payload.Length}: {Convert.ToHexString(m.Payload.AsSpan(0, Math.Min(48, m.Payload.Length)))}") : null,
+            };
         }
         catch (Exception e) when (e is SocketException or OperationCanceledException or IOException)
         {

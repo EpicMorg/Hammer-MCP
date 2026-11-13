@@ -68,4 +68,11 @@ public class VConsoleTests
         await game;
         listener.Stop();
     }
+
+    [Fact]
+    public void ParsesHammerMapFiles()
+    {
+        const string output = "----\n1 : b:/steam/content/csgo_addons/x/maps/cs_script_demo.vmap\n----\n11 map files loaded\nFailed to load image data from https://a/b.webm";
+        Assert.Equal([@"b:\steam\content\csgo_addons\x\maps\cs_script_demo.vmap"], VConsoleClient.MapFiles(output));
+    }
 }

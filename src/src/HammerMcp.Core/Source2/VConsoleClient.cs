@@ -62,12 +62,22 @@ public sealed class VConsoleClient : IDisposable
     }
 
     /// <summary>Sends a console command and returns the console text printed during <paramref name="wait"/>.</summary>
-    public async Task<string> RunAsync(string command, TimeSpan wait, CancellationToken ct = default)
+    public async Task<string> RunAsync(string command, TimeSpan wait, CancellationToken ct = default) =>
+        string.Join("\n", (await RunRawAsync(command, wait, ct)).Where(m => m.Type == "PRNT").Select(m => m.Text).Where(t => t.Length > 0));
+
+    /// <summary>Sends a console command and returns every message received during <paramref name="wait"/>.</summary>
+    public async Task<List<Message>> RunRawAsync(string command, TimeSpan wait, CancellationToken ct = default)
     {
         await _stream.WriteAsync(CommandPacket(command), ct);
-        var messages = await ReadAsync(wait, ct);
-        return string.Join("\n", messages.Where(m => m.Type == "PRNT").Select(m => m.Text).Where(t => t.Length > 0));
+        return await ReadAsync(wait, ct);
     }
+
+    /// <summary>Paths from "hammer_map_files" output ("1 : b:/.../maps/x.vmap"), as Windows paths.</summary>
+    public static List<string> MapFiles(string output) =>
+        [.. output.Split('\n')
+            .Select(l => System.Text.RegularExpressions.Regex.Match(l, @"\b\d+\s*:\s*([A-Za-z]:[\\/].+?\.vmap)\s*$"))
+            .Where(m => m.Success)
+            .Select(m => m.Groups[1].Value.Replace('/', '\\'))];
 
     /// <summary>Messages received within <paramref name="window"/>.</summary>
     public async Task<List<Message>> ReadAsync(TimeSpan window, CancellationToken ct = default)
