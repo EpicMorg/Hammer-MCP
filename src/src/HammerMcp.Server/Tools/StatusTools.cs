@@ -41,6 +41,8 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
             OpenMap: mapPath,
             SavedMapVersion: mapVersion,
             WindowTitle: process.MainTitle,
+            // all visible windows of the process (when the open map is not found, the title format is usually the reason)
+            WindowTitles: mapPath is null ? process.WindowTitles : null,
             CommandLine: process.CommandLine,
             // -insecure = started without VAC (for the inject policy); reported, not trusted on its own
             Insecure: process.CommandLine is { } cl ? cl.Contains("-insecure", StringComparison.OrdinalIgnoreCase) : null,
@@ -143,6 +145,7 @@ public sealed record HammerStatus(
     string? OpenMap = null,
     int? SavedMapVersion = null,
     string? WindowTitle = null,
+    IReadOnlyList<string>? WindowTitles = null,
     string? CommandLine = null,
     bool? Insecure = null,
     string? EditorSha256 = null,
