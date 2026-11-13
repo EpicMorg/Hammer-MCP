@@ -32,6 +32,50 @@ public sealed record HammerGameConfig(
         return (null, []);
     }
 
+    /// <summary>
+    /// Source 2 has no GameConfig.txt: Hammer lives in game/bin/win64/tools/hammer.dll and each mod is game/&lt;mod&gt;/ with
+    /// &lt;mod&gt;.fgd (core FGDs come in through @include from game/core/). Maps live under content/&lt;mod&gt;/ or
+    /// content/&lt;mod&gt;_addons/&lt;addon&gt;/. One config per mod that has its FGD; empty if this is not a Source 2 install.
+    /// </summary>
+    public static List<HammerGameConfig> Source2(string exePath)
+    {
+        var bin = Path.GetDirectoryName(exePath) ?? ".";
+        if (!File.Exists(Path.Combine(bin, "tools", "hammer.dll")))
+            return [];
+        var game = Path.GetFullPath(Path.Combine(bin, "..", ".."));
+        var content = Path.GetFullPath(Path.Combine(game, "..", "content"));
+        var result = new List<HammerGameConfig>();
+        if (!Directory.Exists(game))
+            return result;
+        foreach (var dir in Directory.EnumerateDirectories(game).Order(StringComparer.OrdinalIgnoreCase))
+        {
+            var mod = Path.GetFileName(dir);
+            var fgd = Path.Combine(dir, mod + ".fgd");
+            if (mod.Equals("core", StringComparison.OrdinalIgnoreCase) || mod.Equals("bin", StringComparison.OrdinalIgnoreCase) || !File.Exists(fgd))
+                continue;
+            result.Add(new HammerGameConfig(mod, [fgd], dir, game, Path.Combine(content, mod), Path.Combine(dir, "maps"),
+                new Dictionary<string, string>()));
+        }
+        return result;
+    }
+
+    /// <summary>Source 2 mod of a map path: the folder after "content" (or "game"), "_addons" stripped (csgo_addons → csgo).</summary>
+    public static string? Source2ModOf(string? mapPath)
+    {
+        if (mapPath is null)
+            return null;
+        var parts = mapPath.Split(['\\', '/'], StringSplitOptions.RemoveEmptyEntries);
+        for (var i = 0; i < parts.Length - 1; i++)
+        {
+            if (parts[i].Equals("content", StringComparison.OrdinalIgnoreCase) || parts[i].Equals("game", StringComparison.OrdinalIgnoreCase))
+            {
+                var mod = parts[i + 1];
+                return mod.EndsWith("_addons", StringComparison.OrdinalIgnoreCase) ? mod[..^"_addons".Length] : mod;
+            }
+        }
+        return null;
+    }
+
     public static List<HammerGameConfig> Load(string path)
     {
         using var stream = File.OpenRead(path);

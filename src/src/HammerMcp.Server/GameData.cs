@@ -27,6 +27,15 @@ public sealed class GameData(HammerTarget target)
         if (process is null)
             return new Selection(null, [], null, "no Hammer is attached");
         var (file, configs) = HammerGameConfig.ForExe(process.ExePath);
+        if (file is null && HammerGameConfig.Source2(process.ExePath) is { Count: > 0 } source2)
+        {
+            // Source 2: no config file; mods with their FGD, picked by the open map's content/<mod> folder
+            var mod = configName ?? HammerGameConfig.Source2ModOf(process.OpenMapPath);
+            var pick = source2.FirstOrDefault(c => c.Name.Equals(mod, StringComparison.OrdinalIgnoreCase))
+                       ?? (source2.Count == 1 && configName is null ? source2[0] : null);
+            return new Selection("(Source 2: game/<mod>/<mod>.fgd)", source2, pick,
+                pick is null ? $"pick a Source 2 mod with configName: {string.Join(", ", source2.Select(c => c.Name))}" : null);
+        }
         if (file is null)
             return new Selection(null, [], null, $"no GameConfig.txt / hammerplusplus_gameconfig.txt next to {process.ExePath}");
         var active = configName is not null

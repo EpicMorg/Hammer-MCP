@@ -10,6 +10,7 @@ All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/)
 - **Source 2 maps**: `.vmap` (DMX, read with KeyValues2 / Datamodel.NET) - entities in world space with keyvalues and outputs, hidden nodes, summary; `map_summary`, `list_entities`, `get_entity`, `find_io`, `validate_map` work on Source 2 maps. Prefabs and instances are not expanded yet.
 - **Source 2 FGD**: class metadata blocks (`{ entity_tool_name = ... }`, shown by `fgd_class`), per-member `[ ]` / `{ }` metadata, `@OverrideClass`, escaped quotes, includes from `game/core/`; model / VData definitions are skipped.
 - Source 2 Workshop Tools processes (`cs2`, `dota2`, `hlvr`, ... with `tools/hammer.dll`) are listed for Attach; an absolute map path anywhere in the window title is recognised (`.vmap` included). Not verified live yet.
+- Source 2 game data without a GameConfig.txt: one config per mod with `game/<mod>/<mod>.fgd` (CS2 `csgo`: 469 classes, Dota 2 `dota`: 427), picked by the open map's `content/<mod>` folder (`csgo_addons` → `csgo`).
 
 ## [0.2.0] - 2026-11-13
 
