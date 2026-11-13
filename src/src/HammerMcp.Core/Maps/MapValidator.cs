@@ -29,7 +29,8 @@ public static class MapValidator
         List<Issue> UnknownOutputs,
         List<Issue> UnknownInputs,
         List<Issue> UnknownKeyValues,
-        List<Issue> QuotesInsideValues);
+        List<Issue> QuotesInsideValues,
+        List<Issue> OutputsAsKeyValues);
 
     public static Result Validate(IReadOnlyList<VmfEntity> entities, FgdDocument fgd)
     {
@@ -41,7 +42,7 @@ public static class MapValidator
         var resolved = new Dictionary<string, FgdClass?>(StringComparer.OrdinalIgnoreCase);
         FgdClass? Cls(string name) => resolved.TryGetValue(name, out var c) ? c : resolved[name] = fgd.Resolve(name);
 
-        var r = new Result([], [], [], [], [], []);
+        var r = new Result([], [], [], [], [], [], []);
         foreach (var e in entities)
         {
             foreach (var line in e.BrokenLines)
@@ -54,12 +55,21 @@ public static class MapValidator
             }
             // Source 2 prefabs: the world carries user-named relay plugs (X_Input / X_Output) that no FGD describes
             var isWorld = e.ClassName.Equals("worldspawn", StringComparison.OrdinalIgnoreCase);
+            var connections = e.Connections.ToList();
             foreach (var key in isWorld ? [] : e.KeyValues.Keys)
             {
+                // an output written as a plain keyvalue (set through the shell channel): works in game, hidden on Hammer's Outputs tab
+                if (cls.Outputs.Any(o => o.Name.Equals(key, StringComparison.OrdinalIgnoreCase))
+                    && VmfConnection.Parse(key, e.KeyValues[key]) is { } asOutput)
+                {
+                    r.OutputsAsKeyValues.Add(new Issue(e.Id, e.ClassName, Format(asOutput)));
+                    connections.Add(asOutput);
+                    continue;
+                }
                 if (!CommonKeys.Contains(key) && !cls.Properties.Any(p => p.Name.Equals(key, StringComparison.OrdinalIgnoreCase)))
                     r.UnknownKeyValues.Add(new Issue(e.Id, e.ClassName, key));
             }
-            foreach (var c in e.Connections)
+            foreach (var c in connections)
             {
                 if (!isWorld && !cls.Outputs.Any(o => o.Name.Equals(c.Output, StringComparison.OrdinalIgnoreCase)))
                     r.UnknownOutputs.Add(new Issue(e.Id, e.ClassName, c.Output));

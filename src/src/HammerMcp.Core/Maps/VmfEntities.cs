@@ -10,6 +10,17 @@ public sealed record VmfEntity(int Id, string ClassName, Vector3? Origin, string
     /// <summary>Outputs from the entity's "connections" block (Source maps only).</summary>
     public IReadOnlyList<VmfConnection> Connections { get; init; } = [];
 
+    /// <summary>
+    /// <see cref="Connections"/> plus outputs written as plain keyvalues (On*/Out* keys whose value parses as
+    /// "target,Input,param,delay,times" - what set_keyvalue through Hammer's shell channel produces; they fire in game).
+    /// </summary>
+    public IEnumerable<VmfConnection> AllOutputs =>
+        Connections.Concat(KeyValues
+            .Where(kv => (kv.Key.StartsWith("On", StringComparison.OrdinalIgnoreCase) || kv.Key.StartsWith("Out", StringComparison.OrdinalIgnoreCase))
+                         && (kv.Value.Contains(',') || kv.Value.Contains('\u001b')))
+            .Select(kv => VmfConnection.Parse(kv.Key, kv.Value))
+            .OfType<VmfConnection>());
+
     /// <summary>Keyvalue / output lines with extra double quotes inside the value (e.g. echo "text"): Hammer and vbsp split them.</summary>
     public IReadOnlyList<string> BrokenLines { get; init; } = [];
 }

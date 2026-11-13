@@ -8,6 +8,8 @@ All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/)
 
 ### Added
 - **vmap prefab variables**: keyvalues bound to prefab variables get the placed prefab's values - defaults, choice groups (e.g. `TowerLocation = middle_tier_3` sets the tower's name and unit) and overrides; a named prefab is an I/O target of the outer map (its world relays the inputs). Dota towers now get their real names. `fixupEntityNames` is not applied (no evidence of the renaming rule in the data).
+- `validate_map` reports outputs written as plain keyvalues (`outputsAsKeyValues`, set through the shell channel) and checks their targets and inputs; `get_entity` / `find_io` show them as outputs.
+- Source 2 maps are cached by path + write time + size: tools no longer re-read a big `.vmap` with its prefabs on every call.
 
 ## [0.4.0] - 2026-11-13
 

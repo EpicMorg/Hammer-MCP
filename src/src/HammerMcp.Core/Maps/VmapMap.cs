@@ -44,6 +44,32 @@ public static class VmapMap
         }
     }
 
+    private static readonly Lock CacheGate = new();
+    private static readonly Dictionary<string, (DateTime Written, long Size, bool Expanded, Result Result)> Cache = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// <see cref="Read(string, bool)"/> with a small cache keyed by path + write time + size (a big map with prefabs takes
+    /// seconds to read; tools call this for every request). Prefab files changing alone do not invalidate it.
+    /// </summary>
+    public static Result ReadCached(string path, bool expandPrefabs = true)
+    {
+        var info = new FileInfo(path);
+        var key = Path.GetFullPath(path);
+        lock (CacheGate)
+        {
+            if (Cache.TryGetValue(key, out var c) && c.Written == info.LastWriteTimeUtc && c.Size == info.Length && c.Expanded == expandPrefabs)
+                return c.Result;
+        }
+        var result = Read(path, expandPrefabs);
+        lock (CacheGate)
+        {
+            if (Cache.Count >= 8)
+                Cache.Clear();
+            Cache[key] = (info.LastWriteTimeUtc, info.Length, expandPrefabs, result);
+        }
+        return result;
+    }
+
     public static Result Read(string path, bool expandPrefabs = true)
     {
         using var dm = Datamodel.Datamodel.Load(path, Datamodel.Codecs.DeferredMode.Disabled);

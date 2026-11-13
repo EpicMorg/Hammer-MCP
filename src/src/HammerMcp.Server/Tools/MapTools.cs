@@ -103,7 +103,7 @@ public sealed class MapTools(HammerTarget target, GameData gameData)
             e.Hidden,
             brushEntity = e.HasBrushes,
             keyValues = e.KeyValues,
-            outputs = e.Connections.Select(Format),
+            outputs = e.AllOutputs.Select(Format),
             targetedBy = e.TargetName is null ? [] : Inbound(entities, e.TargetName),
         };
     }
@@ -119,7 +119,7 @@ public sealed class MapTools(HammerTarget target, GameData gameData)
         return new
         {
             source = _source,
-            entities = named.Select(e => new { e.Id, className = e.ClassName, outputs = e.Connections.Select(Format) }),
+            entities = named.Select(e => new { e.Id, className = e.ClassName, outputs = e.AllOutputs.Select(Format) }),
             targetedBy = Inbound(entities, targetName),
         };
     }
@@ -147,13 +147,14 @@ public sealed class MapTools(HammerTarget target, GameData gameData)
             unknownOutputNames = new { count = r.UnknownOutputs.Count, items = r.UnknownOutputs.Take(cap) },
             inputsTargetDoesNotHave = new { count = r.UnknownInputs.Count, items = r.UnknownInputs.Take(cap) },
             keyValuesNotInFgd = new { count = r.UnknownKeyValues.Count, items = r.UnknownKeyValues.Take(cap) },
+            outputsAsKeyValues = new { count = r.OutputsAsKeyValues.Count, note = "outputs stored as plain keyvalues (set through the shell channel): they fire in game but Hammer's Outputs tab does not show them; targets and inputs are checked like real outputs", items = r.OutputsAsKeyValues.Take(cap) },
             quotesInsideValues = new { count = r.QuotesInsideValues.Count, note = "Hammer and vbsp cut such a value at the inner quote; use single quotes or none", items = r.QuotesInsideValues.Take(cap) },
             fgdWarnings = fgd.Warnings.Take(20),
         };
     }
 
     private static List<object> Inbound(List<VmfEntity> entities, string name) =>
-        [.. entities.SelectMany(e => e.Connections
+        [.. entities.SelectMany(e => e.AllOutputs
                 .Where(c => string.Equals(c.Target, name, StringComparison.OrdinalIgnoreCase)
                             || (c.Target.EndsWith('*') && name.StartsWith(c.Target[..^1], StringComparison.OrdinalIgnoreCase)))
                 .Select(c => (object)new { fromId = e.Id, fromClass = e.ClassName, fromName = e.TargetName, connection = Format(c) }))];

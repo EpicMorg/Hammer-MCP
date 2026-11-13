@@ -31,14 +31,24 @@ public class MapValidatorTests
             "id" "2"
             "classname" "point_servercommand"
         }
+        entity
+        {
+            "id" "3"
+            "classname" "logic_relay"
+            "targetname" "kv_relay"
+            "OnTrigger" "ghost,Trigger,,0,-1"
+        }
         """;
 
     [Fact]
     public void ResolvesTargetsByNameClassnameAndRuntimeClass()
     {
         var r = MapValidator.Validate(VmfEntities.Parse(new StringReader(Map)), new FgdParser().Parse(Fgd));
-        Assert.Single(r.MissingTargets);
-        Assert.Contains("nobody", r.MissingTargets[0].Detail);
+        Assert.Equal(2, r.MissingTargets.Count);
+        Assert.Contains(r.MissingTargets, i => i.Detail.Contains("nobody"));
+        Assert.Contains(r.MissingTargets, i => i.Id == 3 && i.Detail.Contains("ghost")); // the keyvalue output is checked too
+        Assert.Equal(3, Assert.Single(r.OutputsAsKeyValues).Id);
+        Assert.Empty(r.UnknownKeyValues);
         Assert.Empty(r.UnknownInputs);
         Assert.Single(r.QuotesInsideValues);
     }

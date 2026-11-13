@@ -30,7 +30,7 @@ public sealed record VmfSummary
     public static VmfSummary Read(string path)
     {
         if (VmapMap.IsVmap(path))
-            return VmapMap.Read(path).Summary;
+            return VmapMap.ReadCached(path).Summary;
         using var reader = new StreamReader(path);
         return Parse(reader);
     }
