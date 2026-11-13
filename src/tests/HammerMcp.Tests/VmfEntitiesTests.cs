@@ -102,4 +102,35 @@ public class VmfEntitiesTests
             File.Delete(path);
         }
     }
+
+    [Fact]
+    public void BrushEntityIsAddressedByTheCentreOfItsBrushes()
+    {
+        const string map = """
+            entity
+            {
+            	"id" "7"
+            	"classname" "trigger_multiple"
+            	solid
+            	{
+            		"id" "8"
+            		side
+            		{
+            			"id" "9"
+            			"plane" "(0 0 64) (0 128 64) (128 128 64)"
+            		}
+            		side
+            		{
+            			"id" "10"
+            			"plane" "(0 128 0) (0 0 0) (128 0 0)"
+            		}
+            	}
+            }
+            """;
+        var e = Assert.Single(VmfEntities.Parse(new StringReader(map)));
+        Assert.True(e.HasBrushes);
+        Assert.Null(e.Origin);
+        Assert.Equal(new System.Numerics.Vector3(64, 64, 32), e.BoundsCenter);
+        Assert.Single(new[] { e }.At("trigger_multiple", new System.Numerics.Vector3(64, 64, 32)));
+    }
 }

@@ -82,7 +82,7 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
         if (nameContains is not null)
             query = query.Where(e => e.TargetName?.Contains(nameContains, StringComparison.OrdinalIgnoreCase) == true);
         if (center is { } c)
-            query = query.Where(e => e.Origin is { } o && System.Numerics.Vector3.Distance(o, c) <= radius);
+            query = query.Where(e => (e.Origin ?? e.BoundsCenter) is { } o && System.Numerics.Vector3.Distance(o, c) <= radius);
         var all = query.ToList();
         return new
         {
@@ -94,6 +94,8 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
                 e.Id,
                 className = e.ClassName,
                 origin = e.Origin is { } o ? new[] { o.X, o.Y, o.Z } : null,
+                // brush entities without an origin are addressed by the centre of their brushes
+                center = e.Origin is null && e.BoundsCenter is { } bc ? new[] { bc.X, bc.Y, bc.Z } : null,
                 targetName = e.TargetName,
                 e.Hidden,
                 brushEntity = e.HasBrushes,

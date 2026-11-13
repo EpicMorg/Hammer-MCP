@@ -10,6 +10,12 @@ public sealed record VmfEntity(int Id, string ClassName, Vector3? Origin, string
     /// <summary>Outputs from the entity's "connections" block (Source maps only).</summary>
     public IReadOnlyList<VmfConnection> Connections { get; init; } = [];
 
+    /// <summary>Brush entities: bounds of their brushes (from the side plane points of the .vmf), null for point entities.</summary>
+    public (Vector3 Min, Vector3 Max)? Bounds { get; init; }
+
+    /// <summary>Centre of <see cref="Bounds"/> - how a brush entity without an origin keyvalue can be addressed.</summary>
+    public Vector3? BoundsCenter => Bounds is { } b ? (b.Min + b.Max) / 2 : null;
+
     /// <summary>
     /// <see cref="Connections"/> plus outputs written as plain keyvalues (On*/Out* keys whose value parses as
     /// "target,Input,param,delay,times" - what set_keyvalue through Hammer's shell channel produces; they fire in game).
@@ -62,6 +68,7 @@ public static class VmfEntities
         List<string>? broken = null;
         var entityDepth = -1;
         var hasBrushes = false;
+        Vector3? min = null, max = null;
 
         while (reader.ReadLine() is { } raw)
         {
@@ -80,6 +87,7 @@ public static class VmfEntities
                     connections = [];
                     broken = [];
                     hasBrushes = false;
+                    min = max = null;
                 }
                 else if (name == "solid" && entityDepth > 0 && stack.Count == entityDepth + 1)
                     hasBrushes = true;
@@ -96,7 +104,7 @@ public static class VmfEntities
                         kv.GetValueOrDefault("targetname"),
                         Hidden: entityDepth == 2,
                         hasBrushes,
-                        kv) { Connections = connections ?? [], BrokenLines = broken ?? [] });
+                        kv) { Connections = connections ?? [], BrokenLines = broken ?? [], Bounds = min is { } mn && max is { } mx ? (mn, mx) : null });
                     entityDepth = -1;
                     kv = null;
                 }
@@ -108,6 +116,16 @@ public static class VmfEntities
             {
                 if (kv is not null && TryKeyValue(line, out var key, out var value))
                 {
+                    // "plane" "(x y z) (x y z) (x y z)" of a side of one of the entity's own brushes
+                    if (key == "plane" && entityDepth > 0 && stack.Count == entityDepth + 2 && stack[^1] == "side" && stack[^2] == "solid")
+                    {
+                        foreach (var point in PlanePoints(value))
+                        {
+                            min = min is { } a ? Vector3.Min(a, point) : point;
+                            max = max is { } b ? Vector3.Max(b, point) : point;
+                        }
+                        continue;
+                    }
                     if (value.Contains('"'))
                         broken!.Add(line);
                     if (stack.Count == entityDepth)
@@ -123,9 +141,17 @@ public static class VmfEntities
     }
 
     /// <summary>Entities of <paramref name="className"/> at <paramref name="origin"/> (within <see cref="OriginTolerance"/>).</summary>
+    /// <summary>Entities of the class at this point: by origin, or - for brush entities without one - by the centre of their brushes.</summary>
     public static IEnumerable<VmfEntity> At(this IEnumerable<VmfEntity> entities, string className, Vector3 origin) =>
         entities.Where(e => string.Equals(e.ClassName, className, StringComparison.OrdinalIgnoreCase)
-                            && e.Origin is { } o && SameOrigin(o, origin));
+                            && ((e.Origin is { } o && SameOrigin(o, origin)) || (e.Origin is null && e.BoundsCenter is { } c && SameOrigin(c, origin))));
+
+    private static IEnumerable<Vector3> PlanePoints(string plane)
+    {
+        foreach (var part in plane.Split(['(', ')'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            if (ParseVector(part) is { } v)
+                yield return v;
+    }
 
     public static bool SameOrigin(Vector3 a, Vector3 b) =>
         MathF.Abs(a.X - b.X) <= OriginTolerance && MathF.Abs(a.Y - b.Y) <= OriginTolerance && MathF.Abs(a.Z - b.Z) <= OriginTolerance;

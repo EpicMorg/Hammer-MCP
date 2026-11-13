@@ -100,6 +100,8 @@ public sealed class MapTools(HammerTarget target, GameData gameData)
             e.Id,
             className = e.ClassName,
             origin = e.Origin is { } o ? new[] { o.X, o.Y, o.Z } : null,
+            // brush entities without an origin are addressed by the centre of their brushes
+            center = e.Origin is null && e.BoundsCenter is { } bc ? new[] { bc.X, bc.Y, bc.Z } : null,
             e.Hidden,
             brushEntity = e.HasBrushes,
             keyValues = e.KeyValues,
