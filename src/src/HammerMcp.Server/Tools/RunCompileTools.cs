@@ -31,10 +31,11 @@ public sealed class RunCompileTools(HammerTarget target, CompileTools reader, Ac
         var vars = CompileTools.Variables(process.ExePath, map, config);
         var steps = new List<object>();
         var cwd = Path.GetDirectoryName(map)!;
+        var started = DateTime.Now;
         foreach (var cmd in seq.Commands.Where(c => c.Enabled))
         {
             var run = CompileSequences.Expand(cmd.Run, vars).Trim();
-            var args = CompileSequences.Expand(cmd.Parameters, vars).Trim();
+            var args = CompileSequences.ExpandArguments(cmd.Parameters, vars).Trim();
             var isGame = vars.TryGetValue("game_exe", out var gameExe) && run.Equals(gameExe, StringComparison.OrdinalIgnoreCase);
             if ((isGame || cmd.NoWait) && !launchGame)
             {
@@ -47,7 +48,7 @@ public sealed class RunCompileTools(HammerTarget target, CompileTools reader, Ac
                 switch (cmd.Kind)
                 {
                     case CompileCommandKind.ChangeDirectory:
-                        cwd = args.Length > 0 ? args : run;
+                        cwd = (args.Length > 0 ? args : run).Trim('"');
                         steps.Add(new { step = $"cd {cwd}", ok = Directory.Exists(cwd) });
                         break;
                     case CompileCommandKind.CopyFile:
@@ -58,7 +59,7 @@ public sealed class RunCompileTools(HammerTarget target, CompileTools reader, Ac
                         break;
                     }
                     case CompileCommandKind.DeleteFile:
-                        File.Delete(args);
+                        File.Delete(args.Trim('"'));
                         steps.Add(new { step = $"delete {args}", ok = true });
                         break;
                     case CompileCommandKind.RenameFile:
@@ -73,7 +74,7 @@ public sealed class RunCompileTools(HammerTarget target, CompileTools reader, Ac
                         var (code, tail) = await CompileTools.RunProcess(run, args, cwd, cmd.NoWait, TimeSpan.FromMinutes(Math.Clamp(timeoutMinutes, 1, 240)), cancellationToken);
                         steps.Add(new { step = $"{run} {args}", exitCode = code, outputTail = tail });
                         if (code is not 0 and not null)
-                            return CompileTools.Result(seq.Name, steps, map!, $"stopped: {Path.GetFileName(run)} exited with {code}");
+                            return CompileTools.Result(seq.Name, steps, map!, started, $"stopped: {Path.GetFileName(run)} exited with {code}");
                         break;
                     }
                 }
@@ -81,10 +82,10 @@ public sealed class RunCompileTools(HammerTarget target, CompileTools reader, Ac
             catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.ComponentModel.Win32Exception or InvalidOperationException)
             {
                 steps.Add(new { step = $"{cmd.Kind} {run} {args}", error = e.Message });
-                return CompileTools.Result(seq.Name, steps, map!, "stopped on error");
+                return CompileTools.Result(seq.Name, steps, map!, started, "stopped on error");
             }
         }
-        return CompileTools.Result(seq.Name, steps, map!, "done");
+        return CompileTools.Result(seq.Name, steps, map!, started, "done");
     }
 
 }

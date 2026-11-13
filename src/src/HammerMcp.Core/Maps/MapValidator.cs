@@ -30,6 +30,9 @@ public static class MapValidator
     {
         var names = entities.Where(e => e.TargetName is not null).GroupBy(e => e.TargetName!, StringComparer.OrdinalIgnoreCase)
             .ToDictionary(g => g.Key, g => g.ToList(), StringComparer.OrdinalIgnoreCase);
+        // the engine falls back to the classname when no entity has the target name (e.g. "point_servercommand")
+        var classes = entities.GroupBy(e => e.ClassName, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.ToList(), StringComparer.OrdinalIgnoreCase);
         var resolved = new Dictionary<string, FgdClass?>(StringComparer.OrdinalIgnoreCase);
         FgdClass? Cls(string name) => resolved.TryGetValue(name, out var c) ? c : resolved[name] = fgd.Resolve(name);
 
@@ -51,7 +54,8 @@ public static class MapValidator
             {
                 if (!cls.Outputs.Any(o => o.Name.Equals(c.Output, StringComparison.OrdinalIgnoreCase)))
                     r.UnknownOutputs.Add(new Issue(e.Id, e.ClassName, c.Output));
-                var targets = Targets(names, c.Target);
+                var targets = Targets(names, c.Target) ?? Targets(classes, c.Target)
+                    ?? (Cls(c.Target) is { IsBase: false } ? [] : null); // a class spawned at runtime (player, ...)
                 if (targets is null)
                 {
                     r.MissingTargets.Add(new Issue(e.Id, e.ClassName, Format(c)));

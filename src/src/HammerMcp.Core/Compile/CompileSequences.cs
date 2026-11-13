@@ -139,6 +139,38 @@ public static class CompileSequences
         return sb.ToString();
     }
 
+    /// <summary>
+    /// Expands a command-line template token by token and quotes every token that ends up containing spaces
+    /// ("-game $gamedir $path\$file" with "C:\Steam Library\..." stays three arguments), like Hammer's Run Map.
+    /// Tokens already in quotes are kept as they are.
+    /// </summary>
+    public static string ExpandArguments(string template, IReadOnlyDictionary<string, string> variables)
+    {
+        var tokens = new List<string>();
+        var current = new StringBuilder();
+        var quoted = false;
+        foreach (var ch in template)
+        {
+            if (ch == '"')
+                quoted = !quoted;
+            if (ch == ' ' && !quoted)
+            {
+                if (current.Length > 0)
+                    tokens.Add(current.ToString());
+                current.Clear();
+            }
+            else
+                current.Append(ch);
+        }
+        if (current.Length > 0)
+            tokens.Add(current.ToString());
+        return string.Join(' ', tokens.Select(t =>
+        {
+            var expanded = Expand(t, variables);
+            return expanded.Contains(' ') && !expanded.StartsWith('"') ? $"\"{expanded}\"" : expanded;
+        }));
+    }
+
     private static string CString(byte[] d, int offset, int length)
     {
         var end = Array.IndexOf(d, (byte)0, offset, length);

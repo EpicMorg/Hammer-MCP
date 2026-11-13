@@ -54,6 +54,16 @@ public class CompileTests
     }
 
     [Fact]
+    public void QuotesArgumentsWithSpacesLikeHammer()
+    {
+        var vars = new Dictionary<string, string> { ["gamedir"] = @"W:\Steam\common\Bestiarium Project\bst", ["path"] = @"W:\maps\my maps", ["file"] = "test" };
+        Assert.Equal(@"-game ""W:\Steam\common\Bestiarium Project\bst"" ""W:\maps\my maps\test""",
+            CompileSequences.ExpandArguments(@"-game $gamedir $path\$file", vars));
+        Assert.Equal(@"-bounce 2 -game W:\g ""already quoted""",
+            CompileSequences.ExpandArguments(@"-bounce 2 -game $gamedir ""already quoted""", new Dictionary<string, string> { ["gamedir"] = @"W:\g" }));
+    }
+
+    [Fact]
     public void ParsesCompileLog()
     {
         string[] lines =

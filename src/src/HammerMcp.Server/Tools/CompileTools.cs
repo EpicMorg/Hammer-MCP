@@ -61,7 +61,7 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
                     c.Enabled,
                     kind = c.Kind.ToString(),
                     run = CompileSequences.Expand(c.Run, vars),
-                    parameters = CompileSequences.Expand(c.Parameters, vars),
+                    parameters = CompileSequences.ExpandArguments(c.Parameters, vars),
                     c.NoWait,
                 }),
             }),
@@ -108,15 +108,18 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
         };
     }
 
-    internal static object Result(string sequence, List<object> steps, string map, string status)
+    internal static object Result(string sequence, List<object> steps, string map, DateTime started, string status)
     {
         var logPath = Path.ChangeExtension(map, ".log");
-        var parsed = File.Exists(logPath) ? CompileLog.Read(logPath) : null;
+        // a log left over from an earlier compile would describe the wrong run
+        var fresh = File.Exists(logPath) && File.GetLastWriteTime(logPath) >= started.AddSeconds(-2);
+        var parsed = fresh ? CompileLog.Read(logPath) : null;
         return new
         {
             sequence,
             status,
             steps,
+            logNote = fresh ? null : File.Exists(logPath) ? $"{logPath} was not written by this run (older log ignored)" : $"no {logPath}",
             log = parsed is null ? null : new
             {
                 path = logPath,
