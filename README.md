@@ -91,6 +91,7 @@ Static analysis; live tests so far on Hammer++ 8873 (x64 and x86). Reports for o
 | `check_assets` | Materials, models, overlays, decals, skybox of the saved map vs the game's search paths (gameinfo.txt, folders, VPKs) |
 | `compile_sequences` · `compile_log` · `leak_trace` | Hammer's own Run Map sequences (CmdSeq.wc / Hammer++ / Strata), parsed compile log, leak path from the .lin |
 | `bsp_entities` | Entities as vbsp wrote them into the compiled .bsp (entity lump), outputs included |
+| `source2_console` | Source 2 only: allowlisted developer console commands over VConsole2 (open maps, force autosave, help) |
 | `run_compile` | Runs one of those sequences (vbsp / vvis / vrad, copy .bsp); edit modes only |
 | `create_entity` | Point entity at x y z, with keyvalues |
 | `set_keyvalue` · `rotate_entity` · `delete_entity` | Edit the entity of a class at an origin |

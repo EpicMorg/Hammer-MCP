@@ -91,6 +91,7 @@ Shell-канал есть во **всех стоковых Source-Hammer с 2006
 | `check_assets` | Материалы, модели, оверлеи, декали, skybox сохранённой карты против путей поиска игры (gameinfo.txt, папки, VPK) |
 | `compile_sequences` · `compile_log` · `leak_trace` | Собственные Run Map-последовательности Hammer (CmdSeq.wc / Hammer++ / Strata), разобранный лог компиляции, путь утечки из .lin |
 | `bsp_entities` | Сущности в том виде, в каком vbsp записал их в скомпилированный .bsp (entity lump), вместе с outputs |
+| `source2_console` | Только Source 2: команды консоли разработчика из белого списка через VConsole2 (открытые карты, принудительный автосейв, справка) |
 | `run_compile` | Запускает одну из этих последовательностей (vbsp / vvis / vrad, копирование .bsp); только в режимах с правками |
 | `create_entity` | Точечная сущность в x y z, с keyvalues |
 | `set_keyvalue` · `rotate_entity` · `delete_entity` | Правка сущности заданного класса в заданной точке |

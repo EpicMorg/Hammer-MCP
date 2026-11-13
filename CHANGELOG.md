@@ -8,6 +8,7 @@ All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/)
 
 ### Added
 - **Strata (Portal: Revolution)**: game config from `hammer/cfg/gameconfig.txt` (paths with `..\..` as shipped are normalised), autosave folder from `hammer/cfg/HammerConfig.vdf` (KV3) for `fromAutosave`; `revolution.fgd` reads cleanly (563 classes).
+- **Source 2 developer console** (`source2_console`): allowlisted commands over VConsole2 (TCP 127.0.0.1:29000, the channel `vconsole2.exe` uses) - `hammer_map_files`, `hammer_force_autosave`, `hammer_prefab_tree`, `find`, `help`, `status`, …; nothing is injected. Not verified live yet.
 
 ## [0.3.0] - 2026-11-13
 

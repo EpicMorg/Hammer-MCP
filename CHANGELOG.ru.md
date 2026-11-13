@@ -8,6 +8,7 @@
 
 ### Добавлено
 - **Strata (Portal: Revolution)**: игровой конфиг из `hammer/cfg/gameconfig.txt` (пути с `..\..`, как в поставке, нормализуются), папка автосейвов из `hammer/cfg/HammerConfig.vdf` (KV3) для `fromAutosave`; `revolution.fgd` читается чисто (563 класса).
+- **Консоль разработчика Source 2** (`source2_console`): команды из белого списка через VConsole2 (TCP 127.0.0.1:29000, тот же канал, что у `vconsole2.exe`) — `hammer_map_files`, `hammer_force_autosave`, `hammer_prefab_tree`, `find`, `help`, `status`, …; ничего не внедряется. Вживую ещё не проверено.
 
 ## [0.3.0] - 2026-11-13
 
