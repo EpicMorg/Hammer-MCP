@@ -21,6 +21,9 @@ public sealed class FgdClass
 
     public List<FgdIo> Outputs { get; } = [];
 
+    /// <summary>Source 2 editor metadata from the class header ({ entity_tool_name = "..." entity_tool_group = "..." ... }).</summary>
+    public Dictionary<string, string> Metadata { get; } = new(StringComparer.OrdinalIgnoreCase);
+
     /// <summary>Which file declared this class (last one wins when classes are redefined).</summary>
     public string? SourceFile { get; set; }
 
@@ -80,7 +83,8 @@ public sealed class FgdDocument
     /// </summary>
     public void Add(FgdClass cls)
     {
-        if (cls.Kind.Equals("ExtendClass", StringComparison.OrdinalIgnoreCase))
+        // H++ @ExtendClass and Source 2 @OverrideClass add to / override members of an existing class
+        if (cls.Kind.Equals("ExtendClass", StringComparison.OrdinalIgnoreCase) || cls.Kind.Equals("OverrideClass", StringComparison.OrdinalIgnoreCase))
         {
             if (_classes.TryGetValue(cls.Name, out var target))
                 Merge(target, cls);
@@ -126,6 +130,8 @@ public sealed class FgdDocument
     {
         if (!keepDescription && !string.IsNullOrEmpty(from.Description))
             into.Description = from.Description;
+        foreach (var kv in from.Metadata)
+            into.Metadata[kv.Key] = kv.Value;
         foreach (var b in from.Behaviours)
         {
             into.Behaviours.RemoveAll(x => x.Name.Equals(b.Name, StringComparison.OrdinalIgnoreCase));

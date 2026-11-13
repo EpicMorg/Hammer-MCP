@@ -121,4 +121,35 @@ public class FgdParserTests
     [Fact]
     public void ClassHelpUrlIsSkipped() =>
         Assert.Equal("The world.", Parse().Get("worldspawn")!.Description);
+
+    [Fact]
+    public void ReadsSource2Syntax()
+    {
+        const string fgd = """
+            @PointClass base(Targetname) iconsprite("x.vmat")
+            	{
+            		entity_tool_name = "Player Start"
+            		entity_tool_group = "Player"
+            	}
+            = info_player_start : "Start"
+            [
+            	fogcolor(color255) [ group = "Fog Color" ] : "Fog Color" : "255 255 255" : "Say \"hi\" here."
+            	dof_near(float) { enabled={ variable="dof_enabled" value="1" } group="DOF" } : "Near" : "50"
+            	input SetColor(vector) [ group = "x" ] : "Set color"
+            ]
+            @OverrideClass = info_player_start
+            [
+            	extra(string) : "Extra"
+            ]
+            @ModelGameData = prop_data [ base(x) ]
+            @helpinfo "x" [ ]
+            """;
+        var doc = new FgdParser().Parse(fgd);
+        Assert.Empty(doc.Warnings);
+        var cls = doc.Get("info_player_start")!;
+        Assert.Equal("Player", cls.Metadata["entity_tool_group"]);
+        Assert.Equal(["fogcolor", "dof_near", "extra"], cls.Properties.Select(p => p.Name));
+        Assert.Equal("Say \"hi\" here.", cls.Properties[0].Description);
+        Assert.Equal("SetColor", Assert.Single(cls.Inputs).Name);
+    }
 }

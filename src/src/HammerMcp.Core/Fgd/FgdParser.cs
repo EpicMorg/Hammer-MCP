@@ -11,6 +11,8 @@ public sealed class FgdParser
     private static readonly HashSet<string> IgnoredCommands = new(StringComparer.OrdinalIgnoreCase)
     {
         "MaterialExclusion", "AutoVisGroup", "VisGroupFilter", "GridNav", "EntityGroup", "Exclude", "Main",
+        // Source 2 model / data definitions (not entity classes)
+        "ModelGameData", "ModelAnimEvent", "ModelBreakCommand", "VData", "Struct", "helpinfo",
     };
 
     private readonly Func<string, string?> _includeResolver;
@@ -22,7 +24,9 @@ public sealed class FgdParser
     public static FgdDocument ParseFile(string path)
     {
         var dir = Path.GetDirectoryName(Path.GetFullPath(path)) ?? ".";
-        var parser = new FgdParser(name => FindNear(dir, name));
+        // Source 2: game/<mod>/x.fgd includes files from game/core/
+        var core = Path.Combine(dir, "..", "core");
+        var parser = new FgdParser(name => FindNear(dir, name) ?? FindNear(Path.GetDirectoryName(Path.Combine(core, name)) ?? core, Path.GetFileName(name)));
         return parser.Parse(File.ReadAllText(path), Path.GetFileName(path));
     }
 
@@ -99,8 +103,15 @@ public sealed class FgdParser
     {
         var bases = new List<string>();
         var behaviours = new List<FgdBehaviour>();
+        Dictionary<string, string>? metadata = null;
         while (!t.End && !t.Is("="))
         {
+            if (t.Is("{"))
+            {
+                // Source 2: editor metadata before '=': { entity_tool_name = "..." entity_tool_group = "..." }
+                metadata = Metadata(t);
+                continue;
+            }
             var name = t.Next();
             if (name.Kind != TokenKind.Word)
                 throw new FgdSyntaxException($"expected helper name, got '{name.Text}'");
@@ -114,6 +125,9 @@ public sealed class FgdParser
         var cls = new FgdClass { Name = t.Next().Text, Kind = command };
         cls.Bases.AddRange(bases);
         cls.Behaviours.AddRange(behaviours);
+        if (metadata is not null)
+            foreach (var kv in metadata)
+                cls.Metadata[kv.Key] = kv.Value;
         if (t.Is(":"))
         {
             t.Next();
@@ -165,6 +179,7 @@ public sealed class FgdParser
         {
             var name = t.Next().Text;
             var type = Parenthesized(t).Trim().ToLowerInvariant();
+            SkipPropertyMetadata(t);
             string? desc = null;
             if (t.Is(":"))
             {
@@ -178,6 +193,7 @@ public sealed class FgdParser
         if (!t.Is("("))
             throw new FgdSyntaxException($"expected '(' after keyvalue '{first.Text}'");
         var prop = new FgdProperty { Name = first.Text, Type = Parenthesized(t).Trim().TrimStart('*').ToLowerInvariant() };
+        SkipPropertyMetadata(t);
         while (IsFlagWord(t))
         {
             var flag = t.Next().Text;
@@ -199,6 +215,34 @@ public sealed class FgdParser
             Options(prop, t);
         }
         cls.Properties.Add(prop);
+    }
+
+    /// <summary>Source 2: per-member metadata right after the type, "[ group = "x" ]" or "{ group="x" enabled={...} }".</summary>
+    private static void SkipPropertyMetadata(Tokens t)
+    {
+        while (t.Is("[") || t.Is("{"))
+            t.SkipBalanced();
+    }
+
+    /// <summary>Top-level key = value pairs of a { ... } block; nested blocks are skipped.</summary>
+    private static Dictionary<string, string> Metadata(Tokens t)
+    {
+        var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        t.Expect("{");
+        while (!t.End && !t.Is("}"))
+        {
+            var key = t.Next();
+            if (!t.Is("="))
+                continue;
+            t.Next();
+            if (t.Is("{") || t.Is("["))
+                t.SkipBalanced();
+            else
+                result[key.Text] = t.Next().Text;
+        }
+        if (t.Is("}"))
+            t.Next();
+        return result;
     }
 
     private static bool IsFlagWord(Tokens t) =>
@@ -286,7 +330,20 @@ public sealed class FgdParser
 
     internal static class Tokenizer
     {
-        private const string Symbols = "@()[]=:,";
+        private const string Symbols = "@()[]{}=:,";
+
+        /// <summary>
+        /// A '"' preceded by a backslash is an escaped quote (Source 2 FGDs: "... \"Support multiple ...\" ...") only when
+        /// another quote follows on the same line; otherwise the backslash ends a path ("C:\dir\") and the quote closes it.
+        /// </summary>
+        private static bool IsEscapedQuote(string text, int i)
+        {
+            if (i <= 0 || i >= text.Length || text[i] != '"' || text[i - 1] != '\\')
+                return false;
+            var end = text.IndexOf('\n', i + 1);
+            var rest = text.AsSpan(i + 1, (end < 0 ? text.Length : end) - i - 1);
+            return rest.Contains('"');
+        }
 
         public static List<Token> Tokenize(string text)
         {
@@ -315,10 +372,15 @@ public sealed class FgdParser
                     while (true)
                     {
                         i++;
-                        while (i < text.Length && text[i] != '"')
+                        while (i < text.Length && (text[i] != '"' || IsEscapedQuote(text, i)))
                         {
                             if (text[i] == '\n')
                                 line++;
+                            if (text[i] == '\\' && IsEscapedQuote(text, i + 1))
+                            {
+                                i++; // \" inside a string (Source 2 FGDs): keep the quote
+                                continue;
+                            }
                             sb.Append(text[i]);
                             i++;
                         }
@@ -430,6 +492,21 @@ public sealed class FgdParser
                     return;
                 _pos++;
             }
+        }
+
+        /// <summary>Skips a "[...]" or "{...}" block, nesting of both kinds included.</summary>
+        public void SkipBalanced()
+        {
+            var depth = 0;
+            do
+            {
+                var tok = Next();
+                if (tok.Kind == TokenKind.Symbol && tok.Text is "[" or "{")
+                    depth++;
+                else if (tok.Kind == TokenKind.Symbol && tok.Text is "]" or "}")
+                    depth--;
+            }
+            while (!End && depth > 0);
         }
 
         public void SkipBlock()

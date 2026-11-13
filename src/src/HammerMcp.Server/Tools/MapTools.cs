@@ -44,6 +44,7 @@ public sealed class MapTools(HammerTarget target, GameData gameData)
             cls.Description,
             bases = cls.Bases,
             helpers = cls.Behaviours.Select(b => $"{b.Name}({b.Arguments})"),
+            editor = cls.Metadata.Count > 0 ? cls.Metadata : null,
             keyvalues = cls.Properties.Select(p => new
             {
                 p.Name,
