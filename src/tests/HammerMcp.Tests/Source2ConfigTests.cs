@@ -70,4 +70,20 @@ public class Source2ConfigTests
         Assert.Equal(newer, HammerMcp.Core.Maps.Source2Content.NewestAutosave(map));
         Assert.Equal(map, HammerMcp.Core.Maps.Source2Content.FromAutosaveTree(Path.Combine(folder, "demo.vmap")));
     }
+
+    [Fact]
+    public void FindsABareMapNameInTheConfigsMapDir()
+    {
+        var root = Path.Combine(Path.GetTempPath(), $"hammermcp-md-{Guid.NewGuid():N}");
+        var bin = Path.Combine(root, "bin");
+        var mapDir = Path.Combine(root, "sdk_content", "maps");
+        Directory.CreateDirectory(bin);
+        Directory.CreateDirectory(Path.Combine(mapDir, "sub"));
+        var map = Path.Combine(mapDir, "sub", "mcp_test.vmf");
+        File.WriteAllText(map, "");
+        File.WriteAllText(Path.Combine(bin, "GameConfig.txt"), $$"""
+            "Configs" { "Games" { "Game" { "GameDir" "{{root}}" "Hammer" { "MapDir" "{{mapDir}}" } } } }
+            """);
+        Assert.Equal(map, HammerMcp.Core.Maps.Source2Content.FindInMapDirs(Path.Combine(bin, "hammer.exe"), "MCP_TEST.vmf"));
+    }
 }

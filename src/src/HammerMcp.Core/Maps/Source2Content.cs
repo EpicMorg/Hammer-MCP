@@ -130,4 +130,34 @@ public static class Source2Content
         var at = path.IndexOf(marker, StringComparison.OrdinalIgnoreCase);
         return at < 0 ? path : path[..at] + Path.DirectorySeparatorChar + path[(at + marker.Length)..];
     }
+
+    private static readonly ConcurrentDictionary<string, (string? Path, DateTime At)> MapDirCache = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Source 1 / Strata Hammer showing only a file name in its title: the file in the MapDir of one of the Hammer's game
+    /// configs (searched recursively, newest match wins, cached 30 s). Null if nothing matches.
+    /// </summary>
+    public static string? FindInMapDirs(string exePath, string mapName)
+    {
+        var key = $"{exePath}|{mapName}";
+        if (MapDirCache.TryGetValue(key, out var hit) && DateTime.UtcNow - hit.At < CacheTime && (hit.Path is null || File.Exists(hit.Path)))
+            return hit.Path;
+        string? found = null;
+        try
+        {
+            var (_, configs) = HammerMcp.Core.Config.HammerGameConfig.ForExe(exePath);
+            found = configs.Select(c => c.MapDir).OfType<string>().Where(Directory.Exists).Distinct(StringComparer.OrdinalIgnoreCase)
+                .SelectMany(d => Directory.EnumerateFiles(d, Path.GetFileName(mapName), new EnumerationOptions
+                {
+                    RecurseSubdirectories = true, MatchCasing = MatchCasing.CaseInsensitive, IgnoreInaccessible = true,
+                }))
+                .OrderByDescending(File.GetLastWriteTimeUtc)
+                .FirstOrDefault();
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException or InvalidDataException)
+        {
+        }
+        MapDirCache[key] = (found, DateTime.UtcNow);
+        return found;
+    }
 }

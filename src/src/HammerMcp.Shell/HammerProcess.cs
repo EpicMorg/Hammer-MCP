@@ -33,7 +33,7 @@ public sealed record HammerProcess(int ProcessId, string Name, string ExePath, n
     /// When the title has no map, Source 2 is asked through its developer console (hammer_map_files).</remarks>
     public string? OpenMapPath =>
         WindowTitles.Select(HammerWindowTitle.ParseMapPath).FirstOrDefault(p => p is not null) is { } map
-            ? Path.IsPathRooted(map) ? map : Source2Content.FindMap(ExePath, map) ?? map
+            ? Path.IsPathRooted(map) ? map : Source2Content.FindMap(ExePath, map) ?? Source2Content.FindInMapDirs(ExePath, map) ?? map
             : IsSource2 ? HammerMcp.Core.Source2.VConsoleMaps.OpenMaps().FirstOrDefault() : null;
 
     public string MainTitle => WindowTitles.FirstOrDefault(t => t.Contains('[')) ?? WindowTitles.FirstOrDefault() ?? Name;
