@@ -24,7 +24,7 @@ The adapter adds an **MCP** menu to Hammer's main menu bar. Items:
 |---|---|---|
 | Agent: active / **paused** (check mark = paused) | always | `{"type":"menu","item":"pause"}` or `"resume"` |
 | Send selection to agent | layer 2 (greyed until then) | `{"type":"selection","items":[…]}` (layer 2) |
-| Ask agent… | always | dialog with a text box → `{"type":"ask","text":"…"}` |
+| Chat with the agent… (was "Ask agent…" before layer 1.1) | always | opens the chat window, see Layer 1.1 |
 | Pending changes (N)… | approval mode is `ask` and N > 0 | `{"type":"menu","item":"pending","id":"…"}` → server answers `{"cmd":"pending","id":"…","items":[{"id":"c1","text":"create light …"}]}` → dialog → `{"type":"approval","apply":["c1"],"reject":["c2"]}` |
 | Undo agent's last step | server says `canUndo` | `{"type":"menu","item":"undo_agent_step"}` (the server reverts its own last edit group) |
 | Activity log… | always | `{"type":"menu","item":"log","id":"…"}` → server answers `{"cmd":"log","id":"…","lines":["12:01 create light …", …]}` (last ~200) → adapter shows them |
@@ -75,3 +75,11 @@ copy embedded in its resources (the fallback when no server sent one). `features
 arrive with layer 2; until then it is empty.
 
 All adapter windows (chat, log, approval, status, about) show the Hammer-MCP icon in the title and in the body.
+
+**Adapter side (implemented 2026-11-14):**
+- Menu items carry icons (glyphs of Segoe Fluent Icons / Segoe MDL2 Assets in the menu text colour; About = the Hammer-MCP logo); no icon font (Windows 7/8) = text-only items.
+- A chat line `from:"agent"` opens the chat window if it is closed, without taking the focus from the map. The user's own line shows up only when the server echoes it.
+- Enter sends, Shift+Enter is a new line, Esc closes a window, Tab moves between controls. Keys typed in adapter windows never reach Hammer's accelerators (a `WH_GETMESSAGE` hook handles them first), so Delete / Ctrl+Z in the chat do not touch the map.
+- Pending list: **Apply selected** applies the checked rows and leaves the unchecked ones pending; **Later** closes the window. While the list is open, a `state` with another `pending` count makes the adapter ask for the list again.
+- `profile` for a `build` other than the one in `hello` is ignored; `support` from the profile replaces the built-in level (Status shows "profile from the server").
+- Activity log and chat keep the newest 500 / 200 lines.

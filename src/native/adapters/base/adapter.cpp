@@ -4,6 +4,8 @@
 // layers comes as data (signatures / offsets per build), not as separate DLLs.
 #include "hmcp.h"
 #include <sddl.h>
+#include <commctrl.h>
+#include <cstdint>
 #include <deque>
 #include <mutex>
 #include <string>
@@ -152,13 +154,21 @@ struct ServerState {
     bool canUndo = false;
 };
 
+struct ChatLine { std::string from, text, at; };
+
+constexpr size_t kLogMax = 500, kChatMax = 200;
+
 HMODULE g_self = nullptr;
-std::mutex g_lock;            // guards g_state, g_out, g_log, g_pendingItems, g_build, g_sha
+std::mutex g_lock;            // guards everything below up to g_profile
 ServerState g_state;
 std::deque<std::string> g_out;
-std::vector<std::string> g_log;
+std::deque<std::string> g_log;          // the agent's activity, newest kLogMax lines
+std::vector<std::string> g_logNew;      // lines the log window has not shown yet
+bool g_logReset = false;                // g_log was replaced as a whole: the window reloads it
+std::deque<ChatLine> g_chat;            // newest kChatMax chat lines
 std::vector<std::pair<std::string, std::string>> g_pendingItems;  // id, text
 std::string g_build = "unknown", g_sha, g_support = "none";
+std::string g_profile;                  // the server's {"cmd":"profile"} line; empty = the embedded data (allowed_builds.h)
 HANDLE g_outEvent = nullptr;   // something queued in g_out
 HANDLE g_stopEvent = nullptr;  // unload without a server (menu "Disconnect" while not connected)
 
@@ -170,14 +180,15 @@ volatile LONG g_dialogs = 0;   // our modal dialogs open right now
 
 constexpr UINT WM_HMCP_INSTALL = WM_APP + 0x1E0;
 constexpr UINT WM_HMCP_UPDATE = WM_APP + 0x1E1;
-constexpr UINT WM_HMCP_SHOWLOG = WM_APP + 0x1E2;
+constexpr UINT WM_HMCP_LOG = WM_APP + 0x1E2;
 constexpr UINT WM_HMCP_UNINSTALL = WM_APP + 0x1E3;
-constexpr UINT WM_HMCP_SHOWPENDING = WM_APP + 0x1E4;
+constexpr UINT WM_HMCP_PENDING = WM_APP + 0x1E4;
+constexpr UINT WM_HMCP_CHAT = WM_APP + 0x1E5;   // lParam 1 = a line from the agent arrived
 constexpr UINT_PTR kTimerId = 0xBE5F;
 
 // command ids far above Hammer's own (its highest are around 0x8100)
 enum : UINT {
-    ID_PAUSE = 0xBE00, ID_SELECTION, ID_ASK, ID_PENDING, ID_UNDO, ID_LOG, ID_STATUS, ID_DISCONNECT, ID_ABOUT,
+    ID_PAUSE = 0xBE00, ID_SELECTION, ID_CHAT, ID_PENDING, ID_UNDO, ID_LOG, ID_STATUS, ID_DISCONNECT, ID_ABOUT,
 };
 
 void Send(const std::string& line) {
@@ -187,58 +198,19 @@ void Send(const std::string& line) {
 
 ServerState State() { std::lock_guard l(g_lock); return g_state; }
 
-void PostUi(UINT msg) { if (g_hwnd) PostMessageW(g_hwnd, msg, 0, 0); }
+void PostUi(UINT msg, LPARAM lp = 0) { if (g_hwnd) PostMessageW(g_hwnd, msg, 0, lp); }
 
-// ---------- dialogs ----------
-
-// in-memory dialog template: "Ask agent" with a multi-line edit box, Send / Cancel
-struct AskDialog {
-    std::vector<WORD> t;
-    void Align() { while ((t.size() * sizeof(WORD)) % 4) t.push_back(0); }
-    void Str(const wchar_t* s) { for (; *s; ++s) t.push_back(*s); t.push_back(0); }
-    void Item(DWORD style, short x, short y, short cx, short cy, WORD id, WORD cls, const wchar_t* text) {
-        Align();
-        DLGITEMTEMPLATE it{ style | WS_CHILD | WS_VISIBLE, 0, x, y, cx, cy, id };
-        auto p = reinterpret_cast<WORD*>(&it);
-        t.insert(t.end(), p, p + sizeof it / sizeof(WORD));
-        t.push_back(0xFFFF); t.push_back(cls);
-        Str(text);
-        t.push_back(0);   // no creation data
+std::wstring Crlf(const std::string& utf8) {
+    std::wstring w = W(utf8), o;
+    for (wchar_t c : w) {
+        if (c == L'\r') continue;
+        if (c == L'\n') o += L'\r';
+        o += c;
     }
-    AskDialog() {
-        DLGTEMPLATE d{ DS_MODALFRAME | DS_CENTER | DS_SETFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU, 0, 4, 0, 0, 280, 120 };
-        auto p = reinterpret_cast<WORD*>(&d);
-        t.insert(t.end(), p, p + sizeof d / sizeof(WORD));
-        t.push_back(0); t.push_back(0);   // no menu, default class
-        Str(L"Hammer-MCP: ask the agent");
-        t.push_back(9); Str(L"Segoe UI");
-        Item(SS_LEFT, 7, 7, 266, 10, 0xFFFF, 0x0082, L"Your request goes to the agent with its next tool call:");
-        Item(ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_BORDER | WS_TABSTOP | WS_VSCROLL, 7, 20, 266, 70, 100, 0x0081, L"");
-        Item(BS_DEFPUSHBUTTON | WS_TABSTOP, 164, 98, 52, 15, IDOK, 0x0080, L"Send");
-        Item(BS_PUSHBUTTON | WS_TABSTOP, 221, 98, 52, 15, IDCANCEL, 0x0080, L"Cancel");
-    }
-};
-
-INT_PTR CALLBACK AskProc(HWND dlg, UINT msg, WPARAM wp, LPARAM lp) {
-    switch (msg) {
-    case WM_INITDIALOG:
-        SetWindowLongPtrW(dlg, DWLP_USER, lp);
-        SetFocus(GetDlgItem(dlg, 100));
-        return FALSE;
-    case WM_COMMAND:
-        if (LOWORD(wp) == IDOK) {
-            HWND edit = GetDlgItem(dlg, 100);
-            std::wstring text(GetWindowTextLengthW(edit) + 1, L'\0');
-            text.resize(GetWindowTextW(edit, text.data(), (int)text.size()));
-            *reinterpret_cast<std::wstring*>(GetWindowLongPtrW(dlg, DWLP_USER)) = text;
-            EndDialog(dlg, IDOK);
-            return TRUE;
-        }
-        if (LOWORD(wp) == IDCANCEL) { EndDialog(dlg, IDCANCEL); return TRUE; }
-        break;
-    }
-    return FALSE;
+    return o;
 }
+
+// ---------- message boxes (status, about) ----------
 
 int Box(const std::wstring& text, UINT flags) {
     InterlockedIncrement(&g_dialogs);
@@ -256,11 +228,10 @@ int Box(const std::wstring& text, UINT flags) {
 
 std::wstring StatusText() {
     auto s = State();
-    std::string sha, build;
-    { std::lock_guard l(g_lock); sha = g_sha; build = g_build; }
-    std::string support;
-    { std::lock_guard l(g_lock); support = g_support; }
-    std::wstring t = L"Adapter: " + W(kAdapterId) + L" " + W(HMCP_NATIVE_VERSION) + L" (support: " + W(support) + L")\n";
+    std::string sha, build, support, profile;
+    { std::lock_guard l(g_lock); sha = g_sha; build = g_build; support = g_support; profile = g_profile; }
+    std::wstring t = L"Adapter: " + W(kAdapterId) + L" " + W(HMCP_NATIVE_VERSION) + L" (support: " + W(support) +
+                     (profile.empty() ? L", built-in profile" : L", profile from the server") + L")\n";
     t += L"Hammer build: " + W(build) + L" (" + W(sha.substr(0, 12)) + L"…)\n\n";
     if (!s.connected) return t + L"Hammer-MCP server: not connected";
     t += L"Hammer-MCP server: " + W(s.server) + L", mode " + W(s.mode) + L"\n";
@@ -277,28 +248,420 @@ void ShowAbout() {
         MB_OK);
 }
 
-void ShowLog() {
-    std::vector<std::string> lines;
-    { std::lock_guard l(g_lock); lines = g_log; }
-    std::wstring t;
-    size_t from = lines.size() > 40 ? lines.size() - 40 : 0;   // a message box, not a viewer: the newest 40
-    for (size_t i = from; i < lines.size(); ++i) t += W(lines[i]) + L"\n";
-    Box(t.empty() ? L"The agent has not done anything yet." : L"Agent activity (newest last):\n\n" + t, MB_OK);
+// ---------- menu icons: glyphs of the system icon font; About = our logo ----------
+
+std::vector<HBITMAP> g_menuBitmaps;
+
+int CALLBACK FontEnumProc(const LOGFONTW* f, const TEXTMETRICW*, DWORD, LPARAM p) {
+    auto found = reinterpret_cast<int*>(p);
+    if (!wcscmp(f->lfFaceName, L"Segoe Fluent Icons")) *found |= 1;
+    if (!wcscmp(f->lfFaceName, L"Segoe MDL2 Assets")) *found |= 2;
+    return 1;
 }
 
-void ShowPending() {
-    std::vector<std::pair<std::string, std::string>> items;
-    { std::lock_guard l(g_lock); items = g_pendingItems; }
-    if (items.empty()) { Box(L"No pending changes.", MB_OK); return; }
-    std::wstring t = L"The agent wants to make these changes:\n\n";
-    for (auto& [id, text] : items) t += L"- " + W(text) + L"\n";
-    t += L"\nYes = apply all, No = reject all, Cancel = decide later.";
-    int r = Box(t, MB_YESNOCANCEL);
-    if (r == IDCANCEL) return;
-    std::string ids;
-    for (auto& [id, text] : items) ids += (ids.empty() ? "\"" : ",\"") + JEsc(id) + "\"";
-    Send(r == IDYES ? "{\"type\":\"approval\",\"apply\":[" + ids + "],\"reject\":[]}"
-                    : "{\"type\":\"approval\",\"apply\":[],\"reject\":[" + ids + "]}");
+// Windows 11: Segoe Fluent Icons, Windows 10: Segoe MDL2 Assets (same code points), older: none (text-only items)
+const wchar_t* IconFont() {
+    int found = 0;
+    HDC dc = GetDC(nullptr);
+    LOGFONTW lf{};
+    lf.lfCharSet = DEFAULT_CHARSET;
+    EnumFontFamiliesExW(dc, &lf, FontEnumProc, reinterpret_cast<LPARAM>(&found), 0);
+    ReleaseDC(nullptr, dc);
+    return (found & 1) ? L"Segoe Fluent Icons" : (found & 2) ? L"Segoe MDL2 Assets" : nullptr;
+}
+
+HBITMAP NewDib(int size, uint32_t** px) {
+    BITMAPINFO bi{};
+    bi.bmiHeader = { sizeof(BITMAPINFOHEADER), size, -size, 1, 32, BI_RGB };
+    HBITMAP b = CreateDIBSection(nullptr, &bi, DIB_RGB_COLORS, reinterpret_cast<void**>(px), nullptr, 0);
+    if (b) memset(*px, 0, size * size * 4);
+    return b;
+}
+
+// a premultiplied 32-bit bitmap of one glyph in the menu text colour (menus draw such bitmaps with alpha)
+HBITMAP GlyphBitmap(const wchar_t* font, wchar_t glyph, int size) {
+    uint32_t* px = nullptr;
+    HBITMAP bmp = NewDib(size, &px);
+    if (!bmp) return nullptr;
+    HDC dc = CreateCompatibleDC(nullptr);
+    HFONT f = CreateFontW(-size, 0, 0, 0, FW_NORMAL, 0, 0, 0, DEFAULT_CHARSET, 0, 0, ANTIALIASED_QUALITY, 0, font);
+    HGDIOBJ oldBmp = SelectObject(dc, bmp), oldFont = SelectObject(dc, f);
+    SetBkMode(dc, TRANSPARENT);
+    SetTextColor(dc, RGB(255, 255, 255));
+    RECT r{ 0, 0, size, size };
+    DrawTextW(dc, &glyph, 1, &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+    GdiFlush();
+    COLORREF c = GetSysColor(COLOR_MENUTEXT);
+    for (int i = 0; i < size * size; ++i) {
+        uint32_t a = px[i] & 0xFF;   // grey anti-aliasing: coverage in every channel
+        px[i] = (a << 24) | ((GetRValue(c) * a / 255) << 16) | ((GetGValue(c) * a / 255) << 8) | (GetBValue(c) * a / 255);
+    }
+    SelectObject(dc, oldFont);
+    SelectObject(dc, oldBmp);
+    DeleteObject(f);
+    DeleteDC(dc);
+    return bmp;
+}
+
+HBITMAP LogoBitmap(int size) {
+    HICON icon = static_cast<HICON>(LoadImageW(g_self, MAKEINTRESOURCEW(1), IMAGE_ICON, size, size, 0));
+    if (!icon) return nullptr;
+    uint32_t* px = nullptr;
+    HBITMAP bmp = NewDib(size, &px);
+    if (bmp) {
+        HDC dc = CreateCompatibleDC(nullptr);
+        HGDIOBJ old = SelectObject(dc, bmp);
+        DrawIconEx(dc, 0, 0, icon, size, size, 0, nullptr, DI_NORMAL);
+        SelectObject(dc, old);
+        DeleteDC(dc);
+    }
+    DestroyIcon(icon);
+    return bmp;
+}
+
+void SetMenuIcons() {
+    int size = GetSystemMetrics(SM_CXSMICON);
+    auto set = [](UINT id, HBITMAP b) {
+        if (!b) return;
+        g_menuBitmaps.push_back(b);
+        MENUITEMINFOW mi{ sizeof mi };
+        mi.fMask = MIIM_BITMAP;
+        mi.hbmpItem = b;
+        SetMenuItemInfoW(g_menu, id, FALSE, &mi);
+    };
+    if (const wchar_t* font = IconFont()) {
+        const std::pair<UINT, wchar_t> glyphs[] = {
+            { ID_PAUSE, 0xE769 },      // Pause
+            { ID_SELECTION, 0xE8B3 },  // SelectAll
+            { ID_CHAT, 0xE8BD },       // Message
+            { ID_PENDING, 0xE9D5 },    // Checklist
+            { ID_UNDO, 0xE7A7 },       // Undo
+            { ID_LOG, 0xE81C },        // History
+            { ID_STATUS, 0xE946 },     // Info
+            { ID_DISCONNECT, 0xE8CD }, // DisconnectDrive
+        };
+        for (auto& [id, g] : glyphs) set(id, GlyphBitmap(font, g, size));
+    }
+    set(ID_ABOUT, LogoBitmap(size));
+}
+
+// ---------- tool windows (chat, activity log, pending changes) ----------
+// Plain top-level windows owned by Hammer, opened from the MCP menu (docking into Hammer's panels needs the MFC work).
+// Keys for them are taken out of Hammer's message loop by a WH_GETMESSAGE hook (MsgHook), so Hammer's accelerators
+// (Delete, Ctrl+Z, tool letters...) never fire while the user types in our windows.
+
+enum Kind { kChat, kLog, kPending, kKinds };
+enum : int { CTL_ICON = 10, CTL_TITLE, CTL_TEXT, CTL_INPUT, CTL_LIST, CTL_APPLY_SEL = 20, CTL_APPLY_ALL, CTL_REJECT_ALL };
+
+constexpr wchar_t kToolClass[] = L"HammerMcpToolWindow";
+HWND g_wnd[kKinds]{};
+HFONT g_font = nullptr, g_fontTitle = nullptr;
+int g_fontH = 16;
+HICON g_iconBig = nullptr, g_iconSmall = nullptr;
+HHOOK g_msgHook = nullptr;
+bool g_classOk = false;
+bool g_pendingWanted = false;   // the user asked for the pending list: open the window when it arrives
+long g_pendingShownCount = -1;  // server's pending count when the list window was last filled
+std::vector<std::pair<std::string, std::string>> g_pendingShown;   // rows of the list window (id, text)
+
+int Scale(int px) { return px * g_fontH / 16; }
+
+int KindOf(HWND root) {
+    for (int k = 0; k < kKinds; ++k)
+        if (root && g_wnd[k] == root) return k;
+    return -1;
+}
+
+HWND Child(HWND parent, const wchar_t* cls, const wchar_t* text, DWORD style, int id, DWORD ex = 0) {
+    HWND h = CreateWindowExW(ex, cls, text, style | WS_CHILD | WS_VISIBLE, 0, 0, 0, 0, parent,
+                             reinterpret_cast<HMENU>(static_cast<INT_PTR>(id)), g_self, nullptr);
+    SendMessageW(h, WM_SETFONT, reinterpret_cast<WPARAM>(id == CTL_TITLE ? g_fontTitle : g_font), FALSE);
+    return h;
+}
+
+void CreateChildren(HWND w, int kind) {
+    HWND icon = Child(w, L"STATIC", nullptr, SS_ICON | SS_REALSIZEIMAGE, CTL_ICON);
+    SendMessageW(icon, STM_SETICON, reinterpret_cast<WPARAM>(g_iconBig), 0);
+    static const wchar_t* titles[] = { L"Chat with the agent", L"What the agent did", L"The agent wants to make these changes" };
+    Child(w, L"STATIC", titles[kind], SS_LEFT | SS_CENTERIMAGE | SS_NOPREFIX | SS_ENDELLIPSIS, CTL_TITLE);
+    DWORD ro = ES_MULTILINE | ES_READONLY | ES_AUTOVSCROLL | WS_VSCROLL | WS_TABSTOP;
+    if (kind == kChat) {
+        SendMessageW(Child(w, L"EDIT", L"", ro, CTL_TEXT, WS_EX_CLIENTEDGE), EM_SETLIMITTEXT, 0, 0);
+        Child(w, L"EDIT", L"", ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_VSCROLL | WS_TABSTOP, CTL_INPUT, WS_EX_CLIENTEDGE);
+        Child(w, L"BUTTON", L"Send", BS_DEFPUSHBUTTON | WS_TABSTOP, IDOK);
+    } else if (kind == kLog) {
+        SendMessageW(Child(w, L"EDIT", L"", ro | WS_HSCROLL | ES_AUTOHSCROLL, CTL_TEXT, WS_EX_CLIENTEDGE), EM_SETLIMITTEXT, 0, 0);
+    } else {
+        HWND lv = Child(w, WC_LISTVIEWW, L"", LVS_REPORT | LVS_NOCOLUMNHEADER | LVS_SHOWSELALWAYS | LVS_SINGLESEL | WS_TABSTOP,
+                        CTL_LIST, WS_EX_CLIENTEDGE);
+        ListView_SetExtendedListViewStyle(lv, LVS_EX_CHECKBOXES | LVS_EX_FULLROWSELECT);
+        LVCOLUMNW col{ LVCF_WIDTH };
+        col.cx = 400;
+        ListView_InsertColumn(lv, 0, &col);
+        Child(w, L"BUTTON", L"Apply selected", BS_DEFPUSHBUTTON | WS_TABSTOP, CTL_APPLY_SEL);
+        Child(w, L"BUTTON", L"Apply all", BS_PUSHBUTTON | WS_TABSTOP, CTL_APPLY_ALL);
+        Child(w, L"BUTTON", L"Reject all", BS_PUSHBUTTON | WS_TABSTOP, CTL_REJECT_ALL);
+        Child(w, L"BUTTON", L"Later", BS_PUSHBUTTON | WS_TABSTOP, IDCANCEL);
+    }
+}
+
+void Layout(HWND w, int kind, int cw, int ch) {
+    int m = Scale(8), iconS = GetSystemMetrics(SM_CXICON), top = m + iconS + m;
+    int bh = g_fontH + Scale(12), bw = Scale(96);
+    auto move = [&](int id, int x, int y, int cx, int cy) {
+        if (HWND h = GetDlgItem(w, id)) MoveWindow(h, x, y, cx > 0 ? cx : 0, cy > 0 ? cy : 0, TRUE);
+    };
+    move(CTL_ICON, m, m, iconS, iconS);
+    move(CTL_TITLE, m + iconS + m, m, cw - iconS - 3 * m, iconS);
+    if (kind == kChat) {
+        int ih = g_fontH * 3 + Scale(8);
+        move(CTL_TEXT, m, top, cw - 2 * m, ch - top - ih - 2 * m);
+        move(CTL_INPUT, m, ch - m - ih, cw - 3 * m - bw, ih);
+        move(IDOK, cw - m - bw, ch - m - ih, bw, bh);
+    } else if (kind == kLog) {
+        move(CTL_TEXT, m, top, cw - 2 * m, ch - top - m);
+    } else {
+        move(CTL_LIST, m, top, cw - 2 * m, ch - top - bh - 2 * m);
+        const int ids[] = { IDCANCEL, CTL_REJECT_ALL, CTL_APPLY_ALL, CTL_APPLY_SEL };   // right to left
+        int x = cw - m;
+        for (int id : ids) { x -= bw; move(id, x, ch - m - bh, bw, bh); x -= Scale(6); }
+        if (HWND lv = GetDlgItem(w, CTL_LIST)) {
+            RECT r;
+            GetClientRect(lv, &r);
+            ListView_SetColumnWidth(lv, 0, r.right);
+        }
+    }
+}
+
+void ScrollToEnd(HWND edit) {
+    int n = GetWindowTextLengthW(edit);
+    SendMessageW(edit, EM_SETSEL, n, n);
+    SendMessageW(edit, EM_SCROLLCARET, 0, 0);
+}
+
+void FillChat() {
+    HWND w = g_wnd[kChat];
+    if (!w) return;
+    std::deque<ChatLine> chat;
+    { std::lock_guard l(g_lock); chat = g_chat; }
+    bool on = State().connected;
+    std::wstring t;
+    for (auto& c : chat)
+        t += L"[" + W(c.at) + L"] " + (c.from == "agent" ? L"Agent: " : L"You: ") + Crlf(c.text) + L"\r\n";
+    if (t.empty())
+        t = on ? L"Write to the agent below. It gets your message with its next tool call and can answer here.\r\n"
+               : L"Not connected to the Hammer-MCP server.\r\n";
+    HWND e = GetDlgItem(w, CTL_TEXT);
+    SetWindowTextW(e, t.c_str());
+    ScrollToEnd(e);
+    EnableWindow(GetDlgItem(w, CTL_INPUT), on);
+    EnableWindow(GetDlgItem(w, IDOK), on);
+}
+
+void FillLog(bool reload) {
+    std::vector<std::string> add;
+    std::deque<std::string> all;
+    {
+        std::lock_guard l(g_lock);
+        reload = reload || g_logReset;
+        g_logReset = false;
+        if (reload) { all = g_log; g_logNew.clear(); }
+        else add.swap(g_logNew);
+    }
+    HWND w = g_wnd[kLog];
+    if (!w) return;
+    HWND e = GetDlgItem(w, CTL_TEXT);
+    if (reload) {
+        std::wstring t;
+        for (auto& line : all) t += Crlf(line) + L"\r\n";
+        if (t.empty()) t = State().connected ? L"The agent has not done anything yet.\r\n" : L"Not connected to the Hammer-MCP server.\r\n";
+        SetWindowTextW(e, t.c_str());
+        ScrollToEnd(e);
+        return;
+    }
+    for (auto& line : add) {
+        std::wstring t = Crlf(line) + L"\r\n";
+        int n = GetWindowTextLengthW(e);
+        SendMessageW(e, EM_SETSEL, n, n);
+        SendMessageW(e, EM_REPLACESEL, FALSE, reinterpret_cast<LPARAM>(t.c_str()));
+    }
+    if (!add.empty() && SendMessageW(e, EM_GETLINECOUNT, 0, 0) > (LRESULT)(kLogMax + 100)) FillLog(true);
+}
+
+void FillPending() {
+    HWND w = g_wnd[kPending];
+    if (!w) return;
+    { std::lock_guard l(g_lock); g_pendingShown = g_pendingItems; }
+    g_pendingShownCount = State().pending;
+    HWND lv = GetDlgItem(w, CTL_LIST);
+    ListView_DeleteAllItems(lv);
+    for (size_t i = 0; i < g_pendingShown.size(); ++i) {
+        std::wstring text = W(g_pendingShown[i].second);
+        LVITEMW it{ LVIF_TEXT };
+        it.iItem = (int)i;
+        it.pszText = text.data();
+        ListView_InsertItem(lv, &it);
+        ListView_SetCheckState(lv, (int)i, TRUE);
+    }
+    bool any = !g_pendingShown.empty();
+    SetDlgItemTextW(w, CTL_TITLE, any ? L"The agent wants to make these changes" : L"No pending changes");
+    for (int id : { CTL_APPLY_SEL, CTL_APPLY_ALL, CTL_REJECT_ALL }) EnableWindow(GetDlgItem(w, id), any && State().connected);
+}
+
+void SendChat(HWND w) {
+    HWND in = GetDlgItem(w, CTL_INPUT);
+    std::wstring text(GetWindowTextLengthW(in) + 1, L'\0');
+    text.resize(GetWindowTextW(in, text.data(), (int)text.size()));
+    while (!text.empty() && iswspace(text.back())) text.pop_back();
+    if (text.empty() || !State().connected) return;
+    Send("{\"type\":\"chat\",\"text\":\"" + JEsc(U8(text)) + "\"}");   // the server echoes it back as a chat line
+    SetWindowTextW(in, L"");
+}
+
+void Decide(HWND w, int how) {   // CTL_APPLY_SEL / CTL_APPLY_ALL / CTL_REJECT_ALL
+    HWND lv = GetDlgItem(w, CTL_LIST);
+    std::string apply, reject;
+    for (size_t i = 0; i < g_pendingShown.size(); ++i) {
+        std::string id = "\"" + JEsc(g_pendingShown[i].first) + "\"";
+        if (how == CTL_REJECT_ALL) reject += (reject.empty() ? "" : ",") + id;
+        else if (how == CTL_APPLY_ALL || ListView_GetCheckState(lv, (int)i)) apply += (apply.empty() ? "" : ",") + id;
+    }
+    if (apply.empty() && reject.empty()) return;
+    Send("{\"type\":\"approval\",\"apply\":[" + apply + "],\"reject\":[" + reject + "]}");
+    DestroyWindow(w);   // unchecked changes stay pending; the menu shows the new count
+}
+
+LRESULT CALLBACK ToolProc(HWND w, UINT msg, WPARAM wp, LPARAM lp) {
+    int kind = (int)GetWindowLongPtrW(w, GWLP_USERDATA);
+    switch (msg) {
+    case WM_CREATE:
+        kind = (int)reinterpret_cast<INT_PTR>(reinterpret_cast<CREATESTRUCTW*>(lp)->lpCreateParams);
+        SetWindowLongPtrW(w, GWLP_USERDATA, kind);
+        CreateChildren(w, kind);
+        return 0;
+    case WM_SIZE:
+        Layout(w, kind, LOWORD(lp), HIWORD(lp));
+        return 0;
+    case WM_GETMINMAXINFO:
+        reinterpret_cast<MINMAXINFO*>(lp)->ptMinTrackSize = { Scale(420), Scale(260) };
+        return 0;
+    case WM_COMMAND:
+        switch (LOWORD(wp)) {
+        case IDOK: if (kind == kChat) SendChat(w); else if (kind == kPending) Decide(w, CTL_APPLY_SEL); return 0;
+        case CTL_APPLY_SEL: case CTL_APPLY_ALL: case CTL_REJECT_ALL: Decide(w, LOWORD(wp)); return 0;
+        case IDCANCEL: DestroyWindow(w); return 0;
+        }
+        break;
+    case WM_CLOSE:
+        DestroyWindow(w);
+        return 0;
+    case WM_DESTROY:
+        if (kind >= 0 && kind < kKinds && g_wnd[kind] == w) g_wnd[kind] = nullptr;
+        return 0;
+    }
+    return DefWindowProcW(w, msg, wp, lp);
+}
+
+// opens (or brings up) a tool window; the callers fill it
+HWND OpenTool(int kind, bool activate = true) {
+    if (HWND w = g_wnd[kind]) {
+        if (activate) {
+            if (IsIconic(w)) ShowWindow(w, SW_RESTORE);
+            SetForegroundWindow(w);
+        }
+        return w;
+    }
+    if (!g_classOk) return nullptr;
+    static const wchar_t* captions[] = { L"Hammer-MCP: chat", L"Hammer-MCP: activity log", L"Hammer-MCP: pending changes" };
+    static const SIZE sizes[] = { { 520, 480 }, { 680, 440 }, { 600, 380 } };
+    int cx = Scale(sizes[kind].cx), cy = Scale(sizes[kind].cy);
+    RECT r{};
+    GetWindowRect(g_hwnd, &r);
+    int x = r.left + (r.right - r.left - cx) / 2 + kind * Scale(24), y = r.top + (r.bottom - r.top - cy) / 2 + kind * Scale(24);
+    HWND w = CreateWindowExW(WS_EX_CONTROLPARENT, kToolClass, captions[kind], WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+                             x, y, cx, cy, g_hwnd, nullptr, g_self, reinterpret_cast<LPVOID>(static_cast<INT_PTR>(kind)));
+    if (!w) return nullptr;
+    g_wnd[kind] = w;
+    SendMessageW(w, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(g_iconBig));
+    SendMessageW(w, WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(g_iconSmall));
+    ShowWindow(w, activate ? SW_SHOW : SW_SHOWNOACTIVATE);
+    if (activate && kind == kChat) SetFocus(GetDlgItem(w, CTL_INPUT));
+    return w;
+}
+
+// Hammer's message loop would run its accelerators on keys meant for our windows: handle those keys here and hand
+// Hammer a WM_NULL instead
+LRESULT CALLBACK MsgHook(int code, WPARAM wp, LPARAM lp) {
+    auto m = reinterpret_cast<MSG*>(lp);
+    if (code == HC_ACTION && wp == PM_REMOVE && m->hwnd && m->message >= WM_KEYFIRST && m->message <= WM_KEYLAST) {
+        HWND root = GetAncestor(m->hwnd, GA_ROOT);
+        int kind = KindOf(root);
+        if (kind >= 0) {
+            bool done = false;
+            if (m->message == WM_KEYDOWN) {
+                int id = GetDlgCtrlID(m->hwnd);
+                if (m->wParam == VK_RETURN && kind == kChat && id == CTL_INPUT && GetKeyState(VK_SHIFT) >= 0) {
+                    SendChat(root);   // Enter sends, Shift+Enter is a new line
+                    done = true;
+                } else if (m->wParam == 'A' && GetKeyState(VK_CONTROL) < 0 && (id == CTL_INPUT || id == CTL_TEXT)) {
+                    SendMessageW(m->hwnd, EM_SETSEL, 0, -1);
+                    done = true;
+                }
+            }
+            if (!done && !IsDialogMessageW(root, m)) {
+                TranslateMessage(m);
+                DispatchMessageW(m);
+            }
+            m->message = WM_NULL;
+        }
+    }
+    return CallNextHookEx(g_msgHook, code, wp, lp);
+}
+
+void InstallUi() {
+    INITCOMMONCONTROLSEX icc{ sizeof icc, ICC_LISTVIEW_CLASSES };
+    InitCommonControlsEx(&icc);
+    NONCLIENTMETRICSW ncm{ sizeof ncm };
+    SystemParametersInfoW(SPI_GETNONCLIENTMETRICS, sizeof ncm, &ncm, 0);
+    g_font = CreateFontIndirectW(&ncm.lfMessageFont);
+    LOGFONTW title = ncm.lfMessageFont;
+    title.lfHeight = title.lfHeight * 4 / 3;
+    title.lfWeight = FW_SEMIBOLD;
+    g_fontTitle = CreateFontIndirectW(&title);
+    if (HDC dc = GetDC(nullptr)) {
+        HGDIOBJ old = SelectObject(dc, g_font);
+        TEXTMETRICW tm{};
+        if (GetTextMetricsW(dc, &tm) && tm.tmHeight > 0) g_fontH = tm.tmHeight;
+        SelectObject(dc, old);
+        ReleaseDC(nullptr, dc);
+    }
+    g_iconBig = static_cast<HICON>(LoadImageW(g_self, MAKEINTRESOURCEW(1), IMAGE_ICON,
+                                              GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON), 0));
+    g_iconSmall = static_cast<HICON>(LoadImageW(g_self, MAKEINTRESOURCEW(1), IMAGE_ICON,
+                                                GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), 0));
+    WNDCLASSEXW wc{ sizeof wc };
+    wc.lpfnWndProc = ToolProc;
+    wc.hInstance = g_self;
+    wc.hIcon = g_iconBig;
+    wc.hIconSm = g_iconSmall;
+    wc.hCursor = LoadCursorW(nullptr, IDC_ARROW);
+    wc.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_BTNFACE + 1);
+    wc.lpszClassName = kToolClass;
+    g_classOk = RegisterClassExW(&wc) != 0 || GetLastError() == ERROR_CLASS_ALREADY_EXISTS;
+    g_msgHook = SetWindowsHookExW(WH_GETMESSAGE, MsgHook, nullptr, GetCurrentThreadId());
+}
+
+void UninstallUi() {
+    for (auto& w : g_wnd)
+        if (w) DestroyWindow(w);   // WM_DESTROY clears the slot
+    if (g_msgHook) { UnhookWindowsHookEx(g_msgHook); g_msgHook = nullptr; }
+    if (g_classOk) UnregisterClassW(kToolClass, g_self);
+    for (HBITMAP b : g_menuBitmaps) DeleteObject(b);
+    g_menuBitmaps.clear();
+    if (g_font) DeleteObject(g_font);
+    if (g_fontTitle) DeleteObject(g_fontTitle);
+    if (g_iconBig) DestroyIcon(g_iconBig);
+    if (g_iconSmall) DestroyIcon(g_iconSmall);
 }
 
 // ---------- the MCP menu ----------
@@ -317,7 +680,7 @@ void BuildMenu() {
         AppendMenuW(g_menu, MF_STRING, ID_PAUSE, L"Agent paused");
         AppendMenuW(g_menu, MF_SEPARATOR, 0, nullptr);
         AppendMenuW(g_menu, MF_STRING | MF_GRAYED, ID_SELECTION, L"Send selection to agent");
-        AppendMenuW(g_menu, MF_STRING, ID_ASK, L"Ask agent...");
+        AppendMenuW(g_menu, MF_STRING, ID_CHAT, L"Chat with the agent...");
         AppendMenuW(g_menu, MF_STRING, ID_PENDING, L"Pending changes...");
         AppendMenuW(g_menu, MF_STRING, ID_UNDO, L"Undo agent's last step");
         AppendMenuW(g_menu, MF_SEPARATOR, 0, nullptr);
@@ -326,6 +689,7 @@ void BuildMenu() {
         AppendMenuW(g_menu, MF_STRING, ID_DISCONNECT, L"Disconnect adapter");
         AppendMenuW(g_menu, MF_SEPARATOR, 0, nullptr);
         AppendMenuW(g_menu, MF_STRING, ID_ABOUT, L"About Hammer-MCP adapter...");
+        SetMenuIcons();
     }
     HMENU bar = GetMenu(g_hwnd);
     if (bar && !MenuPresent()) {
@@ -341,35 +705,52 @@ void UpdateMenu() {
     auto enable = [](UINT id, bool yes) { EnableMenuItem(g_menu, id, MF_BYCOMMAND | (yes ? MF_ENABLED : MF_GRAYED)); };
     CheckMenuItem(g_menu, ID_PAUSE, MF_BYCOMMAND | (s.agent == "paused" ? MF_CHECKED : MF_UNCHECKED));
     std::wstring pending = L"Pending changes (" + std::to_wstring(s.pending) + L")...";
-    ModifyMenuW(g_menu, ID_PENDING, MF_BYCOMMAND | MF_STRING, ID_PENDING, pending.c_str());
+    MENUITEMINFOW mi{ sizeof mi };   // MIIM_STRING only: ModifyMenu would drop the item's icon
+    mi.fMask = MIIM_STRING;
+    mi.dwTypeData = pending.data();
+    SetMenuItemInfoW(g_menu, ID_PENDING, FALSE, &mi);
     enable(ID_PAUSE, on);
     enable(ID_SELECTION, false);   // layer 2
-    enable(ID_ASK, on);
+    enable(ID_CHAT, true);         // the window says when there is no server
     enable(ID_PENDING, on && s.approval == "ask" && s.pending > 0);
     enable(ID_UNDO, on && s.canUndo);
-    enable(ID_LOG, on);
+    enable(ID_LOG, true);
     enable(ID_STATUS, true);
     enable(ID_DISCONNECT, true);
     enable(ID_ABOUT, true);
+}
+
+// server state changed: menu (when built) and the open windows
+void OnStateChanged() {
+    if (g_menu) UpdateMenu();
+    auto s = State();
+    if (HWND w = g_wnd[kChat]) {
+        EnableWindow(GetDlgItem(w, CTL_INPUT), s.connected);
+        EnableWindow(GetDlgItem(w, IDOK), s.connected);
+    }
+    if (g_wnd[kPending] && s.connected && s.pending != g_pendingShownCount) {
+        g_pendingShownCount = s.pending;
+        Send("{\"type\":\"menu\",\"item\":\"pending\",\"id\":\"pending\"}");   // refresh the open list
+    }
 }
 
 void OnCommand(UINT id) {
     auto s = State();
     switch (id) {
     case ID_PAUSE: Send(std::string("{\"type\":\"menu\",\"item\":\"") + (s.agent == "paused" ? "resume" : "pause") + "\"}"); break;
-    case ID_ASK: {
-        static AskDialog tpl;
-        std::wstring text;
-        InterlockedIncrement(&g_dialogs);
-        INT_PTR r = DialogBoxIndirectParamW(g_self, reinterpret_cast<LPCDLGTEMPLATEW>(tpl.t.data()), g_hwnd, AskProc,
-                                            reinterpret_cast<LPARAM>(&text));
-        InterlockedDecrement(&g_dialogs);
-        if (r == IDOK && !text.empty()) Send("{\"type\":\"ask\",\"text\":\"" + JEsc(U8(text)) + "\"}");
+    case ID_CHAT:
+        if (OpenTool(kChat)) FillChat();
+        if (s.connected) Send("{\"type\":\"menu\",\"item\":\"chat_history\",\"id\":\"chat\"}");
         break;
-    }
-    case ID_PENDING: Send("{\"type\":\"menu\",\"item\":\"pending\",\"id\":\"pending\"}"); break;
+    case ID_PENDING:
+        g_pendingWanted = true;
+        Send("{\"type\":\"menu\",\"item\":\"pending\",\"id\":\"pending\"}");
+        break;
     case ID_UNDO: Send("{\"type\":\"menu\",\"item\":\"undo_agent_step\"}"); break;
-    case ID_LOG: Send("{\"type\":\"menu\",\"item\":\"log\",\"id\":\"log\"}"); break;
+    case ID_LOG:
+        if (OpenTool(kLog)) FillLog(true);
+        if (s.connected) Send("{\"type\":\"menu\",\"item\":\"log\",\"id\":\"log\"}");
+        break;
     case ID_STATUS: Box(StatusText(), MB_OK); break;
     case ID_DISCONNECT:
         if (s.connected) Send("{\"type\":\"menu\",\"item\":\"disconnect\"}");
@@ -381,6 +762,7 @@ void OnCommand(UINT id) {
 
 void Uninstall() {
     KillTimer(g_hwnd, kTimerId);
+    UninstallUi();
     if (HMENU bar = GetMenu(g_hwnd))
         for (int i = GetMenuItemCount(bar) - 1; i >= 0; --i)
             if (GetSubMenu(bar, i) == g_menu) { RemoveMenu(bar, i, MF_BYPOSITION); DrawMenuBar(g_hwnd); }
@@ -390,10 +772,19 @@ void Uninstall() {
 
 LRESULT CALLBACK HookProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
     switch (msg) {
-    case WM_HMCP_INSTALL: BuildMenu(); SetTimer(hwnd, kTimerId, 1000, nullptr); return 0;
-    case WM_HMCP_UPDATE: if (g_menu) UpdateMenu(); return 0;
-    case WM_HMCP_SHOWLOG: ShowLog(); return 0;
-    case WM_HMCP_SHOWPENDING: ShowPending(); return 0;
+    case WM_HMCP_INSTALL: InstallUi(); BuildMenu(); SetTimer(hwnd, kTimerId, 1000, nullptr); return 0;
+    case WM_HMCP_UPDATE: OnStateChanged(); return 0;
+    case WM_HMCP_LOG: FillLog(false); return 0;
+    case WM_HMCP_CHAT:
+        // an answer from the agent opens the chat (without taking the focus from the map)
+        if (lp == 1 && !g_wnd[kChat]) OpenTool(kChat, false);
+        FillChat();
+        return 0;
+    case WM_HMCP_PENDING:
+        if (g_pendingWanted && !g_wnd[kPending]) OpenTool(kPending);
+        g_pendingWanted = false;
+        FillPending();
+        return 0;
     case WM_HMCP_UNINSTALL: Uninstall(); return 1;
     case WM_TIMER:
         if (wp == kTimerId) { BuildMenu(); return 0; }   // MDI frames swap menus when maps open / close
@@ -455,6 +846,7 @@ bool WriteAll(HANDLE pipe, const std::string& line) {
 // returns true when the adapter should unload
 bool HandleLine(HANDLE pipe, const std::string& msg) {
     std::string cmd = JStr(msg, "cmd");
+    auto chatLine = [](const std::string& o) { return ChatLine{ JStr(o, "from", "agent"), JStr(o, "text"), JStr(o, "at") }; };
     if (cmd == "ping") WriteAll(pipe, "{\"type\":\"pong\"}");
     else if (cmd == "unload") { WriteAll(pipe, "{\"type\":\"bye\"}"); return true; }
     else if (cmd == "state") {
@@ -468,16 +860,56 @@ bool HandleLine(HANDLE pipe, const std::string& msg) {
             g_state.canUndo = JBool(msg, "canUndo", g_state.canUndo);
         }
         PostUi(WM_HMCP_UPDATE);
+    } else if (cmd == "profile") {
+        // the server's registry entry for our build (layer 2 signatures / offsets come in "features"); a profile for
+        // another build is ignored - the adapter's own sha256 check is what says which build this is
+        std::string build = JStr(msg, "build");
+        std::lock_guard l(g_lock);
+        if (build == g_build) {
+            g_profile = msg;
+            g_support = JStr(msg, "support", g_support);
+        }
     } else if (cmd == "log") {
-        { std::lock_guard l(g_lock); g_log = JStrings(JArray(msg, "lines")); }
-        PostUi(WM_HMCP_SHOWLOG);
+        {
+            std::lock_guard l(g_lock);
+            auto lines = JStrings(JArray(msg, "lines"));
+            size_t from = lines.size() > kLogMax ? lines.size() - kLogMax : 0;
+            g_log.assign(lines.begin() + from, lines.end());
+            g_logReset = true;
+        }
+        PostUi(WM_HMCP_LOG);
+    } else if (cmd == "log_line") {
+        {
+            std::lock_guard l(g_lock);
+            std::string line = JStr(msg, "line");
+            g_log.push_back(line);
+            if (g_log.size() > kLogMax) g_log.pop_front();
+            g_logNew.push_back(line);
+        }
+        PostUi(WM_HMCP_LOG);
+    } else if (cmd == "chat") {
+        ChatLine c = chatLine(msg);
+        {
+            std::lock_guard l(g_lock);
+            g_chat.push_back(c);
+            if (g_chat.size() > kChatMax) g_chat.pop_front();
+        }
+        PostUi(WM_HMCP_CHAT, c.from == "agent" ? 1 : 0);
+    } else if (cmd == "chat_history") {
+        {
+            std::lock_guard l(g_lock);
+            g_chat.clear();
+            for (auto& o : JObjects(JArray(msg, "items"))) g_chat.push_back(chatLine(o));
+            while (g_chat.size() > kChatMax) g_chat.pop_front();
+        }
+        PostUi(WM_HMCP_CHAT);
     } else if (cmd == "pending") {
         {
             std::lock_guard l(g_lock);
             g_pendingItems.clear();
             for (auto& o : JObjects(JArray(msg, "items"))) g_pendingItems.emplace_back(JStr(o, "id"), JStr(o, "text"));
         }
-        PostUi(WM_HMCP_SHOWPENDING);
+        PostUi(WM_HMCP_PENDING);
     } else if (cmd == "notify") {
         { std::lock_guard l(g_lock); g_state.notify = JStr(msg, "text"); }
         if (g_hwnd) FlashWindow(g_hwnd, TRUE);

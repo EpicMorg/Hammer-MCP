@@ -50,4 +50,4 @@ endif()
 set_target_properties(hmcp-adapter PROPERTIES OUTPUT_NAME ${HMCP_ADAPTER_NAME})
 set_source_files_properties(adapters/base/adapter.rc PROPERTIES
   COMPILE_DEFINITIONS "HMCP_ADAPTER_FILE=\"${HMCP_ADAPTER_NAME}.dll\";HMCP_ADAPTER_DESC=\"Hammer-MCP adapter (${HMCP_BITS}-bit)\"")
-target_link_libraries(hmcp-adapter PRIVATE hmcp_common)
+target_link_libraries(hmcp-adapter PRIVATE hmcp_common comctl32 gdi32 user32)
