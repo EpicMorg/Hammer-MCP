@@ -172,9 +172,16 @@ std::string g_profile;                  // the server's {"cmd":"profile"} line; 
 HANDLE g_outEvent = nullptr;   // something queued in g_out
 HANDLE g_stopEvent = nullptr;  // unload without a server (menu "Disconnect" while not connected)
 
-// UI: g_hwnd / g_origProc are set by the worker before subclassing; the rest is touched on the UI thread only
+// UI: g_hwnd is set by the worker before the subclass is installed; the rest is touched on the UI thread only.
+// The main window is subclassed with SetWindowSubclass (comctl32), not GWLP_WNDPROC: whoever subclasses it after us
+// (MFC, uxtheme, the editor) keeps a valid chain when we remove ours and unload - restoring an old GWLP_WNDPROC left
+// their "previous proc" pointing into our unloaded code (crash on the next WM_SYSCOMMAND).
 HWND g_hwnd = nullptr;
-WNDPROC g_origProc = nullptr;
+constexpr UINT_PTR kSubclassId = 0x484D4350;   // 'HMCP'
+bool g_subclassed = false;                     // UI thread
+WNDPROC g_origProc = nullptr;                  // the window proc BootProc forwards to
+volatile bool g_bootInChain = false;           // BootProc is still somebody's window proc: never unload the DLL
+volatile bool g_bootDone = false;
 HMENU g_menu = nullptr;
 volatile LONG g_dialogs = 0;   // our modal dialogs open right now
 
@@ -784,10 +791,9 @@ void Uninstall() {
         for (int i = GetMenuItemCount(bar) - 1; i >= 0; --i)
             if (GetSubMenu(bar, i) == g_menu) { RemoveMenu(bar, i, MF_BYPOSITION); DrawMenuBar(g_hwnd); }
     if (g_menu) { DestroyMenu(g_menu); g_menu = nullptr; }
-    if (g_origProc) SetWindowLongPtrW(g_hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(g_origProc));
 }
 
-LRESULT CALLBACK HookProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
+LRESULT CALLBACK HookProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp, UINT_PTR, DWORD_PTR) {
     switch (msg) {
     case WM_HMCP_INSTALL: InstallUi(); BuildMenu(); SetTimer(hwnd, kTimerId, 1000, nullptr); return 0;
     case WM_HMCP_UPDATE: OnStateChanged(); return 0;
@@ -802,7 +808,11 @@ LRESULT CALLBACK HookProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
         g_pendingWanted = false;
         FillPending();
         return 0;
-    case WM_HMCP_UNINSTALL: Uninstall(); return 1;
+    case WM_HMCP_UNINSTALL:
+        Uninstall();
+        // safe inside our own subclass proc and wherever we are in the chain
+        g_subclassed = !RemoveWindowSubclass(hwnd, HookProc, kSubclassId);
+        return 1;
     case WM_TIMER:
         if (wp == kTimerId) { BuildMenu(); return 0; }   // MDI frames swap menus when maps open / close
         break;
@@ -810,12 +820,31 @@ LRESULT CALLBACK HookProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
         if (HIWORD(wp) == 0 && LOWORD(wp) >= ID_PAUSE && LOWORD(wp) <= ID_ABOUT) { OnCommand(LOWORD(wp)); return 0; }
         break;
     case WM_INITMENUPOPUP: {
-        LRESULT r = CallWindowProcW(g_origProc, hwnd, msg, wp, lp);
+        LRESULT r = DefSubclassProc(hwnd, msg, wp, lp);
         if (reinterpret_cast<HMENU>(wp) == g_menu) UpdateMenu();
         return r;
     }
     }
-    return CallWindowProcW(g_origProc, hwnd, msg, wp, lp);
+    return DefSubclassProc(hwnd, msg, wp, lp);
+}
+
+// SetWindowSubclass works only on the window's own thread, and the worker finds the window on another one. So the
+// worker puts this short-lived GWLP_WNDPROC proc in front and posts WM_HMCP_INSTALL; on the UI thread it takes itself
+// out again (nobody had time to subclass on top of it) and installs the real, order-independent subclass.
+// If someone did subclass on top of it meanwhile, it stays as a pass-through and the DLL is never unloaded.
+LRESULT CALLBACK BootProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
+    WNDPROC orig = g_origProc;
+    if (msg == WM_HMCP_INSTALL && !g_subclassed && !g_bootDone) {
+        g_bootDone = true;
+        if (GetWindowLongPtrW(hwnd, GWLP_WNDPROC) == reinterpret_cast<LONG_PTR>(BootProc)) {
+            SetWindowLongPtrW(hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(orig));
+            g_bootInChain = false;
+        }
+        g_subclassed = SetWindowSubclass(hwnd, HookProc, kSubclassId, 0) != FALSE;
+        // the subclass is in front now: deliver the message to it (installs the menu)
+        return g_subclassed ? SendMessageW(hwnd, WM_HMCP_INSTALL, wp, lp) : 0;
+    }
+    return CallWindowProcW(orig, hwnd, msg, wp, lp);
 }
 
 // Hammer's main frame: a visible, unowned top-level window of this process with a menu bar; one whose title says
@@ -990,9 +1019,10 @@ HANDLE g_uiStop = nullptr;   // tells the window finder to give up (unloading)
 DWORD WINAPI FindWindowThread(LPVOID) {
     for (int i = 0; i < 1200; ++i) {   // up to 10 minutes: Hammer may sit in "Reading chunks..." for a long time
         if (HWND h = FindMainWindow()) {
-            g_origProc = reinterpret_cast<WNDPROC>(GetWindowLongPtrW(h, GWLP_WNDPROC));
-            SetWindowLongPtrW(h, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(HookProc));
             g_hwnd = h;
+            g_origProc = reinterpret_cast<WNDPROC>(GetWindowLongPtrW(h, GWLP_WNDPROC));
+            g_bootInChain = true;
+            SetWindowLongPtrW(h, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(BootProc));
             PostMessageW(h, WM_HMCP_INSTALL, 0, 0);
             return 0;
         }
@@ -1096,7 +1126,12 @@ DWORD WINAPI Worker(LPVOID) {
     if (finder) { WaitForSingleObject(finder, INFINITE); CloseHandle(finder); }
     if (g_hwnd) {
         while (g_dialogs > 0) Sleep(100);
-        SendMessageW(g_hwnd, WM_HMCP_UNINSTALL, 0, 0);
+        SendMessageW(g_hwnd, WM_HMCP_UNINSTALL, 0, 0);   // removes the subclass (UI thread)
+        // the boot proc never got its message (or somebody subclassed on top of it): take it out if it is on top
+        if (g_bootInChain && GetWindowLongPtrW(g_hwnd, GWLP_WNDPROC) == reinterpret_cast<LONG_PTR>(BootProc)) {
+            SetWindowLongPtrW(g_hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(g_origProc));
+            g_bootInChain = false;
+        }
     }
     CloseHandle(g_outEvent);
     CloseHandle(g_stopEvent);
@@ -1104,6 +1139,8 @@ DWORD WINAPI Worker(LPVOID) {
     if (sd) LocalFree(sd);
     ReleaseMutex(instance);
     CloseHandle(instance);
+    // BootProc still inside someone else's chain: keep the code loaded (an idle pass-through) rather than crash Hammer
+    if (g_bootInChain || g_subclassed) ExitThread(0);
     FreeLibraryAndExitThread(g_self, 0);
 }
 
