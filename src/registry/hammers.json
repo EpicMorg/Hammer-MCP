@@ -17,7 +17,8 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8873, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "7af77189243ea622aa722323a7dfa31a7eb8cf759b1c949b2c9631ac5e048754", "linked": "2026-10-27" },
       "shell": { "present": true },
-      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
+      "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt",
+      "injectAdapter": "hpp-8873-x86"
     },
     {
       "id": "hpp-2013mp-8846-x86",

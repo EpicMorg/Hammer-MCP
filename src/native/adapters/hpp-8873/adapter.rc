@@ -10,11 +10,11 @@ BEGIN
     BLOCK "040904b0"
     BEGIN
       VALUE "CompanyName", "EpicMorg"
-      VALUE "FileDescription", "Hammer-MCP adapter for Hammer++ 8873 x64"
+      VALUE "FileDescription", HMCP_ADAPTER_DESC
       VALUE "FileVersion", "0.1.0"
       VALUE "ProductName", "Hammer-MCP"
       VALUE "ProductVersion", "0.1.0"
-      VALUE "OriginalFilename", "hmcp-adapter-hpp-8873-x64.dll"
+      VALUE "OriginalFilename", HMCP_ADAPTER_FILE
       VALUE "LegalCopyright", "Copyright (c) 2026 EpicMorg. MIT License."
     END
   END

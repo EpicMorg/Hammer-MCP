@@ -38,9 +38,18 @@ add_executable(hmcp-injector injector/main.cpp injector/injector.rc)
 set_target_properties(hmcp-injector PROPERTIES OUTPUT_NAME "hmcp-injector${HMCP_BITS}")
 target_link_libraries(hmcp-injector PRIVATE hmcp_common)
 
-# one adapter per build id; only the bitness that matches the build is produced
+# one adapter DLL per build id (registry injectAdapter); only the bitness that matches the build is produced
+function(hmcp_adapter id src_dir description)
+  add_library(${id} SHARED ${src_dir}/adapter.cpp ${src_dir}/adapter.rc)
+  set_target_properties(${id} PROPERTIES OUTPUT_NAME "hmcp-adapter-${id}")
+  target_compile_definitions(${id} PRIVATE HMCP_ADAPTER_ID="${id}")
+  set_source_files_properties(${src_dir}/adapter.rc TARGET_DIRECTORY ${id} PROPERTIES
+    COMPILE_DEFINITIONS "HMCP_ADAPTER_FILE=\"hmcp-adapter-${id}.dll\";HMCP_ADAPTER_DESC=\"${description}\"")
+  target_link_libraries(${id} PRIVATE hmcp_common)
+endfunction()
+
 if(HMCP_BITS EQUAL 64)
-  add_library(hpp-8873-x64 SHARED adapters/hpp-8873-x64/adapter.cpp adapters/hpp-8873-x64/adapter.rc)
-  set_target_properties(hpp-8873-x64 PROPERTIES OUTPUT_NAME "hmcp-adapter-hpp-8873-x64")
-  target_link_libraries(hpp-8873-x64 PRIVATE hmcp_common)
+  hmcp_adapter(hpp-8873-x64 adapters/hpp-8873 "Hammer-MCP adapter for Hammer++ 8873 x64")
+else()
+  hmcp_adapter(hpp-8873-x86 adapters/hpp-8873 "Hammer-MCP adapter for Hammer++ 8873 x86")
 endif()

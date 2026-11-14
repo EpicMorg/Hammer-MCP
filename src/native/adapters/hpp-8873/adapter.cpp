@@ -1,4 +1,6 @@
-// Adapter for Hammer++ 8873 x64 (registry id hpp-tf2-8873-x64).
+// Adapter for Hammer++ 8873 (x64: registry id hpp-tf2-8873-x64; x86: hpp-2013sp-8873-x86) - HMCP_ADAPTER_ID picks which.
+// Layers 0-1 touch no Hammer internals (window, menu, pipe), so the same source serves both; build-specific code
+// (layer 2+: offsets / signatures) will be selected by HMCP_ADAPTER_ID.
 // Layer 0: named pipe, hello, ping, unload.  Layer 1: the MCP menu in Hammer's main window.
 // Protocol: see src/native/PROTOCOL.md. One JSON object per line over \\.\pipe\hammer-mcp-adapter-<pid> (local only).
 //
@@ -14,7 +16,10 @@
 
 namespace {
 
-constexpr const char* kAdapterId = "hpp-8873-x64";
+#ifndef HMCP_ADAPTER_ID
+#error "HMCP_ADAPTER_ID is set by CMake"
+#endif
+constexpr const char* kAdapterId = HMCP_ADAPTER_ID;
 
 // ---------- small JSON helpers (flat objects; enough for PROTOCOL.md) ----------
 
