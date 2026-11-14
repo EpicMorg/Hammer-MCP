@@ -18,25 +18,62 @@ public sealed class AssetResolver
             if (sp.Locations.Count == 0 && !sp.Value.TrimEnd().EndsWith('*'))
                 Problems.Add($"search path not resolved: {sp.Value}");
             foreach (var location in sp.Locations)
+                Add(location);
+        }
+    }
+
+    /// <summary>Folders and VPKs in mount order (e.g. Source 2: game/&lt;mod&gt;, its pak01_dir.vpk, game/core, ...).</summary>
+    public AssetResolver(IEnumerable<string> locations)
+    {
+        foreach (var location in locations)
+            Add(location);
+    }
+
+    private void Add(string location)
+    {
+        if (location.EndsWith(".vpk", StringComparison.OrdinalIgnoreCase))
+        {
+            try
             {
-                if (location.EndsWith(".vpk", StringComparison.OrdinalIgnoreCase))
-                {
-                    try
-                    {
-                        if (VpkDirectory.Open(location) is { } vpk)
-                            _vpks.Add(vpk);
-                        else
-                            Problems.Add($"vpk not found: {location}");
-                    }
-                    catch (Exception e) when (e is IOException or InvalidDataException or EndOfStreamException)
-                    {
-                        Problems.Add($"{location}: {e.Message}");
-                    }
-                }
-                else if (Directory.Exists(location))
-                    _folders.Add(location);
+                if (VpkDirectory.Open(location) is { } vpk)
+                    _vpks.Add(vpk);
                 else
-                    Problems.Add($"folder not found: {location}");
+                    Problems.Add($"vpk not found: {location}");
+            }
+            catch (Exception e) when (e is IOException or InvalidDataException or EndOfStreamException)
+            {
+                Problems.Add($"{location}: {e.Message}");
+            }
+        }
+        else if (Directory.Exists(location))
+            _folders.Add(location);
+        else if (!Path.GetFileName(location.TrimEnd('/', '\\')).Equals("download", StringComparison.OrdinalIgnoreCase))
+            Problems.Add($"folder not found: {location}"); // download/ appears only after joining a server
+    }
+
+    /// <summary>
+    /// Every file under <paramref name="root"/> (e.g. "models", "" = all) with where it comes from: loose folders first,
+    /// then VPKs - the order <see cref="Locate"/> uses, so the first source of a path is the copy that wins.
+    /// Paths are relative, lower-case for VPKs, with forward slashes.
+    /// </summary>
+    public IEnumerable<(string Path, string Source)> List(string root)
+    {
+        var prefix = VpkDirectory.Normalize(root).TrimEnd('/');
+        foreach (var folder in _folders)
+        {
+            var dir = prefix.Length == 0 ? folder : Path.Combine(folder, prefix);
+            if (!Directory.Exists(dir))
+                continue;
+            var files = Directory.EnumerateFiles(dir, "*", new EnumerationOptions { RecurseSubdirectories = true, IgnoreInaccessible = true });
+            foreach (var file in files)
+                yield return (Path.GetRelativePath(folder, file).Replace('\\', '/'), folder);
+        }
+        foreach (var vpk in _vpks)
+        {
+            foreach (var file in vpk.Files)
+            {
+                if (prefix.Length == 0 || (file.StartsWith(prefix, StringComparison.Ordinal) && file.Length > prefix.Length && file[prefix.Length] == '/'))
+                    yield return (file, vpk.Path);
             }
         }
     }

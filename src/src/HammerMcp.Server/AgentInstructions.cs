@@ -11,7 +11,9 @@ internal static class AgentInstructions
         Start with hammer_status: it tells which Hammer is attached, whether live edits are allowed, which map is open
         and its saved mapversion. Use map_summary / list_entities / get_entity / find_io to read the saved map, and
         fgd_class / fgd_search for the game's entity reference (keyvalues, choices, inputs, outputs) before creating or
-        changing entities. validate_map finds broken outputs and unknown classes.
+        changing entities. validate_map finds broken outputs and unknown classes. find_assets finds models, materials,
+        sounds, sprites and particles of the game by name (loose files and VPKs) - use its keyValue for model / material /
+        message keyvalues instead of guessing paths.
 
         How live edits work (shell channel):
         - Edits go into the map currently open in Hammer and appear immediately. Creation, deletion and rotation can be

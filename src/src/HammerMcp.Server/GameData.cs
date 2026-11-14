@@ -75,6 +75,37 @@ public sealed class GameData(HammerTarget target)
         }
     }
 
+    private string? _source2Key;
+    private AssetResolver? _source2;
+
+    /// <summary>
+    /// Source 2 content of a mod: game/&lt;mod&gt; (loose compiled files and pak01_dir.vpk), content/&lt;mod&gt; (sources the
+    /// user made: .vmdl, .vmat, ...), then the same for game/core. Built once per mod.
+    /// </summary>
+    public AssetResolver? Source2Assets(HammerGameConfig config)
+    {
+        if (config.GameDir is null || config.GameExeDir is null)
+            return null;
+        var mod = Path.GetFileName(config.GameDir);
+        var content = Path.GetFullPath(Path.Combine(config.GameExeDir, "..", "content"));
+        string[] locations =
+        [
+            config.GameDir, Path.Combine(config.GameDir, "pak01_dir.vpk"), Path.Combine(content, mod),
+            Path.Combine(config.GameExeDir, "core"), Path.Combine(config.GameExeDir, "core", "pak01_dir.vpk"), Path.Combine(content, "core"),
+        ];
+        var existing = locations.Where(l => File.Exists(l) || Directory.Exists(l)).ToList();
+        var key = string.Join('|', existing);
+        lock (_lock)
+        {
+            if (_source2Key != key || _source2 is null)
+            {
+                _source2 = new AssetResolver(existing);
+                _source2Key = key;
+            }
+            return _source2;
+        }
+    }
+
     /// <summary>
     /// |all_source_engine_paths| is the game install root. Most games keep their exe there (hl2.exe, tf_win64.exe), but
     /// Strata (revolution.exe) and other 64-bit builds keep it in bin\win64 / bin\x64 - step up to the root then.

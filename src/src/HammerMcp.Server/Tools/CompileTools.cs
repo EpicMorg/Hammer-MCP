@@ -41,6 +41,48 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
         };
     }
 
+    [McpServerTool(Name = "find_assets", ReadOnly = true)]
+    [Description("Find content by name in the game of the attached Hammer - loose files and VPKs from the game's search paths (Source 1: gameinfo.txt; Source 2: game/<mod>, content/<mod>, core): models, materials, textures, sounds, sprites, particles. Use it to pick a model for prop_*, a material, a sound for ambient_generic. Each hit has 'keyValue' = what to write in the entity's keyvalue, and the sources that have the file (the first one wins).")]
+    public object FindAssets(
+        [Description("Part of the path, e.g. cabinet, or a wildcard over the whole path, e.g. models/props_2fort/*locker*")] string query,
+        [Description("model, material, texture, sound, sprite, particle, or any")] string kind = "any",
+        int limit = 50,
+        string? configName = null)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+            return new { error = "query is empty" };
+        var process = target.Current();
+        if (process is null)
+            return new { error = "no Hammer is attached" };
+        var selection = gameData.Select(configName);
+        if (selection.Active is not { } config)
+            return new { error = selection.Problem ?? "no game config" };
+        var source2 = process.IsSource2;
+        var resolver = source2 ? gameData.Source2Assets(config) : gameData.Assets(config);
+        if (resolver is null)
+            return new { error = source2 ? $"no Source 2 content found for {config.Name}" : $"no gameinfo.txt in GameDir '{config.GameDir}'" };
+        var kinds = source2 ? AssetSearch.Source2 : AssetSearch.Source1;
+        if (kind is not ("" or "any") && !kinds.Any(k => k.Name.Equals(kind, StringComparison.OrdinalIgnoreCase)))
+            return new { error = $"unknown kind '{kind}': {string.Join(", ", kinds.Select(k => k.Name))} or any" };
+        var result = AssetSearch.Search(resolver, kinds, query, kind, limit);
+        return new
+        {
+            game = config.Name,
+            total = result.Total,
+            shown = result.Hits.Count,
+            hits = result.Hits.Select(h => new
+            {
+                h.Kind,
+                h.Path,
+                h.KeyValue,
+                from = h.Sources.Select(Path.GetFileName).First(),
+                alsoIn = h.Sources.Count > 1 ? h.Sources.Skip(1).Select(Path.GetFileName) : null,
+            }),
+            note = result.Total > result.Hits.Count ? "more matches: narrow the query or raise limit (max 500)" : null,
+            searchPathProblems = resolver.Problems.Count > 0 ? resolver.Problems : null,
+        };
+    }
+
     [McpServerTool(Name = "compile_sequences", ReadOnly = true)]
     [Description("Hammer's Run Map (expert) sequences of the attached Hammer - CmdSeq.wc, hammerplusplus_sequences.cfg or Strata cmdseq.wc - with variables expanded for the open map.")]
     public object Sequences(string? configName = null)
