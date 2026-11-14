@@ -22,11 +22,13 @@ public sealed class HammerTarget
 
     public HammerTarget()
     {
-        // the stop button rejects everything still waiting for approval
+        // the stop button rejects everything still waiting for approval or queued to be applied
+        const string paused = "rejected: the user paused the agent";
+        Changes.Blocked = () => Control.Paused ? paused : null;
         Control.Changed += () =>
         {
             if (Control.Paused)
-                Changes.RejectAll();
+                Changes.Stop(paused);
         };
     }
 

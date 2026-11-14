@@ -50,7 +50,7 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
     public EditResult RotateEntity(string className, float x, float y, float z, float pitch, float yaw, float roll)
     {
         var origin = new Vector3(x, y, z);
-        return Edit($"rotate {className} at {Xyz(origin)} by {pitch:G} {yaw:G} {roll:G} (pitch yaw roll)", className, origin, expectExisting: true,
+        return Edit($"rotate {className} at {Xyz(origin)} by {Xyz(new Vector3(pitch, yaw, roll))} (pitch yaw roll)", className, origin, expectExisting: true,
             (session, _) => [Run(session, ShellCommands.EntityRotateIncremental(className, origin, new Vector3(pitch, yaw, roll)))]);
     }
 
@@ -69,8 +69,8 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
     }
 
     /// <summary>
-    /// Checks the address against the saved map, then runs the edit - right away, or (approval mode) once the user
-    /// applies <paramref name="what"/> in the app or in Hammer.
+    /// Runs the edit right away, or (approval mode) once the user applies <paramref name="what"/> in the app or in
+    /// Hammer; the address is checked against the saved map at that moment.
     /// </summary>
     private EditResult Edit(string what, string className, Vector3 origin, bool expectExisting, Func<ShellSession, string, List<string>> action)
     {
@@ -85,26 +85,32 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
         if (!File.Exists(mapPath))
             return new EditResult(false, $"map file not found: {mapPath} (save the map first)", []);
 
-        var saved = VmfEntities.Read(mapPath);
-        var count = journal.Count(mapPath, saved, className, origin);
-        var at = $"{className} at {origin.X:G} {origin.Y:G} {origin.Z:G}";
-        if (!expectExisting && count > 0)
-            return Refuse($"{count} {at} already exist(s); a second one could not be addressed - use other coordinates");
-        if (expectExisting && count > 1)
-        {
-            var ids = string.Join(", ", saved.At(className, origin).Select(e => $"id {e.Id}{(e.TargetName is null ? "" : $" '{e.TargetName}'")}"));
-            return Refuse($"{count} entities {at} share this address ({ids}); the shell channel cannot tell them apart - "
-                          + "ask the user to move or delete the extra ones in Hammer");
-        }
+        // approval mode: refuse a bad address before it reaches the user's list
+        if (target.Changes.AskUser && CheckAddress(mapPath, className, origin, expectExisting, out _) is { } refusal)
+            return Refuse(refusal);
 
         return target.Changes.Run(what,
-            () => target.Control.Paused ? Refuse(AgentControl.PausedReason) : Execute(mapPath, at, expectExisting, count, action),
-            r => (r.Ok, $"{r.Message}: {string.Join("; ", r.Commands)}"),
+            () => Apply(mapPath, className, origin, expectExisting, action),
+            r => (r.Ok, r.Commands.Count == 0 ? r.Message : $"{r.Message}: {string.Join("; ", r.Commands)}"),
             reason => Refuse(reason));
     }
 
-    private EditResult Execute(string mapPath, string at, bool expectExisting, int count, Func<ShellSession, string, List<string>> action)
+    /// <summary>
+    /// Checks the address and runs the edit. With approval this runs when the user applies it, maybe minutes later: the
+    /// map may have changed meanwhile (another map opened, the entity moved, a second one placed at the address).
+    /// </summary>
+    private EditResult Apply(string mapPath, string className, Vector3 origin, bool expectExisting, Func<ShellSession, string, List<string>> action)
     {
+        if (target.Control.Paused)
+            return Refuse(AgentControl.PausedReason);
+        var now = target.Current()?.OpenMapPath;
+        if (!string.Equals(now, mapPath, StringComparison.OrdinalIgnoreCase))
+            return Refuse($"another map is open in Hammer now ({now ?? "none"}) - not applied");
+        if (!File.Exists(mapPath))
+            return Refuse($"map file not found: {mapPath} (save the map first)");
+        if (CheckAddress(mapPath, className, origin, expectExisting, out var count) is { } refusal)
+            return Refuse(refusal);
+
         using var session = ShellSession.Begin(target.Channel, mapPath);
         if (session is null)
             return new EditResult(false, "Hammer refused the session: save the map (Ctrl+S) and retry", []);
@@ -115,9 +121,26 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
         var message = ok
             ? $"done (session version {session.AcceptedVersion})"
             : expectExisting && count == 0
-                ? $"refused by Hammer: no {at} in the saved map nor in this session's edits"
+                ? $"refused by Hammer: no {At(className, origin)} in the saved map nor in this session's edits"
                 : "some commands were refused by Hammer";
         return new EditResult(ok, message, commands);
+    }
+
+    /// <summary>Null = the address is usable: exactly one entity there (edit) or none (create).</summary>
+    private string? CheckAddress(string mapPath, string className, Vector3 origin, bool expectExisting, out int count)
+    {
+        var saved = VmfEntities.Read(mapPath);
+        count = journal.Count(mapPath, saved, className, origin);
+        var at = At(className, origin);
+        if (!expectExisting && count > 0)
+            return $"{count} {at} already exist(s); a second one could not be addressed - use other coordinates";
+        if (expectExisting && count > 1)
+        {
+            var ids = string.Join(", ", saved.At(className, origin).Select(e => $"id {e.Id}{(e.TargetName is null ? "" : $" '{e.TargetName}'")}"));
+            return $"{count} entities {at} share this address ({ids}); the shell channel cannot tell them apart - "
+                   + "ask the user to move or delete the extra ones in Hammer";
+        }
+        return null;
     }
 
     private EditResult Refuse(string reason)
@@ -126,7 +149,9 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
         return new EditResult(false, reason, []);
     }
 
-    private static string Xyz(Vector3 v) => $"{v.X:G} {v.Y:G} {v.Z:G}";
+    private static string Xyz(Vector3 v) => FormattableString.Invariant($"{v.X:G} {v.Y:G} {v.Z:G}");
+
+    private static string At(string className, Vector3 origin) => $"{className} at {Xyz(origin)}";
 
     private static string Run(ShellSession session, string command) => $"{command} = {session.Send(command)}";
 }

@@ -11,6 +11,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\HammerMcp.Core\HammerMcp.Core.csproj" />
     <Using Include="Xunit" />
+    <!-- plain BCL code from the Windows-only server, tested on every OS -->
+    <Compile Include="..\..\src\HammerMcp.Server\PendingChanges.cs" Link="Server\PendingChanges.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\registry\hammers.json" Link="registry\hammers.json" CopyToOutputDirectory="PreserveNewest" />
