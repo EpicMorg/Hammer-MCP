@@ -19,6 +19,11 @@ public sealed class RunCompileTools(HammerTarget target, CompileTools reader, Ac
         string? configName = null,
         CancellationToken cancellationToken = default)
     {
+        if (target.Control.Paused)
+        {
+            log.Write("compile refused - agent paused");
+            return new { error = AgentControl.PausedReason };
+        }
         var process = target.Current();
         var (map, config, error) = reader.MapAndConfig(configName);
         if (process is null || error is not null)

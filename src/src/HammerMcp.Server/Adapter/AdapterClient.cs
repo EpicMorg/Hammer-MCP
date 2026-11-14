@@ -24,7 +24,7 @@ public sealed class AdapterClient : IAsyncDisposable
     private readonly StreamReader _reader;
     private readonly SemaphoreSlim _writeLock = new(1, 1);
     private readonly CancellationTokenSource _stop = new();
-    private DateTime _lastHeard = DateTime.UtcNow;
+    private long _lastHeardTicks = DateTime.UtcNow.Ticks; // written by the read loop, read by the ping loop
     private int _closed;
 
     public AdapterHello Hello { get; private set; } = null!;
@@ -141,7 +141,7 @@ public sealed class AdapterClient : IAsyncDisposable
                     Close("the adapter closed the connection");
                     return;
                 }
-                _lastHeard = DateTime.UtcNow;
+                Volatile.Write(ref _lastHeardTicks, DateTime.UtcNow.Ticks);
                 if (line.Length > 0)
                     Dispatch(line);
             }
@@ -193,7 +193,7 @@ public sealed class AdapterClient : IAsyncDisposable
             while (!_stop.IsCancellationRequested)
             {
                 await Task.Delay(PingEvery, _stop.Token);
-                if (DateTime.UtcNow - _lastHeard > LostAfter)
+                if (DateTime.UtcNow.Ticks - Volatile.Read(ref _lastHeardTicks) > LostAfter.Ticks)
                 {
                     Close("no answer from the adapter for 15 s");
                     return;

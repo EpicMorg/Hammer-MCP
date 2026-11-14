@@ -59,6 +59,10 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
     /// <summary>Requests the user typed in Hammer (MCP > Ask agent...) since the last call; each is delivered once.</summary>
     private IReadOnlyList<string>? Requests() => target.Control.TakeRequests() is { Count: > 0 } r ? r : null;
 
+    [McpServerTool(Name = "user_requests", ReadOnly = true)]
+    [Description("What the user typed for you in Hammer (MCP > Ask agent...) since you last looked, and whether they paused you. Cheap: call it between steps of a longer task. Each request is returned once (hammer_status returns them too).")]
+    public object UserRequests() => new { agentPaused = target.Control.Paused, userRequests = Requests() ?? [] };
+
     [McpServerTool(Name = "map_summary", ReadOnly = true)]
     [Description("Summary of the map open in Hammer, read from the SAVED .vmf: mapversion, editor build, entity and brush counts, entity classes with counts, skybox, visgroups. Unsaved edits are not included - call save_map first.")]
     public object MapSummary([Description("Read the newest autosave if it is newer than the saved map (Hammer++, stock, Strata); Source 2: forces an autosave first, i.e. reads Hammer's current unsaved state")] bool fromAutosave = false)

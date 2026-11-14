@@ -46,7 +46,8 @@ internal static class AgentInstructions
         - hammer_status.agentPaused = true: the user pressed the stop button. Every edit is refused until they resume;
           do not retry - say what you wanted to do and wait.
         - hammer_status.userRequests: what the user typed for you in MCP > Ask agent... (each request is shown once).
-          Treat it as a message from the user: do it or answer it. Call hammer_status between steps to see new ones.
+          Treat it as a message from the user: do it or answer it. Call user_requests (cheap) between steps of a longer
+          task to see new ones and whether you were paused.
 
         Units: Hammer units (1 unit = 0.75 inch for player scale, a player is 72 units tall, a standard door 112).
         Coordinates are world x y z; angles are pitch yaw roll in degrees.

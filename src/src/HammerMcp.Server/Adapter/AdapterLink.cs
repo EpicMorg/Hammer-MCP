@@ -73,7 +73,34 @@ public sealed class AdapterLink(HammerTarget target, ActivityLog log)
     public Task NotifyAsync(string text) =>
         _client is { Connected: true } c ? c.SendNotifyAsync(text) : Task.CompletedTask;
 
+    // event handlers from the pipe thread: an exception must never escape (async void would take the whole app down)
     private async void OnMenu(string item, string? id)
+    {
+        try
+        {
+            await HandleMenuAsync(item, id);
+        }
+        catch (Exception e)
+        {
+            log.Write($"adapter: menu '{item}' failed: {e.Message}");
+        }
+    }
+
+    private async void OnAsk(string text)
+    {
+        try
+        {
+            Control.AddRequest(text);
+            log.Write($"user request from Hammer: {text}");
+            await NotifyAsync("request queued: the agent sees it with its next hammer_status / user_requests call");
+        }
+        catch (Exception e)
+        {
+            log.Write($"adapter: ask failed: {e.Message}");
+        }
+    }
+
+    private async Task HandleMenuAsync(string item, string? id)
     {
         var c = _client;
         if (c is null)
@@ -99,12 +126,5 @@ public sealed class AdapterLink(HammerTarget target, ActivityLog log)
                 await c.UnloadAsync();
                 break;
         }
-    }
-
-    private async void OnAsk(string text)
-    {
-        Control.AddRequest(text);
-        log.Write($"user request from Hammer: {text}");
-        await NotifyAsync("request queued: the agent sees it with its next hammer_status call");
     }
 }
