@@ -59,14 +59,16 @@ public class PendingChangesTests
     {
         var changes = new PendingChanges { AskUser = true };
         using var gate = new ManualResetEventSlim(false);
+        using var started = new ManualResetEventSlim(false);
         var ranSecond = false;
-        var first = Ask(changes, "first", () => { gate.Wait(Timeout); return "first"; });
+        var first = Ask(changes, "first", () => { started.Set(); gate.Wait(Timeout); return "first"; });
         var second = Ask(changes, "second", () => { ranSecond = true; return "second"; });
         var third = Ask(changes, "third", () => "third");
         var ids = changes.Pending().Select(p => p.Id).ToArray();
 
         changes.Decide([ids[0], ids[1]], []);     // first runs (held by the gate), second is queued
         SpinWait.SpinUntil(() => changes.Count == 1, Timeout);
+        Assert.True(started.Wait(Timeout, TestContext.Current.CancellationToken));      // first is really running (not just queued) before the stop
         changes.Stop("rejected: paused");
         gate.Set();
 

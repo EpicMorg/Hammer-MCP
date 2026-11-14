@@ -4,7 +4,7 @@
 
 All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/); `-alpha` releases are pre-releases.
 
-## [Unreleased]
+## [0.7.0] - 2026-11-15
 
 ### Added
 - **The adapter**. Nothing is injected unless you press **Connect adapter**. The app's **Connect adapter** button (MCP Mode Auto or Advanced; known standalone Hammer builds) injects a small native adapter into the attached Hammer - one DLL per bitness (`hmcp-adapter-x86/x64.dll`) that finds its build itself; the server sends it the build profile from its registry. It adds an **MCP** menu (with icons) to Hammer's main menu bar: pause / resume the agent (every edit is refused while paused - shell channel and menu commands too), **Chat with the agent...** (a chat window: your lines reach the agent in `hammer_status.userRequests` / `user_requests`, once; the agent answers with the new `say_to_user` tool), **Activity log...** (a live window), **Pending changes** (a list with check boxes), status, disconnect, about. Auto never injects by itself: it uses the adapter when you connected it, and after Attach connects to an adapter that is already loaded (e.g. the app was restarted). **Advanced** is now strict (for debugging): everything that changes Hammer goes through the adapter only, which cannot edit yet - so edits, menu commands and compiles are refused there. Basic and Shell do not use the adapter. Never injected into a game process (VAC / anti-cheat), Source 2, or an unknown build; the native injector re-checks the policy before it opens the process. `hammer_status` reports `adapter` and `agentPaused`; `user_requests` also returns `recentChat` (the last 10 chat lines from both sides). The chat is a side channel (it says so on top): the agent reads it between its steps, and the new `wait_for_user` tool lets it wait there for your answer (up to 10 minutes) - nothing in MCP can wake an idle agent, so otherwise write to it in its own window. The release zip has a `native` folder next to `hammer-mcp.exe` (both injectors and adapters) - keep it there.
@@ -124,6 +124,7 @@ First public pre-release.
 - Reading the saved map: `hammer_status`, `map_summary`, `list_entities`.
 - Embedded build registry (`registry/hammers.json`, overridable by a file next to the exe).
 
+[0.7.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.3.0...v0.4.0

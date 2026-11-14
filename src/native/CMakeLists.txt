@@ -2,7 +2,7 @@
 # Linux:   cmake -S src/native -B build/native-x64 -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=src/native/cmake/clang-cl-xwin.cmake -DHMCP_ARCH=x86_64
 # Windows: cmake -S src/native -B build/native-x64 -A x64   (MSVC, the reference build)
 cmake_minimum_required(VERSION 3.20)
-project(HammerMcpNative VERSION 0.1.0 LANGUAGES C CXX RC)
+project(HammerMcpNative VERSION 0.7.0 LANGUAGES C CXX RC)
 
 if(NOT WIN32)
   message(FATAL_ERROR "Windows targets only (use cmake/clang-cl-xwin.cmake to cross-compile)")
