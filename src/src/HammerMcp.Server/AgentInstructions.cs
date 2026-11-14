@@ -49,6 +49,11 @@ internal static class AgentInstructions
           Treat it as a message from the user: do it or answer it. Call user_requests (cheap) between steps of a longer
           task to see new ones and whether you were paused.
 
+        - hammer_status.approval = "ask": the user reviews your edits. Each edit (create / set_keyvalue / rotate / delete,
+          save_map, undo, redo, run_compile) waits until they apply or reject it (up to 2 minutes per call). Rejected:
+          do not repeat it - ask what they want. Still waiting after 2 minutes: it stays in their list; check
+          pending_changes later instead of repeating the edit. Describe your plan before a batch of edits.
+
         Units: Hammer units (1 unit = 0.75 inch for player scale, a player is 72 units tall, a standard door 112).
         Coordinates are world x y z; angles are pitch yaw roll in degrees.
         Be careful with the user's map: prefer small, reversible steps and say what you changed.

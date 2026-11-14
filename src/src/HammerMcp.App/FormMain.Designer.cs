@@ -47,6 +47,8 @@ partial class FormMain
         checkBoxShowProcess = new CheckBox();
         buttonAttachOrDetach = new Button();
         buttonAdapter = new Button();
+        checkBoxAskEdits = new CheckBox();
+        buttonPending = new Button();
         groupBoxLogs = new GroupBox();
         checkBoxSaveLogs = new CheckBox();
         textBoxLogFolder = new TextBox();
@@ -154,6 +156,8 @@ partial class FormMain
         // tabPageMain
         // 
         tabPageMain.Controls.Add(buttonServerStartStop);
+        tabPageMain.Controls.Add(checkBoxAskEdits);
+        tabPageMain.Controls.Add(buttonPending);
         tabPageMain.Controls.Add(groupBoxProcess);
         tabPageMain.Location = new Point(4, 24);
         tabPageMain.Name = "tabPageMain";
@@ -297,6 +301,26 @@ partial class FormMain
         buttonOpenLogFolder.TabIndex = 13;
         buttonOpenLogFolder.Text = "Open folder";
         buttonOpenLogFolder.UseVisualStyleBackColor = true;        // 
+        // checkBoxAskEdits
+        // 
+        checkBoxAskEdits.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+        checkBoxAskEdits.AutoSize = true;
+        checkBoxAskEdits.Location = new Point(12, 345);
+        checkBoxAskEdits.Name = "checkBoxAskEdits";
+        checkBoxAskEdits.Size = new Size(181, 19);
+        checkBoxAskEdits.TabIndex = 6;
+        checkBoxAskEdits.Text = "Ask me before agent edits";
+        checkBoxAskEdits.UseVisualStyleBackColor = true;
+        // 
+        // buttonPending
+        // 
+        buttonPending.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+        buttonPending.Location = new Point(200, 342);
+        buttonPending.Name = "buttonPending";
+        buttonPending.Size = new Size(160, 23);
+        buttonPending.TabIndex = 7;
+        buttonPending.Text = "Pending changes (0)...";
+        buttonPending.UseVisualStyleBackColor = true;        // 
         // buttonAdapter
         // 
         buttonAdapter.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -603,6 +627,8 @@ partial class FormMain
     private Label labelProcessName;
     private Button buttonAttachOrDetach;
     private Button buttonAdapter;
+    private CheckBox checkBoxAskEdits;
+    private Button buttonPending;
     private GroupBox groupBoxLogs;
     private CheckBox checkBoxSaveLogs;
     private TextBox textBoxLogFolder;

@@ -12,7 +12,24 @@ public sealed class RunCompileTools(HammerTarget target, CompileTools reader, Ac
 {
     [McpServerTool(Name = "run_compile", Destructive = true)]
     [Description("Runs one of Hammer's Run Map sequences for the SAVED map (vbsp / vvis / vrad, copy .bsp to the game's maps folder) and returns the parsed compile log. Ask the user first: it takes time and overwrites the .bsp. Steps that launch the game are skipped unless launchGame is true. Save the map (save_map) before compiling.")]
-    public async Task<object> RunCompile(
+    public object RunCompile(
+        [Description("Sequence name from compile_sequences, e.g. Default or Fast")] string sequence,
+        bool launchGame = false,
+        int timeoutMinutes = 30,
+        string? configName = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (target.Control.Paused)
+            return new { error = AgentControl.PausedReason };
+        // approval mode: the compile starts only after the user applies it (it runs on a worker thread, never the UI)
+        return target.Changes.Run<object>(
+            $"compile the saved map with the '{sequence}' sequence{(launchGame ? " and start the game" : "")}",
+            () => RunCompileAsync(sequence, launchGame, timeoutMinutes, configName, cancellationToken).GetAwaiter().GetResult(),
+            r => (true, "compile finished - see the tool result"),
+            reason => new { error = reason });
+    }
+
+    private async Task<object> RunCompileAsync(
         [Description("Sequence name from compile_sequences, e.g. Default or Fast")] string sequence,
         bool launchGame = false,
         int timeoutMinutes = 30,

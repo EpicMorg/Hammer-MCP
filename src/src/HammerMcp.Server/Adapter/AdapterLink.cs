@@ -42,7 +42,11 @@ public sealed class AdapterLink(HammerTarget target, ActivityLog log)
         var client = await AdapterClient.ConnectAsync(process.ProcessId, TimeSpan.FromSeconds(10), cancel);
         client.Menu += OnMenu;
         client.Ask += OnAsk;
-        client.Approval += (apply, reject) => log.Write($"adapter: approval ignored (approval mode is not on): apply {apply.Count}, reject {reject.Count}");
+        client.Approval += (apply, reject) =>
+        {
+            log.Write($"user decided in Hammer: apply {string.Join(", ", apply)}{(reject.Count > 0 ? $"; reject {string.Join(", ", reject)}" : "")}");
+            target.Changes.Decide(apply, reject);
+        };
         client.Closed += why =>
         {
             log.Write($"adapter disconnected: {why}");
@@ -67,7 +71,7 @@ public sealed class AdapterLink(HammerTarget target, ActivityLog log)
     /// <summary>Sends the current state (pause, mode) to Hammer's MCP menu.</summary>
     public Task PushStateAsync() =>
         _client is { Connected: true } c
-            ? c.SendStateAsync(ServerVersion, Mode.ToString(), Control.Paused, approvalAsk: false, pending: 0, canUndo: false)
+            ? c.SendStateAsync(ServerVersion, Mode.ToString(), Control.Paused, target.Changes.AskUser, target.Changes.Count, canUndo: false)
             : Task.CompletedTask;
 
     public Task NotifyAsync(string text) =>
@@ -116,7 +120,7 @@ public sealed class AdapterLink(HammerTarget target, ActivityLog log)
                 await c.SendLogAsync(id, Control.Recent());
                 break;
             case "pending":
-                await c.SendPendingAsync(id, []); // the approval mode comes later: nothing is ever pending yet
+                await c.SendPendingAsync(id, target.Changes.Pending().Select(p => (p.Id, p.Text)));
                 break;
             case "undo_agent_step":
                 await c.SendNotifyAsync("undo of agent steps is not available yet - use Ctrl+Z in Hammer");

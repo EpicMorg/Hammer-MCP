@@ -17,6 +17,19 @@ public sealed class HammerTarget
     /// <summary>Pause, user requests and recent activity (driven from Hammer's MCP menu through the adapter).</summary>
     public AgentControl Control { get; } = new();
 
+    /// <summary>Approval mode: the agent's edits wait for the user's decision (off = edits run right away).</summary>
+    public PendingChanges Changes { get; } = new();
+
+    public HammerTarget()
+    {
+        // the stop button rejects everything still waiting for approval
+        Control.Changed += () =>
+        {
+            if (Control.Paused)
+                Changes.RejectAll();
+        };
+    }
+
     /// <summary>Connection to the injected adapter; null where the host has none (the CLI).</summary>
     public Adapter.AdapterLink? Adapter { get; set; }
 

@@ -77,6 +77,25 @@ public partial class FormMain : Form
         _target.Adapter = _adapter;
         _adapter.Changed += () => BeginInvoke(RefreshAttached);
         _target.Control.Changed += () => _ = _adapter.PushStateAsync();
+        _target.Changes.Changed += () =>
+        {
+            _ = _adapter.PushStateAsync();
+            if (IsHandleCreated)
+                BeginInvoke(UpdatePendingUi);
+        };
+        _target.Changes.Arrived += change =>
+        {
+            _log.Write($"waiting for your approval: {change.Id} {change.Text}");
+            _ = _adapter.NotifyAsync($"the agent wants to: {change.Text} - MCP > Pending changes, or the Hammer-MCP window");
+            if (IsHandleCreated)
+                BeginInvoke(() =>
+                {
+                    ShowPending();
+                    _tray.ShowBalloonTip(3000, "Hammer-MCP: approve a change", change.Text, ToolTipIcon.Info);
+                });
+        };
+        _target.Changes.Decided += change =>
+            _log.Write($"{change.State.ToString().ToLowerInvariant()}: {change.Id} {change.Text}{(string.IsNullOrEmpty(change.Result) ? "" : $" -> {change.Result}")}");
         WireEvents();
         AddGridCopyMenu(dataGridViewMetaInfoFromHammer);
         FillAddresses();
@@ -129,6 +148,14 @@ public partial class FormMain : Form
         buttonServerStartStop.Click += async (_, _) => await ToggleServerAsync();
         buttonAttachOrDetach.Click += (_, _) => ToggleAttach();
         buttonAdapter.Click += async (_, _) => await ToggleAdapterAsync();
+        checkBoxAskEdits.CheckedChanged += (_, _) =>
+        {
+            _target.Changes.AskUser = checkBoxAskEdits.Checked;
+            _log.Write(checkBoxAskEdits.Checked
+                ? "approval mode on: the agent's edits wait for you (Pending changes)"
+                : "approval mode off: the agent's edits run right away");
+        };
+        buttonPending.Click += (_, _) => ShowPending();
         checkBoxShowProcess.CheckedChanged += (_, _) => RefreshProcessList();
         comboBoxProcessList.DropDown += (_, _) => RefreshProcessList();
         comboBoxMCPMode.SelectedIndexChanged += (_, _) =>
@@ -246,6 +273,23 @@ public partial class FormMain : Form
             toolStripStatusAttaching.Text += $"; adapter {a.Adapter} connected (MCP menu in Hammer){(_target.Control.Paused ? ", agent PAUSED" : "")}";
         ShowMetaInfo(process, build, dll);
         UpdateAdapterButton(process);
+    }
+
+    // ---- approval mode -----------------------------------------------------------------------------------------
+
+    private FormPending? _pendingForm;
+
+    private void ShowPending()
+    {
+        _pendingForm ??= new FormPending(_target.Changes, _iconStarted);
+        _pendingForm.Popup();
+    }
+
+    private void UpdatePendingUi()
+    {
+        var n = _target.Changes.Count;
+        buttonPending.Text = $"Pending changes ({n})...";
+        buttonPending.Font = new Font(buttonPending.Font, n > 0 ? FontStyle.Bold : FontStyle.Regular);
     }
 
     // ---- adapter (Advanced) ----------------------------------------------------------------------------------

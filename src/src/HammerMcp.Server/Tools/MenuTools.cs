@@ -13,15 +13,15 @@ public sealed class MenuTools(HammerTarget target, ActivityLog log)
 {
     [McpServerTool(Name = "save_map")]
     [Description("File > Save in Hammer. After saving, the .vmf on disk is up to date and hammer_status shows the new mapversion.")]
-    public MenuResult SaveMap() => Post("save", MenuCommands.Save);
+    public MenuResult SaveMap() => Post("save", MenuCommands.Save, "save the map (File > Save)");
 
     [McpServerTool(Name = "undo")]
     [Description("Edit > Undo in Hammer. Undoes entity creation, deletion and rotation made through the shell channel; keyvalue changes (set_keyvalue) are NOT in Hammer's undo history - restore the old value with set_keyvalue instead.")]
-    public MenuResult Undo() => Post("undo", MenuCommands.Undo);
+    public MenuResult Undo() => Post("undo", MenuCommands.Undo, "undo the last change (Edit > Undo)");
 
     [McpServerTool(Name = "redo")]
     [Description("Edit > Redo in Hammer.")]
-    public MenuResult Redo() => Post("redo", MenuCommands.Redo);
+    public MenuResult Redo() => Post("redo", MenuCommands.Redo, "redo (Edit > Redo)");
 
     [McpServerTool(Name = "open_run_map_dialog")]
     [Description("Opens Hammer's Run Map dialog (F9) for the user; it does not start a compile by itself.")]
@@ -31,7 +31,8 @@ public sealed class MenuTools(HammerTarget target, ActivityLog log)
     [Description("Opens Hammer's Map > Check for Problems dialog for the user.")]
     public MenuResult CheckForProblems() => Post("check for problems", MenuCommands.CheckForProblems);
 
-    private MenuResult Post(string name, int id)
+    /// <param name="approval">Plain text for approval mode; null = only opens a dialog for the user, no approval needed.</param>
+    private MenuResult Post(string name, int id, string? approval = null)
     {
         if (target.Control.Paused)
         {
@@ -43,9 +44,17 @@ public sealed class MenuTools(HammerTarget target, ActivityLog log)
             return new MenuResult(false, $"no Hammer is attached - {target.AttachHint}");
         if (process.IsSource2)
             return new MenuResult(false, "Source 2 Hammer (Qt, inside the game process) has no Win32 menu commands; ask the user to do it in Hammer");
-        var ok = MenuChannel.Post(process.MainWindow, id);
-        log.Write($"menu: {name} ({id}) -> {(ok ? "posted" : "failed")}");
-        return new MenuResult(ok, ok ? $"{name} posted to '{process.MainTitle}'" : "PostMessage failed");
+        MenuResult Send()
+        {
+            if (target.Control.Paused)
+                return new MenuResult(false, AgentControl.PausedReason);
+            var ok = MenuChannel.Post(process.MainWindow, id);
+            log.Write($"menu: {name} ({id}) -> {(ok ? "posted" : "failed")}");
+            return new MenuResult(ok, ok ? $"{name} posted to '{process.MainTitle}'" : "PostMessage failed");
+        }
+        return approval is null
+            ? Send()
+            : target.Changes.Run(approval, Send, r => (r.Ok, r.Message), reason => new MenuResult(false, reason));
     }
 }
 

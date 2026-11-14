@@ -33,6 +33,8 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
             LiveEdits: options.AllowsLiveEdits && process.HasShellChannel && !target.Control.Paused,
             AgentPaused: target.Control.Paused,
             UserRequests: Requests(),
+            Approval: target.Changes.AskUser ? "ask" : "auto",
+            PendingChanges: target.Changes.Count,
             Adapter: target.Adapter?.Hello is { } a ? new AdapterStatus(a.Adapter, a.Version, a.Build) : null,
             ProcessId: process.ProcessId,
             ExePath: process.ExePath,
@@ -62,6 +64,16 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
     [McpServerTool(Name = "user_requests", ReadOnly = true)]
     [Description("What the user typed for you in Hammer (MCP > Ask agent...) since you last looked, and whether they paused you. Cheap: call it between steps of a longer task. Each request is returned once (hammer_status returns them too).")]
     public object UserRequests() => new { agentPaused = target.Control.Paused, userRequests = Requests() ?? [] };
+
+    [McpServerTool(Name = "pending_changes", ReadOnly = true)]
+    [Description("Approval mode: whether your edits wait for the user (approval ask / auto), which of your changes are still waiting, and what happened to the recent ones (applied / rejected / failed, with Hammer's answer). Use it after an edit returned 'waiting for the user's approval' instead of repeating the edit.")]
+    public object PendingChanges() => new
+    {
+        approval = target.Changes.AskUser ? "ask" : "auto",
+        waiting = target.Changes.Pending().Select(c => new { c.Id, c.Text, asked = c.Asked.ToString("HH:mm:ss") }),
+        decided = target.Changes.RecentlyDecided().Reverse().Take(20)
+            .Select(c => new { c.Id, c.Text, state = c.State.ToString().ToLowerInvariant(), c.Result }),
+    };
 
     [McpServerTool(Name = "map_summary", ReadOnly = true)]
     [Description("Summary of the map open in Hammer, read from the SAVED .vmf: mapversion, editor build, entity and brush counts, entity classes with counts, skybox, visgroups. Unsaved edits are not included - call save_map first.")]
@@ -171,7 +183,9 @@ public sealed record HammerStatus(
     string? Note = null,
     bool AgentPaused = false,
     IReadOnlyList<string>? UserRequests = null,
-    AdapterStatus? Adapter = null);
+    AdapterStatus? Adapter = null,
+    string Approval = "auto",
+    int PendingChanges = 0);
 
 /// <summary>The injected adapter the server is connected to (Hammer shows an MCP menu).</summary>
 public sealed record AdapterStatus(string Id, string Version, string Build);

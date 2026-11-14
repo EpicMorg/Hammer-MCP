@@ -11,6 +11,8 @@
 
 - Приложение: **Settings > Logs** — сохранение лога в файлы по дням (`hammer-mcp-yyyy-MM-dd.log`, включено по умолчанию, папка `%APPDATA%\EpicMorg\Hammer-MCP\logs` или своя), кнопки Browse... и Open folder. Окно стало чуть выше.
 
+- **Режим подтверждения** (в приложении: **Ask me before agent edits**): правки агента — create / set_keyvalue / rotate / delete, save_map, undo, redo, run_compile — ждут, пока вы их примените или отклоните: во всплывающем окне **Pending changes** (Apply selected / Apply all / Reject all) или в меню Hammer **MCP > Pending changes (N)** (с адаптером). Вызов инструмента ждёт до 2 минут; отклонённая правка сообщает агенту не повторять её; решение, принятое позже, агент узнаёт новым инструментом `pending_changes`. Пауза агента отклоняет всё, что ждёт. `hammer_status` показывает `approval` и `pendingChanges`.
+
 ### Исправлено
 - DLL редактора привязывается к exe: в папке, где лежат и `hammer.exe` Slammin, и Hammer++ (Bestiarium), `hammer.exe` определялся как Hammer++.
 ## [0.6.0] - 2026-11-14

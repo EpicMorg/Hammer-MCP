@@ -24,7 +24,8 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
         [Description("Keyvalues to set after creation, e.g. {\"targetname\": \"door_light\"}")] Dictionary<string, string>? keyValues = null)
     {
         var origin = new Vector3(x, y, z);
-        return Edit(className, origin, expectExisting: false, (session, map) =>
+        var kv = keyValues is { Count: > 0 } ? ", " + string.Join(", ", keyValues.Select(p => $"{p.Key} = \"{p.Value}\"")) : "";
+        return Edit($"create {className} at {Xyz(origin)}{kv}", className, origin, expectExisting: false, (session, map) =>
         {
             var results = new List<string> { Run(session, ShellCommands.EntityCreate(className, origin)) };
             if (results[0].EndsWith("= Ok", StringComparison.Ordinal))
@@ -40,7 +41,7 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
     public EditResult SetKeyValue(string className, float x, float y, float z, string key, string value)
     {
         var origin = new Vector3(x, y, z);
-        return Edit(className, origin, expectExisting: true,
+        return Edit($"set {key} = \"{value}\" on {className} at {Xyz(origin)}", className, origin, expectExisting: true,
             (session, _) => [Run(session, ShellCommands.EntitySetKeyValue(className, origin, key, value))]);
     }
 
@@ -49,7 +50,7 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
     public EditResult RotateEntity(string className, float x, float y, float z, float pitch, float yaw, float roll)
     {
         var origin = new Vector3(x, y, z);
-        return Edit(className, origin, expectExisting: true,
+        return Edit($"rotate {className} at {Xyz(origin)} by {pitch:G} {yaw:G} {roll:G} (pitch yaw roll)", className, origin, expectExisting: true,
             (session, _) => [Run(session, ShellCommands.EntityRotateIncremental(className, origin, new Vector3(pitch, yaw, roll)))]);
     }
 
@@ -58,7 +59,7 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
     public EditResult DeleteEntity(string className, float x, float y, float z)
     {
         var origin = new Vector3(x, y, z);
-        return Edit(className, origin, expectExisting: true, (session, map) =>
+        return Edit($"delete {className} at {Xyz(origin)}", className, origin, expectExisting: true, (session, map) =>
         {
             var line = Run(session, ShellCommands.EntityDelete(className, origin));
             if (line.EndsWith("= Ok", StringComparison.Ordinal))
@@ -67,7 +68,11 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
         });
     }
 
-    private EditResult Edit(string className, Vector3 origin, bool expectExisting, Func<ShellSession, string, List<string>> action)
+    /// <summary>
+    /// Checks the address against the saved map, then runs the edit - right away, or (approval mode) once the user
+    /// applies <paramref name="what"/> in the app or in Hammer.
+    /// </summary>
+    private EditResult Edit(string what, string className, Vector3 origin, bool expectExisting, Func<ShellSession, string, List<string>> action)
     {
         if (target.Control.Paused)
             return Refuse(AgentControl.PausedReason);
@@ -92,6 +97,14 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
                           + "ask the user to move or delete the extra ones in Hammer");
         }
 
+        return target.Changes.Run(what,
+            () => target.Control.Paused ? Refuse(AgentControl.PausedReason) : Execute(mapPath, at, expectExisting, count, action),
+            r => (r.Ok, $"{r.Message}: {string.Join("; ", r.Commands)}"),
+            reason => Refuse(reason));
+    }
+
+    private EditResult Execute(string mapPath, string at, bool expectExisting, int count, Func<ShellSession, string, List<string>> action)
+    {
         using var session = ShellSession.Begin(target.Channel, mapPath);
         if (session is null)
             return new EditResult(false, "Hammer refused the session: save the map (Ctrl+S) and retry", []);
@@ -112,6 +125,8 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
         log.Write($"refused: {reason}");
         return new EditResult(false, reason, []);
     }
+
+    private static string Xyz(Vector3 v) => $"{v.X:G} {v.Y:G} {v.Z:G}";
 
     private static string Run(ShellSession session, string command) => $"{command} = {session.Send(command)}";
 }
