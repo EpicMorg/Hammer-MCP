@@ -542,6 +542,13 @@ LRESULT CALLBACK ToolProc(HWND w, UINT msg, WPARAM wp, LPARAM lp) {
     case WM_SIZE:
         Layout(w, kind, LOWORD(lp), HIWORD(lp));
         return 0;
+    case WM_CTLCOLORSTATIC:   // read-only edits (chat history, log) on a white page instead of the dialog grey
+        if (GetDlgCtrlID(reinterpret_cast<HWND>(lp)) == CTL_TEXT) {
+            SetBkColor(reinterpret_cast<HDC>(wp), GetSysColor(COLOR_WINDOW));
+            SetTextColor(reinterpret_cast<HDC>(wp), GetSysColor(COLOR_WINDOWTEXT));
+            return reinterpret_cast<LRESULT>(GetSysColorBrush(COLOR_WINDOW));
+        }
+        break;
     case WM_GETMINMAXINFO:
         reinterpret_cast<MINMAXINFO*>(lp)->ptMinTrackSize = { Scale(420), Scale(260) };
         return 0;
@@ -724,9 +731,19 @@ void UpdateMenu() {
 void OnStateChanged() {
     if (g_menu) UpdateMenu();
     auto s = State();
+    static bool wasOn = false;
+    bool reconnected = s.connected && !wasOn;
+    wasOn = s.connected;
+    // windows stay open while the server is away (app restarted / killed) and catch up when it is back
     if (HWND w = g_wnd[kChat]) {
         EnableWindow(GetDlgItem(w, CTL_INPUT), s.connected);
         EnableWindow(GetDlgItem(w, IDOK), s.connected);
+        SetDlgItemTextW(w, CTL_TITLE, s.connected ? L"Chat with the agent" : L"Chat with the agent (server not connected)");
+        if (reconnected) Send("{\"type\":\"menu\",\"item\":\"chat_history\",\"id\":\"chat\"}");
+    }
+    if (HWND w = g_wnd[kLog]) {
+        SetDlgItemTextW(w, CTL_TITLE, s.connected ? L"What the agent did" : L"What the agent did (server not connected)");
+        if (reconnected) Send("{\"type\":\"menu\",\"item\":\"log\",\"id\":\"log\"}");
     }
     if (g_wnd[kPending] && s.connected && s.pending != g_pendingShownCount) {
         g_pendingShownCount = s.pending;
@@ -1038,10 +1055,17 @@ DWORD WINAPI Worker(LPVOID) {
     PSECURITY_DESCRIPTOR sd = PipeSecurity();
     SECURITY_ATTRIBUTES sa{ sizeof sa, sd, FALSE };
     bool unload = false;
+    int failures = 0;   // CreateNamedPipe failures in a row
     while (!unload) {
         HANDLE pipe = CreateNamedPipeW(name.c_str(), PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED,
             PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS, 1, 8192, 8192, 0, sd ? &sa : nullptr);
-        if (pipe == INVALID_HANDLE_VALUE) break;
+        if (pipe == INVALID_HANDLE_VALUE) {
+            // never unload silently because of a transient failure (e.g. the old instance still closing):
+            // retry for ~10 s, then give up and unload
+            if (++failures > 100 || WaitForSingleObject(g_stopEvent, 100) == WAIT_OBJECT_0) break;
+            continue;
+        }
+        failures = 0;
         OVERLAPPED cov{};
         cov.hEvent = CreateEventW(nullptr, TRUE, FALSE, nullptr);
         bool connected = ConnectNamedPipe(pipe, &cov) != 0;
