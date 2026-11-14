@@ -16,6 +16,9 @@ internal sealed record AppSettings
     public int Port { get; init; } = 47800;
     public string Token { get; init; } = "";
 
+    /// <summary>Approval mode ("Ask me before agent edits" on the Main tab); saved as soon as it is toggled.</summary>
+    public bool AskBeforeEdits { get; init; }
+
     /// <summary>Also write the Logs tab to daily files (hammer-mcp-yyyy-MM-dd.log).</summary>
     public bool SaveLogs { get; init; } = true;
 
@@ -25,6 +28,7 @@ internal sealed record AppSettings
     public static string DefaultLogFolder => Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EpicMorg", "Hammer-MCP", "logs");
 
+    [System.Text.Json.Serialization.JsonIgnore]
     public string EffectiveLogFolder => string.IsNullOrWhiteSpace(LogFolder) ? DefaultLogFolder : LogFolder;
 
     public static AppSettings Load()

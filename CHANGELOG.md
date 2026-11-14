@@ -13,6 +13,8 @@ All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/)
 
 - **Approval mode** (app: **Ask me before agent edits**): the agent's edits - create / set_keyvalue / rotate / delete, save_map, undo, redo, run_compile - wait until you apply or reject them: in the **Pending changes** window that pops up (Apply selected / Apply all / Reject all) or in Hammer's **MCP > Pending changes (N)** (with the adapter). The tool call waits up to 2 minutes; a rejected change tells the agent not to repeat it; a late decision is reported by the new `pending_changes` tool. Pausing the agent rejects everything waiting. `hammer_status` shows `approval` and `pendingChanges`.
 
+- App: **Ask me before agent edits** is remembered between runs (saved as soon as it is toggled).
+
 ### Fixed
 - The editor DLL is matched to the exe: in a folder with both Slammin's `hammer.exe` and Hammer++ (Bestiarium), `hammer.exe` was identified as Hammer++.
 ## [0.6.0] - 2026-11-14

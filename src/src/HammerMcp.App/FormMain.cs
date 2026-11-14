@@ -101,6 +101,7 @@ public partial class FormMain : Form
         FillAddresses();
         comboBoxMCPMode.DataSource = Enum.GetValues<McpMode>();
         ShowSettings(_settings);
+        checkBoxAskEdits.Checked = _settings.AskBeforeEdits;
         UpdateApplyButton();
         RefreshProcessList();
         UpdateAttachUi();
@@ -151,6 +152,11 @@ public partial class FormMain : Form
         checkBoxAskEdits.CheckedChanged += (_, _) =>
         {
             _target.Changes.AskUser = checkBoxAskEdits.Checked;
+            if (_settings.AskBeforeEdits != checkBoxAskEdits.Checked)
+            {
+                _settings = _settings with { AskBeforeEdits = checkBoxAskEdits.Checked };
+                _settings.Save(); // a runtime switch, not a Settings-tab field: saved right away, no Apply
+            }
             _log.Write(checkBoxAskEdits.Checked
                 ? "approval mode on: the agent's edits wait for you (Pending changes)"
                 : "approval mode off: the agent's edits run right away");
@@ -583,6 +589,7 @@ public partial class FormMain : Form
         Token = textBoxSecurityToken.Text.Trim(),
         SaveLogs = checkBoxSaveLogs.Checked,
         LogFolder = textBoxLogFolder.Text.Trim(),
+        AskBeforeEdits = _settings.AskBeforeEdits,
     };
 
     /// <summary>Apply is enabled only when the form differs from the saved settings.</summary>
@@ -612,6 +619,7 @@ public partial class FormMain : Form
             Token = token,
             SaveLogs = checkBoxSaveLogs.Checked,
             LogFolder = textBoxLogFolder.Text.Trim(),
+            AskBeforeEdits = _settings.AskBeforeEdits,
         };
         _settings.Save();
         _logFile.Configure(_settings.SaveLogs ? _settings.EffectiveLogFolder : null);
