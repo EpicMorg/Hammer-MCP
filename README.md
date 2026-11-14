@@ -120,16 +120,26 @@ The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that
 | `set_keyvalue` · `rotate_entity` · `delete_entity` | Edit the entity of a class at an origin |
 | `save_map` · `undo` · `redo` | Hammer menu commands |
 | `open_run_map_dialog` · `open_check_for_problems` | Open those Hammer dialogs for the user |
+| `find_assets` | Find models, materials, textures, sounds, sprites, particles by name in the game's files and VPKs; returns what to write in the entity |
+| `user_requests` · `wait_for_user` · `say_to_user` | The chat in Hammer (with the adapter): read the user's lines, wait for an answer (up to 10 min), answer them |
+| `pending_changes` | Approval mode: what is waiting for the user and what they decided |
 
-**Modes:** *Auto* (live edits where a shell channel exists) · *Basic* (read-only) · *Shell* (live edits + menu) ·
-*Advanced* (planned: injected adapters for live reading, selection, camera, geometry).
+**Modes:** *Auto* (best available: the adapter if you connected it, otherwise the shell channel, otherwise read-only) ·
+*Basic* (read-only) · *Shell* (live edits + menu through the shell channel only) · *Advanced* (strict adapter-only mode, for debugging).
+
+### The adapter (0.7+)
+**Connect adapter** in the app (Auto or Advanced) injects a small native adapter into the attached Hammer — only when
+you press the button, only into a standalone Hammer exe of a known build. It adds an **MCP** menu to Hammer: pause the
+agent, **chat with the agent**, live **activity log**, **pending changes** with check boxes (approval mode), undo the
+agent's step, status, disconnect. **Disconnect** unloads it; Hammer keeps running. Live reading of the selection,
+camera and geometry through the adapter comes next. The `native` folder of the zip must stay next to `hammer-mcp.exe`.
 
 ### Limits of the shell channel
 It is write-only and entity-level: entities are addressed by **class + origin** (no ids), brushes and brush entities
 can't be created, there is no "move", and unsaved state can't be read back — the server reads the saved `.vmf`.
 Outputs set with `set_keyvalue` are stored by Hammer as plain keyvalues: they are not shown on the Outputs tab, but
 vbsp writes them into the `.bsp` as real outputs and they fire in game.
-The planned *Advanced* mode lifts these limits for selected builds. It will only ever inject into a standalone
+The adapter is meant to lift these limits for selected builds (next releases). It is only ever injected into a standalone
 Hammer executable of a known build (`hammer.exe`, `hammerplusplus.exe`) — **never into a game process**: Source 2
 Hammer runs inside `cs2.exe` / `dota2.exe`, and touching a VAC-protected process can get a Steam account banned.
 
@@ -144,8 +154,9 @@ Hammer-MCP is meant to be safe to run next to games with Valve Anti-Cheat.
   Task Manager or OBS do with it — reads the exe path, window titles and command line (`OpenProcess` with
   query-only rights) — and reads map and game files from disk (`.vmap`, FGD). It never writes to the game's memory,
   hooks or injects anything.
-- **Injection** (the planned *Advanced* mode) is limited by code (`InjectPolicy`) to standalone Hammer executables of a
-  known build — never game processes, never Source 2, never unknown builds.
+- **Injection** (the adapter) happens only when you press **Connect adapter**, and is limited by code (the app's policy
+  and again in the native injector) to standalone Hammer executables of a known build — never game processes, never
+  Source 2, never unknown builds. Without the button nothing is injected.
 - **`-insecure` is not required.** Workshop Tools (`-tools`) already behave like an insecure client: CS2 refuses VAC
   servers in that mode (checked live, 2026-11). You may add `-insecure` to the launch options for extra peace of
   mind, but remove it afterwards, or you will not be able to join matchmaking / VAC servers.
@@ -168,7 +179,7 @@ src/src/HammerMcp.App       hammer-mcp.exe — WinForms window + tray
 src/src/HammerMcp.Cli       hammer-mcp-cli.exe — the server without the tray app (stdio / HTTP)
 src/tests/HammerMcp.Tests   unit tests
 src/registry/hammers.json   known Hammer builds
-src/native/                 C++ injector and adapters (planned, CMake)
+src/native/                 C++ injector and adapter (CMake; MSVC or clang-cl), see src/native/PROTOCOL.md
 ```
 
 ## Roadmap
@@ -176,20 +187,21 @@ src/native/                 C++ injector and adapters (planned, CMake)
 - [x] Shell channel: entities, keyvalues, rotation, deletion · menu commands · build registry · tray app · LAN + token
 - [x] Map reading: entities, outputs, I/O graph; FGD reference from Hammer's own game config; map validation; ambiguity checks before edits
 - [x] Compile pipeline: Hammer's Run Map sequences, run_compile, parsed logs, leak tracing; asset checks via gameinfo.txt + VPK
-- [x] Releases 0.1 – 0.6: single-file `win-x64` build — see [CHANGELOG.md](CHANGELOG.md)
-- [ ] *Advanced* mode: C++ inject adapters per build (live read, selection, camera, geometry, in-editor UI)
+- [x] Releases 0.1 – 0.7: single-file `win-x64` and `win-x86` builds — see [CHANGELOG.md](CHANGELOG.md)
+- [x] Adapter, layer 1 (0.7): MCP menu in Hammer, chat, live activity log, approval list
+- [ ] Adapter, layer 2: live read of the selection, camera, geometry (per-build profiles); docked panels in Hammer
 
 ## Releases
 
 Tag `vX.Y.Z[-suffix]` on GitHub → the `release` workflow builds a self-contained single-file `hammer-mcp.exe`
-(win-x64, ~65 MB) and attaches a zip to a GitHub release (`-alpha` / `-beta` tags become pre-releases).
+plus `hammer-mcp-cli.exe` and the native adapter (win-x64 and win-x86) and attaches the zips to a GitHub release (`-alpha` / `-beta` tags become pre-releases).
 Release notes come from [CHANGELOG.md](CHANGELOG.md). Contributing, new Hammer builds, bug reports: [CONTRIBUTING.md](CONTRIBUTING.md); security: [SECURITY.md](SECURITY.md). Components and licenses: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 
 ## Links
 
 | Where | What |
 |---|---|
-| [GitHub releases](https://github.com/EpicMorg/Hammer-MCP/releases) | Downloads (`hammer-mcp.exe`, `hammer-mcp-cli.exe`) and release notes |
+| [GitHub releases](https://github.com/EpicMorg/Hammer-MCP/releases) | Downloads (win-x64 / win-x86 zips: `hammer-mcp.exe`, `hammer-mcp-cli.exe`, `native\`) and release notes |
 | [Valve Developer Community](https://developer.valvesoftware.com/wiki/Hammer_MCP_Server) ([RU](https://developer.valvesoftware.com/wiki/Ru/Hammer_MCP_Server)) | Article about the tool |
 | [GameBanana](https://gamebanana.com/tools/24946) | Tool page for mappers |
 | [HL-Lab](https://hl-lab.ru/rus/files_source/Hammer_MCP_Server) | Tool page on the Russian Half-Life / Source mapping site |
