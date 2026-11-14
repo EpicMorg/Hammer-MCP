@@ -6,7 +6,14 @@ import json, sys, time
 
 pid = int(sys.argv[1])
 path = rf"\\.\pipe\hammer-mcp-adapter-{pid}"
-pipe = open(path, "r+b", buffering=0)
+for attempt in range(50):            # the adapter creates the pipe a moment after the injection
+    try:
+        pipe = open(path, "r+b", buffering=0)
+        break
+    except (FileNotFoundError, OSError):
+        time.sleep(0.1)
+else:
+    sys.exit(f"no adapter pipe {path} (is the adapter injected?)")
 state = {"cmd": "state", "server": "pipe_console", "mode": "Auto", "agent": "active", "approval": "ask", "pending": 2, "canUndo": True}
 pending = [{"id": "c1", "text": "create light \"corner_light_1\" at 128 64 96"}, {"id": "c2", "text": "set mcp_relay.OnTrigger = \"door1,Open,,0,-1\""}]
 log = [time.strftime("%H:%M ") + "pipe_console connected"]
@@ -17,7 +24,10 @@ def send(obj):
 
 buf = b""
 while True:
-    chunk = pipe.read(4096)
+    try:
+        chunk = pipe.read(4096)
+    except OSError:                  # the adapter closed the pipe (bye / unload)
+        chunk = b""
     if not chunk:
         print("pipe closed"); break
     buf += chunk

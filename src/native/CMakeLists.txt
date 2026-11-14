@@ -11,6 +11,8 @@ endif()
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")  # static CRT: nothing to install next to Hammer
+# sources are UTF-8 ("…" in UI strings); MSVC would read them as the ANSI code page otherwise
+add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:/utf-8>)
 add_compile_definitions(UNICODE _UNICODE WIN32_LEAN_AND_MEAN NOMINMAX
   HMCP_NATIVE_VERSION="${PROJECT_VERSION}")
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
