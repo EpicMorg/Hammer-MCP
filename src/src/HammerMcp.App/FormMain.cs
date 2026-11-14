@@ -5,6 +5,7 @@ using HammerMcp.Core.Maps;
 using HammerMcp.Core.Pe;
 using HammerMcp.Core.Registry;
 using HammerMcp.Server;
+using HammerMcp.Server.Adapter;
 using HammerMcp.Server.Tools;
 using HammerMcp.Shell;
 using Microsoft.AspNetCore.Builder;
@@ -26,11 +27,17 @@ public partial class FormMain : Form
                           + "and menu commands (save, undo, redo, run map, check for problems). The map must be saved.",
         [McpMode.Advanced] = "Expert mode with an injected adapter (live read, selection, camera, geometry). "
                              + "Only ever into a standalone Hammer exe of a known build - never into a game process "
-                             + "(VAC / anti-cheat), so never for Source 2. Not implemented yet - works as Shell.",
+                             + "(VAC / anti-cheat), so never for Source 2. The adapter is injected only when you press "
+                             + "Connect adapter; it adds an MCP menu to Hammer (pause the agent, ask the agent, activity log). "
+                             + "Live read / selection / camera are not implemented yet - edits still go through the shell channel.",
     };
 
     private readonly HammerTarget _target = new();
     private readonly ActivityLog _log = new();
+    private readonly AdapterLink _adapter;
+    private readonly ToolTip _toolTip = new();
+    private HammerBuild? _attachedBuild;
+    private bool _adapterBusy;
     private readonly HammerRegistry _registry = LoadRegistry();
     private readonly System.Windows.Forms.Timer _refreshTimer = new() { Interval = 2000 };
     private readonly NotifyIcon _tray;
@@ -61,6 +68,11 @@ public partial class FormMain : Form
         _tray.DoubleClick += (_, _) => ShowFromTray();
 
         _log.Line += AppendLog;
+        _log.Line += _target.Control.Remember;
+        _adapter = new AdapterLink(_target, _log) { Mode = _settings.Mode };
+        _target.Adapter = _adapter;
+        _adapter.Changed += () => BeginInvoke(RefreshAttached);
+        _target.Control.Changed += () => _ = _adapter.PushStateAsync();
         WireEvents();
         AddGridCopyMenu(dataGridViewMetaInfoFromHammer);
         FillAddresses();
@@ -112,6 +124,7 @@ public partial class FormMain : Form
     {
         buttonServerStartStop.Click += async (_, _) => await ToggleServerAsync();
         buttonAttachOrDetach.Click += (_, _) => ToggleAttach();
+        buttonAdapter.Click += async (_, _) => await ToggleAdapterAsync();
         checkBoxShowProcess.CheckedChanged += (_, _) => RefreshProcessList();
         comboBoxProcessList.DropDown += (_, _) => RefreshProcessList();
         comboBoxMCPMode.SelectedIndexChanged += (_, _) =>
@@ -158,6 +171,7 @@ public partial class FormMain : Form
         if (_target.AttachedPid is not null)
         {
             _log.Write($"detached from pid {_target.AttachedPid}");
+            _ = _adapter.DisconnectAsync(); // the adapter unloads itself: no MCP menu left in a Hammer nobody serves
             _target.Detach();
         }
         else if (comboBoxProcessList.SelectedItem is ProcessItem item)
@@ -188,6 +202,8 @@ public partial class FormMain : Form
         if (_target.AttachedPid is not { } pid)
         {
             labelProcessName.Text = "<not attached>";
+            _attachedBuild = null;
+            UpdateAdapterButton(null);
             UpdateProcessImage(null);
             dataGridViewMetaInfoFromHammer.Rows.Clear();
             SetStatus("Process not selected", Properties.Resources.warning_circle_16);
@@ -205,6 +221,7 @@ public partial class FormMain : Form
         }
 
         var (build, dll) = StatusTools.Identify(_registry, process.ExePath);
+        _attachedBuild = build;
         labelProcessName.Text = process.MainTitle;
         UpdateProcessImage(process);
         var who = $"{process.Name} ({process.ProcessId})";
@@ -217,7 +234,56 @@ public partial class FormMain : Form
             SetStatus($"Attached to {who}: map editor without shell channel (read-only + menu)", Properties.Resources.warning_circle_16);
         else
             SetStatus($"Attached to {who}: not a Hammer editor", Properties.Resources.deny_circle_16);
+        if (_adapter.Hello is { } a)
+            toolStripStatusAttaching.Text += $"; adapter {a.Adapter} connected (MCP menu in Hammer){(_target.Control.Paused ? ", agent PAUSED" : "")}";
         ShowMetaInfo(process, build, dll);
+        UpdateAdapterButton(process);
+    }
+
+    // ---- adapter (Advanced) ----------------------------------------------------------------------------------
+
+    /// <summary>Why the attached Hammer cannot get the adapter, or null. Never offered for Source 2 / unknown builds / games.</summary>
+    private string? AdapterBlocked(HammerProcess? process) =>
+        process is null ? "no Hammer attached"
+        : _settings.Mode != McpMode.Advanced ? "the adapter is used in Advanced mode only (Settings > MCP Mode)"
+        : AdapterInjector.CannotInject(process.ExePath, _attachedBuild);
+
+    private void UpdateAdapterButton(HammerProcess? process)
+    {
+        var connected = _adapter.Connected;
+        var blocked = connected ? null : AdapterBlocked(process);
+        buttonAdapter.Text = connected ? "Disconnect adapter" : "Connect adapter";
+        buttonAdapter.Enabled = !_adapterBusy && (connected || blocked is null);
+        _toolTip.SetToolTip(buttonAdapter, connected
+            ? "Unload the adapter from Hammer (its MCP menu disappears; Hammer keeps running)"
+            : blocked ?? "Inject the Hammer-MCP adapter into this Hammer: adds an MCP menu (pause the agent, ask the agent, activity log)");
+    }
+
+    private async Task ToggleAdapterAsync()
+    {
+        _adapterBusy = true;
+        buttonAdapter.Enabled = false;
+        try
+        {
+            if (_adapter.Connected)
+            {
+                await _adapter.DisconnectAsync();
+                return;
+            }
+            var result = await _adapter.ConnectAsync(_attachedBuild);
+            if (!_adapter.Connected)
+                MessageBox.Show(this, result, "Hammer-MCP: adapter", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+        catch (Exception e) when (e is IOException or TimeoutException or InvalidOperationException or UnauthorizedAccessException)
+        {
+            _log.Write($"adapter: {e.Message}");
+            MessageBox.Show(this, e.Message, "Hammer-MCP: adapter", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+        finally
+        {
+            _adapterBusy = false;
+            RefreshAttached();
+        }
     }
 
     /// <summary>Icon of the attached exe; otherwise green while the server runs, red when it is stopped.</summary>
@@ -259,6 +325,8 @@ public partial class FormMain : Form
             ("Shell channel", process.HasShellChannel ? $"yes (0x{process.ShellWindow:X})" : "no"),
             ("Main window", process.MainWindow == 0 ? null : $"0x{process.MainWindow:X}"),
             ("Open map", process.OpenMapPath),
+            ("Adapter", _adapter.Hello is { } a ? $"{a.Adapter} {a.Version}, build {a.Build}"
+                : AdapterBlocked(process) is { } why ? $"not available: {why}" : "available (Connect adapter)"),
         };
         AddMapRows(rows, process.OpenMapPath);
 
@@ -457,6 +525,8 @@ public partial class FormMain : Form
             Token = token,
         };
         _settings.Save();
+        _adapter.Mode = _settings.Mode;
+        _ = _adapter.PushStateAsync();
         UpdateApplyButton();
         _log.Write($"settings saved: {address}:{port}, mode {_settings.Mode}");
 
@@ -511,6 +581,7 @@ public partial class FormMain : Form
     private async Task ExitAsync()
     {
         _exiting = true;
+        await _adapter.DisconnectAsync();
         await StopServerAsync();
         _tray.Visible = false;
         _tray.Dispose();

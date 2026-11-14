@@ -69,6 +69,8 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
 
     private EditResult Edit(string className, Vector3 origin, bool expectExisting, Func<ShellSession, string, List<string>> action)
     {
+        if (target.Control.Paused)
+            return Refuse(AgentControl.PausedReason);
         var process = target.Current();
         if (process is null || !process.HasShellChannel)
             return new EditResult(false, $"no Hammer with a shell channel is attached - {target.AttachHint}", []);

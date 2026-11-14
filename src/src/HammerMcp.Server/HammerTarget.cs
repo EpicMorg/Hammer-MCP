@@ -14,6 +14,12 @@ public sealed class HammerTarget
 
     public int? AttachedPid => _attachedPid;
 
+    /// <summary>Pause, user requests and recent activity (driven from Hammer's MCP menu through the adapter).</summary>
+    public AgentControl Control { get; } = new();
+
+    /// <summary>Connection to the injected adapter; null where the host has none (the CLI).</summary>
+    public Adapter.AdapterLink? Adapter { get; set; }
+
     /// <summary>What the agent should ask the user for when nothing is attached (the app and the CLI differ).</summary>
     public string AttachHint { get; init; } = "ask the user to pick the Hammer process in Hammer-MCP and press Attach";
 

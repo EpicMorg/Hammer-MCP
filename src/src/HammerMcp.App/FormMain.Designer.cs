@@ -46,6 +46,7 @@ partial class FormMain
         ColumnValue = new DataGridViewTextBoxColumn();
         checkBoxShowProcess = new CheckBox();
         buttonAttachOrDetach = new Button();
+        buttonAdapter = new Button();
         comboBoxProcessList = new ComboBox();
         labelProcessName = new Label();
         pictureBoxProcessImage = new PictureBox();
@@ -173,6 +174,7 @@ partial class FormMain
         groupBoxProcess.Controls.Add(groupBoxMetaInfoFromHammer);
         groupBoxProcess.Controls.Add(checkBoxShowProcess);
         groupBoxProcess.Controls.Add(buttonAttachOrDetach);
+        groupBoxProcess.Controls.Add(buttonAdapter);
         groupBoxProcess.Controls.Add(comboBoxProcessList);
         groupBoxProcess.Controls.Add(labelProcessName);
         groupBoxProcess.Controls.Add(pictureBoxProcessImage);
@@ -243,6 +245,16 @@ partial class FormMain
         buttonAttachOrDetach.TabIndex = 3;
         buttonAttachOrDetach.Text = "Attach";
         buttonAttachOrDetach.UseVisualStyleBackColor = true;
+        // 
+        // buttonAdapter
+        // 
+        buttonAdapter.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        buttonAdapter.Location = new Point(386, 76);
+        buttonAdapter.Name = "buttonAdapter";
+        buttonAdapter.Size = new Size(120, 23);
+        buttonAdapter.TabIndex = 5;
+        buttonAdapter.Text = "Connect adapter";
+        buttonAdapter.UseVisualStyleBackColor = true;
         // 
         // comboBoxProcessList
         // 
@@ -534,6 +546,7 @@ partial class FormMain
     private ComboBox comboBoxProcessList;
     private Label labelProcessName;
     private Button buttonAttachOrDetach;
+    private Button buttonAdapter;
     private CheckBox checkBoxShowProcess;
     private GroupBox groupBoxMetaInfoFromHammer;
     private DataGridView dataGridViewMetaInfoFromHammer;

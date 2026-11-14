@@ -15,7 +15,7 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
     private static readonly string[] EditorDlls = ["hammerplusplus_dll.dll", "hammer_dll.dll", "hammer.dll"];
 
     [McpServerTool(Name = "hammer_status", ReadOnly = true)]
-    [Description("Which Hammer the server works with (process, exe, known build), which map is open, its saved mapversion, and what the agent may do (mode).")]
+    [Description("Which Hammer the server works with (process, exe, known build), which map is open, its saved mapversion, and what the agent may do (mode). Also: agentPaused (the user paused you in Hammer - no edits until resumed) and userRequests (what the user typed for you in Hammer's MCP > Ask agent... - do it or answer it). Call it at the start and between steps.")]
     public HammerStatus Status()
     {
         var process = target.Current();
@@ -30,7 +30,10 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
         return new HammerStatus(
             Running: true,
             Mode: options.Mode.ToString(),
-            LiveEdits: options.AllowsLiveEdits && process.HasShellChannel,
+            LiveEdits: options.AllowsLiveEdits && process.HasShellChannel && !target.Control.Paused,
+            AgentPaused: target.Control.Paused,
+            UserRequests: Requests(),
+            Adapter: target.Adapter?.Hello is { } a ? new AdapterStatus(a.Adapter, a.Version, a.Build) : null,
             ProcessId: process.ProcessId,
             ExePath: process.ExePath,
             Arch: PeHeader.TryRead(process.ExePath)?.Arch,
@@ -52,6 +55,9 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
                 ? "Source 2 Hammer: read-only. Map tools read the saved .vmap, fgd_* use game/<mod>/<mod>.fgd; no live edits, no menu commands."
                 : null);
     }
+
+    /// <summary>Requests the user typed in Hammer (MCP > Ask agent...) since the last call; each is delivered once.</summary>
+    private IReadOnlyList<string>? Requests() => target.Control.TakeRequests() is { Count: > 0 } r ? r : null;
 
     [McpServerTool(Name = "map_summary", ReadOnly = true)]
     [Description("Summary of the map open in Hammer, read from the SAVED .vmf: mapversion, editor build, entity and brush counts, entity classes with counts, skybox, visgroups. Unsaved edits are not included - call save_map first.")]
@@ -111,17 +117,26 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
         var dir = Path.GetDirectoryName(exePath);
         if (dir is null)
             return (null, null);
-        foreach (var name in EditorDlls)
+        foreach (var candidate in EditorDllCandidates(exePath, dir))
         {
-            // Hammer++ keeps its DLL in bin/hammerplusplus/bin next to hammerplusplus.exe; Source 2 in bin/win64/tools
-            foreach (var candidate in new[] { Path.Combine(dir, name), Path.Combine(dir, "hammerplusplus", "bin", name), Path.Combine(dir, "tools", name) })
-            {
-                if (File.Exists(candidate))
-                    return (registry.FindBySha256(Sha256Of(candidate)), candidate);
-            }
+            if (File.Exists(candidate))
+                return (registry.FindBySha256(Sha256Of(candidate)), candidate);
         }
         // GoldSrc Worldcraft / Hammer 3.x: the editor is the exe itself
         return File.Exists(exePath) && registry.FindBySha256(Sha256Of(exePath)) is { } own ? (own, exePath) : (null, null);
+    }
+
+    /// <summary>
+    /// The editor DLL that belongs to THIS exe. Several Hammers can share one bin folder (Bestiarium: Slammin's
+    /// hammer.exe + hammer_dll.dll and Hammer++'s hammerplusplus.exe + hammerplusplus/bin/hammerplusplus_dll.dll),
+    /// so the DLL is chosen by the exe name, never just by what lies around.
+    /// </summary>
+    public static IEnumerable<string> EditorDllCandidates(string exePath, string dir)
+    {
+        if (Path.GetFileNameWithoutExtension(exePath).StartsWith("hammerplusplus", StringComparison.OrdinalIgnoreCase))
+            return [Path.Combine(dir, EditorDlls[0]), Path.Combine(dir, "hammerplusplus", "bin", EditorDlls[0])];
+        // stock / Slammin / Black Mesa / Strata: hammer_dll.dll next to the exe; Source 2: bin/win64/tools/hammer.dll
+        return [Path.Combine(dir, EditorDlls[1]), Path.Combine(dir, EditorDlls[2]), Path.Combine(dir, "tools", EditorDlls[2])];
     }
 
     private static string Sha256Of(string path)
@@ -149,4 +164,10 @@ public sealed record HammerStatus(
     string? CommandLine = null,
     bool? Insecure = null,
     string? EditorSha256 = null,
-    string? Note = null);
+    string? Note = null,
+    bool AgentPaused = false,
+    IReadOnlyList<string>? UserRequests = null,
+    AdapterStatus? Adapter = null);
+
+/// <summary>The injected adapter the server is connected to (Hammer shows an MCP menu).</summary>
+public sealed record AdapterStatus(string Id, string Version, string Build);

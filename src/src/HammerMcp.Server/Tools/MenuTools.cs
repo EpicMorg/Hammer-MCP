@@ -33,6 +33,11 @@ public sealed class MenuTools(HammerTarget target, ActivityLog log)
 
     private MenuResult Post(string name, int id)
     {
+        if (target.Control.Paused)
+        {
+            log.Write($"menu: {name} refused - agent paused");
+            return new MenuResult(false, AgentControl.PausedReason);
+        }
         var process = target.Current();
         if (process is null || process.MainWindow == 0)
             return new MenuResult(false, $"no Hammer is attached - {target.AttachHint}");

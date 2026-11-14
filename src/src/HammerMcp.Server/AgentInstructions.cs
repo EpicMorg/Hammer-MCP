@@ -42,6 +42,12 @@ internal static class AgentInstructions
         console: hammer_map_files lists the open maps. Read tools with fromAutosave=true force an autosave and read it, so
         you see the user's unsaved edits without asking them to save.
 
+        The user can steer you from Hammer when the adapter is connected (MCP menu in Hammer's main menu bar):
+        - hammer_status.agentPaused = true: the user pressed the stop button. Every edit is refused until they resume;
+          do not retry - say what you wanted to do and wait.
+        - hammer_status.userRequests: what the user typed for you in MCP > Ask agent... (each request is shown once).
+          Treat it as a message from the user: do it or answer it. Call hammer_status between steps to see new ones.
+
         Units: Hammer units (1 unit = 0.75 inch for player scale, a player is 72 units tall, a standard door 112).
         Coordinates are world x y z; angles are pitch yaw roll in degrees.
         Be careful with the user's map: prefer small, reversible steps and say what you changed.

@@ -16,6 +16,21 @@
   <ItemGroup>
     <ProjectReference Include="..\HammerMcp.Server\HammerMcp.Server.csproj" />
   </ItemGroup>
+  <!-- Advanced mode: injectors + adapter DLLs (built by CMake from src/native) go to native\ next to the app.
+       Default: build/native-{Win32,x64}/Release of this repo; CI passes -p:HmcpNativeDir=<folder with both>. -->
+  <PropertyGroup>
+    <HmcpRepoRoot>$(MSBuildThisFileDirectory)..\..\..\</HmcpRepoRoot>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(HmcpNativeDir)' == ''">
+    <HmcpNative Include="$(HmcpRepoRoot)build\native-Win32\Release\hmcp-*.exe;$(HmcpRepoRoot)build\native-Win32\Release\hmcp-*.dll" />
+    <HmcpNative Include="$(HmcpRepoRoot)build\native-x64\Release\hmcp-*.exe;$(HmcpRepoRoot)build\native-x64\Release\hmcp-*.dll" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(HmcpNativeDir)' != ''">
+    <HmcpNative Include="$(HmcpNativeDir)\**\hmcp-*.exe;$(HmcpNativeDir)\**\hmcp-*.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="@(HmcpNative)" Link="native\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
