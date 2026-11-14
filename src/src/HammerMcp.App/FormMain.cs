@@ -35,6 +35,7 @@ public partial class FormMain : Form
     private readonly HammerTarget _target = new();
     private readonly ActivityLog _log = new();
     private readonly AdapterLink _adapter;
+    private readonly LogFile _logFile = new();
     private readonly ToolTip _toolTip = new();
     private HammerBuild? _attachedBuild;
     private bool _adapterBusy;
@@ -68,6 +69,9 @@ public partial class FormMain : Form
         _tray.DoubleClick += (_, _) => ShowFromTray();
 
         _log.Line += AppendLog;
+        _log.Line += _logFile.Write;
+        _logFile.Failed += message => _log.Write(message);
+        _logFile.Configure(_settings.SaveLogs ? _settings.EffectiveLogFolder : null);
         _log.Line += _target.Control.Remember;
         _adapter = new AdapterLink(_target, _log) { Mode = _settings.Mode };
         _target.Adapter = _adapter;
@@ -137,6 +141,10 @@ public partial class FormMain : Form
         comboBoxAdaptersAndAdresses.SelectedIndexChanged += (_, _) => UpdateApplyButton();
         textBoxPort.TextChanged += (_, _) => UpdateApplyButton();
         textBoxSecurityToken.TextChanged += (_, _) => UpdateApplyButton();
+        checkBoxSaveLogs.CheckedChanged += (_, _) => UpdateApplyButton();
+        textBoxLogFolder.TextChanged += (_, _) => UpdateApplyButton();
+        buttonBrowseLogFolder.Click += (_, _) => BrowseLogFolder();
+        buttonOpenLogFolder.Click += (_, _) => OpenLogFolder();
         exitToolStripMenuItem.Click += async (_, _) => await ExitAsync();
         aboutToolStripMenuItem.Click += (_, _) =>
         {
@@ -487,6 +495,39 @@ public partial class FormMain : Form
         comboBoxAdaptersAndAdresses.SelectedItem = address;
         textBoxPort.Text = settings.Port.ToString();
         textBoxSecurityToken.Text = settings.Token;
+        checkBoxSaveLogs.Checked = settings.SaveLogs;
+        textBoxLogFolder.PlaceholderText = AppSettings.DefaultLogFolder;
+        textBoxLogFolder.Text = settings.LogFolder;
+    }
+
+    /// <summary>The log folder as typed on the Settings tab (empty = the default one).</summary>
+    private string FormLogFolder() =>
+        string.IsNullOrWhiteSpace(textBoxLogFolder.Text) ? AppSettings.DefaultLogFolder : textBoxLogFolder.Text.Trim();
+
+    private void BrowseLogFolder()
+    {
+        using var dialog = new FolderBrowserDialog
+        {
+            Description = "Folder for Hammer-MCP log files",
+            UseDescriptionForTitle = true,
+            InitialDirectory = Directory.Exists(FormLogFolder()) ? FormLogFolder() : "",
+        };
+        if (dialog.ShowDialog(this) == DialogResult.OK)
+            textBoxLogFolder.Text = dialog.SelectedPath;
+    }
+
+    private void OpenLogFolder()
+    {
+        var folder = FormLogFolder();
+        try
+        {
+            Directory.CreateDirectory(folder);
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("explorer.exe") { ArgumentList = { folder } });
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException or ArgumentException or System.ComponentModel.Win32Exception)
+        {
+            MessageBox.Show(this, $"Cannot open {folder}: {e.Message}", "Hammer-MCP", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
     }
 
     /// <summary>Settings as currently shown on the Settings tab (token trimmed; port 0 if not a number).</summary>
@@ -496,6 +537,8 @@ public partial class FormMain : Form
         BindAddress = (comboBoxAdaptersAndAdresses.SelectedItem as AddressItem)?.Address ?? "127.0.0.1",
         Port = int.TryParse(textBoxPort.Text, out var port) ? port : 0,
         Token = textBoxSecurityToken.Text.Trim(),
+        SaveLogs = checkBoxSaveLogs.Checked,
+        LogFolder = textBoxLogFolder.Text.Trim(),
     };
 
     /// <summary>Apply is enabled only when the form differs from the saved settings.</summary>
@@ -523,8 +566,13 @@ public partial class FormMain : Form
             BindAddress = address,
             Port = port,
             Token = token,
+            SaveLogs = checkBoxSaveLogs.Checked,
+            LogFolder = textBoxLogFolder.Text.Trim(),
         };
         _settings.Save();
+        _logFile.Configure(_settings.SaveLogs ? _settings.EffectiveLogFolder : null);
+        if (_settings.SaveLogs)
+            _log.Write($"log file: {_logFile.PathFor(DateTime.Now)}");
         _adapter.Mode = _settings.Mode;
         _ = _adapter.PushStateAsync();
         UpdateApplyButton();

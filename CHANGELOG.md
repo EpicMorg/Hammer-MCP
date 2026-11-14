@@ -9,6 +9,8 @@ All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/)
 ### Added
 - **Advanced mode: the adapter** (branch `feature/inject`). The app's new **Connect adapter** button (Advanced mode only, known Hammer builds with an adapter) injects a small native adapter into the attached standalone Hammer; it adds an **MCP** menu to Hammer's main menu bar: pause / resume the agent (every edit is refused while paused - shell channel and menu commands too), **Ask agent...** (the request reaches the agent in `hammer_status.userRequests`, once), activity log (the app's log), status, disconnect, about. Never injected into a game process (VAC / anti-cheat), Source 2, or an unknown build; the native injector re-checks the policy before it opens the process. `hammer_status` reports `adapter` and `agentPaused`.
 
+- App: **Settings > Logs** - save the log to daily files (`hammer-mcp-yyyy-MM-dd.log`, on by default, folder `%APPDATA%\EpicMorg\Hammer-MCP\logs` or your own), Browse... and Open folder. The window is a bit taller.
+
 ### Fixed
 - The editor DLL is matched to the exe: in a folder with both Slammin's `hammer.exe` and Hammer++ (Bestiarium), `hammer.exe` was identified as Hammer++.
 ## [0.6.0] - 2026-11-14

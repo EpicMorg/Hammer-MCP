@@ -16,6 +16,17 @@ internal sealed record AppSettings
     public int Port { get; init; } = 47800;
     public string Token { get; init; } = "";
 
+    /// <summary>Also write the Logs tab to daily files (hammer-mcp-yyyy-MM-dd.log).</summary>
+    public bool SaveLogs { get; init; } = true;
+
+    /// <summary>Folder for log files; empty = <see cref="DefaultLogFolder"/>.</summary>
+    public string LogFolder { get; init; } = "";
+
+    public static string DefaultLogFolder => Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EpicMorg", "Hammer-MCP", "logs");
+
+    public string EffectiveLogFolder => string.IsNullOrWhiteSpace(LogFolder) ? DefaultLogFolder : LogFolder;
+
     public static AppSettings Load()
     {
         try

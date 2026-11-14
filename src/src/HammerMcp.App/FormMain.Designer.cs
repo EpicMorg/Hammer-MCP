@@ -47,6 +47,11 @@ partial class FormMain
         checkBoxShowProcess = new CheckBox();
         buttonAttachOrDetach = new Button();
         buttonAdapter = new Button();
+        groupBoxLogs = new GroupBox();
+        checkBoxSaveLogs = new CheckBox();
+        textBoxLogFolder = new TextBox();
+        buttonBrowseLogFolder = new Button();
+        buttonOpenLogFolder = new Button();
         comboBoxProcessList = new ComboBox();
         labelProcessName = new Label();
         pictureBoxProcessImage = new PictureBox();
@@ -86,7 +91,7 @@ partial class FormMain
         // statusStrip1
         // 
         statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusAttaching });
-        statusStrip1.Location = new Point(0, 389);
+        statusStrip1.Location = new Point(0, 429);
         statusStrip1.Name = "statusStrip1";
         statusStrip1.Size = new Size(637, 22);
         statusStrip1.TabIndex = 0;
@@ -143,7 +148,7 @@ partial class FormMain
         tabControl.Location = new Point(12, 27);
         tabControl.Name = "tabControl";
         tabControl.SelectedIndex = 0;
-        tabControl.Size = new Size(613, 359);
+        tabControl.Size = new Size(613, 399);
         tabControl.TabIndex = 3;
         // 
         // tabPageMain
@@ -153,7 +158,7 @@ partial class FormMain
         tabPageMain.Location = new Point(4, 24);
         tabPageMain.Name = "tabPageMain";
         tabPageMain.Padding = new Padding(3);
-        tabPageMain.Size = new Size(605, 331);
+        tabPageMain.Size = new Size(605, 371);
         tabPageMain.TabIndex = 0;
         tabPageMain.Text = "Main";
         tabPageMain.UseVisualStyleBackColor = true;
@@ -161,7 +166,7 @@ partial class FormMain
         // buttonServerStartStop
         // 
         buttonServerStartStop.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        buttonServerStartStop.Location = new Point(524, 302);
+        buttonServerStartStop.Location = new Point(524, 342);
         buttonServerStartStop.Name = "buttonServerStartStop";
         buttonServerStartStop.Size = new Size(75, 23);
         buttonServerStartStop.TabIndex = 1;
@@ -180,7 +185,7 @@ partial class FormMain
         groupBoxProcess.Controls.Add(pictureBoxProcessImage);
         groupBoxProcess.Location = new Point(6, 6);
         groupBoxProcess.Name = "groupBoxProcess";
-        groupBoxProcess.Size = new Size(593, 290);
+        groupBoxProcess.Size = new Size(593, 330);
         groupBoxProcess.TabIndex = 0;
         groupBoxProcess.TabStop = false;
         groupBoxProcess.Text = "Process:";
@@ -192,7 +197,7 @@ partial class FormMain
         groupBoxMetaInfoFromHammer.Enabled = false;
         groupBoxMetaInfoFromHammer.Location = new Point(6, 104);
         groupBoxMetaInfoFromHammer.Name = "groupBoxMetaInfoFromHammer";
-        groupBoxMetaInfoFromHammer.Size = new Size(581, 180);
+        groupBoxMetaInfoFromHammer.Size = new Size(581, 220);
         groupBoxMetaInfoFromHammer.TabIndex = 5;
         groupBoxMetaInfoFromHammer.TabStop = false;
         groupBoxMetaInfoFromHammer.Text = "Meta info:";
@@ -208,7 +213,7 @@ partial class FormMain
         dataGridViewMetaInfoFromHammer.Location = new Point(6, 22);
         dataGridViewMetaInfoFromHammer.Name = "dataGridViewMetaInfoFromHammer";
         dataGridViewMetaInfoFromHammer.ReadOnly = true;
-        dataGridViewMetaInfoFromHammer.Size = new Size(569, 152);
+        dataGridViewMetaInfoFromHammer.Size = new Size(569, 192);
         dataGridViewMetaInfoFromHammer.TabIndex = 0;
         // 
         // ColumnKey
@@ -246,6 +251,52 @@ partial class FormMain
         buttonAttachOrDetach.Text = "Attach";
         buttonAttachOrDetach.UseVisualStyleBackColor = true;
         // 
+        // groupBoxLogs
+        // 
+        groupBoxLogs.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        groupBoxLogs.Location = new Point(6, 260);
+        groupBoxLogs.Name = "groupBoxLogs";
+        groupBoxLogs.Size = new Size(581, 58);
+        groupBoxLogs.TabIndex = 9;
+        groupBoxLogs.TabStop = false;
+        groupBoxLogs.Text = "Logs:";        // 
+        // checkBoxSaveLogs
+        // 
+        checkBoxSaveLogs.AutoSize = true;
+        checkBoxSaveLogs.Location = new Point(6, 24);
+        checkBoxSaveLogs.Name = "checkBoxSaveLogs";
+        checkBoxSaveLogs.Size = new Size(117, 19);
+        checkBoxSaveLogs.TabIndex = 10;
+        checkBoxSaveLogs.Text = "Save logs to file:";
+        checkBoxSaveLogs.UseVisualStyleBackColor = true;
+        // 
+        // textBoxLogFolder
+        // 
+        textBoxLogFolder.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        textBoxLogFolder.Location = new Point(129, 22);
+        textBoxLogFolder.Name = "textBoxLogFolder";
+        textBoxLogFolder.Size = new Size(262, 23);
+        textBoxLogFolder.TabIndex = 11;
+        // 
+        // buttonBrowseLogFolder
+        // 
+        buttonBrowseLogFolder.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        buttonBrowseLogFolder.Location = new Point(397, 21);
+        buttonBrowseLogFolder.Name = "buttonBrowseLogFolder";
+        buttonBrowseLogFolder.Size = new Size(84, 23);
+        buttonBrowseLogFolder.TabIndex = 12;
+        buttonBrowseLogFolder.Text = "Browse...";
+        buttonBrowseLogFolder.UseVisualStyleBackColor = true;
+        // 
+        // buttonOpenLogFolder
+        // 
+        buttonOpenLogFolder.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        buttonOpenLogFolder.Location = new Point(487, 21);
+        buttonOpenLogFolder.Name = "buttonOpenLogFolder";
+        buttonOpenLogFolder.Size = new Size(94, 23);
+        buttonOpenLogFolder.TabIndex = 13;
+        buttonOpenLogFolder.Text = "Open folder";
+        buttonOpenLogFolder.UseVisualStyleBackColor = true;        // 
         // buttonAdapter
         // 
         buttonAdapter.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -295,7 +346,7 @@ partial class FormMain
         tabPageSettings.Location = new Point(4, 24);
         tabPageSettings.Name = "tabPageSettings";
         tabPageSettings.Padding = new Padding(3);
-        tabPageSettings.Size = new Size(605, 331);
+        tabPageSettings.Size = new Size(605, 371);
         tabPageSettings.TabIndex = 1;
         tabPageSettings.Text = "Settings";
         tabPageSettings.UseVisualStyleBackColor = true;
@@ -303,7 +354,7 @@ partial class FormMain
         // button1
         // 
         button1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        button1.Location = new Point(6, 302);
+        button1.Location = new Point(6, 342);
         button1.Name = "button1";
         button1.Size = new Size(75, 23);
         button1.TabIndex = 4;
@@ -313,7 +364,7 @@ partial class FormMain
         // buttonApply
         // 
         buttonApply.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        buttonApply.Location = new Point(524, 302);
+        buttonApply.Location = new Point(524, 342);
         buttonApply.Name = "buttonApply";
         buttonApply.Size = new Size(75, 23);
         buttonApply.TabIndex = 3;
@@ -326,9 +377,14 @@ partial class FormMain
         groupBoxSettingsMain.Controls.Add(groupBoxNetworkSettings);
         groupBoxSettingsMain.Controls.Add(labelMCPMode);
         groupBoxSettingsMain.Controls.Add(comboBoxMCPMode);
+        groupBoxSettingsMain.Controls.Add(groupBoxLogs);
+        groupBoxLogs.Controls.Add(checkBoxSaveLogs);
+        groupBoxLogs.Controls.Add(textBoxLogFolder);
+        groupBoxLogs.Controls.Add(buttonBrowseLogFolder);
+        groupBoxLogs.Controls.Add(buttonOpenLogFolder);
         groupBoxSettingsMain.Location = new Point(6, 6);
         groupBoxSettingsMain.Name = "groupBoxSettingsMain";
-        groupBoxSettingsMain.Size = new Size(593, 290);
+        groupBoxSettingsMain.Size = new Size(593, 330);
         groupBoxSettingsMain.TabIndex = 2;
         groupBoxSettingsMain.TabStop = false;
         groupBoxSettingsMain.Text = "Main:";
@@ -359,7 +415,7 @@ partial class FormMain
         groupBoxNetworkSettings.Controls.Add(comboBoxAdaptersAndAdresses);
         groupBoxNetworkSettings.Location = new Point(6, 111);
         groupBoxNetworkSettings.Name = "groupBoxNetworkSettings";
-        groupBoxNetworkSettings.Size = new Size(581, 173);
+        groupBoxNetworkSettings.Size = new Size(581, 143);
         groupBoxNetworkSettings.TabIndex = 2;
         groupBoxNetworkSettings.TabStop = false;
         groupBoxNetworkSettings.Text = "Network settings:";
@@ -474,7 +530,7 @@ partial class FormMain
         tabPage1.Location = new Point(4, 24);
         tabPage1.Name = "tabPage1";
         tabPage1.Padding = new Padding(3);
-        tabPage1.Size = new Size(605, 331);
+        tabPage1.Size = new Size(605, 371);
         tabPage1.TabIndex = 2;
         tabPage1.Text = "Logs";
         tabPage1.UseVisualStyleBackColor = true;
@@ -488,14 +544,14 @@ partial class FormMain
         textBoxLiveLogs.PlaceholderText = "Live logs will be here...";
         textBoxLiveLogs.ReadOnly = true;
         textBoxLiveLogs.ScrollBars = ScrollBars.Both;
-        textBoxLiveLogs.Size = new Size(599, 325);
+        textBoxLiveLogs.Size = new Size(599, 365);
         textBoxLiveLogs.TabIndex = 4;
         // 
         // FormMain
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(637, 411);
+        ClientSize = new Size(637, 451);
         Controls.Add(tabControl);
         Controls.Add(statusStrip1);
         Controls.Add(menuStrip1);
@@ -547,6 +603,11 @@ partial class FormMain
     private Label labelProcessName;
     private Button buttonAttachOrDetach;
     private Button buttonAdapter;
+    private GroupBox groupBoxLogs;
+    private CheckBox checkBoxSaveLogs;
+    private TextBox textBoxLogFolder;
+    private Button buttonBrowseLogFolder;
+    private Button buttonOpenLogFolder;
     private CheckBox checkBoxShowProcess;
     private GroupBox groupBoxMetaInfoFromHammer;
     private DataGridView dataGridViewMetaInfoFromHammer;
