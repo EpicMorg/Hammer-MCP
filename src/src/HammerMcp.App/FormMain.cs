@@ -65,7 +65,10 @@ public partial class FormMain : Form
         var trayMenu = new ContextMenuStrip();
         trayMenu.Items.Add("Show", null, (_, _) => ShowFromTray());
         trayMenu.Items.Add(_trayStartStop);
-        trayMenu.Items.Add("Copy client config", null, (_, _) => CopyClientConfig());
+        var copyConfig = new ToolStripMenuItem("Copy client config");
+        foreach (var (client, text) in ClientConfigs.All)
+            copyConfig.DropDownItems.Add(client, null, (_, _) => CopyText(text(_settings.ToServerOptions()), $"{client} config"));
+        trayMenu.Items.Add(copyConfig);
         trayMenu.Items.Add(new ToolStripSeparator());
         trayMenu.Items.Add("Exit", null, async (_, _) => await ExitAsync());
         _tray = new NotifyIcon { Icon = _iconStopped, Text = "Hammer-MCP (stopped)", ContextMenuStrip = trayMenu, Visible = true };
@@ -517,13 +520,6 @@ public partial class FormMain : Form
         _tray.Text = text.Length > 63 ? text[..63] : text; // NotifyIcon limit
         RefreshAttached(); // the process image falls back to green/red by server state
         UpdateStartButton();
-    }
-
-    private void CopyClientConfig()
-    {
-        var options = _settings.ToServerOptions();
-        var header = string.IsNullOrEmpty(options.Token) ? "" : $" --header \"Authorization: Bearer {options.Token}\"";
-        CopyText($"claude mcp add --transport http hammer {options.Url}{header}", "client config");
     }
 
     // ---- settings --------------------------------------------------------------------------------------------

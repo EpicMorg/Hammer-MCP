@@ -452,12 +452,14 @@ void FillChat() {
     std::deque<ChatLine> chat;
     { std::lock_guard l(g_lock); chat = g_chat; }
     bool on = State().connected;
-    std::wstring t;
+    // always on top: this chat is a side channel - MCP has no way to wake an idle agent
+    std::wstring t = L"Side chat: the agent reads it between its steps and answers here. If the agent is idle "
+                     L"(waiting for you in its own window - Claude Code, Codex, Cursor...), write to it there, "
+                     L"e.g. \"check the Hammer chat\".\r\n\r\n";
     for (auto& c : chat)
         t += L"[" + W(c.at) + L"] " + (c.from == "agent" ? L"Agent: " : L"You: ") + Crlf(c.text) + L"\r\n";
-    if (t.empty())
-        t = on ? L"Write to the agent below. It gets your message with its next tool call and can answer here.\r\n"
-               : L"Not connected to the Hammer-MCP server.\r\n";
+    if (chat.empty() && !on)
+        t += L"Not connected to the Hammer-MCP server.\r\n";
     HWND e = GetDlgItem(w, CTL_TEXT);
     SetWindowTextW(e, t.c_str());
     ScrollToEnd(e);

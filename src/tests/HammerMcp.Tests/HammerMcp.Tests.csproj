@@ -13,6 +13,8 @@
     <Using Include="Xunit" />
     <!-- plain BCL code from the Windows-only server, tested on every OS -->
     <Compile Include="..\..\src\HammerMcp.Server\PendingChanges.cs" Link="Server\PendingChanges.cs" />
+    <Compile Include="..\..\src\HammerMcp.Server\McpServerOptions.cs" Link="Server\McpServerOptions.cs" />
+    <Compile Include="..\..\src\HammerMcp.Server\ClientConfigs.cs" Link="Server\ClientConfigs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\registry\hammers.json" Link="registry\hammers.json" CopyToOutputDirectory="PreserveNewest" />

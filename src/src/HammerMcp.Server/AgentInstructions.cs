@@ -50,6 +50,9 @@ internal static class AgentInstructions
         - hammer_status.userRequests: what the user wrote to you in Hammer's MCP > Chat (each line is shown once).
           Treat it as a message from the user: do it, and answer in that chat with say_to_user. Call user_requests
           (cheap) between steps of a longer task to see new ones and whether you were paused.
+          The Hammer chat is a side channel: you only see it when you call a tool, nothing wakes you while you are idle.
+          When you finish a task or ask the user something there, either call wait_for_user (blocks until they write
+          in Hammer, up to 10 minutes; call it again to keep listening) or tell them to answer in your own window.
 
         - hammer_status.approval = "ask": the user reviews your edits. Each edit (create / set_keyvalue / rotate / delete,
           save_map, undo, redo, run_compile) waits until they apply or reject it (up to 2 minutes per call). Rejected:

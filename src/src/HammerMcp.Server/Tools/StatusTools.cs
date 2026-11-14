@@ -72,6 +72,38 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
             .Select(l => $"{l.At.ToString("HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)} {l.From}: {l.Text}"),
     };
 
+    [McpServerTool(Name = "wait_for_user", ReadOnly = true)]
+    [Description("Wait until the user writes to you in Hammer's chat (MCP > Chat) or pauses / resumes you, up to timeoutSeconds (default 120, max 600). Use it after you asked the user something there with say_to_user, or when they want to work with you through that chat. Returns the same as user_requests; timedOut = true if nothing came - then ask again, wait again, or finish. The Hammer chat is a side channel: if the user may answer in your own window instead, tell them both are fine.")]
+    public async Task<object> WaitForUser(int timeoutSeconds = 120, CancellationToken cancellationToken = default)
+    {
+        var control = target.Control;
+        var changed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        void OnChanged() => changed.TrySetResult();
+        control.Changed += OnChanged; // a new chat line or a pause / resume
+        try
+        {
+            if (control.PendingRequests == 0)
+            {
+                var wasPaused = control.Paused;
+                try
+                {
+                    await changed.Task.WaitAsync(TimeSpan.FromSeconds(Math.Clamp(timeoutSeconds, 1, 600)), cancellationToken);
+                }
+                catch (TimeoutException)
+                {
+                    return new { timedOut = true, agentPaused = control.Paused, userRequests = Array.Empty<string>() };
+                }
+                if (control.PendingRequests == 0 && control.Paused == wasPaused)
+                    return new { timedOut = false, agentPaused = control.Paused, userRequests = Array.Empty<string>() };
+            }
+            return UserRequests();
+        }
+        finally
+        {
+            control.Changed -= OnChanged;
+        }
+    }
+
     [McpServerTool(Name = "say_to_user", ReadOnly = true)]
     [Description("Write to the user in Hammer's chat window (MCP > Chat, with the adapter connected; the app's log shows it too). Use it to answer what they wrote (user_requests), to ask a question or to report progress of a longer task. Plain text, short.")]
     public object SayToUser(string text)
