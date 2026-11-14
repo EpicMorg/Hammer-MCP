@@ -1485,7 +1485,7 @@
       "match": { "dll": "neon.exe", "sha256": "3ab529ae9522b1175f6756efb2c6553b7b650e5fdab225e3ef1df9b0aad2d200", "linked": "2003-04-18" },
       "shell": { "present": false },
       "mapFormat": "rmf",
-      "notes": "Neon Hammer Editor 3.5: community mod of Hammer 3.5."
+      "notes": "Neon Hammer Editor 3.5 (as named in the HL-Lab launcher): community mod of Valve Hammer Editor; its version resource says FileVersion 3.4."
     },
     {
       "id": "goldsrc-neon-hammer-3.5-rus",
@@ -1494,7 +1494,7 @@
       "match": { "dll": "neon_rus.exe", "sha256": "1a165e3070c7ad396aa45a553f108b76e2035021467008c8a19c0267edce2f67", "linked": "2003-04-18" },
       "shell": { "present": false },
       "mapFormat": "rmf",
-      "notes": "Neon Hammer Editor 3.5, Russian translation."
+      "notes": "Neon Hammer Editor 3.5, Russian translation (HL-Lab launcher name); version resource says FileVersion 3.4."
     },
     {
       "id": "jack-jackhammer-1.1-x64",
