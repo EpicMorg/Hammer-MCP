@@ -8,9 +8,14 @@ Clean-room work on shipped binaries only: no Valve source code, no Source SDK he
   never Source 2, only builds whose editor-DLL sha256 has an `injectAdapter` in `src/registry/hammers.json`
   (the list is generated from the registry at build time — `tools/gen_allowed_builds.py`).
 - `adapters/base/` — adapter source; one DLL per registry `injectAdapter` id (`HMCP_ADAPTER_ID`):
-  `hmcp-adapter-generic-x86.dll` / `-x64.dll` for every Source 1 Hammer with a Win32 menu (stock Valve, Hammer++,
-  Slammin', Black Mesa, Psycho-A: 160 builds), `hmcp-adapter-hpp-8873-x86.dll` / `-x64.dll` for Hammer++ 8873 (which gets
-  build-specific code from layer 2 on). Not injected, ever: Source 2 (game process), Strata (Qt menus) and GoldSrc for now.
+  `hmcp-adapter-generic-x86.dll` / `-x64.dll` for every Hammer with a Win32 menu (stock Valve, Hammer++, Slammin',
+  Black Mesa, Psycho-A, GoldSrc Worldcraft / Hammer 3.x and mods: 174 builds), `hmcp-adapter-hpp-8873-x86.dll` / `-x64.dll`
+  for Hammer++ 8873 (which gets build-specific code from layer 2 on). Never injected: Source 2 (game process), Strata (Qt).
+- Injector exit code 5: an adapter is already running in that process (its pipe answers); if one is still unloading,
+  the injector waits up to 10 s instead of loading the same module again. The adapter also holds a named mutex
+  `Local\\hammer-mcp-adapter-<pid>`, so a copy from another folder cannot start a second menu.
+- The pipe is up right after injection; the main window is looked for in the background (up to 10 minutes - Hammer may
+  be busy loading a map), so a client should wait for the pipe a few seconds, not for the menu.
   Layer 0: named pipe `\\.\pipe\hammer-mcp-adapter-<pid>` (local clients only), one JSON object per line:
   hello (adapter, version, pid, build, editorSha256) → `{"cmd":"ping"}` / `{"cmd":"unload"}` (unloads itself, so it can be
   re-injected without restarting Hammer). Next: the MCP menu inside Hammer, then live map reading.

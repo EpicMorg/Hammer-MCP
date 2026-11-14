@@ -1,5 +1,6 @@
 // Hammer-MCP adapter. HMCP_ADAPTER_ID is the registry "injectAdapter" it is built for:
-//   generic-x86 / generic-x64 - every Source 1 Hammer with a Win32 menu (stock, Hammer++, Slammin, Black Mesa, ...);
+//   generic-x86 / generic-x64 - every Hammer with a Win32 menu (stock Source 1, Hammer++, Slammin, Black Mesa, ...,
+//                               and GoldSrc: Worldcraft / Hammer 3.x and their mods);
 //   hpp-8873-x86 / hpp-8873-x64 - Hammer++ 8873, which will also get build-specific code from layer 2 on.
 // Layers 0-1 touch no Hammer internals (window, menu, pipe), so one source serves every id.
 // Layer 0: named pipe, hello, ping, unload.  Layer 1: the MCP menu in Hammer's main window.
@@ -413,21 +414,26 @@ LRESULT CALLBACK HookProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
     return CallWindowProcW(g_origProc, hwnd, msg, wp, lp);
 }
 
-// Hammer's main frame: a visible top-level window of this process with a menu bar and "Hammer" in the title
+// Hammer's main frame: a visible, unowned top-level window of this process with a menu bar; one whose title says
+// "Hammer" or "Worldcraft" wins (GoldSrc editors are titled "Worldcraft - ..." / "Valve Hammer Editor - ...")
+struct FindCtx { HWND named = nullptr, any = nullptr; };
+
 BOOL CALLBACK FindProc(HWND h, LPARAM p) {
+    auto ctx = reinterpret_cast<FindCtx*>(p);
     DWORD pid = 0;
     GetWindowThreadProcessId(h, &pid);
     if (pid != GetCurrentProcessId() || !IsWindowVisible(h) || GetWindow(h, GW_OWNER) || !GetMenu(h)) return TRUE;
     wchar_t title[256]{};
     GetWindowTextW(h, title, 256);
-    if (wcsstr(title, L"Hammer")) { *reinterpret_cast<HWND*>(p) = h; return FALSE; }
+    if (wcsstr(title, L"Hammer") || wcsstr(title, L"Worldcraft")) { ctx->named = h; return FALSE; }
+    if (!ctx->any) ctx->any = h;
     return TRUE;
 }
 
 HWND FindMainWindow() {
-    HWND found = nullptr;
-    EnumWindows(FindProc, reinterpret_cast<LPARAM>(&found));
-    return found;
+    FindCtx ctx;
+    EnumWindows(FindProc, reinterpret_cast<LPARAM>(&ctx));
+    return ctx.named ? ctx.named : ctx.any;
 }
 
 // ---------- pipe ----------
@@ -533,7 +539,33 @@ bool Session(HANDLE pipe) {
     return unload;
 }
 
+HANDLE g_uiStop = nullptr;   // tells the window finder to give up (unloading)
+
+DWORD WINAPI FindWindowThread(LPVOID) {
+    for (int i = 0; i < 1200; ++i) {   // up to 10 minutes: Hammer may sit in "Reading chunks..." for a long time
+        if (HWND h = FindMainWindow()) {
+            g_origProc = reinterpret_cast<WNDPROC>(GetWindowLongPtrW(h, GWLP_WNDPROC));
+            SetWindowLongPtrW(h, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(HookProc));
+            g_hwnd = h;
+            PostMessageW(h, WM_HMCP_INSTALL, 0, 0);
+            return 0;
+        }
+        if (WaitForSingleObject(g_uiStop, 500) == WAIT_OBJECT_0) return 0;
+    }
+    return 0;
+}
+
 DWORD WINAPI Worker(LPVOID) {
+    // one adapter per process, even when a copy is injected from another folder (another module)
+    HANDLE instance = CreateMutexW(nullptr, TRUE, hmcp::InstanceName(GetCurrentProcessId()).c_str());
+    if (!instance || GetLastError() == ERROR_ALREADY_EXISTS) {
+        if (instance) CloseHandle(instance);
+        CloseHandle(g_outEvent);
+        CloseHandle(g_stopEvent);
+        CloseHandle(g_uiStop);
+        FreeLibraryAndExitThread(g_self, 0);
+    }
+
     // build / sha of the editor this adapter runs in (for hello, Status and About)
     wchar_t exe[MAX_PATH * 2];
     GetModuleFileNameW(nullptr, exe, MAX_PATH * 2);
@@ -549,20 +581,12 @@ DWORD WINAPI Worker(LPVOID) {
         if (sha == b->sha256) { std::lock_guard l(g_lock); g_build = b->id; g_sha = sha; break; }
     }
 
-    // Hammer's main window may not exist yet (injected during start-up): look for it, then subclass and add the menu
-    for (int i = 0; i < 600 && !g_hwnd; ++i) {
-        if (HWND h = FindMainWindow()) {
-            g_origProc = reinterpret_cast<WNDPROC>(GetWindowLongPtrW(h, GWLP_WNDPROC));
-            g_hwnd = h;
-            SetWindowLongPtrW(h, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(HookProc));
-            PostMessageW(h, WM_HMCP_INSTALL, 0, 0);
-            break;
-        }
-        if (WaitForSingleObject(g_stopEvent, 500) == WAIT_OBJECT_0) break;
-    }
+    // Hammer's main window may not exist yet (injected during start-up, or Hammer busy loading a map for minutes):
+    // a separate thread looks for it, so the pipe is up for the server right away
+    HANDLE finder = CreateThread(nullptr, 0, FindWindowThread, nullptr, 0, nullptr);
 
     std::wstring name = hmcp::PipeName(GetCurrentProcessId());
-    bool unload = WaitForSingleObject(g_stopEvent, 0) == WAIT_OBJECT_0;
+    bool unload = false;
     while (!unload) {
         HANDLE pipe = CreateNamedPipeW(name.c_str(), PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED,
             PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS, 1, 8192, 8192, 0, nullptr);
@@ -591,13 +615,19 @@ DWORD WINAPI Worker(LPVOID) {
         CloseHandle(pipe);
     }
 
-    // uninstall the UI on the UI thread, after our dialogs are closed; only then unload the code they run
+    // stop looking for the window, then uninstall the UI on the UI thread after our dialogs are closed;
+    // only then release the instance and unload the code all that runs
+    SetEvent(g_uiStop);
+    if (finder) { WaitForSingleObject(finder, INFINITE); CloseHandle(finder); }
     if (g_hwnd) {
         while (g_dialogs > 0) Sleep(100);
         SendMessageW(g_hwnd, WM_HMCP_UNINSTALL, 0, 0);
     }
     CloseHandle(g_outEvent);
     CloseHandle(g_stopEvent);
+    CloseHandle(g_uiStop);
+    ReleaseMutex(instance);
+    CloseHandle(instance);
     FreeLibraryAndExitThread(g_self, 0);
 }
 
@@ -609,6 +639,7 @@ BOOL WINAPI DllMain(HINSTANCE self, DWORD reason, LPVOID) {
         DisableThreadLibraryCalls(self);
         g_outEvent = CreateEventW(nullptr, FALSE, FALSE, nullptr);
         g_stopEvent = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+        g_uiStop = CreateEventW(nullptr, TRUE, FALSE, nullptr);
         // nothing heavy under the loader lock: the worker thread does the rest
         if (HANDLE t = CreateThread(nullptr, 0, Worker, nullptr, 0, nullptr)) CloseHandle(t);
     }

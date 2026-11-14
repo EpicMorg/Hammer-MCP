@@ -47,27 +47,47 @@ inline std::wstring EditorDll(const std::wstring& exe, const char* dllName) {
     return {};
 }
 
-// Same rules as HammerMcp.Core.Registry.InjectPolicy: only a standalone Hammer exe of a build that has an adapter;
+inline bool EndsWithExe(const char* s) { size_t n = strlen(s); return n > 4 && _stricmp(s + n - 4, ".exe") == 0; }
+
+// Same rules as HammerMcp.Core.Registry.InjectPolicy: only a standalone editor of a build that has an adapter;
 // never a game process (VAC), never Source 2 (tools\hammer.dll lives inside the game), never an unknown build.
+// Source 1: hammer.exe / hammerplusplus.exe + the editor DLL's sha256. GoldSrc: the editor is the exe itself
+// (registry match.dll = hammer.exe / wc.exe / neon.exe ...), so the exe's own sha256 must match.
 struct PolicyResult { const HmcpAllowedBuild* build; std::string reason; std::string sha256; };
 inline PolicyResult CheckPolicy(const std::wstring& exe, bool targetIs64) {
     std::wstring name = FileName(exe);
     if (Exists(Dir(exe) + L"\\tools\\hammer.dll"))
         return { nullptr, "Source 2 Hammer runs inside the game process (VAC / anti-cheat): never injected", {} };
-    if (!IEquals(name, L"hammer.exe") && !IEquals(name, L"hammerplusplus.exe"))
-        return { nullptr, "not a standalone Hammer executable: game and other processes are never injected", {} };
-    // ~160 allowed builds but at most three editor DLL names: hash each file once
+    bool standaloneHammer = IEquals(name, L"hammer.exe") || IEquals(name, L"hammerplusplus.exe");
+    // ~180 allowed builds but only a few editor files: hash each file once
     std::vector<std::pair<std::wstring, std::string>> hashed;
+    auto hash = [&](const std::wstring& path) {
+        for (auto& [p, h] : hashed) if (p == path) return h;
+        hashed.emplace_back(path, Sha256File(path));
+        return hashed.back().second;
+    };
+    bool sawExeEditor = false;
     for (const HmcpAllowedBuild* b = kHmcpAllowedBuilds; b->id; ++b) {
         if (b->x64 != targetIs64) continue;
-        std::wstring dll = EditorDll(exe, b->editorDll);
-        if (dll.empty()) continue;
-        std::string sha;
-        for (auto& [path, h] : hashed) if (path == dll) sha = h;
-        if (sha.empty()) { sha = Sha256File(dll); hashed.emplace_back(dll, sha); }
+        std::wstring file;
+        if (EndsWithExe(b->editorDll)) {           // GoldSrc: the exe is the editor
+            if (!IEquals(name, Widen(b->editorDll))) continue;
+            file = exe;
+            sawExeEditor = true;
+        } else {
+            if (!standaloneHammer) continue;
+            file = EditorDll(exe, b->editorDll);
+            if (file.empty()) continue;
+        }
+        std::string sha = hash(file);
         if (sha == b->sha256) return { b, "allowed: " + std::string(b->id), sha };
     }
+    if (!standaloneHammer && !sawExeEditor)
+        return { nullptr, "not a standalone Hammer executable: game and other processes are never injected", {} };
     return { nullptr, "unknown Hammer build or no adapter for it: never injected", {} };
 }
+
+// "Local\hammer-mcp-adapter-<pid>": held by the adapter's worker for its whole life (one adapter per process)
+inline std::wstring InstanceName(DWORD pid) { return L"Local\\hammer-mcp-adapter-" + std::to_wstring(pid); }
 
 } // namespace hmcp

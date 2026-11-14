@@ -28,4 +28,16 @@ public class InjectPolicyTests
     [Fact]
     public void AllowsStandaloneEditorWithAdapter() =>
         Assert.True(InjectPolicy.Check(@"C:\SDK\bin\hammerplusplus.exe", Build("hammerplusplus", "hpp-8873-x64")).Allowed);
+
+    [Fact]
+    public void GoldSrcEditorIsMatchedByItsOwnExe()
+    {
+        var neon = new HammerBuild
+        {
+            Id = "goldsrc-neon-hammer-3.5", Family = "goldsrc", Branch = "neon-hammer-3.5", Arch = "x86",
+            Match = new BuildMatch { Dll = "neon.exe", Sha256 = "00" }, InjectAdapter = "generic-x86",
+        };
+        Assert.True(InjectPolicy.Check(@"C:\HL-SDK\neon.exe", neon).Allowed);
+        Assert.False(InjectPolicy.Check(@"C:\Steam\Half-Life\hl.exe", neon).Allowed);   // a game exe is never the editor
+    }
 }

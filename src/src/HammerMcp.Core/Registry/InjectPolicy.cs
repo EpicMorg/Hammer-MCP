@@ -8,7 +8,7 @@ namespace HammerMcp.Core.Registry;
 /// </summary>
 public static class InjectPolicy
 {
-    /// <summary>Standalone map editor executables (Source 1 Hammer, Hammer++, Strata Hammer).</summary>
+    /// <summary>Standalone Source 1 editor executables (stock Hammer, Hammer++); GoldSrc editors are matched by their own exe.</summary>
     private static readonly HashSet<string> EditorExes = new(StringComparer.OrdinalIgnoreCase)
     {
         "hammer.exe", "hammerplusplus.exe",
@@ -24,7 +24,10 @@ public static class InjectPolicy
         var name = exePath[(cut + 1)..];
         if (File.Exists(Path.Combine(dir, "tools", "hammer.dll")) || build?.Family == "source2")
             return new(false, "Source 2 Hammer runs inside the game process (VAC / anti-cheat): injection is never allowed");
-        if (!EditorExes.Contains(name))
+        // GoldSrc editors (Worldcraft / Hammer 3.x and their mods) are matched by the exe itself (match.dll = hammer.exe, wc.exe, neon.exe...)
+        var exeIsEditor = build is not null && build.Match.Dll.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)
+                          && name.Equals(build.Match.Dll, StringComparison.OrdinalIgnoreCase);
+        if (!EditorExes.Contains(name) && !exeIsEditor)
             return new(false, $"{name} is not a standalone Hammer executable: injection into other (game) processes is never allowed");
         if (build is null)
             return new(false, "unknown Hammer build: injection is never allowed");
