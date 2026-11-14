@@ -48,7 +48,7 @@ The adapter never decides anything itself: pause, approval and undo live in the 
 
 ## Layer 1.1 — chat, live log, approval list, build profile (agreed 2026-11-14)
 
-**Chat replaces "Ask agent…"**: the menu item **Chat…** opens a tool window (docked to Hammer's right edge, moves with it)
+**Chat replaces "Ask agent…"**: the menu item **Chat…** opens a tool window (a plain window owned by Hammer, opened from the menu; docking into Hammer's side panels comes with the MFC work later)
 where the user writes to the agent and sees its answers.
 
 | direction | message | meaning |
