@@ -56,11 +56,15 @@ inline PolicyResult CheckPolicy(const std::wstring& exe, bool targetIs64) {
         return { nullptr, "Source 2 Hammer runs inside the game process (VAC / anti-cheat): never injected", {} };
     if (!IEquals(name, L"hammer.exe") && !IEquals(name, L"hammerplusplus.exe"))
         return { nullptr, "not a standalone Hammer executable: game and other processes are never injected", {} };
+    // ~160 allowed builds but at most three editor DLL names: hash each file once
+    std::vector<std::pair<std::wstring, std::string>> hashed;
     for (const HmcpAllowedBuild* b = kHmcpAllowedBuilds; b->id; ++b) {
         if (b->x64 != targetIs64) continue;
         std::wstring dll = EditorDll(exe, b->editorDll);
         if (dll.empty()) continue;
-        std::string sha = Sha256File(dll);
+        std::string sha;
+        for (auto& [path, h] : hashed) if (path == dll) sha = h;
+        if (sha.empty()) { sha = Sha256File(dll); hashed.emplace_back(dll, sha); }
         if (sha == b->sha256) return { b, "allowed: " + std::string(b->id), sha };
     }
     return { nullptr, "unknown Hammer build or no adapter for it: never injected", {} };

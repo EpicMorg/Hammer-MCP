@@ -1,6 +1,7 @@
-// Adapter for Hammer++ 8873 (x64: registry id hpp-tf2-8873-x64; x86: hpp-2013sp-8873-x86) - HMCP_ADAPTER_ID picks which.
-// Layers 0-1 touch no Hammer internals (window, menu, pipe), so the same source serves both; build-specific code
-// (layer 2+: offsets / signatures) will be selected by HMCP_ADAPTER_ID.
+// Hammer-MCP adapter. HMCP_ADAPTER_ID is the registry "injectAdapter" it is built for:
+//   generic-x86 / generic-x64 - every Source 1 Hammer with a Win32 menu (stock, Hammer++, Slammin, Black Mesa, ...);
+//   hpp-8873-x86 / hpp-8873-x64 - Hammer++ 8873, which will also get build-specific code from layer 2 on.
+// Layers 0-1 touch no Hammer internals (window, menu, pipe), so one source serves every id.
 // Layer 0: named pipe, hello, ping, unload.  Layer 1: the MCP menu in Hammer's main window.
 // Protocol: see src/native/PROTOCOL.md. One JSON object per line over \\.\pipe\hammer-mcp-adapter-<pid> (local only).
 //
@@ -536,13 +537,17 @@ DWORD WINAPI Worker(LPVOID) {
     // build / sha of the editor this adapter runs in (for hello, Status and About)
     wchar_t exe[MAX_PATH * 2];
     GetModuleFileNameW(nullptr, exe, MAX_PATH * 2);
-    for (const HmcpAllowedBuild* b = kHmcpAllowedBuilds; b->id; ++b)
-        if (std::string(b->adapter) == kAdapterId) {
-            std::string sha = hmcp::Sha256File(hmcp::EditorDll(exe, b->editorDll));
-            std::lock_guard l(g_lock);
-            g_build = b->id;
-            g_sha = sha;
-        }
+    // which registry build this process is: the first allowed build of this adapter id whose editor DLL hash matches
+    std::vector<std::pair<std::wstring, std::string>> hashed;
+    for (const HmcpAllowedBuild* b = kHmcpAllowedBuilds; b->id; ++b) {
+        if (std::string(b->adapter) != kAdapterId) continue;
+        std::wstring dll = hmcp::EditorDll(exe, b->editorDll);
+        if (dll.empty()) continue;
+        std::string sha;
+        for (auto& [path, h] : hashed) if (path == dll) sha = h;
+        if (sha.empty()) { sha = hmcp::Sha256File(dll); hashed.emplace_back(dll, sha); }
+        if (sha == b->sha256) { std::lock_guard l(g_lock); g_build = b->id; g_sha = sha; break; }
+    }
 
     // Hammer's main window may not exist yet (injected during start-up): look for it, then subclass and add the menu
     for (int i = 0; i < 600 && !g_hwnd; ++i) {
