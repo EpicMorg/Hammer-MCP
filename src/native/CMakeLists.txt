@@ -33,7 +33,7 @@ add_custom_target(hmcp_allowed DEPENDS ${HMCP_ALLOWED})
 
 add_library(hmcp_common INTERFACE)
 target_include_directories(hmcp_common INTERFACE common ${CMAKE_CURRENT_BINARY_DIR}/generated)
-target_link_libraries(hmcp_common INTERFACE bcrypt)
+target_link_libraries(hmcp_common INTERFACE bcrypt advapi32)
 add_dependencies(hmcp_common hmcp_allowed)
 
 add_executable(hmcp-injector injector/main.cpp injector/injector.rc)

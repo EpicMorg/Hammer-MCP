@@ -11,6 +11,7 @@
 // subclassed window procedure (custom WM_APP messages). Unload: UI is uninstalled on the UI thread first (menu removed,
 // window procedure restored, waiting for our dialogs to close), then FreeLibraryAndExitThread.
 #include "hmcp.h"
+#include <sddl.h>
 #include <deque>
 #include <mutex>
 #include <string>
@@ -555,6 +556,25 @@ DWORD WINAPI FindWindowThread(LPVOID) {
     return 0;
 }
 
+// Pipe access: only the user Hammer runs as (and SYSTEM) - the default DACL would also give Everyone read access.
+// Uses the user's SID rather than OWNER RIGHTS, so an elevated Hammer still accepts the same user's non-elevated app.
+PSECURITY_DESCRIPTOR PipeSecurity() {
+    HANDLE token = nullptr;
+    if (!OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &token)) return nullptr;
+    PSECURITY_DESCRIPTOR sd = nullptr;
+    BYTE buf[256]; DWORD n = 0;
+    if (GetTokenInformation(token, TokenUser, buf, sizeof buf, &n)) {
+        LPWSTR sid = nullptr;
+        if (ConvertSidToStringSidW(reinterpret_cast<TOKEN_USER*>(buf)->User.Sid, &sid)) {
+            std::wstring sddl = L"D:P(A;;GA;;;" + std::wstring(sid) + L")(A;;GA;;;SY)";
+            ConvertStringSecurityDescriptorToSecurityDescriptorW(sddl.c_str(), SDDL_REVISION_1, &sd, nullptr);
+            LocalFree(sid);
+        }
+    }
+    CloseHandle(token);
+    return sd;   // nullptr = default DACL (still local-only)
+}
+
 DWORD WINAPI Worker(LPVOID) {
     // one adapter per process, even when a copy is injected from another folder (another module)
     HANDLE instance = CreateMutexW(nullptr, TRUE, hmcp::InstanceName(GetCurrentProcessId()).c_str());
@@ -587,10 +607,12 @@ DWORD WINAPI Worker(LPVOID) {
     HANDLE finder = CreateThread(nullptr, 0, FindWindowThread, nullptr, 0, nullptr);
 
     std::wstring name = hmcp::PipeName(GetCurrentProcessId());
+    PSECURITY_DESCRIPTOR sd = PipeSecurity();
+    SECURITY_ATTRIBUTES sa{ sizeof sa, sd, FALSE };
     bool unload = false;
     while (!unload) {
         HANDLE pipe = CreateNamedPipeW(name.c_str(), PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED,
-            PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS, 1, 8192, 8192, 0, nullptr);
+            PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS, 1, 8192, 8192, 0, sd ? &sa : nullptr);
         if (pipe == INVALID_HANDLE_VALUE) break;
         OVERLAPPED cov{};
         cov.hEvent = CreateEventW(nullptr, TRUE, FALSE, nullptr);
@@ -627,6 +649,7 @@ DWORD WINAPI Worker(LPVOID) {
     CloseHandle(g_outEvent);
     CloseHandle(g_stopEvent);
     CloseHandle(g_uiStop);
+    if (sd) LocalFree(sd);
     ReleaseMutex(instance);
     CloseHandle(instance);
     FreeLibraryAndExitThread(g_self, 0);
