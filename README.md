@@ -185,11 +185,21 @@ Tag `vX.Y.Z[-suffix]` on GitHub → the `release` workflow builds a self-contain
 (win-x64, ~65 MB) and attaches a zip to a GitHub release (`-alpha` / `-beta` tags become pre-releases).
 Release notes come from [CHANGELOG.md](CHANGELOG.md). Contributing, new Hammer builds, bug reports: [CONTRIBUTING.md](CONTRIBUTING.md); security: [SECURITY.md](SECURITY.md). Components and licenses: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 
+## Links
+
+| Where | What |
+|---|---|
+| [GitHub releases](https://github.com/EpicMorg/Hammer-MCP/releases) | Downloads (`hammer-mcp.exe`, `hammer-mcp-cli.exe`) and release notes |
+| [Valve Developer Community](https://developer.valvesoftware.com/wiki/Hammer_MCP_Server) ([RU](https://developer.valvesoftware.com/wiki/Ru/Hammer_MCP_Server)) | Article about the tool |
+| [GameBanana](https://gamebanana.com/tools/24946) | Tool page for mappers |
+| [HL-Lab](https://hl-lab.ru/rus/files_source/Hammer_MCP_Server) | Tool page on the Russian Half-Life / Source mapping site |
+| [Glama](https://glama.ai/mcp/servers/EpicMorg/Hammer-MCP) | MCP server listing and score |
+| [Issues](https://github.com/EpicMorg/Hammer-MCP/issues) | Bugs, unknown Hammer builds ([how to report](CONTRIBUTING.md)) |
+
 ## Credits & legal
 
 Built by [EpicMorg](https://github.com/EpicMorg). Shell-channel protocol as published by Valve in the
 [Source SDK 2013](https://github.com/ValveSoftware/source-sdk-2013) (`src/public/editor_sendcommand.{h,cpp}`).
-Article on the Valve Developer Community: [Hammer MCP Server](https://developer.valvesoftware.com/wiki/Hammer_MCP_Server).
 Thanks to [ficool2](https://github.com/ficool2) for [Hammer++](https://github.com/ficool2/HammerPlusPlus-Website) and to the
 [Valve Developer Community](https://developer.valvesoftware.com/wiki/Hammer).
 Hammer-MCP contains no Valve source code and no leaked code; it talks to editors only through their public, built-in
