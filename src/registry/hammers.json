@@ -8,6 +8,7 @@
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "a34149879cdf5f91f417063163c52ece898c087bc86e20773f00b722c4bf573b", "linked": "2026-10-27" },
       "shell": { "present": true, "versionRule": "file", "checkVersionOnlyInSession": true },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt",
+      "injectAdapter": "hpp-8873-x64",
       "verified": { "liveShell": "2026-11-10" },
       "notes": "Also shipped by TF2 Classified's toolslauncher. No 'modified' marker in the title."
     },

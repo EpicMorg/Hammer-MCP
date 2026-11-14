@@ -2,7 +2,7 @@ name: build
 
 on:
   push:
-    branches: [develop, master]
+    branches: [develop, master, 'feature/**']
   pull_request:
     branches: [develop, master]
 
@@ -21,3 +21,22 @@ jobs:
         run: dotnet build HammerMcp.sln -c Release
       - name: Test
         run: dotnet test --solution HammerMcp.sln -c Release --no-build
+
+  native:
+    # reference build of the injector and adapters with MSVC (Linux builds them with clang-cl + xwin)
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        arch: [Win32, x64]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S src/native -B build/native-${{ matrix.arch }} -A ${{ matrix.arch }}
+      - name: Build
+        run: cmake --build build/native-${{ matrix.arch }} --config Release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-${{ matrix.arch }}
+          path: |
+            build/native-${{ matrix.arch }}/Release/*.exe
+            build/native-${{ matrix.arch }}/Release/*.dll
