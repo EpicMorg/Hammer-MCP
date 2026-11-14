@@ -28,23 +28,30 @@ jobs:
             cmake -S src/native -B build/native-$arch -A $arch
             cmake --build build/native-$arch --config Release
           }
-      - name: Publish single-file exe
+      - name: Publish single-file exe (win-x64 and win-x86, same layout)
         working-directory: src
         shell: pwsh
         run: |
           $version = "${{ github.ref_name }}".TrimStart("v")
-          dotnet publish src/HammerMcp.App/HammerMcp.App.csproj -c Release -r win-x64 --self-contained `
-            -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true `
-            -p:DebugType=none -p:Version=$version -o ../publish
-          # hammer-mcp-cli.exe: the same server without the tray app (MCP over stdio for clients that launch it)
-          dotnet publish src/HammerMcp.Cli/HammerMcp.Cli.csproj -c Release -r win-x64 --self-contained `
-            -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true `
-            -p:DebugType=none -p:Version=$version -o ../publish
+          foreach ($rid in "win-x64", "win-x86") {
+            dotnet publish src/HammerMcp.App/HammerMcp.App.csproj -c Release -r $rid --self-contained `
+              -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true `
+              -p:DebugType=none -p:Version=$version -o ../publish-$rid
+            # hammer-mcp-cli.exe: the same server without the tray app (MCP over stdio for clients that launch it)
+            dotnet publish src/HammerMcp.Cli/HammerMcp.Cli.csproj -c Release -r $rid --self-contained `
+              -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true `
+              -p:DebugType=none -p:Version=$version -o ../publish-$rid
+            # both bitnesses of the injector + adapter: an x86 app injects into an x64 Hammer through hmcp-injector64.exe
+            $n = (Get-ChildItem ../publish-$rid/native -Filter "hmcp-*").Count
+            if ($n -lt 4) { throw "${rid}: native\ has $n files, expected 2 injectors + 2 adapters" }
+          }
       - name: Package
         shell: pwsh
         run: |
-          Copy-Item README.md, README.ru.md, CHANGELOG.md, CHANGELOG.ru.md, LICENSE, THIRD-PARTY-NOTICES.md publish/
-          Compress-Archive -Path publish/* -DestinationPath "hammer-mcp-${{ github.ref_name }}-win-x64.zip"
+          foreach ($rid in "win-x64", "win-x86") {
+            Copy-Item README.md, README.ru.md, CHANGELOG.md, CHANGELOG.ru.md, LICENSE, THIRD-PARTY-NOTICES.md publish-$rid/
+            Compress-Archive -Path publish-$rid/* -DestinationPath "hammer-mcp-${{ github.ref_name }}-$rid.zip"
+          }
       - name: GitHub release
         shell: pwsh
         env:
@@ -60,5 +67,5 @@ jobs:
             if ($in) { $notes += $line }
           }
           Set-Content release-notes.md ($notes -join "`n").Trim()
-          gh release create "${{ github.ref_name }}" "hammer-mcp-${{ github.ref_name }}-win-x64.zip" `
+          gh release create "${{ github.ref_name }}" "hammer-mcp-${{ github.ref_name }}-win-x64.zip" "hammer-mcp-${{ github.ref_name }}-win-x86.zip" `
             --title "Hammer-MCP ${{ github.ref_name }}" --notes-file release-notes.md --generate-notes @extra
