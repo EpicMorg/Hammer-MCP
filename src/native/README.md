@@ -17,6 +17,6 @@ Build:
 
 ```bash
 src/native/build.sh                                   # Linux: clang-cl + lld-link + xwin (CRT/SDK in /opt/xwin)
-cmake -S src/native -B build/native-x64 -A x64        # Windows: MSVC (reference build, also in CI)
+cmake -S src/native -B build/native-x64 -A x64        # Windows: MSVC from VS 2022+ (VS 2019 Build Tools without the CMake component do not work); also in CI
 cmake --build build/native-x64 --config Release
 ```
