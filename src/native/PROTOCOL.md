@@ -11,7 +11,7 @@ the Hammer-MCP server connects as the client. One UTF-8 JSON object per line (`\
 
 | direction | message | meaning |
 |---|---|---|
-| adapter → | `{"type":"hello","adapter":"hpp-8873-x64","version":"0.1.0","pid":N,"build":"hpp-tf2-8873-x64","editorSha256":"…"}` | first line after connect |
+| adapter → | `{"type":"hello","adapter":"x64","version":"0.1.0","pid":N,"build":"hpp-tf2-8873-x64","support":"menu","editorSha256":"…"}` | first line after connect; `adapter` = bitness of the DLL, `build` = registry id it found, `support` = registry `injectAdapter` level |
 | → adapter | `{"cmd":"ping"}` | heartbeat (server: every ~5 s; no pong for ~15 s = adapter gone) |
 | adapter → | `{"type":"pong"}` | |
 | → adapter | `{"cmd":"unload"}` | adapter answers `{"type":"bye"}`, removes its menu, restores the window procedure and unloads itself |

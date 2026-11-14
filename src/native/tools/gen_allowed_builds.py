@@ -1,11 +1,13 @@
-"""Writes allowed_builds.h: registry builds that have an injectAdapter (sha256 of the editor DLL, exe, arch, adapter id).
+"""Writes allowed_builds.h: registry builds that have an injectAdapter (sha256 of the editor file, arch, support level).
+injectAdapter is the support level of the adapter for that build ("menu" = layers 0-1; later e.g. "live-read");
+there is one adapter DLL per bitness (hmcp-adapter-x86.dll / -x64.dll), build specifics are data, not separate DLLs.
 The C# server (InjectPolicy) decides first; the native injector checks the same list again."""
 import json, re, sys
 src, out = sys.argv[1], sys.argv[2]
 text = re.sub(r'^\s*//.*$', '', open(src, encoding='utf-8').read(), flags=re.M)
 builds = [b for b in json.loads(text)['builds'] if b.get('injectAdapter')]
 lines = ['// generated from registry/hammers.json by tools/gen_allowed_builds.py - do not edit', '#pragma once',
-         'struct HmcpAllowedBuild { const char* id; const char* editorDll; const char* sha256; bool x64; const char* adapter; };',
+         'struct HmcpAllowedBuild { const char* id; const char* editorDll; const char* sha256; bool x64; const char* support; };',
          'static const HmcpAllowedBuild kHmcpAllowedBuilds[] = {']
 for b in builds:
     lines.append(f'    {{ "{b["id"]}", "{b["match"]["dll"]}", "{b["match"]["sha256"].lower()}", {"true" if b["arch"] == "x64" else "false"}, "{b["injectAdapter"]}" }},')

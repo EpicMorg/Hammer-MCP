@@ -1,15 +1,7 @@
-// Hammer-MCP adapter. HMCP_ADAPTER_ID is the registry "injectAdapter" it is built for:
-//   generic-x86 / generic-x64 - every Hammer with a Win32 menu (stock Source 1, Hammer++, Slammin, Black Mesa, ...,
-//                               and GoldSrc: Worldcraft / Hammer 3.x and their mods);
-//   hpp-8873-x86 / hpp-8873-x64 - Hammer++ 8873, which will also get build-specific code from layer 2 on.
-// Layers 0-1 touch no Hammer internals (window, menu, pipe), so one source serves every id.
-// Layer 0: named pipe, hello, ping, unload.  Layer 1: the MCP menu in Hammer's main window.
-// Protocol: see src/native/PROTOCOL.md. One JSON object per line over \\.\pipe\hammer-mcp-adapter-<pid> (local only).
-//
-// Threads: DllMain only starts the worker. The worker owns the pipe (overlapped I/O: reading and writing at the same
-// time) and finds Hammer's main window; everything that touches the UI runs on Hammer's UI thread through our
-// subclassed window procedure (custom WM_APP messages). Unload: UI is uninstalled on the UI thread first (menu removed,
-// window procedure restored, waiting for our dialogs to close), then FreeLibraryAndExitThread.
+// Hammer-MCP adapter: one DLL per bitness (hmcp-adapter-x86.dll / hmcp-adapter-x64.dll) for every registry build with
+// an "injectAdapter" support level. It finds out itself which build it runs in (sha256 of this process's editor file)
+// and reports it in hello. Layers 0-1 (pipe, MCP menu) touch no Hammer internals; build-specific knowledge for later
+// layers comes as data (signatures / offsets per build), not as separate DLLs.
 #include "hmcp.h"
 #include <sddl.h>
 #include <deque>
@@ -19,10 +11,11 @@
 
 namespace {
 
-#ifndef HMCP_ADAPTER_ID
-#error "HMCP_ADAPTER_ID is set by CMake"
+#if defined(_WIN64)
+constexpr const char* kAdapterId = "x64";
+#else
+constexpr const char* kAdapterId = "x86";
 #endif
-constexpr const char* kAdapterId = HMCP_ADAPTER_ID;
 
 // ---------- small JSON helpers (flat objects; enough for PROTOCOL.md) ----------
 
@@ -165,7 +158,7 @@ ServerState g_state;
 std::deque<std::string> g_out;
 std::vector<std::string> g_log;
 std::vector<std::pair<std::string, std::string>> g_pendingItems;  // id, text
-std::string g_build = "unknown", g_sha;
+std::string g_build = "unknown", g_sha, g_support = "none";
 HANDLE g_outEvent = nullptr;   // something queued in g_out
 HANDLE g_stopEvent = nullptr;  // unload without a server (menu "Disconnect" while not connected)
 
@@ -265,7 +258,9 @@ std::wstring StatusText() {
     auto s = State();
     std::string sha, build;
     { std::lock_guard l(g_lock); sha = g_sha; build = g_build; }
-    std::wstring t = L"Adapter: " + W(kAdapterId) + L" " + W(HMCP_NATIVE_VERSION) + L"\n";
+    std::string support;
+    { std::lock_guard l(g_lock); support = g_support; }
+    std::wstring t = L"Adapter: " + W(kAdapterId) + L" " + W(HMCP_NATIVE_VERSION) + L" (support: " + W(support) + L")\n";
     t += L"Hammer build: " + W(build) + L" (" + W(sha.substr(0, 12)) + L"…)\n\n";
     if (!s.connected) return t + L"Hammer-MCP server: not connected";
     t += L"Hammer-MCP server: " + W(s.server) + L", mode " + W(s.mode) + L"\n";
@@ -442,7 +437,8 @@ HWND FindMainWindow() {
 std::string Hello() {
     std::lock_guard l(g_lock);
     return std::string("{\"type\":\"hello\",\"adapter\":\"") + kAdapterId + "\",\"version\":\"" HMCP_NATIVE_VERSION "\",\"pid\":" +
-           std::to_string(GetCurrentProcessId()) + ",\"build\":\"" + g_build + "\",\"editorSha256\":\"" + g_sha + "\"}";
+           std::to_string(GetCurrentProcessId()) + ",\"build\":\"" + g_build + "\",\"support\":\"" + g_support +
+           "\",\"editorSha256\":\"" + g_sha + "\"}";
 }
 
 bool WriteAll(HANDLE pipe, const std::string& line) {
@@ -589,17 +585,17 @@ DWORD WINAPI Worker(LPVOID) {
     // build / sha of the editor this adapter runs in (for hello, Status and About)
     wchar_t exe[MAX_PATH * 2];
     GetModuleFileNameW(nullptr, exe, MAX_PATH * 2);
-    // which registry build this process is: the first allowed build of this adapter id whose editor DLL hash matches
+    // which registry build this process is: the allowed build of this bitness whose editor file hash matches
     std::vector<std::pair<std::wstring, std::string>> hashed;
     for (const HmcpAllowedBuild* b = kHmcpAllowedBuilds; b->id; ++b) {
-        if (std::string(b->adapter) != kAdapterId) continue;
+        if (b->x64 != (sizeof(void*) == 8)) continue;
         // GoldSrc: the editor is this very exe (never a neighbour such as wc.exe next to hammer.exe)
         std::wstring dll = hmcp::EndsWithExe(b->editorDll) ? std::wstring(exe) : hmcp::EditorDll(exe, b->editorDll);
         if (dll.empty()) continue;
         std::string sha;
         for (auto& [path, h] : hashed) if (path == dll) sha = h;
         if (sha.empty()) { sha = hmcp::Sha256File(dll); hashed.emplace_back(dll, sha); }
-        if (sha == b->sha256) { std::lock_guard l(g_lock); g_build = b->id; g_sha = sha; break; }
+        if (sha == b->sha256) { std::lock_guard l(g_lock); g_build = b->id; g_sha = sha; g_support = b->support; break; }
     }
 
     // Hammer's main window may not exist yet (injected during start-up, or Hammer busy loading a map for minutes):

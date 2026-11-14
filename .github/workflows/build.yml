@@ -32,7 +32,7 @@ jobs:
         run: |
           dotnet publish src/HammerMcp.App/HammerMcp.App.csproj -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o ../publish-check
           $n = (Get-ChildItem ../publish-check/native -Filter "hmcp-*").Count
-          if ($n -lt 6) { throw "native\ in the publish folder has $n files, expected injectors + adapters" }
+          if ($n -lt 4) { throw "native\ in the publish folder has $n files, expected 2 injectors + 2 adapters" }
           Get-ChildItem ../publish-check/native | Format-Table Name, Length
       - name: Test
         run: dotnet test --solution HammerMcp.sln -c Release --no-build

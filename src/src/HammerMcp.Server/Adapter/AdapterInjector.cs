@@ -26,7 +26,7 @@ public static class AdapterInjector
         var injector = InjectorPath(build!);
         if (!File.Exists(injector))
             return $"{Path.GetFileName(injector)} not found in {NativeDir}";
-        var dll = Path.Combine(NativeDir, $"hmcp-adapter-{build!.InjectAdapter}.dll");
+        var dll = AdapterPath(build!);
         return File.Exists(dll) ? null : $"{Path.GetFileName(dll)} not found in {NativeDir}";
     }
 
@@ -56,6 +56,10 @@ public static class AdapterInjector
             _ => new Result(false, false, $"injector failed (exit {process.ExitCode}): {text}"),
         };
     }
+
+    /// <summary>One adapter DLL per bitness; it finds out itself which build it runs in (InjectAdapter is a support level).</summary>
+    private static string AdapterPath(HammerBuild build) =>
+        Path.Combine(NativeDir, build.Arch == "x64" ? "hmcp-adapter-x64.dll" : "hmcp-adapter-x86.dll");
 
     private static string InjectorPath(HammerBuild build) =>
         Path.Combine(NativeDir, build.Arch == "x64" ? "hmcp-injector64.exe" : "hmcp-injector32.exe");

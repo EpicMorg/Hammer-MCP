@@ -40,22 +40,14 @@ add_executable(hmcp-injector injector/main.cpp injector/injector.rc)
 set_target_properties(hmcp-injector PROPERTIES OUTPUT_NAME "hmcp-injector${HMCP_BITS}")
 target_link_libraries(hmcp-injector PRIVATE hmcp_common)
 
-# one adapter DLL per build id (registry injectAdapter); only the bitness that matches the build is produced
-function(hmcp_adapter id src_dir description)
-  add_library(${id} SHARED ${src_dir}/adapter.cpp ${src_dir}/adapter.rc)
-  set_target_properties(${id} PROPERTIES OUTPUT_NAME "hmcp-adapter-${id}")
-  target_compile_definitions(${id} PRIVATE HMCP_ADAPTER_ID="${id}")
-  set_source_files_properties(${src_dir}/adapter.rc TARGET_DIRECTORY ${id} PROPERTIES
-    COMPILE_DEFINITIONS "HMCP_ADAPTER_FILE=\"hmcp-adapter-${id}.dll\";HMCP_ADAPTER_DESC=\"${description}\"")
-  target_link_libraries(${id} PRIVATE hmcp_common)
-endfunction()
-
-# generic-*: layers 0-1 (pipe + MCP menu) for every Source 1 Hammer with a Win32 menu in the registry;
-# hpp-8873-*: the same plus build-specific code from layer 2 on (selected by HMCP_ADAPTER_ID)
+# one adapter DLL per bitness for every registry build with an "injectAdapter" support level
+add_library(hmcp-adapter SHARED adapters/base/adapter.cpp adapters/base/adapter.rc)
 if(HMCP_BITS EQUAL 64)
-  hmcp_adapter(generic-x64 adapters/base "Hammer-MCP adapter (generic, x64)")
-  hmcp_adapter(hpp-8873-x64 adapters/base "Hammer-MCP adapter for Hammer++ 8873 x64")
+  set(HMCP_ADAPTER_NAME hmcp-adapter-x64)
 else()
-  hmcp_adapter(generic-x86 adapters/base "Hammer-MCP adapter (generic, x86)")
-  hmcp_adapter(hpp-8873-x86 adapters/base "Hammer-MCP adapter for Hammer++ 8873 x86")
+  set(HMCP_ADAPTER_NAME hmcp-adapter-x86)
 endif()
+set_target_properties(hmcp-adapter PROPERTIES OUTPUT_NAME ${HMCP_ADAPTER_NAME})
+set_source_files_properties(adapters/base/adapter.rc PROPERTIES
+  COMPILE_DEFINITIONS "HMCP_ADAPTER_FILE=\"${HMCP_ADAPTER_NAME}.dll\";HMCP_ADAPTER_DESC=\"Hammer-MCP adapter (${HMCP_BITS}-bit)\"")
+target_link_libraries(hmcp-adapter PRIVATE hmcp_common)

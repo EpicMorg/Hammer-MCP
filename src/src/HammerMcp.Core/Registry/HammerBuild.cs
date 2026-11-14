@@ -28,7 +28,10 @@ public sealed record HammerBuild
     /// <summary>vmf, rmf, map, jmf.</summary>
     public string MapFormat { get; init; } = "vmf";
 
-    /// <summary>Id of the C++ inject adapter for expert mode, if one exists.</summary>
+    /// <summary>
+    /// Support level of the inject adapter for this build (Advanced mode), null = never injected. "menu" = the MCP menu
+    /// in Hammer (layers 0-1); later levels add live reading etc. One adapter DLL per bitness serves every build.
+    /// </summary>
     public string? InjectAdapter { get; init; }
 
     /// <summary>What was verified live and when, e.g. "liveShell": "2026-11-10".</summary>

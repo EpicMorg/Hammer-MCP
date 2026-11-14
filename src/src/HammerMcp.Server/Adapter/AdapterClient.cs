@@ -7,7 +7,7 @@ using System.Text.Json.Nodes;
 namespace HammerMcp.Server.Adapter;
 
 /// <summary>What the adapter says about itself in its first line (<c>hello</c>).</summary>
-public sealed record AdapterHello(string Adapter, string Version, int Pid, string Build, string EditorSha256);
+public sealed record AdapterHello(string Adapter, string Version, int Pid, string Build, string EditorSha256, string Support = "menu");
 
 /// <summary>
 /// Client side of the adapter pipe <c>\\.\pipe\hammer-mcp-adapter-&lt;pid&gt;</c> (protocol: src/native/PROTOCOL.md).
@@ -67,7 +67,8 @@ public sealed class AdapterClient : IAsyncDisposable
             if (Str(hello, "type") != "hello")
                 throw new IOException($"unexpected first line from the adapter: {line}");
             client.Hello = new AdapterHello(Str(hello, "adapter") ?? "?", Str(hello, "version") ?? "?",
-                hello?["pid"]?.GetValue<int>() ?? pid, Str(hello, "build") ?? "?", Str(hello, "editorSha256") ?? "");
+                hello?["pid"]?.GetValue<int>() ?? pid, Str(hello, "build") ?? "?", Str(hello, "editorSha256") ?? "",
+                Str(hello, "support") ?? "menu");
             _ = Task.Run(client.ReadLoopAsync);
             _ = Task.Run(client.PingLoopAsync);
             return client;

@@ -1,4 +1,4 @@
-// hmcp-injector32/64.exe --pid N --adapter <dir with hmcp-adapter-*.dll>
+// hmcp-injector32/64.exe --pid N --adapter <dir with hmcp-adapter-x86.dll / hmcp-adapter-x64.dll>
 // Started by the Hammer-MCP server only after the user pressed "Connect adapter" (InjectPolicy in C# decides first);
 // checks the same policy again here, before OpenProcess for writing.
 // Exit codes: 0 injected, 2 usage, 3 refused by the policy, 4 failed, 5 an adapter is already running in that process.
@@ -61,7 +61,8 @@ int wmain(int argc, wchar_t** argv) {
         if (AdapterLoaded(pid))
             return Fail(4, "an adapter is still loaded in %lu but not answering (unloading or stuck); try again, or restart Hammer", pid);
     }
-    std::wstring dll = adapterDir + L"\\hmcp-adapter-" + hmcp::Widen(policy.build->adapter) + L".dll";
+    // one adapter DLL per bitness; it finds out itself which build it runs in
+    std::wstring dll = adapterDir + (targetIs64 ? L"\\hmcp-adapter-x64.dll" : L"\\hmcp-adapter-x86.dll");
     if (!hmcp::Exists(dll)) return Fail(4, "adapter not found: %ls", dll.c_str());
 
     // 3) LoadLibraryW in the target
@@ -77,7 +78,7 @@ int wmain(int argc, wchar_t** argv) {
             WaitForSingleObject(t, 15000);
             DWORD loaded = 0; GetExitCodeThread(t, &loaded);
             CloseHandle(t);
-            if (loaded) { printf("injected %s into %lu (%s)\n", policy.build->adapter, pid, policy.build->id); rc = 0; }
+            if (loaded) { printf("injected the %s adapter into %lu (%s, support: %s)\n", targetIs64 ? "x64" : "x86", pid, policy.build->id, policy.build->support); rc = 0; }
             else Fail(4, "LoadLibraryW failed in the target");
         } else Fail(4, "CreateRemoteThread failed (%lu)", GetLastError());
     } else Fail(4, "cannot write the DLL path into the target (%lu)", GetLastError());
