@@ -1495,6 +1495,22 @@
       "shell": { "present": false },
       "mapFormat": "rmf",
       "notes": "Neon Hammer Editor 3.5, Russian translation."
+    },
+    {
+      "id": "jack-jackhammer-1.1-x64",
+      "family": "jack", "branch": "jackhammer-1.1", "arch": "x64",
+      "match": { "dll": "jackhammer.exe", "sha256": "d35409374e4706c4a16efa00c4ea449788414a945b9c111964c1e54584103d9c", "linked": "2015-01-01" },
+      "shell": { "present": false },
+      "mapFormat": "jmf",
+      "notes": "Jackhammer 1.1 (Jackhammer: Volatile Development Kit), the predecessor of J.A.C.K.; Qt 4 UI - no Win32 menu, no adapter. Seen in the HL-Lab SDK pack (addons\\Jackhammer)."
+    },
+    {
+      "id": "jack-steam-2023-x64",
+      "family": "jack", "branch": "jack-steam", "arch": "x64",
+      "match": { "dll": "jack.exe", "sha256": "965d707b16eda3ec880dfee5d258c00f8cebe3127ec2d3616bc3667f212cc698", "linked": "2023-12-26" },
+      "shell": { "present": false },
+      "mapFormat": "jmf",
+      "notes": "J.A.C.K. from Steam (app 496450); Qt 4 UI - no Win32 menu, no adapter."
     }
   ]
 }

@@ -38,6 +38,7 @@ public class InjectPolicyTests
             Match = new BuildMatch { Dll = "neon.exe", Sha256 = "00" }, InjectAdapter = "generic-x86",
         };
         Assert.True(InjectPolicy.Check(@"C:\HL-SDK\neon.exe", neon).Allowed);
-        Assert.False(InjectPolicy.Check(@"C:\Steam\Half-Life\hl.exe", neon).Allowed);   // a game exe is never the editor
+        Assert.True(InjectPolicy.Check(@"C:\HL-SDK\neon_copy.exe", neon).Allowed);       // identified by hash, not by name
+        Assert.False(InjectPolicy.Check(@"C:\Steam\Half-Life\hl.exe", null).Allowed);   // a game exe hashes to no build
     }
 }

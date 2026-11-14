@@ -24,9 +24,10 @@ public static class InjectPolicy
         var name = exePath[(cut + 1)..];
         if (File.Exists(Path.Combine(dir, "tools", "hammer.dll")) || build?.Family == "source2")
             return new(false, "Source 2 Hammer runs inside the game process (VAC / anti-cheat): injection is never allowed");
-        // GoldSrc editors (Worldcraft / Hammer 3.x and their mods) are matched by the exe itself (match.dll = hammer.exe, wc.exe, neon.exe...)
-        var exeIsEditor = build is not null && build.Match.Dll.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)
-                          && name.Equals(build.Match.Dll, StringComparison.OrdinalIgnoreCase);
+        // GoldSrc editors (Worldcraft / Hammer 3.x and their mods) are identified by the sha256 of the exe itself
+        // (match.dll = hammer.exe, wc.exe, neon.exe...), so the build passed here already proves this exe is the editor,
+        // whatever it is called (hammer34.exe is hammer.exe 3.4); a game exe never hashes to an editor build
+        var exeIsEditor = build is not null && build.Match.Dll.EndsWith(".exe", StringComparison.OrdinalIgnoreCase);
         if (!EditorExes.Contains(name) && !exeIsEditor)
             return new(false, $"{name} is not a standalone Hammer executable: injection into other (game) processes is never allowed");
         if (build is null)

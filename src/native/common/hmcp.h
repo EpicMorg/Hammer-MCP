@@ -52,7 +52,7 @@ inline bool EndsWithExe(const char* s) { size_t n = strlen(s); return n > 4 && _
 // Same rules as HammerMcp.Core.Registry.InjectPolicy: only a standalone editor of a build that has an adapter;
 // never a game process (VAC), never Source 2 (tools\hammer.dll lives inside the game), never an unknown build.
 // Source 1: hammer.exe / hammerplusplus.exe + the editor DLL's sha256. GoldSrc: the editor is the exe itself
-// (registry match.dll = hammer.exe / wc.exe / neon.exe ...), so the exe's own sha256 must match.
+// (registry match.dll = hammer.exe / wc.exe / neon.exe ...): the exe's own sha256 must match, under any file name.
 struct PolicyResult { const HmcpAllowedBuild* build; std::string reason; std::string sha256; };
 inline PolicyResult CheckPolicy(const std::wstring& exe, bool targetIs64) {
     std::wstring name = FileName(exe);
@@ -70,9 +70,8 @@ inline PolicyResult CheckPolicy(const std::wstring& exe, bool targetIs64) {
     for (const HmcpAllowedBuild* b = kHmcpAllowedBuilds; b->id; ++b) {
         if (b->x64 != targetIs64) continue;
         std::wstring file;
-        if (EndsWithExe(b->editorDll)) {           // GoldSrc: the exe is the editor
-            if (!IEquals(name, Widen(b->editorDll))) continue;
-            file = exe;
+        if (EndsWithExe(b->editorDll)) {           // GoldSrc: the exe is the editor; its sha256 identifies it whatever
+            file = exe;                            // it is called (hammer34.exe = hammer.exe 3.4); a game exe never matches
             sawExeEditor = true;
         } else {
             if (!standaloneHammer) continue;
@@ -82,7 +81,7 @@ inline PolicyResult CheckPolicy(const std::wstring& exe, bool targetIs64) {
         std::string sha = hash(file);
         if (sha == b->sha256) return { b, "allowed: " + std::string(b->id), sha };
     }
-    if (!standaloneHammer && !sawExeEditor)
+    if (!standaloneHammer)
         return { nullptr, "not a standalone Hammer executable: game and other processes are never injected", {} };
     return { nullptr, "unknown Hammer build or no adapter for it: never injected", {} };
 }
