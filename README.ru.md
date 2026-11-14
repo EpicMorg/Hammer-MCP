@@ -192,6 +192,7 @@ src/native/                 C++ инжектор и адаптеры (в пла�
 | [Релизы на GitHub](https://github.com/EpicMorg/Hammer-MCP/releases) | Скачать (`hammer-mcp.exe`, `hammer-mcp-cli.exe`) и что нового |
 | [Valve Developer Community](https://developer.valvesoftware.com/wiki/Ru/Hammer_MCP_Server) ([EN](https://developer.valvesoftware.com/wiki/Hammer_MCP_Server)) | Статья об инструменте |
 | [GameBanana](https://gamebanana.com/tools/24946) | Страница инструмента для мапперов |
+| [HL-Lab](https://hl-lab.ru/rus/files_source/Hammer_MCP_Server) | Страница инструмента на русском сайте мапперов Half-Life / Source |
 | [Glama](https://glama.ai/mcp/servers/EpicMorg/Hammer-MCP) | Карточка MCP-сервера и оценка |
 | [Issues](https://github.com/EpicMorg/Hammer-MCP/issues) | Ошибки, неизвестные сборки Hammer ([как сообщить](CONTRIBUTING.md)) |
 

@@ -192,6 +192,7 @@ Release notes come from [CHANGELOG.md](CHANGELOG.md). Contributing, new Hammer b
 | [GitHub releases](https://github.com/EpicMorg/Hammer-MCP/releases) | Downloads (`hammer-mcp.exe`, `hammer-mcp-cli.exe`) and release notes |
 | [Valve Developer Community](https://developer.valvesoftware.com/wiki/Hammer_MCP_Server) ([RU](https://developer.valvesoftware.com/wiki/Ru/Hammer_MCP_Server)) | Article about the tool |
 | [GameBanana](https://gamebanana.com/tools/24946) | Tool page for mappers |
+| [HL-Lab](https://hl-lab.ru/rus/files_source/Hammer_MCP_Server) | Tool page on the Russian Half-Life / Source mapping site |
 | [Glama](https://glama.ai/mcp/servers/EpicMorg/Hammer-MCP) | MCP server listing and score |
 | [Issues](https://github.com/EpicMorg/Hammer-MCP/issues) | Bugs, unknown Hammer builds ([how to report](CONTRIBUTING.md)) |
 
