@@ -17,8 +17,23 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: src/global.json
+      - name: Native (for the app's native\ folder)
+        working-directory: .
+        shell: pwsh
+        run: |
+          foreach ($arch in "Win32", "x64") {
+            cmake -S src/native -B build/native-$arch -A $arch
+            cmake --build build/native-$arch --config Release
+          }
       - name: Build
         run: dotnet build HammerMcp.sln -c Release
+      - name: Publish check (native\ next to the single-file exe)
+        shell: pwsh
+        run: |
+          dotnet publish src/HammerMcp.App/HammerMcp.App.csproj -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o ../publish-check
+          $n = (Get-ChildItem ../publish-check/native -Filter "hmcp-*").Count
+          if ($n -lt 6) { throw "native\ in the publish folder has $n files, expected injectors + adapters" }
+          Get-ChildItem ../publish-check/native | Format-Table Name, Length
       - name: Test
         run: dotnet test --solution HammerMcp.sln -c Release --no-build
 

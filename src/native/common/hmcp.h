@@ -39,10 +39,18 @@ inline std::wstring Widen(const char* s) { return std::wstring(s, s + strlen(s))
 inline bool Exists(const std::wstring& p) { return GetFileAttributesW(p.c_str()) != INVALID_FILE_ATTRIBUTES; }
 inline bool IEquals(const std::wstring& a, const std::wstring& b) { return CompareStringOrdinal(a.c_str(), -1, b.c_str(), -1, TRUE) == CSTR_EQUAL; }
 
-// The editor DLL next to a Hammer exe: Hammer++ keeps it in bin\hammerplusplus\bin, stock Hammer next to the exe.
+// The editor DLL that belongs to THIS exe. Several editors can share one bin folder (Bestiarium: Slammin's hammer.exe +
+// hammer_dll.dll and Hammer++'s hammerplusplus.exe + hammerplusplus\bin\hammerplusplus_dll.dll), so the DLL is chosen
+// by the exe name, never by whatever lies around: hammerplusplus*.exe -> hammerplusplus_dll.dll (next to it or in
+// hammerplusplus\bin), any other Hammer exe -> hammer_dll.dll / hammer.dll next to it. Empty if this exe has none of dllName.
 inline std::wstring EditorDll(const std::wstring& exe, const char* dllName) {
-    std::wstring dir = Dir(exe), name = Widen(dllName);
-    for (auto c : { dir + L"\\hammerplusplus\\bin\\" + name, dir + L"\\" + name })
+    std::wstring dir = Dir(exe), name = Widen(dllName), exeName = FileName(exe);
+    bool hpp = _wcsnicmp(exeName.c_str(), L"hammerplusplus", 14) == 0;
+    bool hppDll = IEquals(name, L"hammerplusplus_dll.dll");
+    if (hpp != hppDll) return {};
+    std::vector<std::wstring> candidates{ dir + L"\\" + name };
+    if (hpp) candidates.push_back(dir + L"\\hammerplusplus\\bin\\" + name);
+    for (auto& c : candidates)
         if (Exists(c)) return c;
     return {};
 }

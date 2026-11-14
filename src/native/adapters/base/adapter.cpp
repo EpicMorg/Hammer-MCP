@@ -573,7 +573,8 @@ DWORD WINAPI Worker(LPVOID) {
     std::vector<std::pair<std::wstring, std::string>> hashed;
     for (const HmcpAllowedBuild* b = kHmcpAllowedBuilds; b->id; ++b) {
         if (std::string(b->adapter) != kAdapterId) continue;
-        std::wstring dll = hmcp::EditorDll(exe, b->editorDll);
+        // GoldSrc: the editor is this very exe (never a neighbour such as wc.exe next to hammer.exe)
+        std::wstring dll = hmcp::EndsWithExe(b->editorDll) ? std::wstring(exe) : hmcp::EditorDll(exe, b->editorDll);
         if (dll.empty()) continue;
         std::string sha;
         for (auto& [path, h] : hashed) if (path == dll) sha = h;

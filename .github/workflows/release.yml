@@ -20,6 +20,14 @@ jobs:
       - name: Test
         working-directory: src
         run: dotnet test --solution HammerMcp.sln -c Release
+      - name: Native injectors and adapters (MSVC)
+        # picked up by HammerMcp.App.csproj from build/native-{Win32,x64}/Release into native\ next to hammer-mcp.exe
+        shell: pwsh
+        run: |
+          foreach ($arch in "Win32", "x64") {
+            cmake -S src/native -B build/native-$arch -A $arch
+            cmake --build build/native-$arch --config Release
+          }
       - name: Publish single-file exe
         working-directory: src
         shell: pwsh

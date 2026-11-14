@@ -29,7 +29,10 @@
     <HmcpNative Include="$(HmcpNativeDir)\**\hmcp-*.exe;$(HmcpNativeDir)\**\hmcp-*.dll" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="@(HmcpNative)" Link="native\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <!-- real files on disk, never inside the single-file exe: the injector is started as a process and the adapter DLL
+         is loaded by Hammer from its path -->
+    <None Include="@(HmcpNative)" Link="native\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" Visible="false" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
