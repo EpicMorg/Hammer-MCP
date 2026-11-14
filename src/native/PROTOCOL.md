@@ -45,3 +45,33 @@ the pending counter, Status and About:
   status of the MCP menu (no modal popups from the server side).
 
 The adapter never decides anything itself: pause, approval and undo live in the server, the menu only asks for them.
+
+## Layer 1.1 — chat, live log, approval list, build profile (agreed 2026-11-14)
+
+**Chat replaces "Ask agent…"**: the menu item **Chat…** opens a tool window (docked to Hammer's right edge, moves with it)
+where the user writes to the agent and sees its answers.
+
+| direction | message | meaning |
+|---|---|---|
+| adapter → | `{"type":"chat","text":"…"}` | the user wrote in the chat (old `{"type":"ask"}` is still accepted, same meaning) |
+| → adapter | `{"cmd":"chat","from":"user"\|"agent","text":"…","at":"HH:mm:ss"}` | a chat line to show; the server echoes the user's own lines too, so every window shows the same history |
+| adapter → | `{"type":"menu","item":"chat_history","id":"…"}` | sent when the chat window opens |
+| → adapter | `{"cmd":"chat_history","id":"…","items":[{"from":"user","text":"…","at":"…"}, …]}` | last ~200 lines |
+
+The agent gets the user's lines through `user_requests` / `hammer_status` as before and answers with a new MCP tool
+(`say_to_user(text)`), which the server turns into `{"cmd":"chat","from":"agent",…}`.
+
+**Live activity log**: **Activity log…** opens a tool window; it asks once (`{"type":"menu","item":"log","id":…}` →
+`{"cmd":"log",…}` as before) and then the server pushes every new line while connected:
+`{"cmd":"log_line","line":"12:01 create light …"}` (the adapter keeps the newest ~500).
+
+**Approval list**: **Pending changes (N)…** opens a list with a check box per change (like the app's window):
+Apply selected / Apply all / Reject all → the same `{"type":"approval","apply":[…],"reject":[…]}`.
+
+**Build profile**: right after `hello` the server sends the profile of the build the adapter reported (from its registry,
+which a `registry/hammers.json` next to `hammer-mcp.exe` overrides):
+`{"cmd":"profile","build":"hpp-tf2-8873-x64","support":"menu","features":{}}`. The adapter uses it instead of the
+copy embedded in its resources (the fallback when no server sent one). `features` (signatures / offsets per feature)
+arrive with layer 2; until then it is empty.
+
+All adapter windows (chat, log, approval, status, about) show the Hammer-MCP icon in the title and in the body.
