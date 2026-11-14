@@ -9,7 +9,7 @@ namespace HammerMcp.Server.Tools;
 /// <summary>Hammer main-menu commands via WM_COMMAND (same ids in every Source Hammer build).</summary>
 [McpServerToolType]
 [SupportedOSPlatform("windows")]
-public sealed class MenuTools(HammerTarget target, ActivityLog log)
+public sealed class MenuTools(HammerTarget target, ActivityLog log, HammerMcpServerOptions options)
 {
     [McpServerTool(Name = "save_map")]
     [Description("File > Save in Hammer. After saving, the .vmf on disk is up to date and hammer_status shows the new mapversion.")]
@@ -39,6 +39,8 @@ public sealed class MenuTools(HammerTarget target, ActivityLog log)
             log.Write($"menu: {name} refused - agent paused");
             return new MenuResult(false, AgentControl.PausedReason);
         }
+        if (options.AdapterOnlyRefusal is { } adapterOnly)
+            return new MenuResult(false, adapterOnly);
         var process = target.Current();
         if (process is null || process.MainWindow == 0)
             return new MenuResult(false, $"no Hammer is attached - {target.AttachHint}");

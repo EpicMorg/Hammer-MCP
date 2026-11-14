@@ -45,9 +45,9 @@ internal static class AgentInstructions
         The user can steer you from Hammer when the adapter is connected (MCP menu in Hammer's main menu bar):
         - hammer_status.agentPaused = true: the user pressed the stop button. Every edit is refused until they resume;
           do not retry - say what you wanted to do and wait.
-        - hammer_status.userRequests: what the user typed for you in MCP > Ask agent... (each request is shown once).
-          Treat it as a message from the user: do it or answer it. Call user_requests (cheap) between steps of a longer
-          task to see new ones and whether you were paused.
+        - hammer_status.userRequests: what the user wrote to you in Hammer's MCP > Chat (each line is shown once).
+          Treat it as a message from the user: do it, and answer in that chat with say_to_user. Call user_requests
+          (cheap) between steps of a longer task to see new ones and whether you were paused.
 
         - hammer_status.approval = "ask": the user reviews your edits. Each edit (create / set_keyvalue / rotate / delete,
           save_map, undo, redo, run_compile) waits until they apply or reject it (up to 2 minutes per call). Rejected:

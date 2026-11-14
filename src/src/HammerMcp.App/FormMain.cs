@@ -18,18 +18,21 @@ public partial class FormMain : Form
 
     private static readonly Dictionary<McpMode, string> ModeHelp = new()
     {
-        [McpMode.Auto] = "Best available for the attached Hammer: live edits through the shell channel and menu commands "
+        [McpMode.Auto] = "Best available for the attached Hammer: the adapter when you connected it (Connect adapter - Auto "
+                         + "never injects by itself), live edits through the shell channel and menu commands "
                          + "where a shell channel exists, otherwise read-only. Source 2 (CS2, Dota 2, HL:A): read-only "
                          + "from the .vmap and game files - its Hammer has no shell channel and no Win32 menus.",
-        [McpMode.Basic] = "Read-only: the agent sees Hammer status and map files, but cannot change anything in Hammer. "
+        [McpMode.Basic] = "Read-only: the agent sees Hammer status and map files, but cannot change anything in Hammer "
+                          + "(not even with a connected adapter: its MCP menu - pause, chat, log - still works). "
                           + "Works the same for Source 1, Source 2 (.vmap) and GoldSrc maps.",
         [McpMode.Shell] = "Live edits through Hammer's shell channel (create / keyvalue / rotate / delete entities) "
-                          + "and menu commands (save, undo, redo, run map, check for problems). The map must be saved.",
-        [McpMode.Advanced] = "Expert mode with an injected adapter (live read, selection, camera, geometry). "
-                             + "Only ever into a standalone Hammer exe of a known build - never into a game process "
-                             + "(VAC / anti-cheat), so never for Source 2. The adapter is injected only when you press "
-                             + "Connect adapter; it adds an MCP menu to Hammer (pause the agent, ask the agent, activity log). "
-                             + "Live read / selection / camera are not implemented yet - edits still go through the shell channel.",
+                          + "and menu commands (save, undo, redo, run map, check for problems). The map must be saved. "
+                          + "Shell channel only: no adapter.",
+        [McpMode.Advanced] = "Strict adapter mode, for debugging: everything that changes Hammer goes through the injected "
+                             + "adapter only, an error without it. The adapter cannot edit yet, so edits, menu commands and "
+                             + "compiles are refused - use Auto for work. The adapter goes only into a standalone Hammer exe "
+                             + "of a known build, never into a game process (VAC / anti-cheat), so never for Source 2, and "
+                             + "only when you press Connect adapter; it adds an MCP menu to Hammer (pause the agent, chat, activity log).",
     };
 
     private readonly HammerTarget _target = new();
@@ -73,7 +76,7 @@ public partial class FormMain : Form
         _logFile.Failed += message => _log.Write(message);
         _logFile.Configure(_settings.SaveLogs ? _settings.EffectiveLogFolder : null);
         _log.Line += _target.Control.Remember;
-        _adapter = new AdapterLink(_target, _log) { Mode = _settings.Mode };
+        _adapter = new AdapterLink(_target, _log, _registry) { Mode = _settings.Mode };
         _target.Adapter = _adapter;
         _adapter.Changed += () => BeginInvoke(RefreshAttached);
         _target.Control.Changed += () => _ = _adapter.PushStateAsync();
@@ -222,8 +225,24 @@ public partial class FormMain : Form
                        + (item.Process.HasShellChannel ? ""
                            : item.Process.IsSource2 ? " - Source 2 Hammer: read-only from map and game files"
                            : " - no shell channel: read-only + menu commands"));
+            if (_settings.Mode is McpMode.Auto or McpMode.Advanced)
+                _ = ConnectLoadedAdapterAsync();
         }
         UpdateAttachUi();
+    }
+
+    /// <summary>An adapter already loaded in this Hammer (e.g. the app was restarted): just connect to it, never inject.</summary>
+    private async Task ConnectLoadedAdapterAsync()
+    {
+        try
+        {
+            if (await _adapter.ConnectExistingAsync() is { } connected)
+                _log.Write($"adapter: already loaded in this Hammer - {connected}");
+        }
+        catch (Exception e)
+        {
+            _log.Write($"adapter: could not connect to the loaded adapter: {e.Message}");
+        }
     }
 
     private void UpdateAttachUi()
@@ -303,7 +322,7 @@ public partial class FormMain : Form
     /// <summary>Why the attached Hammer cannot get the adapter, or null. Never offered for Source 2 / unknown builds / games.</summary>
     private string? AdapterBlocked(HammerProcess? process) =>
         process is null ? "no Hammer attached"
-        : _settings.Mode != McpMode.Advanced ? "the adapter is used in Advanced mode only (Settings > MCP Mode)"
+        : _settings.Mode is McpMode.Basic or McpMode.Shell ? $"MCP Mode {_settings.Mode} does not use the adapter (Auto or Advanced do; Settings > MCP Mode)"
         : AdapterInjector.CannotInject(process.ExePath, _attachedBuild);
 
     private void UpdateAdapterButton(HammerProcess? process)
@@ -314,7 +333,7 @@ public partial class FormMain : Form
         buttonAdapter.Enabled = !_adapterBusy && (connected || blocked is null);
         _toolTip.SetToolTip(buttonAdapter, connected
             ? "Unload the adapter from Hammer (its MCP menu disappears; Hammer keeps running)"
-            : blocked ?? "Inject the Hammer-MCP adapter into this Hammer: adds an MCP menu (pause the agent, ask the agent, activity log)");
+            : blocked ?? "Inject the Hammer-MCP adapter into this Hammer: adds an MCP menu (pause the agent, chat with the agent, activity log, pending changes)");
     }
 
     private async Task ToggleAdapterAsync()

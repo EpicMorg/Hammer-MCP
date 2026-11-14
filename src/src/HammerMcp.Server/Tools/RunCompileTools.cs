@@ -8,7 +8,7 @@ namespace HammerMcp.Server.Tools;
 /// <summary>Running a compile changes files (the .bsp, the game's maps folder), so it is offered only when edits are allowed.</summary>
 [McpServerToolType]
 [SupportedOSPlatform("windows")]
-public sealed class RunCompileTools(HammerTarget target, CompileTools reader, ActivityLog log)
+public sealed class RunCompileTools(HammerTarget target, CompileTools reader, ActivityLog log, HammerMcpServerOptions options)
 {
     [McpServerTool(Name = "run_compile", Destructive = true)]
     [Description("Runs one of Hammer's Run Map sequences for the SAVED map (vbsp / vvis / vrad, copy .bsp to the game's maps folder) and returns the parsed compile log. Ask the user first: it takes time and overwrites the .bsp. Steps that launch the game are skipped unless launchGame is true. Save the map (save_map) before compiling.")]
@@ -21,6 +21,8 @@ public sealed class RunCompileTools(HammerTarget target, CompileTools reader, Ac
     {
         if (target.Control.Paused)
             return new { error = AgentControl.PausedReason };
+        if (options.AdapterOnlyRefusal is { } adapterOnly)
+            return new { error = adapterOnly };
         // approval mode: the compile starts only after the user applies it (it runs on a worker thread, never the UI)
         return target.Changes.Run<object>(
             $"compile the saved map with the '{sequence}' sequence{(launchGame ? " and start the game" : "")}",

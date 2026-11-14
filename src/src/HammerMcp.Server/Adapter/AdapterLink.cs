@@ -4,16 +4,34 @@ using HammerMcp.Core.Registry;
 namespace HammerMcp.Server.Adapter;
 
 /// <summary>
-/// The server's connection to the adapter in the attached Hammer: injects on the user's request, keeps the pipe,
-/// answers Hammer's MCP menu (pause, ask, activity log, disconnect) and pushes the server state to it.
+/// The server's connection to the adapter in the attached Hammer: injects on the user's request (or connects to an adapter
+/// that is already loaded), keeps the pipe, answers Hammer's MCP menu (pause, chat, activity log, pending changes,
+/// disconnect) and pushes the server state, the build profile, chat lines and the live log to it.
 /// </summary>
 [SupportedOSPlatform("windows")]
-public sealed class AdapterLink(HammerTarget target, ActivityLog log)
+public sealed class AdapterLink
 {
     private static readonly string ServerVersion =
         typeof(AdapterLink).Assembly.GetName().Version?.ToString(3) ?? "0";
 
+    private readonly HammerTarget target;
+    private readonly ActivityLog log;
+    private readonly HammerRegistry registry;
     private AdapterClient? _client;
+    private volatile bool _logLive; // the user opened Activity log in Hammer: push every new line
+
+    public AdapterLink(HammerTarget target, ActivityLog log, HammerRegistry registry)
+    {
+        this.target = target;
+        this.log = log;
+        this.registry = registry;
+        target.Control.Chat += line => _ = Send(c => c.SendChatAsync(line));
+        target.Control.Remembered += line =>
+        {
+            if (_logLive)
+                _ = Send(c => c.SendLogLineAsync(line));
+        };
+    }
 
     /// <summary>Connected or disconnected (raised on a background thread).</summary>
     public event Action? Changed;
@@ -39,9 +57,33 @@ public sealed class AdapterLink(HammerTarget target, ActivityLog log)
             return injected.Message;
 
         // the adapter creates its pipe right after it loads; its menu appears once Hammer's main window exists
-        var client = await AdapterClient.ConnectAsync(process.ProcessId, TimeSpan.FromSeconds(10), cancel);
+        return await OpenAsync(process.ProcessId, TimeSpan.FromSeconds(10), cancel);
+    }
+
+    /// <summary>
+    /// Connects to an adapter that is already loaded in the attached Hammer (e.g. after the app was restarted) - never
+    /// injects. Null if there is none.
+    /// </summary>
+    public async Task<string?> ConnectExistingAsync(CancellationToken cancel = default)
+    {
+        if (Connected || target.AttachedPid is not { } pid || !File.Exists($@"\\.\pipe\{AdapterClient.PipeName(pid)}"))
+            return null;
+        try
+        {
+            return await OpenAsync(pid, TimeSpan.FromSeconds(3), cancel);
+        }
+        catch (Exception e) when (e is IOException or TimeoutException or UnauthorizedAccessException)
+        {
+            log.Write($"adapter: found a loaded adapter but could not connect: {e.Message}");
+            return null;
+        }
+    }
+
+    private async Task<string> OpenAsync(int pid, TimeSpan timeout, CancellationToken cancel)
+    {
+        var client = await AdapterClient.ConnectAsync(pid, timeout, cancel);
         client.Menu += OnMenu;
-        client.Ask += OnAsk;
+        client.Chat += OnChat;
         client.Approval += (apply, reject) =>
         {
             log.Write($"user decided in Hammer: apply {string.Join(", ", apply)}{(reject.Count > 0 ? $"; reject {string.Join(", ", reject)}" : "")}");
@@ -51,14 +93,22 @@ public sealed class AdapterLink(HammerTarget target, ActivityLog log)
         {
             log.Write($"adapter disconnected: {why}");
             if (ReferenceEquals(_client, client))
+            {
                 _client = null;
+                _logLive = false;
+            }
             Changed?.Invoke();
         };
+        _logLive = false;
         _client = client;
-        log.Write($"adapter connected: {client.Hello.Adapter} {client.Hello.Version}, build {client.Hello.Build} ({client.Hello.EditorSha256[..Math.Min(12, client.Hello.EditorSha256.Length)]})");
+        var hello = client.Hello;
+        log.Write($"adapter connected: {hello.Adapter} {hello.Version}, build {hello.Build} ({hello.EditorSha256[..Math.Min(12, hello.EditorSha256.Length)]})");
+        // the profile from this server's registry (registry/hammers.json next to the app overrides the built-in one)
+        var known = registry.Builds.FirstOrDefault(b => b.Id == hello.Build);
+        await client.SendProfileAsync(hello.Build, known?.InjectAdapter ?? hello.Support);
         await PushStateAsync();
         Changed?.Invoke();
-        return $"connected to {client.Hello.Adapter} {client.Hello.Version} ({client.Hello.Build})";
+        return $"connected to {hello.Adapter} {hello.Version} ({hello.Build})";
     }
 
     /// <summary>Asks the adapter to unload itself (its menu disappears; Hammer keeps running).</summary>
@@ -74,8 +124,19 @@ public sealed class AdapterLink(HammerTarget target, ActivityLog log)
             ? c.SendStateAsync(ServerVersion, Mode.ToString(), Control.Paused, target.Changes.AskUser, target.Changes.Count, canUndo: false)
             : Task.CompletedTask;
 
-    public Task NotifyAsync(string text) =>
-        _client is { Connected: true } c ? c.SendNotifyAsync(text) : Task.CompletedTask;
+    public Task NotifyAsync(string text) => Send(c => c.SendNotifyAsync(text));
+
+    private Task Send(Func<AdapterClient, Task> send)
+    {
+        try
+        {
+            return _client is { Connected: true } c ? send(c) : Task.CompletedTask;
+        }
+        catch (Exception e) when (e is IOException or ObjectDisposedException)
+        {
+            return Task.CompletedTask;
+        }
+    }
 
     // event handlers from the pipe thread: an exception must never escape (async void would take the whole app down)
     private async void OnMenu(string item, string? id)
@@ -90,17 +151,17 @@ public sealed class AdapterLink(HammerTarget target, ActivityLog log)
         }
     }
 
-    private async void OnAsk(string text)
+    private void OnChat(string text)
     {
         try
         {
+            // the line is echoed to Hammer's chat by the Control.Chat handler; the agent gets it from user_requests
             Control.AddRequest(text);
-            log.Write($"user request from Hammer: {text}");
-            await NotifyAsync("request queued: the agent sees it with its next hammer_status / user_requests call");
+            log.Write($"user wrote in Hammer: {text}");
         }
         catch (Exception e)
         {
-            log.Write($"adapter: ask failed: {e.Message}");
+            log.Write($"adapter: chat failed: {e.Message}");
         }
     }
 
@@ -118,6 +179,10 @@ public sealed class AdapterLink(HammerTarget target, ActivityLog log)
                 break;
             case "log":
                 await c.SendLogAsync(id, Control.Recent());
+                _logLive = true; // from now on every new line goes to Hammer's log window
+                break;
+            case "chat_history":
+                await c.SendChatHistoryAsync(id, Control.ChatHistory());
                 break;
             case "pending":
                 await c.SendPendingAsync(id, target.Changes.Pending().Select(p => (p.Id, p.Text)));

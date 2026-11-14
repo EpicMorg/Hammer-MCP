@@ -10,12 +10,12 @@ namespace HammerMcp.Server.Tools;
 
 [McpServerToolType]
 [SupportedOSPlatform("windows")]
-public sealed class StatusTools(HammerRegistry registry, HammerTarget target, HammerMcpServerOptions options)
+public sealed class StatusTools(HammerRegistry registry, HammerTarget target, HammerMcpServerOptions options, ActivityLog log)
 {
     private static readonly string[] EditorDlls = ["hammerplusplus_dll.dll", "hammer_dll.dll", "hammer.dll"];
 
     [McpServerTool(Name = "hammer_status", ReadOnly = true)]
-    [Description("Which Hammer the server works with (process, exe, known build), which map is open, its saved mapversion, and what the agent may do (mode). Also: agentPaused (the user paused you in Hammer - no edits until resumed) and userRequests (what the user typed for you in Hammer's MCP > Ask agent... - do it or answer it). Call it at the start and between steps.")]
+    [Description("Which Hammer the server works with (process, exe, known build), which map is open, its saved mapversion, and what the agent may do (mode). Also: agentPaused (the user paused you in Hammer - no edits until resumed) and userRequests (what the user wrote to you in Hammer's MCP > Chat - do it, and answer with say_to_user). Call it at the start and between steps.")]
     public HammerStatus Status()
     {
         var process = target.Current();
@@ -30,7 +30,7 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
         return new HammerStatus(
             Running: true,
             Mode: options.Mode.ToString(),
-            LiveEdits: options.AllowsLiveEdits && process.HasShellChannel && !target.Control.Paused,
+            LiveEdits: options.AllowsShell && process.HasShellChannel && !target.Control.Paused,
             AgentPaused: target.Control.Paused,
             UserRequests: Requests(),
             Approval: target.Changes.AskUser ? "ask" : "auto",
@@ -58,12 +58,25 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
                 : null);
     }
 
-    /// <summary>Requests the user typed in Hammer (MCP > Ask agent...) since the last call; each is delivered once.</summary>
+    /// <summary>Lines the user wrote in Hammer (MCP > Chat) since the last call; each is delivered once.</summary>
     private IReadOnlyList<string>? Requests() => target.Control.TakeRequests() is { Count: > 0 } r ? r : null;
 
     [McpServerTool(Name = "user_requests", ReadOnly = true)]
-    [Description("What the user typed for you in Hammer (MCP > Ask agent...) since you last looked, and whether they paused you. Cheap: call it between steps of a longer task. Each request is returned once (hammer_status returns them too).")]
+    [Description("What the user wrote to you in Hammer's chat (MCP > Chat) since you last looked, and whether they paused you. Answer with say_to_user. Cheap: call it between steps of a longer task. Each request is returned once (hammer_status returns them too).")]
     public object UserRequests() => new { agentPaused = target.Control.Paused, userRequests = Requests() ?? [] };
+
+    [McpServerTool(Name = "say_to_user", ReadOnly = true)]
+    [Description("Write to the user in Hammer's chat window (MCP > Chat, with the adapter connected; the app's log shows it too). Use it to answer what they wrote (user_requests), to ask a question or to report progress of a longer task. Plain text, short.")]
+    public object SayToUser(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return new { ok = false, error = "empty text" };
+        target.Control.Say(text.Trim());
+        log.Write($"agent says: {text.Trim()}");
+        return target.Adapter is { Connected: true }
+            ? new { ok = true, shownIn = "Hammer's chat (MCP > Chat) and the app's log" }
+            : new { ok = true, shownIn = "the app's log only: no adapter is connected, so Hammer has no chat window - also tell the user in your own reply" };
+    }
 
     [McpServerTool(Name = "pending_changes", ReadOnly = true)]
     [Description("Approval mode: whether your edits wait for the user (approval ask / auto), which of your changes are still waiting, and what happened to the recent ones (applied / rejected / failed, with Hammer's answer). Use it after an edit returned 'waiting for the user's approval' instead of repeating the edit.")]

@@ -34,8 +34,8 @@ public sealed class AdapterClient : IAsyncDisposable
     /// <summary>A menu item clicked in Hammer: item (pause, resume, pending, undo_agent_step, log, disconnect) and request id.</summary>
     public event Action<string, string?>? Menu;
 
-    /// <summary>Text the user typed in MCP > Ask agent...</summary>
-    public event Action<string>? Ask;
+    /// <summary>A line the user wrote in Hammer's MCP > Chat (or the old Ask agent...).</summary>
+    public event Action<string>? Chat;
 
     /// <summary>The user's decision on pending changes: ids to apply, ids to reject.</summary>
     public event Action<IReadOnlyList<string>, IReadOnlyList<string>>? Approval;
@@ -100,6 +100,33 @@ public sealed class AdapterClient : IAsyncDisposable
             ["cmd"] = "pending", ["id"] = id,
             ["items"] = new JsonArray([.. items.Select(i => (JsonNode)new JsonObject { ["id"] = i.Id, ["text"] = i.Text })]),
         });
+
+    /// <summary>The build profile from the server's registry, sent right after hello (features arrive with layer 2).</summary>
+    public Task SendProfileAsync(string build, string support) =>
+        SendAsync(new JsonObject { ["cmd"] = "profile", ["build"] = build, ["support"] = support, ["features"] = new JsonObject() });
+
+    public Task SendChatAsync(ChatLine line) => SendAsync(ChatJson(line, "chat"));
+
+    public Task SendChatHistoryAsync(string? id, IEnumerable<ChatLine> lines) =>
+        SendAsync(new JsonObject
+        {
+            ["cmd"] = "chat_history", ["id"] = id,
+            ["items"] = new JsonArray([.. lines.Select(l => (JsonNode)ChatJson(l, null))]),
+        });
+
+    /// <summary>One new activity line for the live log window.</summary>
+    public Task SendLogLineAsync(string line) => SendAsync(new JsonObject { ["cmd"] = "log_line", ["line"] = line });
+
+    private static JsonObject ChatJson(ChatLine line, string? cmd)
+    {
+        var o = new JsonObject();
+        if (cmd is not null)
+            o["cmd"] = cmd;
+        o["from"] = line.From;
+        o["text"] = line.Text;
+        o["at"] = line.At.ToString("HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+        return o;
+    }
 
     /// <summary>Asks the adapter to remove its menu and unload itself; it answers bye and the connection closes.</summary>
     public Task UnloadAsync() => SendAsync(new JsonObject { ["cmd"] = "unload" });
@@ -177,9 +204,9 @@ public sealed class AdapterClient : IAsyncDisposable
             case "menu":
                 Menu?.Invoke(Str(m, "item") ?? "", Str(m, "id"));
                 break;
-            case "ask":
+            case "chat" or "ask": // "ask" = the layer 1 adapter's Ask agent... dialog
                 if (Str(m, "text") is { Length: > 0 } text)
-                    Ask?.Invoke(text);
+                    Chat?.Invoke(text);
                 break;
             case "approval":
                 Approval?.Invoke(Ids(m, "apply"), Ids(m, "reject"));

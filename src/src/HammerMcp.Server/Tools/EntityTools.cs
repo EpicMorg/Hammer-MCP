@@ -14,7 +14,7 @@ namespace HammerMcp.Server.Tools;
 /// </summary>
 [McpServerToolType]
 [SupportedOSPlatform("windows")]
-public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJournal journal)
+public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJournal journal, HammerMcpServerOptions options)
 {
     [McpServerTool(Name = "create_entity", Destructive = false)]
     [Description("Create a point entity in the map open in Hammer, optionally setting keyvalues. Refused if an entity of the same class already sits at this origin (it could not be addressed afterwards) - pick other coordinates. Brush entities (trigger_*, func_*) cannot be created this way.")]
@@ -76,6 +76,8 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
     {
         if (target.Control.Paused)
             return Refuse(AgentControl.PausedReason);
+        if (options.AdapterOnlyRefusal is { } adapterOnly)
+            return Refuse(adapterOnly);
         var process = target.Current();
         if (process is null || !process.HasShellChannel)
             return new EditResult(false, $"no Hammer with a shell channel is attached - {target.AttachHint}", []);
