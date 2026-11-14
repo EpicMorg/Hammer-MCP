@@ -62,8 +62,15 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
     private IReadOnlyList<string>? Requests() => target.Control.TakeRequests() is { Count: > 0 } r ? r : null;
 
     [McpServerTool(Name = "user_requests", ReadOnly = true)]
-    [Description("What the user wrote to you in Hammer's chat (MCP > Chat) since you last looked, and whether they paused you. Answer with say_to_user. Cheap: call it between steps of a longer task. Each request is returned once (hammer_status returns them too).")]
-    public object UserRequests() => new { agentPaused = target.Control.Paused, userRequests = Requests() ?? [] };
+    [Description("What the user wrote to you in Hammer's chat (MCP > Chat) since you last looked, and whether they paused you. Answer with say_to_user. recentChat = the last 10 chat lines from both sides (already seen ones too), for context. Cheap: call it between steps of a longer task. Each request is returned once (hammer_status returns them too).")]
+    public object UserRequests() => new
+    {
+        agentPaused = target.Control.Paused,
+        userRequests = Requests() ?? [],
+        // the last lines of the chat (both sides): a line taken by a call whose answer got lost is still visible here
+        recentChat = target.Control.ChatHistory().TakeLast(10)
+            .Select(l => $"{l.At.ToString("HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)} {l.From}: {l.Text}"),
+    };
 
     [McpServerTool(Name = "say_to_user", ReadOnly = true)]
     [Description("Write to the user in Hammer's chat window (MCP > Chat, with the adapter connected; the app's log shows it too). Use it to answer what they wrote (user_requests), to ask a question or to report progress of a longer task. Plain text, short.")]
