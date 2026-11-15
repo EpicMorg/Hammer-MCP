@@ -45,15 +45,29 @@ public sealed class SoundScripts
         }
         foreach (var file in files)
         {
-            if (assets.Read(file) is not { } script)
-            {
+            if (!result.AddFile(assets, file))
                 result.Problems.Add($"sound script not found: {file}");
-                continue;
-            }
-            result.Scripts.Add(file);
-            result.Add(file, script.Source, Parse(Encoding.UTF8.GetString(script.Data), file, assets, 0, result.Problems));
         }
         return result;
+    }
+
+    /// <summary>
+    /// The map's own sound script, maps/&lt;map&gt;_level_sounds.txt, which the engine loads with the map; null if the game
+    /// has none. Its names come on top of the game's sound scripts.
+    /// </summary>
+    public static SoundScripts? LoadLevel(AssetResolver assets, string mapName)
+    {
+        var level = new SoundScripts();
+        return level.AddFile(assets, $"maps/{mapName}_level_sounds.txt") ? level : null;
+    }
+
+    private bool AddFile(AssetResolver assets, string file)
+    {
+        if (assets.Read(file) is not { } script)
+            return false;
+        Scripts.Add(file);
+        Add(file, script.Source, Parse(Encoding.UTF8.GetString(script.Data), file, assets, 0, Problems));
+        return true;
     }
 
     private void Add(string script, string source, IEnumerable<Node> nodes)

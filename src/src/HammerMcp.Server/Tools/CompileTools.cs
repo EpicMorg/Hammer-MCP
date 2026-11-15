@@ -29,7 +29,10 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
             return new { error = $"no gameinfo.txt in GameDir '{config!.GameDir}'" };
         var refs = MapAssets.Collect(map!);
         var scripts = refs.Any(r => r.Kind == "soundscript") ? gameData.SoundScripts(config) : null;
-        var missing = refs.Where(r => r.Kind == "soundscript" ? scripts is not null && !scripts.Contains(r.Path) : !resolver.Exists(r.Path)).ToList();
+        var level = scripts is null ? null : SoundScripts.LoadLevel(resolver, Path.GetFileNameWithoutExtension(map!));
+        var missing = refs.Where(r => r.Kind == "soundscript"
+            ? scripts is not null && !scripts.Contains(r.Path) && level?.Contains(r.Path) != true
+            : !resolver.Exists(r.Path)).ToList();
         return new
         {
             checkedAssets = refs.Count,
@@ -41,7 +44,12 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
             searchFolders = resolver.Folders,
             vpks = resolver.Vpks,
             searchPathProblems = resolver.Problems,
-            soundScripts = scripts is null ? null : new { scripts.Scripts.Count, problems = scripts.Problems.Count > 0 ? scripts.Problems.Take(10) : null },
+            soundScripts = scripts is null ? null : new
+            {
+                scripts.Scripts.Count,
+                levelSounds = level?.Scripts.FirstOrDefault(),
+                problems = scripts.Problems.Concat(level?.Problems ?? []).Take(10).ToList() is { Count: > 0 } p ? p : null,
+            },
         };
     }
 

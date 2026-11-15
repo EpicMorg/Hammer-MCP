@@ -58,19 +58,50 @@ public class SoundScriptTests : IDisposable
         Assert.Null(vpk.ReadFile("scripts/other.txt"));
     }
 
-    [Fact]
-    public void Pak01OfASearchFolderIsMountedOnce()
+    private GameInfo GameInfoWith(params string[] searchPaths)
     {
-        // Portal 2 / CS:GO: gameinfo lists only "Game |gameinfo_path|.", pak01_dir.vpk in it is mounted by the engine
+        var lines = string.Join("\n", searchPaths.Select(p => $"\t\t\t{p}"));
+        var path = Write("mod/gameinfo.txt", $"\"GameInfo\"\n{{\n\tgame \"Mod\"\n\tFileSystem\n\t{{\n\t\tSearchPaths\n\t\t{{\n{lines}\n\t\t}}\n\t}}\n}}\n");
+        return GameInfo.Load(path, _root);
+    }
+
+    [Fact]
+    public void Pak01IsMountedOnlyWhenGameinfoListsNoVpks()
+    {
+        // Portal 2 / CS:GO: gameinfo lists only "Game |gameinfo_path|.", the engine mounts pak01_dir.vpk of it, ahead of loose files
         var (dir, _) = Vpk("sound/ambient", "drone", "wav", [1, 2, 3], 0, inDirFile: true);
-        File.WriteAllBytes(Path.Combine(_root, "pak01_dir.vpk"), dir);
-        var assets = new AssetResolver([_root]);
-        Assert.Single(assets.Vpks);
-        Assert.True(assets.Exists("sound/ambient/drone.wav"));
-        Assert.Equal([1, 2, 3], assets.Read("sound/ambient/drone.wav")!.Value.Data);
-        // listed explicitly as well (Source 2 resolver): still one mount
-        Assert.Single(new AssetResolver([_root, Path.Combine(_root, "pak01_dir.vpk")]).Vpks);
-        Assert.Single(new AssetResolver([Path.Combine(_root, "pak01.vpk"), _root]).Vpks);
+        Directory.CreateDirectory(Path.Combine(_root, "mod"));
+        File.WriteAllBytes(Path.Combine(_root, "mod", "pak01_dir.vpk"), dir);
+        Write("mod/sound/ambient/drone.wav", "loose");
+        var l4d = new AssetResolver(GameInfoWith("Game |gameinfo_path|."));
+        Assert.Single(l4d.Vpks);
+        Assert.Equal([1, 2, 3], l4d.Read("sound/ambient/drone.wav")!.Value.Data);
+        Assert.EndsWith("pak01_dir.vpk", l4d.Locate("sound/ambient/drone.wav"));
+
+        // Source 2013: VPKs are listed; a pak01_dir.vpk the gameinfo does not name is not mounted
+        Directory.CreateDirectory(Path.Combine(_root, "hl2"));
+        var sdk = new AssetResolver(GameInfoWith("game |all_source_engine_paths|hl2/hl2_misc.vpk", "game+mod |gameinfo_path|."));
+        Assert.DoesNotContain(sdk.Vpks, v => v.EndsWith("pak01_dir.vpk"));
+        Assert.Equal("loose"u8.ToArray(), sdk.Read("sound/ambient/drone.wav")!.Value.Data);
+    }
+
+    [Fact]
+    public void SearchOrderFollowsTheGameinfo()
+    {
+        // TF2: "game+mod tf/tf2_misc.vpk" is listed before the tf folder, so the VPK copy wins over a loose one
+        var (dir, _) = Vpk("scripts", "a", "txt", "packed"u8.ToArray(), 0, inDirFile: true);
+        Directory.CreateDirectory(Path.Combine(_root, "mod"));
+        File.WriteAllBytes(Path.Combine(_root, "mod", "misc_dir.vpk"), dir);
+        Write("mod/scripts/a.txt", "loose");
+        var vpkFirst = new AssetResolver(GameInfoWith("game |gameinfo_path|misc.vpk", "game |gameinfo_path|.", "game |gameinfo_path|misc.vpk"));
+        Assert.Equal("packed"u8.ToArray(), vpkFirst.Read("scripts/a.txt")!.Value.Data);
+        Assert.Single(vpkFirst.Vpks);
+        var looseFirst = new AssetResolver(GameInfoWith("game |gameinfo_path|.", "game |gameinfo_path|misc.vpk"));
+        Assert.Equal("loose"u8.ToArray(), looseFirst.Read("scripts/a.txt")!.Value.Data);
+        var sources = looseFirst.List("scripts").Select(f => f.Source).ToList();
+        Assert.Equal(2, sources.Count);
+        Assert.False(sources[0].EndsWith(".vpk"));
+        Assert.EndsWith("misc_dir.vpk", sources[1]);
     }
 
     [Fact]
@@ -163,6 +194,19 @@ public class SoundScriptTests : IDisposable
         Assert.Equal(1, scripts.Duplicates);
         Assert.True(scripts.Contains("Included.Sound"));
         Assert.Equal(["*ambient/drone.wav"], scripts.Find("Ambient.Drone")!.Waves);
+    }
+
+    [Fact]
+    public void LoadsTheMapsLevelSounds()
+    {
+        WriteGame();
+        Write("maps/d1_trainstation_01_level_sounds.txt", "\"Trainstation.Announcer\" { \"wave\" \"*vo/announcer.wav\" }");
+        var assets = new AssetResolver([_root]);
+        var level = SoundScripts.LoadLevel(assets, "d1_trainstation_01")!;
+        Assert.True(level.Contains("Trainstation.Announcer"));
+        Assert.Equal(["maps/d1_trainstation_01_level_sounds.txt"], level.Scripts);
+        Assert.False(SoundScripts.Load(assets).Contains("Trainstation.Announcer"));
+        Assert.Null(SoundScripts.LoadLevel(assets, "other_map"));
     }
 
     [Fact]
