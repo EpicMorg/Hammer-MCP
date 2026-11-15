@@ -13,22 +13,7 @@ public static class JackGameCfg
 
     public static List<HammerGameConfig> Parse(IEnumerable<string> lines, string baseDir)
     {
-        var sections = new List<(string Name, Dictionary<string, string> Values)>();
-        foreach (var raw in lines)
-        {
-            var line = raw.Trim();
-            if (line.Length == 0 || line.StartsWith(';') || line.StartsWith("//"))
-                continue;
-            if (line.StartsWith('[') && line.EndsWith(']'))
-            {
-                sections.Add((line[1..^1], new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)));
-                continue;
-            }
-            var eq = line.IndexOf('=');
-            if (eq <= 0 || sections.Count == 0)
-                continue;
-            sections[^1].Values[line[..eq].Trim()] = Unescape(line[(eq + 1)..].Trim());
-        }
+        var sections = Sections(lines);
 
         var result = new List<HammerGameConfig>();
         foreach (var (name, v) in sections.Where(s => s.Name.StartsWith("Config", StringComparison.OrdinalIgnoreCase)))
@@ -65,6 +50,28 @@ public static class JackGameCfg
                 tools, BaseGameDir: baseGame, GoldSrc: true, TextureWads: Numbered("Parcel").Select(Resolve).ToList()));
         }
         return result;
+    }
+
+    /// <summary>The [sections] of a QSettings ini with their key = value pairs (values unescaped); comments and blanks skipped.</summary>
+    internal static List<(string Name, Dictionary<string, string> Values)> Sections(IEnumerable<string> lines)
+    {
+        var sections = new List<(string Name, Dictionary<string, string> Values)>();
+        foreach (var raw in lines)
+        {
+            var line = raw.Trim();
+            if (line.Length == 0 || line.StartsWith(';') || line.StartsWith("//"))
+                continue;
+            if (line.StartsWith('[') && line.EndsWith(']'))
+            {
+                sections.Add((line[1..^1], new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)));
+                continue;
+            }
+            var eq = line.IndexOf('=');
+            if (eq <= 0 || sections.Count == 0)
+                continue;
+            sections[^1].Values[line[..eq].Trim()] = Unescape(line[(eq + 1)..].Trim());
+        }
+        return sections;
     }
 
     private static string Windows(string path) => path.Replace('/', '\\');

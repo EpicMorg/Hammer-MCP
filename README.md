@@ -112,7 +112,7 @@ The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that
 | `game_configs` · `fgd_class` · `fgd_search` | Hammer's game config and the game's FGD as an entity reference (keyvalues, choices, inputs, outputs) |
 | `validate_map` | Saved map vs FGD: unknown classes, outputs to missing names, unknown inputs / outputs, extra keyvalues |
 | `check_assets` | Materials, models, overlays, decals, skybox, sounds and sound script names of the saved map vs the game's search paths (gameinfo.txt, folders, VPKs) |
-| `compile_sequences` · `compile_log` · `leak_trace` | Hammer's own Run Map sequences (CmdSeq.wc / Hammer++ / Strata), parsed compile log, leak path from the .lin |
+| `compile_sequences` · `compile_log` · `leak_trace` | Hammer's own Run Map sequences (CmdSeq.wc / Hammer++ / Strata / J.A.C.K.), parsed compile log, leak path from the .lin |
 | `bsp_entities` | Entities as vbsp wrote them into the compiled .bsp (entity lump), outputs included |
 | `source2_console` | Source 2 only: allowlisted developer console commands over VConsole2 (open maps, force autosave, help) |
 | `run_compile` | Runs one of those sequences (vbsp / vvis / vrad, copy .bsp); edit modes only |

@@ -52,6 +52,8 @@ public sealed class RunCompileTools(HammerTarget target, CompileTools reader, Ac
         if (seq is null)
             return new { error = $"no sequence '{sequence}'", available = sequences.Select(s => s.Name) };
 
+        if (CompileTools.StaleMapExport(map!, config) is { } stale)
+            return new { error = stale };
         var vars = CompileTools.Variables(process.ExePath, map, config);
         var steps = new List<object>();
         var cwd = Path.GetDirectoryName(map)!;
@@ -103,7 +105,11 @@ public sealed class RunCompileTools(HammerTarget target, CompileTools reader, Ac
                         var (code, tail) = await CompileTools.RunProcess(run, args, cwd, cmd.NoWait, TimeSpan.FromMinutes(Math.Clamp(timeoutMinutes, 1, 240)), cancellationToken);
                         steps.Add(new { step = $"{run} {args}", exitCode = code, outputTail = tail });
                         if (code is not 0 and not null)
-                            return CompileTools.Result(seq.Name, steps, map!, started, $"stopped: {Path.GetFileName(run)} exited with {code}");
+                            return CompileTools.Result(seq.Name, steps, map!, started, $"stopped: {Path.GetFileName(run)} exited with {code}", config?.BspDir);
+                        // "ensure file post-exists" (Hammer) / FileCheck (J.A.C.K.): the step must have written this file
+                        if (cmd is { EnsureCheck: true, EnsureFile: { } ensure } && !cmd.NoWait
+                            && Path.GetFullPath(CompileSequences.Expand(ensure, vars).Trim().Trim('"'), cwd) is var check && !File.Exists(check))
+                            return CompileTools.Result(seq.Name, steps, map!, started, $"stopped: {Path.GetFileName(run)} did not write {check}", config?.BspDir);
                         break;
                     }
                 }
@@ -111,10 +117,10 @@ public sealed class RunCompileTools(HammerTarget target, CompileTools reader, Ac
             catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.ComponentModel.Win32Exception or InvalidOperationException)
             {
                 steps.Add(new { step = $"{cmd.Kind} {run} {args}", error = e.Message });
-                return CompileTools.Result(seq.Name, steps, map!, started, "stopped on error");
+                return CompileTools.Result(seq.Name, steps, map!, started, "stopped on error", config?.BspDir);
             }
         }
-        return CompileTools.Result(seq.Name, steps, map!, started, "done");
+        return CompileTools.Result(seq.Name, steps, map!, started, "done", config?.BspDir);
     }
 
 }

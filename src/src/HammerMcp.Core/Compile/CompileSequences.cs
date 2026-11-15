@@ -32,7 +32,7 @@ public sealed record CompileSequence(string Name, IReadOnlyList<CompileCommand> 
 /// <summary>
 /// Hammer's Run Map sequences: binary CmdSeq.wc (Worldcraft / Hammer 3.x / 4.x, version 0.2: 804-byte commands),
 /// text hammerplusplus_sequences.cfg (Hammer++: enable / specialcmd / run / parms) and Strata's cmdseq.wc
-/// (KeyValues: enabled / special_cmd / run / params / ensure_check).
+/// (KeyValues: enabled / special_cmd / run / params / ensure_check); J.A.C.K.'s VDKRunCfg.ini via <see cref="JackRunCfg"/>.
 /// </summary>
 public static class CompileSequences
 {
@@ -47,6 +47,8 @@ public static class CompileSequences
         yield return Path.Combine(dir, "..", "CmdSeq.wc");
         // Strata: <game>\bin\win64\hammer.exe, sequences in <game>\hammer\cfg\cmdseq.wc
         yield return Path.Combine(dir, "..", "..", "hammer", "cfg", "cmdseq.wc");
+        // J.A.C.K. / Jackhammer: Run Map profiles next to the exe
+        yield return Path.Combine(dir, "VDKRunCfg.ini");
     }
 
     public static (string? File, List<CompileSequence> Sequences) ForExe(string exePath)
@@ -61,6 +63,8 @@ public static class CompileSequences
 
     public static List<CompileSequence> Load(string path)
     {
+        if (path.EndsWith(".ini", StringComparison.OrdinalIgnoreCase))
+            return JackRunCfg.Load(path);
         var bytes = File.ReadAllBytes(path);
         return bytes.AsSpan().StartsWith(Encoding.ASCII.GetBytes(BinaryHeader)) ? ParseBinary(bytes) : ParseText(bytes);
     }
@@ -129,7 +133,7 @@ public static class CompileSequences
 
     /// <summary>
     /// Expands Hammer's Run Map variables: $bsp_exe $vis_exe $light_exe $game_exe $gamedir $gamename $bspdir $exedir
-    /// $path (map folder) $file (map name) $ext (map extension); unknown variables are left as is.
+    /// $path (map folder) $file (map name) $ext (map extension), J.A.C.K.: $csg_exe $bspext; unknown variables are left as is.
     /// </summary>
     public static string Expand(string text, IReadOnlyDictionary<string, string> variables)
     {

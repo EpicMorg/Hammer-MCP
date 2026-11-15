@@ -112,7 +112,7 @@ Shell-канал есть во **всех стоковых Source-Hammer с 2006
 | `game_configs` · `fgd_class` · `fgd_search` | Игровой конфиг Hammer и FGD игры как справочник сущностей (keyvalues, варианты, inputs, outputs) |
 | `validate_map` | Сохранённая карта против FGD: неизвестные классы, outputs на несуществующие имена, неизвестные inputs / outputs, лишние keyvalues, значения с кавычками внутри |
 | `check_assets` | Материалы, модели, оверлеи, декали, skybox, звуки и имена звуковых скриптов сохранённой карты против путей поиска игры (gameinfo.txt, папки, VPK) |
-| `compile_sequences` · `compile_log` · `leak_trace` | Собственные Run Map-последовательности Hammer (CmdSeq.wc / Hammer++ / Strata), разобранный лог компиляции, путь утечки из .lin |
+| `compile_sequences` · `compile_log` · `leak_trace` | Собственные Run Map-последовательности Hammer (CmdSeq.wc / Hammer++ / Strata / J.A.C.K.), разобранный лог компиляции, путь утечки из .lin |
 | `bsp_entities` | Сущности в том виде, в каком vbsp записал их в скомпилированный .bsp (entity lump), вместе с outputs |
 | `source2_console` | Только Source 2: команды консоли разработчика из белого списка через VConsole2 (открытые карты, принудительный автосейв, справка) |
 | `run_compile` | Запускает одну из этих последовательностей (vbsp / vvis / vrad, копирование .bsp); только в режимах с правками |
