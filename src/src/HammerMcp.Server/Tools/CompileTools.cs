@@ -354,7 +354,7 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
     private const string ExportMenu = "Hammer 3.x: File > Export to .MAP; J.A.C.K.: File > Export";
 
     /// <summary>
-    /// A delete / rename step of a compile profile may only touch files in the map's folder or the game's maps folder
+    /// A delete / rename step (and the target of a copy) of a compile profile may only touch files in the map's folder or the game's maps folder
     /// ($bspdir): a profile from someone else's ini must not be able to remove anything else. Null = allowed.
     /// </summary>
     internal static string? OutsideCompileFolders(string file, string map, HammerGameConfig? config)
@@ -366,7 +366,7 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
             if (Path.GetFullPath(file).StartsWith(full, StringComparison.OrdinalIgnoreCase))
                 return null;
         }
-        return $"the profile wants to delete / rename {file}, outside the map folder and the game's maps folder - not done";
+        return $"the profile wants to delete / rename / overwrite {file}, outside the map folder and the game's maps folder - not done";
     }
 
     internal static Dictionary<string, string> Variables(string hammerExe, string? mapPath, HammerGameConfig? config)
