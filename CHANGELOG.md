@@ -7,6 +7,7 @@ All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/)
 ## [Unreleased]
 
 ### Added
+- **`hammer_ui`: what is known about the attached Hammer's interface**, so an agent does not explore it from scratch: recipes verified live (create a block, make it hollow, place an entity, apply a texture, Run Map... with command ids, dialog control ids and traps such as what needs real keyboard focus or can freeze Hammer), menu items, accelerators, short command tooltips and every dialog with its control ids. First: Valve Hammer Editor 3.4 / 3.5 (the menus and dialogs are dumped from the build's resources by `registry/tools/dump_ui.py --public`: ids, classes, keys and short labels only, none of Valve's own prose such as status texts, message boxes or the About box).
 - **Live selection and camera (adapter layer 2), first for Valve Hammer Editor 3.5**: `hammer_selection` returns what is selected in Hammer right now, unsaved changes included (entities with class, origin and keys; solids with textures and owning entity; bounds), `hammer_camera` returns where the 3D view looks. **MCP > Send selection to agent** in Hammer sends the selection to the agent. Needs the adapter (Advanced mode); `hammer_status` shows `adapter.liveRead`. The memory layout of each build lives in the registry. Selecting a large part of a big map can freeze Hammer: the tool description tells the agent to ask the user first.
 
 ### Changed
