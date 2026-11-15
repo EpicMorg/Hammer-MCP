@@ -79,6 +79,7 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
         var control = target.Control;
         var changed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         void OnChanged() => changed.TrySetResult();
+        using var waiting = control.BeginWait(); // the OpenCode bridge leaves a new line to this call
         control.Changed += OnChanged; // a new chat line or a pause / resume
         try
         {
