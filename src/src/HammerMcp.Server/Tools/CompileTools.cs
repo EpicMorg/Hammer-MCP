@@ -345,10 +345,28 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
             return null;
         var export = Path.ChangeExtension(mapPath, ".map");
         if (!File.Exists(export))
-            return $"{Path.GetFileName(export)} not found next to the map: GoldSrc compilers read the .map that Hammer exports - ask the user to run the compile once from Hammer (Run Map) or File > Export to .map, then try again";
+            return $"{Path.GetFileName(export)} not found next to the map: GoldSrc compilers read the .map that Hammer exports - ask the user to export it ({ExportMenu}) or run the compile once from the editor's Run Map, then try again";
         return File.GetLastWriteTimeUtc(export) < File.GetLastWriteTimeUtc(mapPath)
-            ? $"{Path.GetFileName(export)} is older than {Path.GetFileName(mapPath)}: save the map and export it again (File > Export to .map, or Run Map in Hammer) so the compile sees the latest edits"
+            ? $"{Path.GetFileName(export)} is older than {Path.GetFileName(mapPath)}: save the map and export it again ({ExportMenu}, or Run Map in the editor) so the compile sees the latest edits"
             : null;
+    }
+
+    private const string ExportMenu = "Hammer 3.x: File > Export to .MAP; J.A.C.K.: File > Export";
+
+    /// <summary>
+    /// A delete / rename step of a compile profile may only touch files in the map's folder or the game's maps folder
+    /// ($bspdir): a profile from someone else's ini must not be able to remove anything else. Null = allowed.
+    /// </summary>
+    internal static string? OutsideCompileFolders(string file, string map, HammerGameConfig? config)
+    {
+        string?[] roots = [Path.GetDirectoryName(map), config?.BspDir];
+        foreach (var root in roots.OfType<string>())
+        {
+            var full = Path.TrimEndingDirectorySeparator(Path.GetFullPath(root)) + Path.DirectorySeparatorChar;
+            if (Path.GetFullPath(file).StartsWith(full, StringComparison.OrdinalIgnoreCase))
+                return null;
+        }
+        return $"the profile wants to delete / rename {file}, outside the map folder and the game's maps folder - not done";
     }
 
     internal static Dictionary<string, string> Variables(string hammerExe, string? mapPath, HammerGameConfig? config)
