@@ -235,7 +235,16 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
         var lin = map is null ? null : CompileOutput(map, ".lin");
         if (lin is null || !File.Exists(lin))
             return new { leaked = false, note = "no .lin next to the map or in the game's maps folder: the last compile did not leak (or the bsp compiler was not run)" };
-        // compilers do not always remove an old pointfile: a .bsp written well after it means a later compile did not leak
+        // compilers do not always remove an old pointfile: a newer compile log of the same folder without a leak proves it old
+        var log = Path.ChangeExtension(lin, ".log");
+        if (File.Exists(log) && File.GetLastWriteTimeUtc(log) > File.GetLastWriteTimeUtc(lin).AddSeconds(2) && !CompileLog.Read(log).Leaked)
+            return new
+            {
+                leaked = false,
+                path = lin,
+                note = $"{Path.GetFileName(lin)} is left from an earlier compile: the newer compile log {log} shows no leak",
+            };
+        // no log to tell: a .bsp written well after the pointfile means a later compile probably did not leak
         var bsp = Path.ChangeExtension(lin, ".bsp");
         var stale = File.Exists(bsp) && File.GetLastWriteTimeUtc(bsp) > File.GetLastWriteTimeUtc(lin).AddMinutes(30)
             ? $"{Path.GetFileName(bsp)} is much newer than this pointfile: it may be left from an earlier compile" : null;
