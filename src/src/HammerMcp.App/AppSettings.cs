@@ -25,7 +25,7 @@ internal sealed record AppSettings
     public string TokenProtected
     {
         get => SettingsSecret.Protect(Token);
-        init => Token = SettingsSecret.Unprotect(value);
+        init => Token = Decrypt(value, "the server token");
     }
 
     /// <summary>Settings written before 0.8.1 kept the token in plain text: read it once, never write it.</summary>
@@ -66,7 +66,7 @@ internal sealed record AppSettings
     public string OpenCodePasswordProtected
     {
         get => SettingsSecret.Protect(OpenCodePassword);
-        init => OpenCodePassword = SettingsSecret.Unprotect(value);
+        init => OpenCodePassword = Decrypt(value, "the OpenCode password");
     }
 
     [JsonPropertyName("OpenCodePassword"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -81,6 +81,18 @@ internal sealed record AppSettings
                 HadPlainSecrets = true;
             }
         }
+    }
+
+    /// <summary>Secrets in the file that could not be decrypted (settings of another Windows user or machine): now empty.</summary>
+    [JsonIgnore]
+    public List<string> LostSecrets { get; } = [];
+
+    private string Decrypt(string stored, string what)
+    {
+        if (SettingsSecret.TryUnprotect(stored, out var plain))
+            return plain;
+        LostSecrets.Add(what);
+        return "";
     }
 
     /// <summary>The file had a secret in plain text (an older version): <see cref="Load"/> saves it again encrypted.</summary>

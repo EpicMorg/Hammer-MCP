@@ -16,18 +16,25 @@ internal static class SettingsSecret
         ? ""
         : Prefix + Convert.ToBase64String(ProtectedData.Protect(Encoding.UTF8.GetBytes(plain), Entropy, DataProtectionScope.CurrentUser));
 
-    /// <summary>The plain text; "" when it cannot be decrypted (another user / machine) - the user sets it again.</summary>
-    public static string Unprotect(string? stored)
+    /// <summary>The plain text; false (and "") when it cannot be decrypted - another Windows user or machine.</summary>
+    public static bool TryUnprotect(string? stored, out string plain)
     {
-        if (string.IsNullOrEmpty(stored) || !stored.StartsWith(Prefix, StringComparison.Ordinal))
-            return stored ?? ""; // not encrypted (should not happen: plain values live in the old keys)
+        plain = "";
+        if (string.IsNullOrEmpty(stored))
+            return true;
+        if (!stored.StartsWith(Prefix, StringComparison.Ordinal))
+        {
+            plain = stored; // not encrypted (hand-edited file)
+            return true;
+        }
         try
         {
-            return Encoding.UTF8.GetString(ProtectedData.Unprotect(Convert.FromBase64String(stored[Prefix.Length..]), Entropy, DataProtectionScope.CurrentUser));
+            plain = Encoding.UTF8.GetString(ProtectedData.Unprotect(Convert.FromBase64String(stored[Prefix.Length..]), Entropy, DataProtectionScope.CurrentUser));
+            return true;
         }
         catch (Exception e) when (e is CryptographicException or FormatException)
         {
-            return "";
+            return false;
         }
     }
 }
