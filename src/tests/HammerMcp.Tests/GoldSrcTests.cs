@@ -206,6 +206,45 @@ public class GoldSrcTests : IDisposable
         return full;
     }
 
+    private void Mdl(string path, string id, int bones)
+    {
+        var full = Path.Combine(_dir, path);
+        Directory.CreateDirectory(Path.GetDirectoryName(full)!);
+        var header = new byte[256];
+        Encoding.ASCII.GetBytes(id, header);
+        BitConverter.GetBytes(bones).CopyTo(header, 140);
+        File.WriteAllBytes(full, header);
+    }
+
+    [Fact]
+    public void ModelPartsAreConfirmedByTheirHeader()
+    {
+        Mdl(@"valve\models\foo.mdl", "IDST", 12);
+        Mdl(@"valve\models\foot.mdl", "IDST", 3);     // a real model whose name ends in t
+        Mdl(@"valve\models\foo01.mdl", "IDSQ", 0);    // sequence group
+        Mdl(@"valve\models\bar.mdl", "IDST", 5);
+        Mdl(@"valve\models\bart.mdl", "IDST", 0);     // texture file
+        var config = new HammerGameConfig("HL", [], Path.Combine(_dir, "valve"), _dir, null, null, new Dictionary<string, string>(), GoldSrc: true);
+        var content = GoldSrcContent.ForConfig(config);
+        var hits = AssetSearch.SearchGoldSrc(content.Files, content.Wads, "*.mdl", "model", 50).Hits.Select(h => h.KeyValue);
+        Assert.Equal(["models/bar.mdl", "models/foo.mdl", "models/foot.mdl"], hits);
+    }
+
+    [Fact]
+    public void OldConfigWithoutModFolderGuessesValve()
+    {
+        Files(@"hl\valve\models\scientist.mdl");
+        // GameCfg.wc 1.3 (Worldcraft 2.x): only the game exe folder is known
+        var config = new HammerGameConfig("Half-Life", [], null, Path.Combine(_dir, "hl"), null, null, new Dictionary<string, string>(), GoldSrc: true);
+        Assert.Equal(Path.Combine(_dir, "hl", "valve"), GoldSrcContent.GuessGameDir(config));
+        var content = GoldSrcContent.ForConfig(config);
+        Assert.True(content.Files.Exists("models/scientist.mdl"));
+        Assert.Contains(content.Problems, p => p.Contains("guessed"));
+
+        var nothing = new HammerGameConfig("Quake", [], null, Path.Combine(_dir, "nowhere"), null, null, new Dictionary<string, string>(), GoldSrc: true);
+        Assert.Contains(GoldSrcContent.ForConfig(nothing).Problems, p => p.Contains("none could be guessed"));
+    }
+
     [Fact]
     public void PakFilesAreSearchedLikeFolders()
     {

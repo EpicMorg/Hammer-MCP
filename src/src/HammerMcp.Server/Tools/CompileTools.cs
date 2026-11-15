@@ -139,8 +139,6 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
         var kinds = AssetSearch.GoldSrc;
         if (kind is not ("" or "any") && !kinds.Any(k => k.Name.Equals(kind, StringComparison.OrdinalIgnoreCase)))
             return new { error = $"unknown kind '{kind}' for GoldSrc: {string.Join(", ", kinds.Select(k => k.Name))} or any" };
-        if (config.GameDir is null && config.BaseGameDir is null)
-            return new { error = $"game config '{config.Name}' has no Mod / Game directory (Hammer: Tools > Options > Game Configurations)" };
         var content = gameData.GoldSrcAssets(config);
         var result = AssetSearch.SearchGoldSrc(content.Files, content.Wads, query, kind, limit);
         return new

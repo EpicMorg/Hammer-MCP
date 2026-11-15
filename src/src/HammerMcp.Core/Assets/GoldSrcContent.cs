@@ -36,11 +36,22 @@ public sealed class GoldSrcContent
             .OrderBy(p => p.N).ThenBy(p => p.File, StringComparer.OrdinalIgnoreCase)
             .Select(p => p.File);
 
+    /// <summary>
+    /// The game folder a config without Mod / Game directories (GameCfg.wc 1.3: Worldcraft 1.6-2.x) most likely means:
+    /// &lt;game exe dir&gt;\valve (Half-Life) or \id1 (Quake), if it exists. A guess - reported as such.
+    /// </summary>
+    public static string? GuessGameDir(HammerGameConfig config)
+    {
+        if (config.GameDir is not null || config.BaseGameDir is not null || string.IsNullOrWhiteSpace(config.GameExeDir))
+            return null;
+        return new[] { "valve", "id1" }.Select(d => Path.Combine(config.GameExeDir, d)).FirstOrDefault(Directory.Exists);
+    }
+
     /// <summary>Folders in mount order: mod_addon, mod, mod_downloads, then the same for the base game (valve).</summary>
     public static IReadOnlyList<string> SearchFolders(HammerGameConfig config)
     {
         var result = new List<string>();
-        foreach (var dir in new[] { config.GameDir, config.BaseGameDir })
+        foreach (var dir in new[] { config.GameDir, config.BaseGameDir, GuessGameDir(config) })
         {
             if (string.IsNullOrWhiteSpace(dir))
                 continue;
@@ -62,7 +73,7 @@ public sealed class GoldSrcContent
         var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var listed = (config.TextureWads ?? []).Select(w => w.Replace('/', '\\')).ToList();
         foreach (var missing in listed.Where(w => !File.Exists(w)))
-            problems.Add($"texture WAD from the config not found: {missing}");
+            problems.Add($"texture WAD listed by the editor not found: {missing}");
         var files = listed.Where(File.Exists)
             .Concat(folders.SelectMany(f => Directory.EnumerateFiles(f, "*.wad").Order(StringComparer.OrdinalIgnoreCase)
                 .Where(w => !NotTextureWads.Contains(Path.GetFileName(w)))));
@@ -85,6 +96,10 @@ public sealed class GoldSrcContent
             if (!string.IsNullOrWhiteSpace(dir) && !Directory.Exists(dir))
                 content.Problems.Add($"folder not found: {dir}");
         }
+        if (GuessGameDir(config) is { } guess)
+            content.Problems.Add($"the game config has no Mod / Game directory (old GameCfg.wc); guessed {guess} from the game exe folder");
+        else if (folders.Count == 0 && config.GameDir is null && config.BaseGameDir is null)
+            content.Problems.Add("the game config has no Mod / Game directory and none could be guessed from the game exe folder: only the editor's texture WADs are searched");
         content.Problems.AddRange(problems);
         return content;
     }

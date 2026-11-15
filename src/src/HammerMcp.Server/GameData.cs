@@ -10,7 +10,7 @@ namespace HammerMcp.Server;
 /// hammerplusplus_gameconfig.txt, GameData0..N). Parsed FGDs are cached until a file changes.
 /// </summary>
 [SupportedOSPlatform("windows")]
-public sealed class GameData(HammerTarget target)
+public sealed class GameData(HammerTarget target, HammerMcp.Core.Registry.HammerRegistry registry)
 {
     private readonly Lock _lock = new();
     private string? _cacheKey;
@@ -47,6 +47,8 @@ public sealed class GameData(HammerTarget target)
         }
         if (file is null)
             return new Selection(null, [], null, $"no GameConfig.txt / hammerplusplus_gameconfig.txt / GameCfg.wc / VDKGameCfg.ini next to {process.ExePath}");
+        if (file.EndsWith(".wc", StringComparison.OrdinalIgnoreCase) && EditorTextureWads(process.ExePath) is { Count: > 0 } wads)
+            configs = [.. configs.Select(c => c.TextureWads is null ? c with { TextureWads = wads } : c)];
         var active = configName is not null
             ? configs.FirstOrDefault(c => c.Name.Equals(configName, StringComparison.OrdinalIgnoreCase))
             : HammerGameConfig.ForMap(configs, process.OpenMapPath) ?? HammerGameConfig.ForHammer(configs, process.ExePath);
@@ -56,6 +58,48 @@ public sealed class GameData(HammerTarget target)
                 : "several game configs and the open map is not under any MapDir: pass configName (see game_configs)"
             : null;
         return new Selection(file, configs, active, problem);
+    }
+
+    private string? _wadsKey;
+    private string? _settingsKey;
+
+    /// <summary>
+    /// GoldSrc Worldcraft / Hammer 3.x: the texture WAD list of Options > Textures, kept in the editor's own HKCU key
+    /// (<see cref="HammerMcp.Core.Registry.HammerBuild.SettingsKey"/>, found by the exe's sha256): General\TextureFileCount
+    /// and TextureFile0..N; relative names are resolved against the exe folder. Empty for unknown builds.
+    /// </summary>
+    public List<string> EditorTextureWads(string exePath)
+    {
+        // identifying the build hashes the exe: once per exe (and again if it changes); the registry is read every time
+        var key = $"{exePath}@{(File.Exists(exePath) ? File.GetLastWriteTimeUtc(exePath).Ticks : 0)}";
+        string? settingsKey;
+        lock (_lock)
+        {
+            if (_wadsKey != key)
+            {
+                _settingsKey = Tools.StatusTools.Identify(registry, exePath).Build?.SettingsKey;
+                _wadsKey = key;
+            }
+            settingsKey = _settingsKey;
+        }
+        return ReadTextureWads(settingsKey, exePath);
+    }
+
+    internal static List<string> ReadTextureWads(string? settingsKey, string exePath)
+    {
+        if (settingsKey is null)
+            return [];
+        using var general = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(settingsKey + @"\General");
+        if (general?.GetValue("TextureFileCount") is not int count || count <= 0)
+            return [];
+        var dir = Path.GetDirectoryName(exePath) ?? ".";
+        var result = new List<string>();
+        for (var i = 0; i < Math.Min(count, 256); i++)
+        {
+            if (general.GetValue($"TextureFile{i}") is string { Length: > 0 } wad)
+                result.Add(Path.IsPathRooted(wad) ? wad : Path.GetFullPath(Path.Combine(dir, wad)));
+        }
+        return result;
     }
 
     /// <summary>

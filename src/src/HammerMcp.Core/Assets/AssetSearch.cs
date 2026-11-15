@@ -70,7 +70,7 @@ public static class AssetSearch
         var wanted = Wanted(GoldSrc, kind);
         var found = Files(files, wanted).ToList();
         var models = found.Where(f => f.Kind.Name == "model").Select(f => f.Path).ToHashSet(StringComparer.OrdinalIgnoreCase);
-        found.RemoveAll(f => f.Kind.Name == "model" && IsModelPart(f.Path, models));
+        found.RemoveAll(f => f.Kind.Name == "model" && IsModelPart(f.Path, f.Source, models));
         foreach (var wad in wads)
         {
             var decals = Path.GetFileName(wad.Path).Equals("decals.wad", StringComparison.OrdinalIgnoreCase);
@@ -83,13 +83,40 @@ public static class AssetSearch
         return Collect(found, wanted, query, limit);
     }
 
-    /// <summary>scientistt.mdl (textures) and scientist01.mdl (sequence group) belong to scientist.mdl.</summary>
-    private static bool IsModelPart(string path, HashSet<string> models)
+    /// <summary>
+    /// scientistt.mdl (textures) and scientist01.mdl (sequence group) belong to scientist.mdl. The name says so first;
+    /// a loose file is then confirmed by its header (sequence group "IDSQ", texture file "IDST" without bones), so a real
+    /// model that merely ends in t (foot.mdl next to foo.mdl) is kept. Files inside a PAK go by the name only.
+    /// </summary>
+    private static bool IsModelPart(string path, string source, HashSet<string> models)
     {
         var stem = path[..^4];
-        if (stem.EndsWith('t') || stem.EndsWith('T'))
-            return models.Contains(stem[..^1] + ".mdl");
-        return stem.Length > 2 && char.IsAsciiDigit(stem[^1]) && char.IsAsciiDigit(stem[^2]) && models.Contains(stem[..^2] + ".mdl");
+        var byName = (stem.EndsWith('t') || stem.EndsWith('T')) && models.Contains(stem[..^1] + ".mdl")
+                     || stem.Length > 2 && char.IsAsciiDigit(stem[^1]) && char.IsAsciiDigit(stem[^2]) && models.Contains(stem[..^2] + ".mdl");
+        if (!byName)
+            return false;
+        var file = Path.Combine(source, path);
+        return !File.Exists(file) || IsModelPartHeader(file);
+    }
+
+    /// <summary>studiohdr_t: id at 0, numbones at 140. "IDSQ" = sequence group; "IDST" with no bones = texture file.</summary>
+    internal static bool IsModelPartHeader(string file)
+    {
+        try
+        {
+            using var stream = File.OpenRead(file);
+            var header = new byte[144];
+            if (stream.Read(header, 0, header.Length) < 8)
+                return true;
+            var id = System.Text.Encoding.ASCII.GetString(header, 0, 4);
+            if (id == "IDSQ")
+                return true;
+            return id == "IDST" && stream.Length >= 144 && BitConverter.ToInt32(header, 140) == 0;
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+        {
+            return true;
+        }
     }
 
     private static IReadOnlyList<Kind> Wanted(IReadOnlyList<Kind> kinds, string? kind) =>

@@ -25,6 +25,13 @@ public sealed record HammerBuild
     /// <summary>Game config file relative to the game root.</summary>
     public string? GameConfig { get; init; }
 
+    /// <summary>
+    /// GoldSrc editors: the HKCU key where the editor keeps its options (Worldcraft 1.x-2.0 "Software\Worldcraft\Worldcraft",
+    /// Worldcraft 2.1-3.3 "Software\Valve\Worldcraft", Hammer 3.x "Software\Valve\Valve Hammer Editor", mods their own).
+    /// Its General\TextureFileCount / TextureFile0..N is the texture WAD list of Options > Textures.
+    /// </summary>
+    public string? SettingsKey { get; init; }
+
     /// <summary>vmf, rmf, map, jmf.</summary>
     public string MapFormat { get; init; } = "vmf";
 
