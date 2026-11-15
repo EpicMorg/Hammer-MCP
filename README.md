@@ -188,7 +188,7 @@ src/native/                 C++ injector and adapter (CMake; MSVC or clang-cl), 
 - [x] Shell channel: entities, keyvalues, rotation, deletion · menu commands · build registry · tray app · LAN + token
 - [x] Map reading: entities, outputs, I/O graph; FGD reference from Hammer's own game config; map validation; ambiguity checks before edits
 - [x] Compile pipeline: Hammer's Run Map sequences, run_compile, parsed logs, leak tracing; asset checks via gameinfo.txt + VPK
-- [x] Releases 0.1 – 0.7: single-file `win-x64` and `win-x86` builds — see [CHANGELOG.md](CHANGELOG.md)
+- [x] Releases 0.1 – 0.8: single-file `win-x64` and `win-x86` builds — see [CHANGELOG.md](CHANGELOG.md)
 - [x] Adapter, layer 1 (0.7): MCP menu in Hammer, chat, live activity log, approval list
 - [ ] Adapter, layer 2: live read of the selection, camera, geometry (per-build profiles); docked panels in Hammer
 

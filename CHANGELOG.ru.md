@@ -4,7 +4,7 @@
 
 Все заметные изменения Hammer-MCP. Версии — по [SemVer](https://semver.org/lang/ru/); релизы `-alpha` — пре-релизы.
 
-## [Unreleased]
+## [0.8.0] - 2026-11-15
 
 ### Добавлено
 - **Конфиги игр GoldSrc**: читается бинарный `GameCfg.wc` рядом с Worldcraft / Hammer 3.x (версии 1.3 и 1.4), поэтому `game_configs`, `fgd_*`, `compile_sequences` и `find_assets` работают и с GoldSrc-редакторами. Из конфига берутся папка мода (`gameDir`), игра, на которую он опирается (`valve`), FGD (относительные — от папки редактора), папки карт и bsp и компиляторы (включая `$csg_exe`).
@@ -150,6 +150,7 @@ Source 2: несохранённое состояние Hammer через кон
 - Чтение сохранённой карты: `hammer_status`, `map_summary`, `list_entities`.
 - Встроенный реестр сборок (`registry/hammers.json`, переопределяется файлом рядом с exe).
 
+[0.8.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.4.0...v0.5.0
