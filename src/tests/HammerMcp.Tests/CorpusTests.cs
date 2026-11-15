@@ -39,6 +39,16 @@ public class CorpusTests
     }
 
     [Fact]
+    public void EveryJackConfigAndGoldSrcMapReads()
+    {
+        Assert.SkipWhen(Root is null, "HAMMER_MCP_CORPUS not set");
+        foreach (var f in Directory.EnumerateFiles(Root!, "vdkgamecfg.ini", new EnumerationOptions { RecurseSubdirectories = true, MatchCasing = MatchCasing.CaseInsensitive }))
+            Assert.All(JackGameCfg.Load(f), c => Assert.True(c.GoldSrc, f));
+        var maps = Files(".rmf", ".map", ".jmf").ToList();
+        Assert.All(maps, f => GoldSrcMapAssets.Collect(f));
+    }
+
+    [Fact]
     public void EveryMapReads()
     {
         Assert.SkipWhen(Root is null, "HAMMER_MCP_CORPUS not set");

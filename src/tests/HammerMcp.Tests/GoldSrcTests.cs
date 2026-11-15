@@ -183,4 +183,136 @@ public class GoldSrcTests : IDisposable
         Assert.Equal(("decal", "{scorch1"), (scorch.Kind, scorch.KeyValue));
         Assert.Empty(AssetSearch.SearchGoldSrc(content.Files, content.Wads, "font1", "any", 50).Hits);
     }
+
+    /// <summary>A PAK with the given file names (no data).</summary>
+    private string Pak(string path, params string[] names)
+    {
+        var full = Path.Combine(_dir, path);
+        Directory.CreateDirectory(Path.GetDirectoryName(full)!);
+        var ms = new MemoryStream();
+        var w = new BinaryWriter(ms);
+        w.Write(Encoding.ASCII.GetBytes("PACK"));
+        w.Write(12);
+        w.Write(names.Length * 64);
+        foreach (var name in names)
+        {
+            var b = new byte[56];
+            Encoding.ASCII.GetBytes(name, b);
+            w.Write(b);
+            w.Write(0);
+            w.Write(0);
+        }
+        File.WriteAllBytes(full, ms.ToArray());
+        return full;
+    }
+
+    [Fact]
+    public void PakFilesAreSearchedLikeFolders()
+    {
+        Files(@"valve\models\loose.mdl");
+        Pak(@"valve\pak1.pak", "models/later.mdl");
+        Pak(@"valve\pak0.pak", "models/Barney.mdl", "sound/ambience/wind1.wav", "gfx/env/desertup.tga");
+        File.WriteAllText(Path.Combine(_dir, "valve", "pak2.pak"), "nope");
+        Assert.Equal(["pak0.pak", "pak1.pak", "pak2.pak"], GoldSrcContent.Paks(Path.Combine(_dir, "valve")).Select(Path.GetFileName));
+        var config = new HammerGameConfig("HL", [], Path.Combine(_dir, "valve"), _dir, null, null, new Dictionary<string, string>(), GoldSrc: true);
+        var content = GoldSrcContent.ForConfig(config);
+        Assert.True(content.Files.Exists("models/barney.mdl"));
+        Assert.True(content.Files.Exists(@"gfx\env\DESERTUP.tga"));
+        Assert.Contains(content.Problems, p => p.Contains("pak2.pak"));
+        var hits = AssetSearch.SearchGoldSrc(content.Files, content.Wads, "*.mdl", "model", 50).Hits;
+        Assert.Equal(["models/later.mdl", "models/loose.mdl", "models/barney.mdl"], hits.Select(h => h.KeyValue));
+        Assert.EndsWith("pak0.pak", hits.Single(h => h.KeyValue == "models/barney.mdl").Sources[0]);
+    }
+
+    [Fact]
+    public void ReadsJackConfig()
+    {
+        Wad(@"hl\valve\halflife.wad", ("CRATE01", 0x43));
+        Wad(@"other\my.wad", ("MYTEX", 0x43));
+        var hl = Path.Combine(_dir, "hl").Replace('\\', '/');
+        string[] ini =
+        [
+            "[Config0]", "Title=Half-Life", "Enabled=true", "MapProfile=vpHalfLife",
+            $"GameExecutable={hl}/hl.exe", $"GameBasedir={hl}/valve", $"GameModdir={hl}/mymod",
+            "MapSourceFileDirectory=C:/maps",
+            "MapTool0=C:/zhlt/hlcsg.exe", "MapTool1=C:/zhlt/hlbsp.exe", "MapTool2=C:/zhlt/hlvis.exe", "MapTool3=C:/zhlt/hlrad_x64.exe",
+            "GameData0=halflife/halflife.fgd", "GameData1=C:/zhlt/zhlt.fgd",
+            "Parcel0=" + Path.Combine(_dir, "other", "my.wad").Replace("\\", "\\\\"), "Parcel1=C:/gone/missing.wad",
+            "[Config1]", "Title=Quake", "Enabled=false",
+        ];
+        var config = Assert.Single(JackGameCfg.Parse(ini, @"C:\Jack"));
+        Assert.Equal("Half-Life", config.Name);
+        Assert.True(config.GoldSrc);
+        Assert.Equal(Path.Combine(_dir, "hl", "mymod"), config.GameDir);
+        Assert.Equal(Path.Combine(_dir, "hl", "valve"), config.BaseGameDir);
+        Assert.Equal(Path.Combine(_dir, "hl"), config.GameExeDir);
+        Assert.Equal(@"C:\maps", config.MapDir);
+        Assert.Equal([@"C:\Jack\halflife\halflife.fgd", @"C:\zhlt\zhlt.fgd"], config.FgdFiles);
+        Assert.Equal(@"C:\zhlt\hlcsg.exe", config.Tools["CSG"]);
+        Assert.Equal(@"C:\zhlt\hlrad_x64.exe", config.Tools["Light"]);
+        Assert.Equal(Path.Combine(_dir, "other", "my.wad"), config.TextureWads![0]);
+
+        var content = GoldSrcContent.ForConfig(config);
+        Assert.Equal(["my.wad", "halflife.wad"], content.Wads.Select(w => Path.GetFileName(w.Path)));
+        Assert.Contains(content.Problems, p => p.Contains("missing.wad"));
+        Assert.Empty(JackGameCfg.Parse(["// Game config is empty"], "."));
+    }
+
+    [Fact]
+    public void CollectsGoldSrcMapAssets()
+    {
+        var map = Path.Combine(_dir, "test.map");
+        File.WriteAllText(map, """
+            {
+            "classname" "worldspawn"
+            "wad" "\half-life\valve\halflife.wad;C:\gone\my.wad"
+            "skyname" "desert"
+            {
+            ( 0 0 64 ) ( 64 0 64 ) ( 0 64 64 ) CRATE01 0 0 0 1 1
+            ( 0 0 0 ) ( 0 64 0 ) ( 64 0 0 ) CLIP 0 0 0 1 1
+            ( 0 0 0 ) ( 0 0 64 ) ( 0 64 0 ) CRATE01 0 0 0 1 1
+            ( 64 0 0 ) ( 64 64 0 ) ( 64 0 64 ) !WATER 0 0 0 1 1
+            ( 0 0 0 ) ( 64 0 0 ) ( 0 0 64 ) CRATE01 0 0 0 1 1
+            ( 0 64 0 ) ( 0 64 64 ) ( 64 64 0 ) CRATE01 0 0 0 1 1
+            }
+            }
+            {
+            "classname" "monster_scientist"
+            "model" "models/scientist.mdl"
+            "origin" "0 0 0"
+            }
+            {
+            "classname" "ambient_generic"
+            "message" "ambience/wind1.wav"
+            "origin" "0 0 0"
+            }
+            {
+            "classname" "ambient_generic"
+            "message" "!HG_ALERT"
+            "origin" "0 0 0"
+            }
+            {
+            "classname" "env_sprite"
+            "model" "sprites/glow01.spr"
+            "origin" "0 0 0"
+            }
+            {
+            "classname" "infodecal"
+            "texture" "{BLOOD1"
+            "origin" "0 0 0"
+            }
+            """);
+        var result = GoldSrcMapAssets.Collect(map);
+        Assert.Equal([@"\half-life\valve\halflife.wad", @"C:\gone\my.wad"], result.Wads);
+        var refs = result.References.ToDictionary(r => (r.Kind, r.Path), r => r.Uses);
+        Assert.Equal(4, refs[("texture", "CRATE01")]);
+        Assert.True(refs.ContainsKey(("texture", "!WATER")));
+        Assert.False(refs.ContainsKey(("texture", "CLIP")));
+        Assert.True(refs.ContainsKey(("model", "models/scientist.mdl")));
+        Assert.True(refs.ContainsKey(("sound", "sound/ambience/wind1.wav")));
+        Assert.True(refs.ContainsKey(("sprite", "sprites/glow01.spr")));
+        Assert.True(refs.ContainsKey(("decal", "{BLOOD1")));
+        Assert.True(refs.ContainsKey(("skybox", "gfx/env/desertup.tga")));
+        Assert.DoesNotContain(refs.Keys, k => k.Path.Contains("HG_ALERT"));
+    }
 }

@@ -46,7 +46,7 @@ public sealed class GameData(HammerTarget target)
                 pick is null ? $"pick a Source 2 mod with configName: {string.Join(", ", source2.Select(c => c.Name))}" : null);
         }
         if (file is null)
-            return new Selection(null, [], null, $"no GameConfig.txt / hammerplusplus_gameconfig.txt / GameCfg.wc next to {process.ExePath}");
+            return new Selection(null, [], null, $"no GameConfig.txt / hammerplusplus_gameconfig.txt / GameCfg.wc / VDKGameCfg.ini next to {process.ExePath}");
         var active = configName is not null
             ? configs.FirstOrDefault(c => c.Name.Equals(configName, StringComparison.OrdinalIgnoreCase))
             : HammerGameConfig.ForMap(configs, process.OpenMapPath) ?? HammerGameConfig.ForHammer(configs, process.ExePath);
@@ -139,12 +139,14 @@ public sealed class GameData(HammerTarget target)
     private string? _goldSrcKey;
     private GoldSrcContent? _goldSrc;
 
-    /// <summary>GoldSrc content of a config (mod + base game folders and their WADs). Rebuilt when a folder or WAD changes.</summary>
+    /// <summary>GoldSrc content of a config (mod + base game folders, their PAKs and WADs). Rebuilt when a folder or WAD changes.</summary>
     public GoldSrcContent GoldSrcAssets(HammerGameConfig config)
     {
         var folders = GoldSrcContent.SearchFolders(config);
         var key = string.Join('|', folders.Select(f => $"{f}@{Directory.GetLastWriteTimeUtc(f).Ticks}")
-            .Concat(folders.SelectMany(f => Directory.EnumerateFiles(f, "*.wad")).Select(w => $"{w}@{File.GetLastWriteTimeUtc(w).Ticks}")))
+            .Concat(folders.SelectMany(f => Directory.EnumerateFiles(f, "*.wad").Concat(GoldSrcContent.Paks(f)))
+                .Concat(config.TextureWads ?? [])
+                .Select(w => $"{w}@{(File.Exists(w) ? File.GetLastWriteTimeUtc(w).Ticks : 0)}")))
             + $"|{config.GameDir}|{config.BaseGameDir}";
         lock (_lock)
         {

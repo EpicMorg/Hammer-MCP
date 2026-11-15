@@ -16,12 +16,14 @@ namespace HammerMcp.Server.Tools;
 public sealed class CompileTools(HammerTarget target, GameData gameData)
 {
     [McpServerTool(Name = "check_assets", ReadOnly = true)]
-    [Description("Content the SAVED map uses (brush materials, models, overlays, decals, sprites, skybox) checked against the game's search paths from gameinfo.txt, folders and VPKs. Returns what is missing, grouped by kind.")]
+    [Description("Content the SAVED map uses (brush materials, models, overlays, decals, sprites, skybox) checked against the game's search paths from gameinfo.txt, folders and VPKs. GoldSrc (.rmf/.map/.jmf): face textures and decals against the WADs (the game's and the ones in worldspawn 'wad'), models, sprites, sounds, sky against the mod / valve folders and PAKs, plus the listed WADs themselves. Returns what is missing, grouped by kind.")]
     public object CheckAssets(int limit = 50, string? configName = null)
     {
         var (map, config, error) = MapAndConfig(configName);
         if (error is not null)
             return new { error };
+        if (config!.GoldSrc || GoldSrcMapAssets.IsGoldSrcMap(map!))
+            return CheckGoldSrcAssets(map!, config, limit);
         var resolver = gameData.Assets(config!);
         if (resolver is null)
             return new { error = $"no gameinfo.txt in GameDir '{config!.GameDir}'" };
@@ -82,6 +84,53 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
             }),
             note = result.Total > result.Hits.Count ? "more matches: narrow the query or raise limit (max 500)" : null,
             searchPathProblems = resolver.Problems.Count > 0 ? resolver.Problems : null,
+        };
+    }
+
+    private object CheckGoldSrcAssets(string map, HammerGameConfig config, int limit)
+    {
+        if (!GoldSrcMapAssets.IsGoldSrcMap(map))
+            return new { error = $"not a GoldSrc map: {map}" };
+        var content = gameData.GoldSrcAssets(config);
+        var collected = GoldSrcMapAssets.Collect(map);
+        // the map's own WAD list: a path that exists on this machine, else a WAD of the same name in the game folders
+        var byName = content.Wads.GroupBy(w => Path.GetFileName(w.Path), StringComparer.OrdinalIgnoreCase).ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+        var wads = new List<WadDirectory>(content.Wads);
+        var missingWads = new List<string>();
+        foreach (var listed in collected.Wads)
+        {
+            var path = listed.Replace('/', '\\');
+            if (File.Exists(path))
+            {
+                try { wads.Add(WadDirectory.Open(path)); }
+                catch (Exception e) when (e is IOException or InvalidDataException or EndOfStreamException) { missingWads.Add($"{listed} ({e.Message})"); }
+            }
+            else if (!byName.ContainsKey(Path.GetFileName(path)))
+                missingWads.Add(listed);
+        }
+        var textures = wads.SelectMany(w => w.Textures).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var decalWads = content.Wads.Where(w => Path.GetFileName(w.Path).Equals("decals.wad", StringComparison.OrdinalIgnoreCase)).ToList();
+        var decals = (decalWads.Count > 0 ? decalWads : wads).SelectMany(w => w.Textures).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var missing = collected.References.Where(r => r.Kind switch
+        {
+            "texture" => !textures.Contains(r.Path),
+            "decal" => !decals.Contains(r.Path),
+            _ => !content.Files.Exists(r.Path),
+        }).ToList();
+        var max = Math.Clamp(limit, 1, 500);
+        return new
+        {
+            checkedAssets = collected.References.Count,
+            missing = missing.GroupBy(r => r.Kind).ToDictionary(g => g.Key, g => new
+            {
+                count = g.Count(),
+                items = g.Take(max).Select(r => new { r.Path, r.Uses, entityId = r.ExampleEntityId }),
+            }),
+            mapWads = collected.Wads,
+            missingWads = missingWads.Count > 0 ? missingWads : null,
+            searchFolders = content.Folders,
+            gameWads = content.Wads.Select(w => Path.GetFileName(w.Path)),
+            searchPathProblems = content.Problems.Count > 0 ? content.Problems : null,
         };
     }
 

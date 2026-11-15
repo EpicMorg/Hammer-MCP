@@ -30,11 +30,23 @@ public sealed record HammerProcess(int ProcessId, string Name, string ExePath, n
 
     /// <summary>Map path from a title like "Hammer++ - 64 Bit - [B:\...\map.vmf - Textured Shaded]".</summary>
     /// <remarks>Source 2 Hammer shows only the file name; it is looked up in the install's content tree.
-    /// When the title has no map, Source 2 is asked through its developer console (hammer_map_files).</remarks>
+    /// When the title has no map, Source 2 is asked through its developer console (hammer_map_files).
+    /// GoldSrc Hammer 3.x also shows only the file name: the full path comes from the command line (a map opened by
+    /// double click) or from the game configs' map folders.</remarks>
     public string? OpenMapPath =>
         WindowTitles.Select(HammerWindowTitle.ParseMapPath).FirstOrDefault(p => p is not null) is { } map
-            ? Path.IsPathRooted(map) ? map : Source2Content.FindMap(ExePath, map) ?? Source2Content.FindInMapDirs(ExePath, map) ?? map
+            ? Path.IsPathRooted(map) ? map
+                : FromCommandLine(map) ?? Source2Content.FindMap(ExePath, map) ?? Source2Content.FindInMapDirs(ExePath, map) ?? map
             : IsSource2 ? HammerMcp.Core.Source2.VConsoleMaps.OpenMaps().FirstOrDefault() : null;
+
+    /// <summary>A quoted or plain argument of the process command line that is an existing file named <paramref name="mapName"/>.</summary>
+    private string? FromCommandLine(string mapName)
+    {
+        if (CommandLine is not { } cl)
+            return null;
+        var args = System.Text.RegularExpressions.Regex.Matches(cl, @"""([^""]+)""|(\S+)").Select(m => m.Groups[1].Success ? m.Groups[1].Value : m.Groups[2].Value);
+        return args.Skip(1).FirstOrDefault(a => Path.GetFileName(a).Equals(mapName, StringComparison.OrdinalIgnoreCase) && Path.IsPathRooted(a) && File.Exists(a));
+    }
 
     public string MainTitle => WindowTitles.FirstOrDefault(t => t.Contains('[')) ?? WindowTitles.FirstOrDefault() ?? Name;
 

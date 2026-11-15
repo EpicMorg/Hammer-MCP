@@ -3,8 +3,9 @@ using HammerMcp.Core.Config;
 namespace HammerMcp.Core.Assets;
 
 /// <summary>
-/// Content of a GoldSrc game config: loose files of the mod and of the game it falls back to (each with its _addon and
-/// _downloads folders, as the engine mounts them), and the texture WADs in those folders. _hd and _&lt;language&gt; folders
+/// Content of a GoldSrc game config: loose files and PAKs (pak0.pak, pak1.pak, ...) of the mod and of the game it falls
+/// back to (each with its _addon and _downloads folders, as the engine mounts them), and texture WADs: the ones the
+/// config lists (J.A.C.K.), then those in the folders. _hd and _&lt;language&gt; folders
 /// depend on client settings and are left out. Utility WADs (fonts, gfx, cached, spray / temp decals) are skipped.
 /// </summary>
 public sealed class GoldSrcContent
@@ -22,9 +23,18 @@ public sealed class GoldSrcContent
     private GoldSrcContent(IReadOnlyList<string> folders, IReadOnlyList<WadDirectory> wads)
     {
         Folders = folders;
-        Files = new AssetResolver(folders);
+        Files = new AssetResolver(folders.Concat(folders.SelectMany(Paks)));
         Wads = wads;
+        Problems.AddRange(Files.Problems);
     }
+
+    /// <summary>pak0.pak, pak1.pak, ... of a folder, in number order.</summary>
+    public static IEnumerable<string> Paks(string folder) =>
+        Directory.EnumerateFiles(folder, "*.pak")
+            .Select(f => (File: f, Name: Path.GetFileNameWithoutExtension(f)))
+            .Select(p => (p.File, N: p.Name.StartsWith("pak", StringComparison.OrdinalIgnoreCase) && int.TryParse(p.Name.AsSpan(3), out var n) ? n : int.MaxValue))
+            .OrderBy(p => p.N).ThenBy(p => p.File, StringComparer.OrdinalIgnoreCase)
+            .Select(p => p.File);
 
     /// <summary>Folders in mount order: mod_addon, mod, mod_downloads, then the same for the base game (valve).</summary>
     public static IReadOnlyList<string> SearchFolders(HammerGameConfig config)
@@ -49,20 +59,24 @@ public sealed class GoldSrcContent
         var folders = SearchFolders(config);
         var wads = new List<WadDirectory>();
         var problems = new List<string>();
-        foreach (var folder in folders)
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var listed = (config.TextureWads ?? []).Select(w => w.Replace('/', '\\')).ToList();
+        foreach (var missing in listed.Where(w => !File.Exists(w)))
+            problems.Add($"texture WAD from the config not found: {missing}");
+        var files = listed.Where(File.Exists)
+            .Concat(folders.SelectMany(f => Directory.EnumerateFiles(f, "*.wad").Order(StringComparer.OrdinalIgnoreCase)
+                .Where(w => !NotTextureWads.Contains(Path.GetFileName(w)))));
+        foreach (var file in files)
         {
-            foreach (var file in Directory.EnumerateFiles(folder, "*.wad").Order(StringComparer.OrdinalIgnoreCase))
+            if (!seen.Add(Path.GetFullPath(file)))
+                continue;
+            try
             {
-                if (NotTextureWads.Contains(Path.GetFileName(file)))
-                    continue;
-                try
-                {
-                    wads.Add(WadDirectory.Open(file));
-                }
-                catch (Exception e) when (e is IOException or InvalidDataException or EndOfStreamException or UnauthorizedAccessException)
-                {
-                    problems.Add($"{file}: {e.Message}");
-                }
+                wads.Add(WadDirectory.Open(file));
+            }
+            catch (Exception e) when (e is IOException or InvalidDataException or EndOfStreamException or UnauthorizedAccessException)
+            {
+                problems.Add($"{file}: {e.Message}");
             }
         }
         var content = new GoldSrcContent(folders, wads);
