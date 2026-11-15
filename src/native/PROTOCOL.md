@@ -83,3 +83,37 @@ All adapter windows (chat, log, approval, status, about) show the Hammer-MCP ico
 - Pending list: **Apply selected** applies the checked rows and leaves the unchecked ones pending; **Later** closes the window. While the list is open, a `state` with another `pending` count makes the adapter ask for the list again.
 - `profile` for a `build` other than the one in `hello` is ignored; `support` from the profile replaces the built-in level (Status shows "profile from the server").
 - Activity log and chat keep the newest 500 / 200 lines.
+
+## Layer 2 — live reading (2026-11-15; first build: Valve Hammer Editor 3.5)
+
+The adapter reads what Hammer holds in memory: the selection and the 3D camera. Nothing build-specific is compiled in:
+the layout comes from the server's registry entry (`"memory"` in `registry/hammers.json`) as the profile's `features`,
+a flat object of `"name": "0x…"`:
+
+| name | meaning |
+|---|---|
+| `module` | module the addresses are relative to (default: the exe) |
+| `activeDoc` | address (module-relative) of the global pointer to the active map document |
+| `doc.vtable` | the document's vtable (module-relative); checked before anything is read |
+| `doc.views`, `doc.selection` | offsets of the document's view list and selection list (MFC `CPtrList`) |
+| `doc.selectionBounds` | offset of the selection's mins (maxs follow) |
+| `view3d.vtable`, `view3d.camera` | the 3D view's vtable and the offset of its camera pointer |
+| `camera.position`, `camera.matrix` / `camera.forward`, `camera.fov` | camera fields; `matrix` = OpenGL modelview (forward = minus its third row) |
+| `object.origin`, `.mins`, `.maxs`, `.parent` | fields of every map object |
+| `entity.vtable`, `.className`, `.classNameLength`, `.keyValues`, `.keyValueCount`, `.keyValueSize`, `.keyLength`, `.valueOffset`, `.valueLength` | entities: class name and the key/value array |
+| `solid.vtable`, `.faces`, `face.size`, `.texture`, `.textureLength` | solids: the face array (`new[]`, count right before it) and each face's texture |
+
+A feature is on only when every field it needs is named; otherwise it answers with an error. Every read goes through
+`ReadProcessMemory` on the adapter's own process (a wrong address = an error, never a crash) and runs on Hammer's UI
+thread. Other objects in the selection are reported by their RTTI class name (`group`, `sprite`, …).
+
+| direction | message | meaning |
+|---|---|---|
+| → adapter | `{"cmd":"get_selection","id":"…"}` | → `{"type":"selection","id":"…","count":N,"bounds":{"mins":[…],"maxs":[…]},"items":[…],"truncated":true?}` (first 200 items) |
+| → adapter | `{"cmd":"get_camera","id":"…"}` | → `{"type":"camera","id":"…","position":[…],"forward":[…],"yaw":°,"pitch":° (positive = down),"fov":°}` |
+| adapter → | `{"type":"selection",…}` without `id` | the user chose **Send selection to agent** (enabled when the server is connected and the layout has a selection) |
+| adapter → | `{"type":"error","id":"…","message":"…"}` | no map open, layout does not match, Hammer busy (no answer from its window in 3 s) |
+
+Items: `{"kind":"entity","className":…,"origin":[…],"mins":[…],"maxs":[…],"keyValues":{…}}`,
+`{"kind":"solid","mins":[…],"maxs":[…],"faces":6,"textures":[…],"entity":"func_door"?}` (`entity` = the owning brush entity).
+

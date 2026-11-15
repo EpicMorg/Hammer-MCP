@@ -40,6 +40,42 @@ public sealed class AdapterClient : IAsyncDisposable
     /// <summary>The user's decision on pending changes: ids to apply, ids to reject.</summary>
     public event Action<IReadOnlyList<string>, IReadOnlyList<string>>? Approval;
 
+    /// <summary>The user chose MCP > Send selection to agent in Hammer (layer 2): the adapter's selection message.</summary>
+    public event Action<JsonObject>? SelectionSent;
+
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<string, TaskCompletionSource<JsonObject>> _requests = new();
+    private long _nextRequest;
+
+    /// <summary>
+    /// Sends a command with a fresh "id" and waits for the adapter's answer with the same id (layer 2: get_selection,
+    /// get_camera). The answer may be {"type":"error","message":…}.
+    /// </summary>
+    public async Task<JsonObject> RequestAsync(JsonObject command, TimeSpan timeout, CancellationToken cancel = default)
+    {
+        var id = "r" + Interlocked.Increment(ref _nextRequest);
+        var tcs = new TaskCompletionSource<JsonObject>(TaskCreationOptions.RunContinuationsAsynchronously);
+        _requests[id] = tcs;
+        try
+        {
+            command["id"] = id;
+            await SendAsync(command);
+            using var limit = CancellationTokenSource.CreateLinkedTokenSource(cancel, _stop.Token);
+            limit.CancelAfter(timeout);
+            try
+            {
+                return await tcs.Task.WaitAsync(limit.Token);
+            }
+            catch (OperationCanceledException) when (!cancel.IsCancellationRequested)
+            {
+                throw new TimeoutException(Connected ? "the adapter did not answer in time" : "the adapter disconnected");
+            }
+        }
+        finally
+        {
+            _requests.TryRemove(id, out _);
+        }
+    }
+
     /// <summary>The connection ended (bye after unload, Hammer closed, heartbeat lost); the text says why.</summary>
     public event Action<string>? Closed;
 
@@ -101,9 +137,14 @@ public sealed class AdapterClient : IAsyncDisposable
             ["items"] = new JsonArray([.. items.Select(i => (JsonNode)new JsonObject { ["id"] = i.Id, ["text"] = i.Text })]),
         });
 
-    /// <summary>The build profile from the server's registry, sent right after hello (features arrive with layer 2).</summary>
-    public Task SendProfileAsync(string build, string support) =>
-        SendAsync(new JsonObject { ["cmd"] = "profile", ["build"] = build, ["support"] = support, ["features"] = new JsonObject() });
+    /// <summary>The build profile from the server's registry, sent right after hello; features = the layer 2 memory layout.</summary>
+    public Task SendProfileAsync(string build, string support, IReadOnlyDictionary<string, string>? memory = null)
+    {
+        var features = new JsonObject();
+        foreach (var (k, v) in memory ?? new Dictionary<string, string>())
+            features[k] = v;
+        return SendAsync(new JsonObject { ["cmd"] = "profile", ["build"] = build, ["support"] = support, ["features"] = features });
+    }
 
     public Task SendChatAsync(ChatLine line) => SendAsync(ChatJson(line, "chat"));
 
@@ -194,8 +235,16 @@ public sealed class AdapterClient : IAsyncDisposable
         {
             return; // not ours to fail on: ignore a garbled line
         }
+        if (m is not null && Str(m, "id") is { } rid && _requests.TryGetValue(rid, out var waiting) && Str(m, "type") != "menu")
+        {
+            waiting.TrySetResult(m);
+            return;
+        }
         switch (Str(m, "type"))
         {
+            case "selection":
+                SelectionSent?.Invoke(m!);
+                break;
             case "pong":
                 break;
             case "bye":

@@ -33,6 +33,7 @@ public static class HammerMcpHost
                 mcp.ServerInstructions = AgentInstructions.Text;
             })
             .WithTools<StatusTools>()
+            .WithTools<LiveTools>()
             .WithTools<MapTools>();
         if (options.AllowsLiveEdits)
             mcp.WithTools<EntityTools>().WithTools<MenuTools>().WithTools<RunCompileTools>();

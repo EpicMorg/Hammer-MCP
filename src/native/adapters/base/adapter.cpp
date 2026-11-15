@@ -3,6 +3,7 @@
 // and reports it in hello. Layers 0-1 (pipe, MCP menu) touch no Hammer internals; build-specific knowledge for later
 // layers comes as data (signatures / offsets per build), not as separate DLLs.
 #include "hmcp.h"
+#include "live.h"
 #include <sddl.h>
 #include <commctrl.h>
 #include <cstdint>
@@ -191,6 +192,9 @@ constexpr UINT WM_HMCP_LOG = WM_APP + 0x1E2;
 constexpr UINT WM_HMCP_UNINSTALL = WM_APP + 0x1E3;
 constexpr UINT WM_HMCP_PENDING = WM_APP + 0x1E4;
 constexpr UINT WM_HMCP_CHAT = WM_APP + 0x1E5;   // lParam 1 = a line from the agent arrived
+constexpr UINT WM_HMCP_LIVE = WM_APP + 0x1E6;   // layer 2 read on the UI thread; lParam = LiveRequest*
+
+struct LiveRequest { bool camera; std::string id, answer; };
 constexpr UINT_PTR kTimerId = 0xBE5F;
 
 // command ids far above Hammer's own (its highest are around 0x8100)
@@ -726,7 +730,7 @@ void UpdateMenu() {
     mi.dwTypeData = pending.data();
     SetMenuItemInfoW(g_menu, ID_PENDING, FALSE, &mi);
     enable(ID_PAUSE, on);
-    enable(ID_SELECTION, false);   // layer 2
+    enable(ID_SELECTION, on && live::Ready());   // layer 2: the build has a memory layout
     enable(ID_CHAT, true);         // the window says when there is no server
     enable(ID_PENDING, on && s.approval == "ask" && s.pending > 0);
     enable(ID_UNDO, on && s.canUndo);
@@ -772,6 +776,12 @@ void OnCommand(UINT id) {
         g_pendingWanted = true;
         Send("{\"type\":\"menu\",\"item\":\"pending\",\"id\":\"pending\"}");
         break;
+    case ID_SELECTION: {
+        std::string line = live::Selection("");
+        if (line.rfind("{\"type\":\"error\"", 0) == 0) Box(W(JStr(line, "message")), MB_OK | MB_ICONINFORMATION);
+        else Send(line);
+        break;
+    }
     case ID_UNDO: Send("{\"type\":\"menu\",\"item\":\"undo_agent_step\"}"); break;
     case ID_LOG:
         if (OpenTool(kLog)) FillLog(true);
@@ -800,6 +810,11 @@ LRESULT CALLBACK HookProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp, UINT_PTR, D
     case WM_HMCP_INSTALL: InstallUi(); BuildMenu(); SetTimer(hwnd, kTimerId, 1000, nullptr); return 0;
     case WM_HMCP_UPDATE: OnStateChanged(); return 0;
     case WM_HMCP_LOG: FillLog(false); return 0;
+    case WM_HMCP_LIVE: {
+        auto r = reinterpret_cast<LiveRequest*>(lp);
+        r->answer = r->camera ? live::Camera(r->id) : live::Selection(r->id);
+        return 1;
+    }
     case WM_HMCP_CHAT:
         // an answer from the agent opens the chat (without taking the focus from the map)
         if (lp == 1 && !g_wnd[kChat]) OpenTool(kChat, false);
@@ -916,6 +931,7 @@ bool HandleLine(HANDLE pipe, const std::string& msg) {
         if (build == g_build) {
             g_profile = msg;
             g_support = JStr(msg, "support", g_support);
+            live::Load(msg);
         }
     } else if (cmd == "log") {
         {
@@ -958,6 +974,13 @@ bool HandleLine(HANDLE pipe, const std::string& msg) {
             for (auto& o : JObjects(JArray(msg, "items"))) g_pendingItems.emplace_back(JStr(o, "id"), JStr(o, "text"));
         }
         PostUi(WM_HMCP_PENDING);
+    } else if (cmd == "get_selection" || cmd == "get_camera") {
+        // read on Hammer's UI thread (the editor changes these structures there); a busy UI = no answer in time
+        LiveRequest r{ cmd == "get_camera", JStr(msg, "id"), {} };
+        DWORD_PTR done = 0;
+        if (!g_hwnd || !SendMessageTimeoutW(g_hwnd, WM_HMCP_LIVE, 0, reinterpret_cast<LPARAM>(&r), SMTO_NORMAL, 3000, &done) || !done)
+            r.answer = "{\"type\":\"error\",\"id\":\"" + JEsc(r.id) + "\",\"message\":\"Hammer is busy (no answer from its window in 3 s)\"}";
+        WriteAll(pipe, r.answer);
     } else if (cmd == "notify") {
         { std::lock_guard l(g_lock); g_state.notify = JStr(msg, "text"); }
         if (g_hwnd) FlashWindow(g_hwnd, TRUE);

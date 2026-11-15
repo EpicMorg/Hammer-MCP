@@ -23,6 +23,27 @@ public class HammerRegistryTests
     }
 
     [Fact]
+    public void LiveMemoryLayoutsAreComplete()
+    {
+        // the adapter turns a feature off when a key is missing (see src/native/adapters/base/live.cpp); a layout in the
+        // registry must have them all, and every value must be a number
+        string[] selection = ["activeDoc", "doc.selection", "object.mins", "object.maxs", "object.origin", "object.parent",
+            "entity.vtable", "entity.className", "entity.keyValues", "entity.keyValueCount", "entity.keyValueSize", "entity.keyLength",
+            "entity.valueOffset", "entity.valueLength", "solid.vtable", "solid.faces", "face.size", "face.texture"];
+        string[] camera = ["doc.views", "view3d.vtable", "view3d.camera", "camera.position"];
+        var layouts = HammerRegistry.Load(RegistryPath).Builds.Where(b => b.Memory.Count > 0).ToList();
+        Assert.Contains(layouts, b => b.Id == "goldsrc-hammer-3.5");
+        foreach (var b in layouts)
+        {
+            Assert.All(selection.Concat(camera), k => Assert.True(b.Memory.ContainsKey(k), $"{b.Id}: no {k}"));
+            Assert.True(b.Memory.ContainsKey("camera.matrix") || b.Memory.ContainsKey("camera.forward"), $"{b.Id}: no camera direction");
+            Assert.All(b.Memory, kv => Assert.True(
+                kv.Key == "module" || kv.Value.StartsWith("0x", StringComparison.Ordinal) &&
+                ulong.TryParse(kv.Value[2..], System.Globalization.NumberStyles.HexNumber, null, out _), $"{b.Id}: {kv.Key} = {kv.Value}"));
+        }
+    }
+
+    [Fact]
     public void EveryGoldSrcEditorHasItsSettingsKey()
     {
         // found by running each editor (2026-11-15): where Options > Textures keeps the texture WAD list
