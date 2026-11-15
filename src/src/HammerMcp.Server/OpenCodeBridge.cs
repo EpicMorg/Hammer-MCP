@@ -45,7 +45,8 @@ public sealed class OpenCodeBridge : IDisposable
         var client = new OpenCodeClient(Http, options);
         var api = await client.DetectAsync(ct);
         var session = await client.ResolveSessionAsync(ct);
-        return $"OpenCode API {(int)api}: lines go to {Describe(session)}";
+        var warning = options.PasswordExposure() is { } w ? $"\r\nWarning: {w}" : "";
+        return $"OpenCode API {(int)api}: lines go to {Describe(session)}{warning}";
     }
 
     private static string Describe(OpenCodeSession s) =>
@@ -65,16 +66,18 @@ public sealed class OpenCodeBridge : IDisposable
 
     private async Task DeliverAsync(OpenCodeClient client, ChatLine line)
     {
+        // taken before sending, so user_requests cannot hand it out while it is on its way; put back if sending fails
+        if (!_control.Take(line))
+            return; // the agent already got it through user_requests
         await _order.WaitAsync(); // lines arrive in the order the user wrote them
         try
         {
             var session = await client.PromptAsync(Message(line.Text));
-            _control.Take(line);
             _log.Write($"opencode: sent to session {Describe(session)}");
         }
         catch (Exception e) // fire and forget: whatever went wrong is logged, never lost in an unobserved task
         {
-            // the line stays in user_requests: the agent still gets it there
+            _control.Return(line); // the agent still gets it through user_requests
             _log.Write($"opencode: could not send the line ({e.Message}); it waits in user_requests");
         }
         finally

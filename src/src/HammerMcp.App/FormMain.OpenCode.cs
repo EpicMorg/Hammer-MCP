@@ -107,6 +107,10 @@ public partial class FormMain
             MessageBox.Show(this, "Server URL must be like http://127.0.0.1:4096.", "Hammer-MCP", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
+        if (s.OpenCodeEnabled && s.ToOpenCodeOptions().PasswordExposure() is { } exposure
+            && MessageBox.Show(this, $"Warning: {exposure}.\r\n\r\nSave anyway?", "Hammer-MCP: OpenCode",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+            return;
         _settings = s;
         _settings.Save();
         ApplyOpenCode();

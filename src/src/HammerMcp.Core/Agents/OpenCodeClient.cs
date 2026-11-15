@@ -20,6 +20,19 @@ public sealed record OpenCodeOptions
 
     /// <summary>Session id (ses_...); empty = the most recently used top-level session.</summary>
     public string Session { get; init; } = "";
+
+    /// <summary>
+    /// Why the password would be exposed: Basic auth over plain http to another machine sends it base64-encoded but
+    /// unencrypted. Null when there is no password, the URL is https or it points to this machine.
+    /// </summary>
+    public string? PasswordExposure()
+    {
+        if (Password.Length == 0 || !Uri.TryCreate(Url, UriKind.Absolute, out var uri))
+            return null;
+        if (uri.Scheme == Uri.UriSchemeHttps || uri.IsLoopback)
+            return null;
+        return $"the password is sent unencrypted to a non-local address ({uri.Host}) over http - use https, or OpenCode on this machine";
+    }
 }
 
 /// <summary>A session the message can go to.</summary>

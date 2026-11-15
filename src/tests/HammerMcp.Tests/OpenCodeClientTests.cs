@@ -106,6 +106,16 @@ public class OpenCodeClientTests
         Assert.Contains("password", e.Message);
     }
 
+    [Theory]
+    [InlineData("http://127.0.0.1:4096", "pw", false)]
+    [InlineData("http://localhost:4096", "pw", false)]
+    [InlineData("https://oc.example:4096", "pw", false)]
+    [InlineData("http://192.168.1.5:4096", "", false)]
+    [InlineData("http://192.168.1.5:4096", "pw", true)]
+    [InlineData("http://oc.lan:4096", "pw", true)]
+    public void PasswordOverPlainHttpToAnotherMachineIsFlagged(string url, string password, bool exposed) =>
+        Assert.Equal(exposed, new OpenCodeOptions { Url = url, Password = password }.PasswordExposure() is not null);
+
     [Fact]
     public async Task NotOpenCodeIsReported()
     {

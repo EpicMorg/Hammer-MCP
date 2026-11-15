@@ -123,6 +123,17 @@ public sealed class AgentControl
             return _requests.RemoveAll(r => r.At == line.At && r.Text == line.Text) > 0;
     }
 
+    /// <summary>Puts a request taken with <see cref="Take"/> back (it did not reach the agent after all), in time order.</summary>
+    public void Return(ChatLine line)
+    {
+        lock (_lock)
+        {
+            var i = _requests.FindIndex(r => r.At > line.At);
+            _requests.Insert(i < 0 ? _requests.Count : i, (line.At, line.Text));
+        }
+        Changed?.Invoke();
+    }
+
     private int _waiting;
 
     /// <summary>The agent is in wait_for_user right now: a new line reaches it through that call.</summary>
