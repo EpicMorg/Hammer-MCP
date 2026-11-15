@@ -16,7 +16,7 @@ namespace HammerMcp.Server.Tools;
 public sealed class CompileTools(HammerTarget target, GameData gameData)
 {
     [McpServerTool(Name = "check_assets", ReadOnly = true)]
-    [Description("Content the SAVED map uses (brush materials, models, overlays, decals, sprites, skybox) checked against the game's search paths from gameinfo.txt, folders and VPKs. GoldSrc (.rmf/.map/.jmf): face textures and decals against the WADs (the game's and the ones in worldspawn 'wad'), models, sprites, sounds, sky against the mod / valve folders and PAKs, plus the listed WADs themselves. Returns what is missing, grouped by kind.")]
+    [Description("Content the SAVED map uses (brush materials, models, overlays, decals, sprites, skybox, sound files in any keyvalue, ambient_generic sound script names) checked against the game's search paths from gameinfo.txt, folders and VPKs. GoldSrc (.rmf/.map/.jmf): face textures and decals against the WADs (the game's and the ones in worldspawn 'wad'), models, sprites, sounds, sky against the mod / valve folders and PAKs, plus the listed WADs themselves. Returns what is missing, grouped by kind.")]
     public object CheckAssets(int limit = 50, string? configName = null)
     {
         var (map, config, error) = MapAndConfig(configName);
@@ -28,7 +28,8 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
         if (resolver is null)
             return new { error = $"no gameinfo.txt in GameDir '{config!.GameDir}'" };
         var refs = MapAssets.Collect(map!);
-        var missing = refs.Where(r => !resolver.Exists(r.Path)).ToList();
+        var scripts = refs.Any(r => r.Kind == "soundscript") ? gameData.SoundScripts(config) : null;
+        var missing = refs.Where(r => r.Kind == "soundscript" ? scripts is not null && !scripts.Contains(r.Path) : !resolver.Exists(r.Path)).ToList();
         return new
         {
             checkedAssets = refs.Count,
@@ -40,14 +41,15 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
             searchFolders = resolver.Folders,
             vpks = resolver.Vpks,
             searchPathProblems = resolver.Problems,
+            soundScripts = scripts is null ? null : new { scripts.Scripts.Count, problems = scripts.Problems.Count > 0 ? scripts.Problems.Take(10) : null },
         };
     }
 
     [McpServerTool(Name = "find_assets", ReadOnly = true)]
-    [Description("Find content by name in the game of the attached Hammer - loose files and VPKs from the game's search paths (Source 1: gameinfo.txt; Source 2: game/<mod>, content/<mod>, core; GoldSrc: the mod and valve folders, textures and decals by name from their WADs): models, materials, textures, sounds, sprites, particles, decals. Use it to pick a model for prop_*, a material, a sound for ambient_generic. Each hit has 'keyValue' = what to write in the entity's keyvalue, and the sources that have the file (the first one wins).")]
+    [Description("Find content by name in the game of the attached Hammer - loose files and VPKs from the game's search paths (Source 1: gameinfo.txt; Source 2: game/<mod>, content/<mod>, core; GoldSrc: the mod and valve folders, textures and decals by name from their WADs): models, materials, textures, sounds, sprites, particles, decals, and Source 1 sound script names (Ambient.Wind, from scripts/game_sounds_manifest.txt; Source 2 soundevents are not read). Use it to pick a model for prop_*, a material, a sound for ambient_generic. Each hit has 'keyValue' = what to write in the entity's keyvalue, and the sources that have the file (the first one wins).")]
     public object FindAssets(
         [Description("Part of the path, e.g. cabinet, or a wildcard over the whole path, e.g. models/props_2fort/*locker*")] string query,
-        [Description("model, material, texture, sound, sprite, particle (GoldSrc: model, sprite, sound, texture, decal), or any")] string kind = "any",
+        [Description("model, material, texture, sound, sprite, particle, soundscript (Source 1 named sounds), GoldSrc: model, sprite, sound, texture, decal; or any")] string kind = "any",
         int limit = 50,
         string? configName = null)
     {
@@ -68,7 +70,8 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
         var kinds = source2 ? AssetSearch.Source2 : AssetSearch.Source1;
         if (kind is not ("" or "any") && !kinds.Any(k => k.Name.Equals(kind, StringComparison.OrdinalIgnoreCase)))
             return new { error = $"unknown kind '{kind}': {string.Join(", ", kinds.Select(k => k.Name))} or any" };
-        var result = AssetSearch.Search(resolver, kinds, query, kind, limit);
+        var scripts = !source2 && kind.ToLowerInvariant() is "" or "any" or "soundscript" ? gameData.SoundScripts(config) : null;
+        var result = AssetSearch.Search(resolver, kinds, query, kind, limit, scripts);
         return new
         {
             game = config.Name,
@@ -81,9 +84,14 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
                 h.KeyValue,
                 from = h.Sources.Select(Path.GetFileName).First(),
                 alsoIn = h.Sources.Count > 1 ? h.Sources.Skip(1).Select(Path.GetFileName) : null,
+                waves = h.Waves is { Count: > 0 } w ? w.Take(8) : null,
             }),
             note = result.Total > result.Hits.Count ? "more matches: narrow the query or raise limit (max 500)" : null,
+            soundScriptsNote = result.Hits.Any(h => h.Kind == "soundscript")
+                ? "a soundscript name goes where the FGD takes a sound (ambient_generic 'message', StartSound, ...); it sets volume, pitch, channel and picks one of its waves"
+                : null,
             searchPathProblems = resolver.Problems.Count > 0 ? resolver.Problems : null,
+            soundScriptProblems = scripts is { Problems.Count: > 0 } ? scripts.Problems.Take(10) : null,
         };
     }
 

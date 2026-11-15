@@ -47,7 +47,10 @@ public sealed class AssetResolver
             try
             {
                 if (VpkDirectory.Open(location) is { } vpk)
-                    _vpks.Add(vpk);
+                {
+                    if (!IsMounted(vpk.Path))
+                        _vpks.Add(vpk);
+                }
                 else
                     Problems.Add($"vpk not found: {location}");
             }
@@ -57,10 +60,19 @@ public sealed class AssetResolver
             }
         }
         else if (Directory.Exists(location))
+        {
             _folders.Add(location);
+            // Left 4 Dead and later (Portal 2, CS:GO, ...) mount pak01_dir.vpk of a search path folder without listing it
+            var pak01 = Path.Combine(location, "pak01_dir.vpk");
+            if (File.Exists(pak01) && !IsMounted(pak01))
+                Add(pak01);
+        }
         else if (!Path.GetFileName(location.TrimEnd('/', '\\')).Equals("download", StringComparison.OrdinalIgnoreCase))
             Problems.Add($"folder not found: {location}"); // download/ appears only after joining a server
     }
+
+    private bool IsMounted(string vpkPath) =>
+        _vpks.Any(v => Path.GetFullPath(v.Path).Equals(Path.GetFullPath(vpkPath), StringComparison.OrdinalIgnoreCase));
 
     /// <summary>
     /// Every file under <paramref name="root"/> (e.g. "models", "" = all) with where it comes from: loose folders first,
@@ -99,6 +111,32 @@ public sealed class AssetResolver
                 return true;
         }
         return _vpks.Any(v => v.Contains(rel));
+    }
+
+    /// <summary>The bytes of the first copy of a file (loose folders, then VPKs / PAKs) and where it came from; null if missing.</summary>
+    public (byte[] Data, string Source)? Read(string relativePath)
+    {
+        var rel = relativePath.Replace('\\', '/').TrimStart('/');
+        foreach (var folder in _folders)
+        {
+            var full = Path.Combine(folder, rel);
+            if (!File.Exists(full))
+                continue;
+            try
+            {
+                return (File.ReadAllBytes(full), full);
+            }
+            catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+            {
+                // locked or unreadable: the engine would not get it either, try the next copy
+            }
+        }
+        foreach (var vpk in _vpks)
+        {
+            if (vpk.Contains(rel) && vpk.ReadFile(rel) is { } data)
+                return (data, vpk.Path);
+        }
+        return null;
     }
 
     /// <summary>Where the file comes from: a folder or a VPK path, or null if missing.</summary>

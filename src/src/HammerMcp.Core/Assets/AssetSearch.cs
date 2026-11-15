@@ -13,7 +13,8 @@ public static class AssetSearch
     /// <param name="StripRoot">Keyvalues name it without the root folder (Source 1 materials/, sound/).</param>
     /// <param name="StripExtension">Keyvalues name it without the extension (Source 1 brush / decal / overlay materials).</param>
     /// <param name="Wad">GoldSrc: a texture name inside a WAD, not a file.</param>
-    public sealed record Kind(string Name, string Root, string[] Extensions, bool StripRoot = false, bool StripExtension = false, bool Wad = false);
+    /// <param name="Script">Source 1: a named sound from the sound scripts ("Ambient.Wind"), not a file.</param>
+    public sealed record Kind(string Name, string Root, string[] Extensions, bool StripRoot = false, bool StripExtension = false, bool Wad = false, bool Script = false);
 
     public static readonly IReadOnlyList<Kind> Source1 =
     [
@@ -23,6 +24,7 @@ public static class AssetSearch
         new("sound", "sound", [".wav", ".mp3", ".ogg"], StripRoot: true),
         new("sprite", "materials/sprites", [".vmt"]),
         new("particle", "particles", [".pcf"]),
+        new("soundscript", "scripts", [], Script: true),
     ];
 
     public static readonly IReadOnlyList<Kind> Source2 =
@@ -48,7 +50,8 @@ public static class AssetSearch
     ];
 
     /// <summary>One file found: its path, what to write in a keyvalue, and every source that has it (the first one wins).</summary>
-    public sealed record Hit(string Kind, string Path, string KeyValue, IReadOnlyList<string> Sources);
+    /// <param name="Waves">A sound script: the files it plays, as written (with sound chars).</param>
+    public sealed record Hit(string Kind, string Path, string KeyValue, IReadOnlyList<string> Sources, IReadOnlyList<string>? Waves = null);
 
     public sealed record Result(int Total, IReadOnlyList<Hit> Hits);
 
@@ -56,9 +59,20 @@ public static class AssetSearch
     /// <paramref name="query"/>: a part of the path ("cabinet") or a wildcard that matches the end of the path from any
     /// folder on ("props_2fort/*locker*", "ambient/wind*", "*.vmt").
     /// <paramref name="kind"/>: one of <paramref name="kinds"/> by name, or null / "any" for all of them.
+    /// <paramref name="scripts"/>: Source 1 sound scripts; their names are searched as kind "soundscript" (Path = KeyValue = the
+    /// name, the source is the script file).
     /// </summary>
-    public static Result Search(AssetResolver assets, IReadOnlyList<Kind> kinds, string query, string? kind, int limit) =>
-        Collect(Files(assets, Wanted(kinds, kind)), Wanted(kinds, kind), query, limit);
+    public static Result Search(AssetResolver assets, IReadOnlyList<Kind> kinds, string query, string? kind, int limit, SoundScripts? scripts = null)
+    {
+        var wanted = Wanted(kinds, kind);
+        var candidates = Files(assets, wanted);
+        if (scripts is not null && wanted.FirstOrDefault(k => k.Script) is { } script)
+            candidates = candidates.Concat(scripts.Entries.Select(e => (script, e.Name, e.Script)));
+        var result = Collect(candidates, wanted, query, limit);
+        if (scripts is null)
+            return result;
+        return result with { Hits = [.. result.Hits.Select(h => h.Kind == "soundscript" && scripts.Find(h.Path) is { } e ? h with { Waves = e.Waves } : h)] };
+    }
 
     /// <summary>
     /// GoldSrc search: files as in <see cref="Search"/> (model texture / sequence-group files like scientistt.mdl and
@@ -125,7 +139,7 @@ public static class AssetSearch
     /// <summary>Files of the wanted kinds, in source order (Source 2 compiled x.vmdl_c reported as x.vmdl).</summary>
     private static IEnumerable<(Kind Kind, string Path, string Source)> Files(AssetResolver assets, IReadOnlyList<Kind> wanted)
     {
-        foreach (var root in wanted.Where(k => !k.Wad).GroupBy(k => k.Root))
+        foreach (var root in wanted.Where(k => !k.Wad && !k.Script).GroupBy(k => k.Root))
         {
             foreach (var (file, source) in assets.List(root.Key))
             {
@@ -145,7 +159,7 @@ public static class AssetSearch
         {
             if (!match(path) && !(k.Wad && WadStem(path) is { } stem && match(stem)))
                 continue;
-            // a WAD texture and a file can not share a key: files have a folder and an extension
+            // a WAD texture or a sound script name and a file can not share a key: files have a folder and an extension
             if (found.TryGetValue(path, out var hit))
             {
                 if (!hit.Sources.Contains(source))
