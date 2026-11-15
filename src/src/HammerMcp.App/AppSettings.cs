@@ -28,6 +28,22 @@ internal sealed record AppSettings
     public static string DefaultLogFolder => Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EpicMorg", "Hammer-MCP", "logs");
 
+    /// <summary>OpenCode bridge (OpenCode tab): Hammer chat lines go into an OpenCode session; saved by its own Save button.</summary>
+    public bool OpenCodeEnabled { get; init; }
+    public string OpenCodeUrl { get; init; } = "http://127.0.0.1:4096";
+    public string OpenCodeUsername { get; init; } = "opencode";
+    public string OpenCodePassword { get; init; } = "";
+    /// <summary>Session id; empty = the most recently used session.</summary>
+    public string OpenCodeSession { get; init; } = "";
+
+    public HammerMcp.Core.Agents.OpenCodeOptions ToOpenCodeOptions() => new()
+    {
+        Url = OpenCodeUrl,
+        Username = OpenCodeUsername,
+        Password = OpenCodePassword,
+        Session = OpenCodeSession,
+    };
+
     [System.Text.Json.Serialization.JsonIgnore]
     public string EffectiveLogFolder => string.IsNullOrWhiteSpace(LogFolder) ? DefaultLogFolder : LogFolder;
 

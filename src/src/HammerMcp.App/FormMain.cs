@@ -103,6 +103,7 @@ public partial class FormMain : Form
         _target.Changes.Decided += change =>
             _log.Write($"{change.State.ToString().ToLowerInvariant()}: {change.Id} {change.Text}{(string.IsNullOrEmpty(change.Result) ? "" : $" -> {change.Result}")}");
         WireEvents();
+        InitOpenCodeTab();
         AddGridCopyMenu(dataGridViewMetaInfoFromHammer);
         FillAddresses();
         comboBoxMCPMode.DataSource = Enum.GetValues<McpMode>();
@@ -613,7 +614,7 @@ public partial class FormMain : Form
     }
 
     /// <summary>Settings as currently shown on the Settings tab (token trimmed; port 0 if not a number).</summary>
-    private AppSettings SettingsFromForm() => new()
+    private AppSettings SettingsFromForm() => KeepOpenCode(new()
     {
         Mode = comboBoxMCPMode.SelectedItem is McpMode m ? m : McpMode.Auto,
         BindAddress = (comboBoxAdaptersAndAdresses.SelectedItem as AddressItem)?.Address ?? "127.0.0.1",
@@ -622,6 +623,16 @@ public partial class FormMain : Form
         SaveLogs = checkBoxSaveLogs.Checked,
         LogFolder = textBoxLogFolder.Text.Trim(),
         AskBeforeEdits = _settings.AskBeforeEdits,
+    });
+
+    /// <summary>The OpenCode tab saves itself: the Settings tab keeps what is saved there.</summary>
+    private AppSettings KeepOpenCode(AppSettings s) => s with
+    {
+        OpenCodeEnabled = _settings.OpenCodeEnabled,
+        OpenCodeUrl = _settings.OpenCodeUrl,
+        OpenCodeUsername = _settings.OpenCodeUsername,
+        OpenCodePassword = _settings.OpenCodePassword,
+        OpenCodeSession = _settings.OpenCodeSession,
     };
 
     /// <summary>Apply is enabled only when the form differs from the saved settings.</summary>
@@ -643,7 +654,7 @@ public partial class FormMain : Form
             _log.Write("a security token was generated: it is required when listening beyond localhost");
         }
 
-        _settings = new AppSettings
+        _settings = KeepOpenCode(new AppSettings
         {
             Mode = comboBoxMCPMode.SelectedItem is McpMode m ? m : McpMode.Auto,
             BindAddress = address,
@@ -652,7 +663,7 @@ public partial class FormMain : Form
             SaveLogs = checkBoxSaveLogs.Checked,
             LogFolder = textBoxLogFolder.Text.Trim(),
             AskBeforeEdits = _settings.AskBeforeEdits,
-        };
+        });
         _settings.Save();
         _logFile.Configure(_settings.SaveLogs ? _settings.EffectiveLogFolder : null);
         if (_settings.SaveLogs)

@@ -112,6 +112,50 @@ public sealed class AgentControl
     {
         get { lock (_lock) return _requests.Count; }
     }
+
+    /// <summary>
+    /// Takes one request out of the queue: it reached the agent another way (the OpenCode bridge put it into the agent's
+    /// session), so user_requests does not hand it over a second time. It stays in the chat history.
+    /// </summary>
+    public bool Take(ChatLine line)
+    {
+        lock (_lock)
+            return _requests.RemoveAll(r => r.At == line.At && r.Text == line.Text) > 0;
+    }
+
+    /// <summary>Puts a request taken with <see cref="Take"/> back (it did not reach the agent after all), in time order.</summary>
+    public void Return(ChatLine line)
+    {
+        lock (_lock)
+        {
+            var i = _requests.FindIndex(r => r.At > line.At);
+            _requests.Insert(i < 0 ? _requests.Count : i, (line.At, line.Text));
+        }
+        Changed?.Invoke();
+    }
+
+    private int _waiting;
+
+    /// <summary>The agent is in wait_for_user right now: a new line reaches it through that call.</summary>
+    public bool AgentWaiting => Volatile.Read(ref _waiting) > 0;
+
+    /// <summary>Marks a wait_for_user call; dispose when it returns.</summary>
+    public IDisposable BeginWait()
+    {
+        Interlocked.Increment(ref _waiting);
+        return new WaitMark(this);
+    }
+
+    private sealed class WaitMark(AgentControl control) : IDisposable
+    {
+        private int _done;
+
+        public void Dispose()
+        {
+            if (Interlocked.Exchange(ref _done, 1) == 0)
+                Interlocked.Decrement(ref control._waiting);
+        }
+    }
 }
 
 /// <summary>One chat line: from "user" or "agent".</summary>

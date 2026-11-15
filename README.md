@@ -131,7 +131,8 @@ The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that
 **Connect adapter** in the app (Auto or Advanced) injects a small native adapter into the attached Hammer — only when
 you press the button, only into a standalone Hammer exe of a known build. It adds an **MCP** menu to Hammer: pause the
 agent, **chat with the agent**, live **activity log**, **pending changes** with check boxes (approval mode), undo the
-agent's step, status, disconnect. **Disconnect** unloads it; Hammer keeps running. Live reading of the selection,
+agent's step, status, disconnect. Working in OpenCode? The app's **OpenCode** tab sends your chat lines into the
+OpenCode session, so the agent there wakes up and answers. **Disconnect** unloads it; Hammer keeps running. Live reading of the selection,
 camera and geometry through the adapter comes next. The `native` folder of the zip must stay next to `hammer-mcp.exe`.
 
 ### Limits of the shell channel
