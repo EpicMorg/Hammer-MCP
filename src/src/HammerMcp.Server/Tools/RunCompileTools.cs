@@ -85,6 +85,8 @@ public sealed class RunCompileTools(HammerTarget target, CompileTools reader, Ac
                     case CompileCommandKind.CopyFile:
                     {
                         var (from, to) = CompileTools.TwoPaths(args);
+                        if (CompileTools.OutsideCompileFolders(Path.GetFullPath(to, cwd), map!, config) is { } refused)
+                            return Refuse(refused);
                         File.Copy(from, to, overwrite: true);
                         steps.Add(new { step = $"copy {from} -> {to}", ok = true });
                         break;
