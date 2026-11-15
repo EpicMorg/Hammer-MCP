@@ -4,6 +4,11 @@
 
 All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/); `-alpha` releases are pre-releases.
 
+## [Unreleased]
+
+### Changed
+- **The server token and the OpenCode password are stored encrypted** in `settings.json` (Windows DPAPI, current user): another Windows user or a copy of the file cannot read them. Plain values written by older versions are encrypted on the first start. **After the update, older versions no longer find the token**: if you go back to 0.8.0 or earlier, generate a token again and copy the client config again. A saved secret that cannot be decrypted (settings from another user or machine) is reported in the log; set it again. `HAMMER_MCP_SETTINGS` points the app to another settings file.
+
 ## [0.8.0] - 2026-11-15
 
 ### Added
