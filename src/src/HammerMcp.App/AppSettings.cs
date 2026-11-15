@@ -1,20 +1,47 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using HammerMcp.Server;
 
 namespace HammerMcp.App;
 
-/// <summary>User settings, stored in %APPDATA%\EpicMorg\Hammer-MCP\settings.json.</summary>
+/// <summary>User settings, stored in %APPDATA%\EpicMorg\Hammer-MCP\settings.json (secrets encrypted, see <see cref="SettingsSecret"/>).</summary>
 internal sealed record AppSettings
 {
-    private static readonly string FilePath = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EpicMorg", "Hammer-MCP", "settings.json");
+    /// <summary>The settings file; HAMMER_MCP_SETTINGS points elsewhere (tests, a second instance).</summary>
+    private static readonly string FilePath = Environment.GetEnvironmentVariable("HAMMER_MCP_SETTINGS") is { Length: > 0 } custom
+        ? Path.GetFullPath(custom)
+        : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EpicMorg", "Hammer-MCP", "settings.json");
 
     private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
     public McpMode Mode { get; init; } = McpMode.Auto;
     public string BindAddress { get; init; } = "127.0.0.1";
     public int Port { get; init; } = 47800;
+    /// <summary>The server token; in the file only encrypted (<see cref="TokenProtected"/>).</summary>
+    [JsonIgnore]
     public string Token { get; init; } = "";
+
+    [JsonPropertyName("TokenProtected")]
+    public string TokenProtected
+    {
+        get => SettingsSecret.Protect(Token);
+        init => Token = Decrypt(value, "the server token");
+    }
+
+    /// <summary>Settings written before 0.8.1 kept the token in plain text: read it once, never write it.</summary>
+    [JsonPropertyName("Token"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? PlainToken
+    {
+        get => null;
+        init
+        {
+            if (!string.IsNullOrEmpty(value) && Token.Length == 0)
+            {
+                Token = value;
+                HadPlainSecrets = true;
+            }
+        }
+    }
 
     /// <summary>Approval mode ("Ask me before agent edits" on the Main tab); saved as soon as it is toggled.</summary>
     public bool AskBeforeEdits { get; init; }
@@ -32,7 +59,45 @@ internal sealed record AppSettings
     public bool OpenCodeEnabled { get; init; }
     public string OpenCodeUrl { get; init; } = "http://127.0.0.1:4096";
     public string OpenCodeUsername { get; init; } = "opencode";
+    [JsonIgnore]
     public string OpenCodePassword { get; init; } = "";
+
+    [JsonPropertyName("OpenCodePasswordProtected")]
+    public string OpenCodePasswordProtected
+    {
+        get => SettingsSecret.Protect(OpenCodePassword);
+        init => OpenCodePassword = Decrypt(value, "the OpenCode password");
+    }
+
+    [JsonPropertyName("OpenCodePassword"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? PlainOpenCodePassword
+    {
+        get => null;
+        init
+        {
+            if (!string.IsNullOrEmpty(value) && OpenCodePassword.Length == 0)
+            {
+                OpenCodePassword = value;
+                HadPlainSecrets = true;
+            }
+        }
+    }
+
+    /// <summary>Secrets in the file that could not be decrypted (settings of another Windows user or machine): now empty.</summary>
+    [JsonIgnore]
+    public List<string> LostSecrets { get; } = [];
+
+    private string Decrypt(string stored, string what)
+    {
+        if (SettingsSecret.TryUnprotect(stored, out var plain))
+            return plain;
+        LostSecrets.Add(what);
+        return "";
+    }
+
+    /// <summary>The file had a secret in plain text (an older version): <see cref="Load"/> saves it again encrypted.</summary>
+    [JsonIgnore]
+    private bool HadPlainSecrets { get; init; }
     /// <summary>Session id; empty = the most recently used session.</summary>
     public string OpenCodeSession { get; init; } = "";
 
@@ -51,9 +116,12 @@ internal sealed record AppSettings
     {
         try
         {
-            return File.Exists(FilePath)
-                ? JsonSerializer.Deserialize<AppSettings>(File.ReadAllText(FilePath), JsonOptions) ?? new()
-                : new();
+            if (!File.Exists(FilePath))
+                return new();
+            var settings = JsonSerializer.Deserialize<AppSettings>(File.ReadAllText(FilePath), JsonOptions) ?? new();
+            if (settings.HadPlainSecrets)
+                settings.Save(); // encrypt what an older version left in plain text
+            return settings;
         }
         catch (Exception e) when (e is IOException or JsonException or UnauthorizedAccessException)
         {

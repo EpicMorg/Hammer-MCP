@@ -1,8 +1,8 @@
 #include <winver.h>
 1 ICON "../../common/hammer-mcp.ico"
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,7,0,0
- PRODUCTVERSION 0,7,0,0
+ FILEVERSION 0,8,0,0
+ PRODUCTVERSION 0,8,0,0
  FILEOS VOS_NT_WINDOWS32
 BEGIN
   BLOCK "StringFileInfo"
@@ -11,9 +11,9 @@ BEGIN
     BEGIN
       VALUE "CompanyName", "EpicMorg"
       VALUE "FileDescription", HMCP_ADAPTER_DESC
-      VALUE "FileVersion", "0.7.0"
+      VALUE "FileVersion", "0.8.0"
       VALUE "ProductName", "Hammer-MCP"
-      VALUE "ProductVersion", "0.7.0"
+      VALUE "ProductVersion", "0.8.0"
       VALUE "OriginalFilename", HMCP_ADAPTER_FILE
       VALUE "LegalCopyright", "Copyright (c) 2026 EpicMorg. MIT License."
     END

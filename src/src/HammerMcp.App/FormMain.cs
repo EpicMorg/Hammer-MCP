@@ -113,6 +113,9 @@ public partial class FormMain : Form
         RefreshProcessList();
         UpdateAttachUi();
         _log.Write($"registry: {_registry.Builds.Count} known Hammer builds");
+        if (_settings.LostSecrets.Count > 0)
+            _log.Write($"settings: {string.Join(" and ", _settings.LostSecrets)} could not be decrypted (settings.json from another Windows user or machine) - set a new one"
+                       + (_settings.LostSecrets.Contains("the server token") ? " (Settings tab: Generate, then copy the client config again); beyond localhost the server will not start without a token" : ""));
     }
 
     /// <summary>Right-click menu on a read-only grid: Copy (cell), Copy row ("key: value"), Copy all. Right-click selects the cell first.</summary>

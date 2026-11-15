@@ -6,6 +6,11 @@ All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/)
 
 ## [Unreleased]
 
+### Changed
+- **The server token and the OpenCode password are stored encrypted** in `settings.json` (Windows DPAPI, current user): another Windows user or a copy of the file cannot read them. Plain values written by older versions are encrypted on the first start. **After the update, older versions no longer find the token**: if you go back to 0.8.0 or earlier, generate a token again and copy the client config again. A saved secret that cannot be decrypted (settings from another user or machine) is reported in the log; set it again. `HAMMER_MCP_SETTINGS` points the app to another settings file.
+
+## [0.8.0] - 2026-11-15
+
 ### Added
 - **GoldSrc game configs**: the binary `GameCfg.wc` next to Worldcraft / Hammer 3.x (versions 1.3 and 1.4) is read, so `game_configs`, `fgd_*`, `compile_sequences` and `find_assets` work with GoldSrc editors too. A config gives the mod folder (`gameDir`), the game it falls back to (`valve`), FGDs (relative ones against the editor folder), map / bsp folders and the compile tools (`$csg_exe` included).
 - **`find_assets` for GoldSrc**: models (`models/scientist.mdl`; texture and sequence-group files like `scientistt.mdl`, `scientist01.mdl` are left out), sprites (`sprites/glow01.spr`), sounds (`ambience/wind1.wav`) from the mod and `valve` with their `_addon` / `_downloads` folders, plus textures by name from the WADs in those folders and decals from `decals.wad` (`{BLOOD1`; a wildcard matches names with or without the `{` `!` `+0` `-0` `~` prefix). Utility WADs (fonts, gfx, cached, spray / temp decals) are skipped. PAKs (`pak0.pak`, `pak1.pak`, ...) in those folders are searched too.
@@ -149,6 +154,7 @@ First public pre-release.
 - Reading the saved map: `hammer_status`, `map_summary`, `list_entities`.
 - Embedded build registry (`registry/hammers.json`, overridable by a file next to the exe).
 
+[0.8.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/EpicMorg/Hammer-MCP/compare/v0.4.0...v0.5.0
