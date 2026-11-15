@@ -1458,6 +1458,14 @@
       "shell": { "present": false },
       "settingsKey": "Software\\Valve\\Valve Hammer Editor",
       "mapFormat": "rmf",
+      "memory": {
+        "activeDoc": "0xddf18", "doc.vtable": "0xb8af4", "doc.views": "0x28", "doc.selection": "0x4d0", "doc.selectionBounds": "0x3a0",
+        "view3d.vtable": "0xb9974", "view3d.camera": "0xa8", "camera.position": "0x10", "camera.matrix": "0x1c", "camera.fov": "0x5c",
+        "object.origin": "0x10", "object.mins": "0x1c", "object.maxs": "0x28", "object.parent": "0x6c",
+        "entity.vtable": "0xb4444", "entity.className": "0xac", "entity.classNameLength": "0x40", "entity.keyValues": "0x94", "entity.keyValueCount": "0x98",
+        "entity.keyValueSize": "0x304", "entity.keyLength": "0x104", "entity.valueOffset": "0x104", "entity.valueLength": "0x200",
+        "solid.vtable": "0xb47f4", "solid.faces": "0xa8", "face.size": "0x198", "face.texture": "0x14", "face.textureLength": "0x10"
+      },
       "notes": "Valve Hammer Editor 3.5 (valvedev.info archive)."
     },
     {

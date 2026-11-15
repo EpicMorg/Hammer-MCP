@@ -1,4 +1,5 @@
 using System.Runtime.Versioning;
+using System.Text.Json.Nodes;
 using HammerMcp.Core.Registry;
 
 namespace HammerMcp.Server.Adapter;
@@ -84,6 +85,7 @@ public sealed class AdapterLink
         var client = await AdapterClient.ConnectAsync(pid, timeout, cancel);
         client.Menu += OnMenu;
         client.Chat += OnChat;
+        client.SelectionSent += OnSelectionSent;
         client.Approval += (apply, reject) =>
         {
             log.Write($"user decided in Hammer: apply {string.Join(", ", apply)}{(reject.Count > 0 ? $"; reject {string.Join(", ", reject)}" : "")}");
@@ -105,7 +107,7 @@ public sealed class AdapterLink
         log.Write($"adapter connected: {hello.Adapter} {hello.Version}, build {hello.Build} ({hello.EditorSha256[..Math.Min(12, hello.EditorSha256.Length)]})");
         // the profile from this server's registry (registry/hammers.json next to the app overrides the built-in one)
         var known = registry.Builds.FirstOrDefault(b => b.Id == hello.Build);
-        await client.SendProfileAsync(hello.Build, known?.InjectAdapter ?? hello.Support);
+        await client.SendProfileAsync(hello.Build, known?.InjectAdapter ?? hello.Support, known?.Memory);
         await PushStateAsync();
         Changed?.Invoke();
         return $"connected to {hello.Adapter} {hello.Version} ({hello.Build})";
@@ -125,6 +127,38 @@ public sealed class AdapterLink
             : Task.CompletedTask;
 
     public Task NotifyAsync(string text) => Send(c => c.SendNotifyAsync(text));
+
+    /// <summary>The adapter can read the live selection / camera: connected, and this build has a layer 2 memory layout.</summary>
+    public bool CanReadLive => _client is { Connected: true } c && registry.Builds.FirstOrDefault(b => b.Id == c.Hello.Build) is { Memory.Count: > 0 };
+
+    /// <summary>The selection the user last sent with MCP > Send selection to agent (null = never), and when.</summary>
+    public (JsonObject Selection, DateTime At)? SentSelection { get; private set; }
+
+    /// <summary>Layer 2: asks the adapter for get_selection / get_camera and returns its answer (type selection / camera / error).</summary>
+    public async Task<JsonObject> ReadLiveAsync(string command, CancellationToken cancel = default)
+    {
+        if (_client is not { Connected: true } c)
+            throw new InvalidOperationException("the adapter is not connected (Advanced mode: Connect adapter)");
+        if (!CanReadLive)
+            throw new InvalidOperationException($"live reading is not known for build {c.Hello.Build} yet");
+        return await c.RequestAsync(new JsonObject { ["cmd"] = command }, TimeSpan.FromSeconds(5), cancel);
+    }
+
+    private void OnSelectionSent(JsonObject selection)
+    {
+        try
+        {
+            SentSelection = (selection, DateTime.Now);
+            var count = selection["items"] is JsonArray items ? items.Count : 0;
+            var total = selection["count"]?.GetValue<int>() ?? count;
+            Control.AddRequest($"(Hammer: the user sent you the selection - {total} object(s); see hammer_selection with sent=true)");
+            log.Write($"user sent the selection from Hammer: {total} object(s)");
+        }
+        catch (Exception e)
+        {
+            log.Write($"adapter: selection failed: {e.Message}");
+        }
+    }
 
     private Task Send(Func<AdapterClient, Task> send)
     {

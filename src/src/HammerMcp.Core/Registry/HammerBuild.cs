@@ -41,6 +41,13 @@ public sealed record HammerBuild
     /// </summary>
     public string? InjectAdapter { get; init; }
 
+    /// <summary>
+    /// Layer 2 of the adapter: where this build keeps the active document, the selection and the 3D camera, as
+    /// "name": "0x…" (module-relative addresses and field offsets, see src/native/PROTOCOL.md). Sent to the adapter in
+    /// its profile; empty = no live reading for this build.
+    /// </summary>
+    public Dictionary<string, string> Memory { get; init; } = [];
+
     /// <summary>What was verified live and when, e.g. "liveShell": "2026-11-10".</summary>
     public Dictionary<string, string> Verified { get; init; } = [];
 

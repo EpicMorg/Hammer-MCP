@@ -41,7 +41,7 @@ set_target_properties(hmcp-injector PROPERTIES OUTPUT_NAME "hmcp-injector${HMCP_
 target_link_libraries(hmcp-injector PRIVATE hmcp_common)
 
 # one adapter DLL per bitness for every registry build with an "injectAdapter" support level
-add_library(hmcp-adapter SHARED adapters/base/adapter.cpp adapters/base/adapter.rc)
+add_library(hmcp-adapter SHARED adapters/base/adapter.cpp adapters/base/live.cpp adapters/base/adapter.rc)
 if(HMCP_BITS EQUAL 64)
   set(HMCP_ADAPTER_NAME hmcp-adapter-x64)
 else()
