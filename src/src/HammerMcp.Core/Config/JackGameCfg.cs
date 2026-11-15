@@ -56,24 +56,58 @@ public static class JackGameCfg
             var modDir = Get("GameModdir");
             var baseGame = Get("GameBasedir");
             var gameDir = modDir ?? baseGame;
-            var fgds = Numbered("GameData").Select(f => Path.IsPathRooted(f) ? f : Path.GetFullPath(Path.Combine(baseDir, f))).ToList();
+            string Resolve(string f) => Path.IsPathRooted(f) ? f : Path.GetFullPath(Path.Combine(baseDir, f));
             result.Add(new HammerGameConfig(
-                Get("Title") ?? name, fgds, gameDir,
+                Get("Title") ?? name, Numbered("GameData").Select(Resolve).ToList(), gameDir,
                 tools.TryGetValue("GameExe", out var gameExe) ? Path.GetDirectoryName(gameExe) : null,
                 Get("MapSourceFileDirectory"),
                 gameDir is null ? null : Path.Combine(gameDir, "maps"),
-                tools, BaseGameDir: baseGame, GoldSrc: true, TextureWads: Numbered("Parcel")));
+                tools, BaseGameDir: baseGame, GoldSrc: true, TextureWads: Numbered("Parcel").Select(Resolve).ToList()));
         }
         return result;
     }
 
     private static string Windows(string path) => path.Replace('/', '\\');
 
-    /// <summary>QSettings escapes: \\ → \, surrounding quotes removed.</summary>
-    private static string Unescape(string value)
+    /// <summary>
+    /// A QSettings ini value: quotes are dropped, escapes decoded - \\ \" \t \n \r and \xNNNN (QSettings writes every
+    /// non-ASCII character that way, e.g. Cyrillic folder names: \x41f\x430\x43f\x43a\x430 = "Папка").
+    /// </summary>
+    internal static string Unescape(string value)
     {
-        if (value.Length >= 2 && value[0] == '"' && value[^1] == '"')
-            value = value[1..^1];
-        return value.Replace(@"\\", @"\");
+        var sb = new System.Text.StringBuilder(value.Length);
+        for (var i = 0; i < value.Length; i++)
+        {
+            var c = value[i];
+            if (c == '"')
+                continue;
+            if (c != '\\' || i + 1 >= value.Length)
+            {
+                sb.Append(c);
+                continue;
+            }
+            var next = value[++i];
+            switch (next)
+            {
+                case 't': sb.Append('\t'); break;
+                case 'n': sb.Append('\n'); break;
+                case 'r': sb.Append('\r'); break;
+                case 'x':
+                    var start = i + 1;
+                    var end = start;
+                    while (end < value.Length && end - start < 4 && Uri.IsHexDigit(value[end]))
+                        end++;
+                    if (end > start)
+                    {
+                        sb.Append((char)Convert.ToInt32(value[start..end], 16));
+                        i = end - 1;
+                    }
+                    else
+                        sb.Append('x');
+                    break;
+                default: sb.Append(next); break; // \\ \" and anything else: the character itself
+            }
+        }
+        return sb.ToString();
     }
 }

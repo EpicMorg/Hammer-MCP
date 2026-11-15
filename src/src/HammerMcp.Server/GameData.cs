@@ -87,7 +87,7 @@ public sealed class GameData(HammerTarget target, HammerMcp.Core.Registry.Hammer
 
     internal static List<string> ReadTextureWads(string? settingsKey, string exePath)
     {
-        if (settingsKey is null)
+        if (settingsKey is null || !OperatingSystem.IsWindows())
             return [];
         using var general = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(settingsKey + @"\General");
         if (general?.GetValue("TextureFileCount") is not int count || count <= 0)

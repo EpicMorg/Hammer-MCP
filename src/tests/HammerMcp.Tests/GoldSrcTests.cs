@@ -273,10 +273,11 @@ public class GoldSrcTests : IDisposable
         [
             "[Config0]", "Title=Half-Life", "Enabled=true", "MapProfile=vpHalfLife",
             $"GameExecutable={hl}/hl.exe", $"GameBasedir={hl}/valve", $"GameModdir={hl}/mymod",
-            "MapSourceFileDirectory=C:/maps",
+            // QSettings writes non-ASCII as \xNNNN: C:/Карты
+            "MapSourceFileDirectory=\"C:/\\x41a\\x430\\x440\\x442\\x44b\"",
             "MapTool0=C:/zhlt/hlcsg.exe", "MapTool1=C:/zhlt/hlbsp.exe", "MapTool2=C:/zhlt/hlvis.exe", "MapTool3=C:/zhlt/hlrad_x64.exe",
             "GameData0=halflife/halflife.fgd", "GameData1=C:/zhlt/zhlt.fgd",
-            "Parcel0=" + Path.Combine(_dir, "other", "my.wad").Replace("\\", "\\\\"), "Parcel1=C:/gone/missing.wad",
+            "Parcel0=" + Path.Combine(_dir, "other", "my.wad").Replace("\\", "\\\\"), "Parcel1=C:/gone/missing.wad", "Parcel2=wads/rel.wad",
             "[Config1]", "Title=Quake", "Enabled=false",
         ];
         var config = Assert.Single(JackGameCfg.Parse(ini, @"C:\Jack"));
@@ -285,7 +286,8 @@ public class GoldSrcTests : IDisposable
         Assert.Equal(Path.Combine(_dir, "hl", "mymod"), config.GameDir);
         Assert.Equal(Path.Combine(_dir, "hl", "valve"), config.BaseGameDir);
         Assert.Equal(Path.Combine(_dir, "hl"), config.GameExeDir);
-        Assert.Equal(@"C:\maps", config.MapDir);
+        Assert.Equal(@"C:\Карты", config.MapDir);
+        Assert.Equal(@"C:\Jack\wads\rel.wad", config.TextureWads![2]); // relative like GameData*: against the ini folder
         Assert.Equal([@"C:\Jack\halflife\halflife.fgd", @"C:\zhlt\zhlt.fgd"], config.FgdFiles);
         Assert.Equal(@"C:\zhlt\hlcsg.exe", config.Tools["CSG"]);
         Assert.Equal(@"C:\zhlt\hlrad_x64.exe", config.Tools["Light"]);
@@ -340,6 +342,12 @@ public class GoldSrcTests : IDisposable
             "texture" "{BLOOD1"
             "origin" "0 0 0"
             }
+            {
+            "classname" "func_door"
+            "noise1" "3"
+            "noise2" "1"
+            "message" "doors are locked"
+            }
             """);
         var result = GoldSrcMapAssets.Collect(map);
         Assert.Equal([@"\half-life\valve\halflife.wad", @"C:\gone\my.wad"], result.Wads);
@@ -353,5 +361,7 @@ public class GoldSrcTests : IDisposable
         Assert.True(refs.ContainsKey(("decal", "{BLOOD1")));
         Assert.True(refs.ContainsKey(("skybox", "gfx/env/desertup.tga")));
         Assert.DoesNotContain(refs.Keys, k => k.Path.Contains("HG_ALERT"));
+        // func_door noise1/noise2 are sound indices, message is text: nothing to look up
+        Assert.Equal(12, refs.Count); // 2 textures, model, sound, sprite, decal, 6 sky sides
     }
 }
