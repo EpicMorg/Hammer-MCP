@@ -4,7 +4,7 @@ namespace HammerMcp.Core.Assets;
 
 /// <summary>
 /// File names in a Quake / GoldSrc PAK: header "PACK", int directoryOffset, int directoryLength; a directory entry is
-/// char name[56], int offset, int size (64 bytes). No data is extracted.
+/// char name[56], int offset, int size (64 bytes). Data is read on demand through <see cref="VpkDirectory.ReadFile"/>.
 /// </summary>
 public static class PakFile
 {
@@ -25,16 +25,17 @@ public static class PakFile
         if (offset < 12 || length < 0 || length % 64 != 0 || offset + (long)length > stream.Length)
             throw new InvalidDataException($"bad PAK directory ({length} bytes at {offset})");
         stream.Position = offset;
-        var names = new List<string>(length / 64);
+        var files = new List<(string, uint, uint)>(length / 64);
         for (var i = 0; i < length / 64; i++)
         {
             var raw = r.ReadBytes(56);
-            r.ReadBytes(8); // offset, size
+            var fileOffset = r.ReadUInt32();
+            var size = r.ReadUInt32();
             var end = Array.IndexOf(raw, (byte)0);
             var name = Encoding.ASCII.GetString(raw, 0, end < 0 ? 56 : end);
             if (name.Length > 0)
-                names.Add(name);
+                files.Add((name, fileOffset, size));
         }
-        return new VpkDirectory(path, names);
+        return new VpkDirectory(path, files);
     }
 }

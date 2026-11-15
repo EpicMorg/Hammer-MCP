@@ -3,7 +3,7 @@ using HammerMcp.Core.Maps;
 
 namespace HammerMcp.Core.Assets;
 
-/// <summary>Content a map refers to: brush and displacement materials, models, overlays / decals, sprites, skybox.</summary>
+/// <summary>Content a map refers to: brush and displacement materials, models, overlays / decals, sprites, skybox, sounds and sound script names.</summary>
 public static partial class MapAssets
 {
     public sealed record Reference(string Kind, string Path, int Uses, int? ExampleEntityId);
@@ -12,9 +12,10 @@ public static partial class MapAssets
     public static List<Reference> Collect(string vmfPath)
     {
         var refs = new Dictionary<(string Kind, string Path), (int Uses, int? Id)>();
-        void Add(string kind, string path, int? id)
+        void Add(string kind, string path, int? id) => AddExact(kind, path.Replace('\\', '/').ToLowerInvariant(), id);
+        void AddExact(string kind, string name, int? id)
         {
-            var key = (kind, path.Replace('\\', '/').ToLowerInvariant());
+            var key = (kind, name);
             refs[key] = refs.TryGetValue(key, out var v) ? (v.Uses + 1, v.Id ?? id) : (1, id);
         }
 
@@ -62,9 +63,21 @@ public static partial class MapAssets
                 Add("overlay", $"materials/{overlay}.vmt", e.Id);
             if (e.ClassName.Equals("infodecal", StringComparison.OrdinalIgnoreCase) && kv.TryGetValue("texture", out var decal))
                 Add("decal", $"materials/{decal}.vmt", e.Id);
+            // sound files in any keyvalue (sound chars like ")" or "*" stripped); a name without an extension in
+            // ambient_generic's message is a sound script entry ("Ambient.Wind")
+            foreach (var (key, value) in kv)
+            {
+                if (SoundExtensions.Any(x => value.EndsWith(x, StringComparison.OrdinalIgnoreCase)) && SoundScripts.WaveFile(value) is { } wave)
+                    Add("sound", wave, e.Id);
+                else if (key.Equals("message", StringComparison.OrdinalIgnoreCase) && value.Trim().Length > 0
+                         && e.ClassName.Equals("ambient_generic", StringComparison.OrdinalIgnoreCase))
+                    AddExact("soundscript", value.Trim(), e.Id);
+            }
         }
         return [.. refs.Select(r => new Reference(r.Key.Kind, r.Key.Path, r.Value.Uses, r.Value.Id)).OrderBy(r => r.Kind).ThenBy(r => r.Path)];
     }
+
+    private static readonly string[] SoundExtensions = [".wav", ".mp3", ".ogg"];
 
     [GeneratedRegex(@"^\s*""material""\s+""([^""]+)""", RegexOptions.IgnoreCase)]
     private static partial Regex SideMaterialRegex();

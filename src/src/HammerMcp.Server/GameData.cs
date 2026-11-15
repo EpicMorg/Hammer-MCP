@@ -128,6 +128,33 @@ public sealed class GameData(HammerTarget target, HammerMcp.Core.Registry.Hammer
         }
     }
 
+    private string? _soundScriptsKey;
+    private SoundScripts? _soundScripts;
+    private AssetResolver? _soundScriptsFor;
+
+    /// <summary>
+    /// Source 1 sound scripts of a config (scripts/game_sounds_manifest.txt and the files it lists). Rebuilt when the
+    /// search paths change or a loose file in a scripts/ folder does (a mod's own sound scripts).
+    /// </summary>
+    public SoundScripts? SoundScripts(HammerGameConfig config)
+    {
+        if (Assets(config) is not { } assets)
+            return null;
+        var loose = assets.Folders.Select(f => Path.Combine(f, "scripts")).Where(Directory.Exists)
+            .SelectMany(d => Directory.EnumerateFiles(d, "*.txt")).Select(f => $"{f}@{File.GetLastWriteTimeUtc(f).Ticks}");
+        var key = string.Join('|', loose);
+        lock (_lock)
+        {
+            if (_soundScriptsKey != key || !ReferenceEquals(_soundScriptsFor, assets) || _soundScripts is null)
+            {
+                _soundScripts = HammerMcp.Core.Assets.SoundScripts.Load(assets);
+                _soundScriptsKey = key;
+                _soundScriptsFor = assets;
+            }
+            return _soundScripts;
+        }
+    }
+
     private string? _source2Key;
     private AssetResolver? _source2;
 

@@ -111,7 +111,7 @@ The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that
 | `list_entities` · `get_entity` · `find_io` | Saved map: entities with keyvalues and outputs, who triggers whom |
 | `game_configs` · `fgd_class` · `fgd_search` | Hammer's game config and the game's FGD as an entity reference (keyvalues, choices, inputs, outputs) |
 | `validate_map` | Saved map vs FGD: unknown classes, outputs to missing names, unknown inputs / outputs, extra keyvalues |
-| `check_assets` | Materials, models, overlays, decals, skybox of the saved map vs the game's search paths (gameinfo.txt, folders, VPKs) |
+| `check_assets` | Materials, models, overlays, decals, skybox, sounds and sound script names of the saved map vs the game's search paths (gameinfo.txt, folders, VPKs) |
 | `compile_sequences` · `compile_log` · `leak_trace` | Hammer's own Run Map sequences (CmdSeq.wc / Hammer++ / Strata), parsed compile log, leak path from the .lin |
 | `bsp_entities` | Entities as vbsp wrote them into the compiled .bsp (entity lump), outputs included |
 | `source2_console` | Source 2 only: allowlisted developer console commands over VConsole2 (open maps, force autosave, help) |
@@ -120,7 +120,7 @@ The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that
 | `set_keyvalue` · `rotate_entity` · `delete_entity` | Edit the entity of a class at an origin |
 | `save_map` · `undo` · `redo` | Hammer menu commands |
 | `open_run_map_dialog` · `open_check_for_problems` | Open those Hammer dialogs for the user |
-| `find_assets` | Find models, materials, textures, sounds, sprites, particles by name in the game's files and VPKs (GoldSrc: files and WAD textures / decals); returns what to write in the entity |
+| `find_assets` | Find models, materials, textures, sounds, sound script names, sprites, particles by name in the game's files and VPKs (GoldSrc: files and WAD textures / decals); returns what to write in the entity |
 | `user_requests` · `wait_for_user` · `say_to_user` | The chat in Hammer (with the adapter): read the user's lines, wait for an answer (up to 10 min), answer them |
 | `pending_changes` | Approval mode: what is waiting for the user and what they decided |
 
