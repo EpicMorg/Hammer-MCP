@@ -42,9 +42,16 @@ public sealed partial record CompileLog(IReadOnlyList<CompileStage> Stages, IRea
             var line = lines[i].Trim();
             if (line.Length == 0)
                 continue;
+            // GoldSrc compilers explain an error in a paragraph after a bare "Error:" line - one issue is enough
+            if (line.Equals("Error:", StringComparison.OrdinalIgnoreCase))
+            {
+                while (i + 1 < lines.Count && lines[i + 1].Trim().Length > 0)
+                    i++;
+                continue;
+            }
             if (StageRegex().Match(line) is { Success: true } sm)
             {
-                stage = (sm.Groups[1].Success ? sm.Groups[1] : sm.Groups[2]).Value.ToLowerInvariant();
+                stage = sm.Groups.Values.Skip(1).First(g => g.Success).Value.ToLowerInvariant();
                 stages.Add(new CompileStage(stage, i + 1, null));
                 continue;
             }
@@ -57,6 +64,13 @@ public sealed partial record CompileLog(IReadOnlyList<CompileStage> Stages, IRea
             {
                 leak = true;
                 Add(CompileIssueKind.Leak, "map leaked: vvis / vrad will be poor, load the pointfile (.lin) to see the leak path", i + 1);
+                continue;
+            }
+            // GoldSrc (ZHLT / VHLT hlbsp): "Warning: === LEAK in hull 0 ===", then "Entity light @ (   0,   0, 100)"
+            if (GoldSrcLeakRegex().Match(line) is { Success: true } gl)
+            {
+                leak = true;
+                Add(CompileIssueKind.Leak, $"map leaked (hull {gl.Groups[1].Value}): load the pointfile (.lin) to see the leak path", i + 1);
                 continue;
             }
             if (LeakedEntityRegex().Match(line) is { Success: true } lm)
@@ -96,15 +110,18 @@ public sealed partial record CompileLog(IReadOnlyList<CompileStage> Stages, IRea
         return new CompileLog(stages, list, leaked, leak);
     }
 
-    // "Valve Software - vbsp.exe (...)", "============ Started VBSP compilation", "vrad.exe ..."
-    [GeneratedRegex(@"(?:Valve Software - |^)(vbsp|vvis|vrad|bspzip|vbspinfo)\.exe|Started (VBSP|VVIS|VRAD) compilation", RegexOptions.IgnoreCase)]
+    // "Valve Software - vbsp.exe (...)", "============ Started VBSP compilation", "vrad.exe ...", GoldSrc "-----  BEGIN  hlcsg -----"
+    [GeneratedRegex(@"(?:Valve Software - |^)(vbsp|vvis|vrad|bspzip|vbspinfo)\.exe|Started (VBSP|VVIS|VRAD) compilation|^-+\s*BEGIN\s+(\w+)\s*-+$", RegexOptions.IgnoreCase)]
     private static partial Regex StageRegex();
 
     [GeneratedRegex(@"^(\d+(?:\.\d+)?) seconds elapsed", RegexOptions.IgnoreCase)]
     private static partial Regex ElapsedRegex();
 
-    [GeneratedRegex(@"^Entity (\S+) \([-\d. ]+\) leaked", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"^Entity (\S+) (?:\([-\d. ]+\) leaked|@ \([-\d., ]+\)$)", RegexOptions.IgnoreCase)]
     private static partial Regex LeakedEntityRegex();
+
+    [GeneratedRegex(@"=== LEAK in hull (\d+) ===", RegexOptions.IgnoreCase)]
+    private static partial Regex GoldSrcLeakRegex();
 
     [GeneratedRegex(@"Material not found!?:\s*(\S+)|material ""([^""]+)"" not found", RegexOptions.IgnoreCase)]
     private static partial Regex MaterialRegex();

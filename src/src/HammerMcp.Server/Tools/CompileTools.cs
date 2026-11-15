@@ -179,14 +179,14 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
     }
 
     [McpServerTool(Name = "compile_sequences", ReadOnly = true)]
-    [Description("Hammer's Run Map (expert) sequences of the attached Hammer - CmdSeq.wc, hammerplusplus_sequences.cfg or Strata cmdseq.wc - with variables expanded for the open map.")]
+    [Description("Hammer's Run Map (expert) sequences of the attached Hammer - CmdSeq.wc, hammerplusplus_sequences.cfg, Strata cmdseq.wc or J.A.C.K.'s VDKRunCfg.ini - with variables expanded for the open map.")]
     public object Sequences(string? configName = null)
     {
         var process = target.Current();
         if (process is null)
             return new { error = "no Hammer is attached" };
         var (file, sequences) = CompileSequences.ForExe(process.ExePath);
-        var (_, config, _) = MapAndConfig(configName);
+        var config = gameData.Select(configName).Active; // the game's variables are known even with no map open
         var vars = Variables(process.ExePath, process.OpenMapPath, config);
         return new
         {
@@ -201,6 +201,7 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
                     run = CompileSequences.Expand(c.Run, vars),
                     parameters = CompileSequences.ExpandArguments(c.Parameters, vars),
                     c.NoWait,
+                    mustWrite = c is { EnsureCheck: true, EnsureFile: { } f } ? CompileSequences.Expand(f, vars) : null,
                 }),
             }),
         };
@@ -246,9 +247,12 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
         };
     }
 
-    internal static object Result(string sequence, List<object> steps, string map, DateTime started, string status)
+    internal static object Result(string sequence, List<object> steps, string map, DateTime started, string status, string? bspDir = null)
     {
-        var logPath = Path.ChangeExtension(map, ".log");
+        // next to the map (Hammer: vbsp writes <map>.log there) or in the game's maps folder (J.A.C.K. compiles the copy there)
+        string[] candidates = bspDir is null ? [Path.ChangeExtension(map, ".log")]
+            : [Path.ChangeExtension(map, ".log"), Path.Combine(bspDir, Path.GetFileNameWithoutExtension(map) + ".log")];
+        var logPath = candidates.Where(File.Exists).OrderByDescending(File.GetLastWriteTime).FirstOrDefault() ?? candidates[0];
         // a log left over from an earlier compile would describe the wrong run
         var fresh = File.Exists(logPath) && File.GetLastWriteTime(logPath) >= started.AddSeconds(-2);
         var parsed = fresh ? CompileLog.Read(logPath) : null;
@@ -331,6 +335,40 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
     }
 
     /// <summary>Hammer's Run Map variables for a map and game config.</summary>
+    /// <summary>
+    /// GoldSrc: the compilers read &lt;map&gt;.map, which the editor writes only when its own Run Map starts; null when that
+    /// file is there and not older than the open .rmf / .jmf, else why the compile cannot start from here.
+    /// </summary>
+    internal static string? StaleMapExport(string mapPath, HammerGameConfig? config)
+    {
+        if (config is not { GoldSrc: true } || Path.GetExtension(mapPath).Equals(".map", StringComparison.OrdinalIgnoreCase))
+            return null;
+        var export = Path.ChangeExtension(mapPath, ".map");
+        if (!File.Exists(export))
+            return $"{Path.GetFileName(export)} not found next to the map: GoldSrc compilers read the .map that Hammer exports - ask the user to export it ({ExportMenu}) or run the compile once from the editor's Run Map, then try again";
+        return File.GetLastWriteTimeUtc(export) < File.GetLastWriteTimeUtc(mapPath)
+            ? $"{Path.GetFileName(export)} is older than {Path.GetFileName(mapPath)}: save the map and export it again ({ExportMenu}, or Run Map in the editor) so the compile sees the latest edits"
+            : null;
+    }
+
+    private const string ExportMenu = "Hammer 3.x: File > Export to .MAP; J.A.C.K.: File > Export";
+
+    /// <summary>
+    /// A delete / rename step of a compile profile may only touch files in the map's folder or the game's maps folder
+    /// ($bspdir): a profile from someone else's ini must not be able to remove anything else. Null = allowed.
+    /// </summary>
+    internal static string? OutsideCompileFolders(string file, string map, HammerGameConfig? config)
+    {
+        string?[] roots = [Path.GetDirectoryName(map), config?.BspDir];
+        foreach (var root in roots.OfType<string>())
+        {
+            var full = Path.TrimEndingDirectorySeparator(Path.GetFullPath(root)) + Path.DirectorySeparatorChar;
+            if (Path.GetFullPath(file).StartsWith(full, StringComparison.OrdinalIgnoreCase))
+                return null;
+        }
+        return $"the profile wants to delete / rename {file}, outside the map folder and the game's maps folder - not done";
+    }
+
     internal static Dictionary<string, string> Variables(string hammerExe, string? mapPath, HammerGameConfig? config)
     {
         var v = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -342,6 +380,9 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
             v["path"] = Path.GetDirectoryName(mapPath) ?? "";
             v["file"] = Path.GetFileNameWithoutExtension(mapPath);
             v["ext"] = Path.GetExtension(mapPath).TrimStart('.');
+            // GoldSrc compilers read the .map the editor exports next to the .rmf / .jmf when Run Map starts
+            if (config is { GoldSrc: true })
+                v["ext"] = "map";
         }
         if (config is not null)
         {
@@ -358,6 +399,7 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
             // Strata: post-compiler step ($postcompiler_exe) and $bsp = the compiled file's extension
             Set("postcompiler_exe", "PostCompiler");
             v["bsp"] = "bsp";
+            v["bspext"] = "bsp"; // J.A.C.K.: the compiled file's extension (bsp for Half-Life and Quake)
             if (config.GameDir is { } g)
             {
                 v["gamedir"] = g;
