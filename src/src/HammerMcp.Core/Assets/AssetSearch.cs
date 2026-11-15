@@ -5,13 +5,15 @@ namespace HammerMcp.Core.Assets;
 /// <summary>
 /// Finds content by name in a game's search paths (loose folders and VPKs): models, materials, textures, sounds,
 /// sprites, particles. Source 2 packs hold compiled files (x.vmdl_c); they are reported as Hammer writes them (x.vmdl).
+/// GoldSrc: loose files and texture names from WADs.
 /// </summary>
 public static class AssetSearch
 {
     /// <summary>A kind of content: where it lives, its extensions, and how a keyvalue refers to it.</summary>
     /// <param name="StripRoot">Keyvalues name it without the root folder (Source 1 materials/, sound/).</param>
     /// <param name="StripExtension">Keyvalues name it without the extension (Source 1 brush / decal / overlay materials).</param>
-    public sealed record Kind(string Name, string Root, string[] Extensions, bool StripRoot = false, bool StripExtension = false);
+    /// <param name="Wad">GoldSrc: a texture name inside a WAD, not a file.</param>
+    public sealed record Kind(string Name, string Root, string[] Extensions, bool StripRoot = false, bool StripExtension = false, bool Wad = false);
 
     public static readonly IReadOnlyList<Kind> Source1 =
     [
@@ -32,6 +34,19 @@ public static class AssetSearch
         new("particle", "particles", [".vpcf"]),
     ];
 
+    /// <summary>
+    /// GoldSrc: loose models / sprites / sounds in the mod and its base game, textures and decals by name from WADs.
+    /// Keyvalues name models and sprites with the folder (models/scientist.mdl), sounds without sound/.
+    /// </summary>
+    public static readonly IReadOnlyList<Kind> GoldSrc =
+    [
+        new("model", "models", [".mdl"]),
+        new("sprite", "sprites", [".spr"]),
+        new("sound", "sound", [".wav"], StripRoot: true),
+        new("texture", "", [], Wad: true),
+        new("decal", "", [], Wad: true),
+    ];
+
     /// <summary>One file found: its path, what to write in a keyvalue, and every source that has it (the first one wins).</summary>
     public sealed record Hit(string Kind, string Path, string KeyValue, IReadOnlyList<string> Sources);
 
@@ -42,31 +57,102 @@ public static class AssetSearch
     /// folder on ("props_2fort/*locker*", "ambient/wind*", "*.vmt").
     /// <paramref name="kind"/>: one of <paramref name="kinds"/> by name, or null / "any" for all of them.
     /// </summary>
-    public static Result Search(AssetResolver assets, IReadOnlyList<Kind> kinds, string query, string? kind, int limit)
+    public static Result Search(AssetResolver assets, IReadOnlyList<Kind> kinds, string query, string? kind, int limit) =>
+        Collect(Files(assets, Wanted(kinds, kind)), Wanted(kinds, kind), query, limit);
+
+    /// <summary>
+    /// GoldSrc search: files as in <see cref="Search"/> (model texture / sequence-group files like scientistt.mdl and
+    /// scientist01.mdl are not offered), plus mip textures from <paramref name="wads"/> - decals.wad gives "decal", the
+    /// rest "texture"; a name in several WADs is reported once, from the first WAD.
+    /// </summary>
+    public static Result SearchGoldSrc(AssetResolver files, IReadOnlyList<WadDirectory> wads, string query, string? kind, int limit)
     {
-        var wanted = kind is null or "" or "any"
-            ? kinds
-            : kinds.Where(k => k.Name.Equals(kind, StringComparison.OrdinalIgnoreCase)).ToList();
-        var match = Matcher(query);
-        var found = new Dictionary<string, (Kind Kind, string Path, List<string> Sources)>(StringComparer.OrdinalIgnoreCase);
-        foreach (var root in wanted.GroupBy(k => k.Root))
+        var wanted = Wanted(GoldSrc, kind);
+        var found = Files(files, wanted).ToList();
+        var models = found.Where(f => f.Kind.Name == "model").Select(f => f.Path).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        found.RemoveAll(f => f.Kind.Name == "model" && IsModelPart(f.Path, f.Source, models));
+        foreach (var wad in wads)
+        {
+            var decals = Path.GetFileName(wad.Path).Equals("decals.wad", StringComparison.OrdinalIgnoreCase);
+            var k = wanted.FirstOrDefault(k => k.Name == (decals ? "decal" : "texture"));
+            if (k is null)
+                continue;
+            foreach (var texture in wad.Textures)
+                found.Add((k, texture, wad.Path));
+        }
+        return Collect(found, wanted, query, limit);
+    }
+
+    /// <summary>
+    /// scientistt.mdl (textures) and scientist01.mdl (sequence group) belong to scientist.mdl. The name says so first;
+    /// a loose file is then confirmed by its header (sequence group "IDSQ", texture file "IDST" without bones), so a real
+    /// model that merely ends in t (foot.mdl next to foo.mdl) is kept. Files inside a PAK go by the name only.
+    /// </summary>
+    private static bool IsModelPart(string path, string source, HashSet<string> models)
+    {
+        var stem = path[..^4];
+        var byName = (stem.EndsWith('t') || stem.EndsWith('T')) && models.Contains(stem[..^1] + ".mdl")
+                     || stem.Length > 2 && char.IsAsciiDigit(stem[^1]) && char.IsAsciiDigit(stem[^2]) && models.Contains(stem[..^2] + ".mdl");
+        if (!byName)
+            return false;
+        var file = Path.Combine(source, path);
+        return !File.Exists(file) || IsModelPartHeader(file);
+    }
+
+    /// <summary>studiohdr_t: id at 0, numbones at 140. "IDSQ" = sequence group; "IDST" with no bones = texture file.</summary>
+    internal static bool IsModelPartHeader(string file)
+    {
+        try
+        {
+            using var stream = File.OpenRead(file);
+            var header = new byte[144];
+            if (stream.Read(header, 0, header.Length) < 8)
+                return true;
+            var id = System.Text.Encoding.ASCII.GetString(header, 0, 4);
+            if (id == "IDSQ")
+                return true;
+            return id == "IDST" && stream.Length >= 144 && BitConverter.ToInt32(header, 140) == 0;
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+        {
+            return true;
+        }
+    }
+
+    private static IReadOnlyList<Kind> Wanted(IReadOnlyList<Kind> kinds, string? kind) =>
+        kind is null or "" or "any" ? kinds : kinds.Where(k => k.Name.Equals(kind, StringComparison.OrdinalIgnoreCase)).ToList();
+
+    /// <summary>Files of the wanted kinds, in source order (Source 2 compiled x.vmdl_c reported as x.vmdl).</summary>
+    private static IEnumerable<(Kind Kind, string Path, string Source)> Files(AssetResolver assets, IReadOnlyList<Kind> wanted)
+    {
+        foreach (var root in wanted.Where(k => !k.Wad).GroupBy(k => k.Root))
         {
             foreach (var (file, source) in assets.List(root.Key))
             {
-                var path = file.EndsWith("_c", StringComparison.OrdinalIgnoreCase) ? file[..^2] : file; // Source 2 compiled
+                var path = file.EndsWith("_c", StringComparison.OrdinalIgnoreCase) ? file[..^2] : file;
                 var k = root.FirstOrDefault(k => k.Extensions.Any(e => path.EndsWith(e, StringComparison.OrdinalIgnoreCase)));
-                if (k is null || !match(path))
-                    continue;
-                // a sprite is also a material: report it once, as the more specific kind
-                var key = path;
-                if (found.TryGetValue(key, out var hit))
-                {
-                    if (!hit.Sources.Contains(source))
-                        hit.Sources.Add(source);
-                }
-                else
-                    found[key] = (k, path, [source]);
+                if (k is not null)
+                    yield return (k, path, source);
             }
+        }
+    }
+
+    private static Result Collect(IEnumerable<(Kind Kind, string Path, string Source)> candidates, IReadOnlyList<Kind> wanted, string query, int limit)
+    {
+        var match = Matcher(query);
+        var found = new Dictionary<string, (Kind Kind, string Path, List<string> Sources)>(StringComparer.OrdinalIgnoreCase);
+        foreach (var (k, path, source) in candidates)
+        {
+            if (!match(path) && !(k.Wad && WadStem(path) is { } stem && match(stem)))
+                continue;
+            // a WAD texture and a file can not share a key: files have a folder and an extension
+            if (found.TryGetValue(path, out var hit))
+            {
+                if (!hit.Sources.Contains(source))
+                    hit.Sources.Add(source);
+            }
+            else
+                found[path] = (k, path, [source]);
         }
         // sprites live under materials/: the more specific kind wins when both were searched
         foreach (var sprite in wanted.Where(k => k.Name == "sprite"))
@@ -98,6 +184,14 @@ public static class AssetSearch
         if (kind.Name == "sprite" && value.StartsWith("materials/", StringComparison.OrdinalIgnoreCase))
             value = value["materials/".Length..];
         return value;
+    }
+
+    /// <summary>A WAD name without its GoldSrc prefix: {transparent, !water, +0animated / -0random toggle, ~light; null if none.</summary>
+    private static string? WadStem(string name)
+    {
+        if (name.Length > 2 && name[0] is '+' or '-' && char.IsAsciiLetterOrDigit(name[1]))
+            return name[2..];
+        return name.Length > 1 && name[0] is '{' or '!' or '~' ? name[1..] : null;
     }
 
     private static Func<string, bool> Matcher(string query)

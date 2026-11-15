@@ -4,6 +4,23 @@
 
 All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/); `-alpha` releases are pre-releases.
 
+## [Unreleased]
+
+### Added
+- **GoldSrc game configs**: the binary `GameCfg.wc` next to Worldcraft / Hammer 3.x (versions 1.3 and 1.4) is read, so `game_configs`, `fgd_*`, `compile_sequences` and `find_assets` work with GoldSrc editors too. A config gives the mod folder (`gameDir`), the game it falls back to (`valve`), FGDs (relative ones against the editor folder), map / bsp folders and the compile tools (`$csg_exe` included).
+- **`find_assets` for GoldSrc**: models (`models/scientist.mdl`; texture and sequence-group files like `scientistt.mdl`, `scientist01.mdl` are left out), sprites (`sprites/glow01.spr`), sounds (`ambience/wind1.wav`) from the mod and `valve` with their `_addon` / `_downloads` folders, plus textures by name from the WADs in those folders and decals from `decals.wad` (`{BLOOD1`; a wildcard matches names with or without the `{` `!` `+0` `-0` `~` prefix). Utility WADs (fonts, gfx, cached, spray / temp decals) are skipped. PAKs (`pak0.pak`, `pak1.pak`, ...) in those folders are searched too.
+- **The texture WAD list of Worldcraft / Hammer 3.x** (Options > Textures) is read from the editor's registry key and searched first; the key of every known GoldSrc editor is in the build registry (`settingsKey`: Worldcraft 1.1-2.0, Worldcraft 2.1-3.3, Hammer 3.4/3.5 and Neo, CSM, Neon each keep their own).
+- An old `GameCfg.wc` (version 1.3, Worldcraft 1.6-2.x) has no mod folder: `<game exe folder>\valve` (or `id1`) is used and reported as a guess.
+- **J.A.C.K. / Jackhammer game configs** (`VDKGameCfg.ini` next to the exe): mod and base folders, FGDs, compilers, and the texture WAD list (`Parcel*`), which `find_assets` searches first.
+- **`check_assets` for GoldSrc maps** (`.rmf`, `.map`, `.jmf`): face textures against the WADs (the game's and those in worldspawn `wad`), `infodecal` decals against `decals.wad`, models / sprites / sounds in any keyvalue and the sky (`gfx/env/<skyname>*.tga`) against the folders and PAKs; WADs listed in the map but found nowhere are reported. Compiler tool textures (CLIP, ORIGIN, NULL, SKIP, HINT, ...) are not checked.
+
+### Fixed
+- GoldSrc Hammer 3.x shows only the file name in its title when the map window is not maximized (`Valve Hammer Editor - tut1.rmf`): the full path is now taken from the process command line or found in the configs' map folders, so map tools work there.
+- `find_assets` (GoldSrc): a model whose name merely ends in `t` or two digits (`foot.mdl` next to `foo.mdl`) is no longer hidden as a texture / sequence-group file - loose files are checked by their header.
+- The build registry called a genuine Valve Hammer 3.5 build "HL-Lab" (`goldsrc-hammer-3.5-hllab` is now `goldsrc-hammer-3.5-b`).
+- Entities inside groups of `.rmf` / `.jmf` maps were not listed.
+- App: a second click on Start / Stop while the server was still starting (a double click) stopped it again a moment later.
+
 ## [0.7.0] - 2026-11-15
 
 ### Added

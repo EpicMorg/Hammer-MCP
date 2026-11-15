@@ -13,6 +13,14 @@ public sealed class VpkDirectory
 
     private VpkDirectory(string path) => Path = path;
 
+    /// <summary>A pack of another format (Quake / GoldSrc .pak) with the same lookup: relative paths, any case.</summary>
+    internal VpkDirectory(string path, IEnumerable<string> files)
+    {
+        Path = path;
+        foreach (var f in files)
+            _files.Add(Normalize(f));
+    }
+
     public bool Contains(string relativePath) => _files.Contains(Normalize(relativePath));
 
     public static string Normalize(string p) => p.Replace('\\', '/').TrimStart('/').ToLowerInvariant();

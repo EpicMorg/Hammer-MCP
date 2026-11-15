@@ -1,6 +1,6 @@
 namespace HammerMcp.Core.Assets;
 
-/// <summary>Looks up content (models/x.mdl, materials/x.vmt, ...) in a game's "game" search paths: loose folders and VPKs.</summary>
+/// <summary>Looks up content (models/x.mdl, materials/x.vmt, ...) in a game's "game" search paths: loose folders and VPKs (GoldSrc / Quake: PAKs).</summary>
 public sealed class AssetResolver
 {
     private readonly List<string> _folders = [];
@@ -31,7 +31,18 @@ public sealed class AssetResolver
 
     private void Add(string location)
     {
-        if (location.EndsWith(".vpk", StringComparison.OrdinalIgnoreCase))
+        if (location.EndsWith(".pak", StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                _vpks.Add(PakFile.Open(location));
+            }
+            catch (Exception e) when (e is IOException or InvalidDataException or EndOfStreamException or UnauthorizedAccessException)
+            {
+                Problems.Add($"{location}: {e.Message}");
+            }
+        }
+        else if (location.EndsWith(".vpk", StringComparison.OrdinalIgnoreCase))
         {
             try
             {

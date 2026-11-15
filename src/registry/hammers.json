@@ -1376,6 +1376,7 @@
       "family": "goldsrc", "branch": "worldcraft-1.1", "arch": "x86",
       "match": { "dll": "WC.EXE", "sha256": "503149922f075d2d0b17cf7fc97eef11eab93bcdcc9ae49966414e2b294b5a7a", "linked": "1997-01-28" },
       "shell": { "present": false },
+      "settingsKey": "Software\\Worldcraft\\Worldcraft",
       "mapFormat": "map",
       "notes": "Worldcraft 1.1 (Quake)."
     },
@@ -1385,6 +1386,7 @@
       "family": "goldsrc", "branch": "worldcraft-1.1a", "arch": "x86",
       "match": { "dll": "WC.EXE", "sha256": "9daa6983c33593d3ac26ee3a9ead4674c83de54c4b5602ab1dbf7c13147f117a", "linked": "1997-02-20" },
       "shell": { "present": false },
+      "settingsKey": "Software\\Worldcraft\\Worldcraft",
       "mapFormat": "map",
       "notes": "Worldcraft 1.1a (Quake)."
     },
@@ -1394,6 +1396,7 @@
       "family": "goldsrc", "branch": "worldcraft-1.5", "arch": "x86",
       "match": { "dll": "wc.exe", "sha256": "6e5cc6acc6edeed62812fdf5bfc464ea41a7619ed44df420655cda18934c0ce4", "linked": "1997-10-10" },
       "shell": { "present": false },
+      "settingsKey": "Software\\Worldcraft\\Worldcraft",
       "mapFormat": "map",
       "notes": "Worldcraft 1.5 (Quake)."
     },
@@ -1403,6 +1406,7 @@
       "family": "goldsrc", "branch": "worldcraft-1.6", "arch": "x86",
       "match": { "dll": "Wc.exe", "sha256": "2dd24bc9daa61a22db011396c1f2f17919ba75c68cadce215e543ceb62437113", "linked": "1998-03-06" },
       "shell": { "present": false },
+      "settingsKey": "Software\\Worldcraft\\Worldcraft",
       "mapFormat": "map",
       "notes": "Worldcraft 1.6 (Quake, Quake 2, Hexen 2)."
     },
@@ -1412,6 +1416,7 @@
       "family": "goldsrc", "branch": "worldcraft-2.0", "arch": "x86",
       "match": { "dll": "wc.exe", "sha256": "f61788d8d598cb47d6635858ea7f4207b6f8d2212e2448b9bd8e6a6e424a3c29", "linked": "1998-11-01" },
       "shell": { "present": false },
+      "settingsKey": "Software\\Worldcraft\\Worldcraft",
       "mapFormat": "rmf",
       "notes": "Worldcraft 2.0."
     },
@@ -1421,6 +1426,7 @@
       "family": "goldsrc", "branch": "worldcraft-2.1", "arch": "x86",
       "match": { "dll": "wc.exe", "sha256": "4dd5df4ed50a3ed6f426cfb62bb4963294ecf4e250d76472e6cd6545276dbc11", "linked": "1999-04-10" },
       "shell": { "present": false },
+      "settingsKey": "Software\\Valve\\Worldcraft",
       "mapFormat": "rmf",
       "notes": "Worldcraft 2.1."
     },
@@ -1430,6 +1436,7 @@
       "family": "goldsrc", "branch": "worldcraft-3.3", "arch": "x86",
       "match": { "dll": "wc.exe", "sha256": "c02b24a3a9d3dda04827d6842bd120fdc37617e13b407b02669dc82ad1d42851", "linked": "2000-05-31" },
       "shell": { "present": false },
+      "settingsKey": "Software\\Valve\\Worldcraft",
       "mapFormat": "rmf",
       "notes": "Worldcraft 3.3 (Half-Life). Also in the HL-Lab SDK pack."
     },
@@ -1439,6 +1446,7 @@
       "family": "goldsrc", "branch": "hammer-3.4", "arch": "x86",
       "match": { "dll": "hammer.exe", "sha256": "ceef56a702c28eaade3c4b2d24722fe161ccff5a36580852a57e2c03dd3c90f3", "linked": "2002-04-01" },
       "shell": { "present": false },
+      "settingsKey": "Software\\Valve\\Valve Hammer Editor",
       "mapFormat": "rmf",
       "notes": "Valve Hammer Editor 3.4. Also in the HL-Lab SDK pack (hammer34.exe) and the Half-Life SDK on Steam."
     },
@@ -1448,17 +1456,19 @@
       "family": "goldsrc", "branch": "hammer-3.5", "arch": "x86",
       "match": { "dll": "hammer.exe", "sha256": "d8b2ee66aba52c1b1fac1628dec44d7d28a059d0470ee5a3735ec7edf804a117", "linked": "2003-04-18" },
       "shell": { "present": false },
+      "settingsKey": "Software\\Valve\\Valve Hammer Editor",
       "mapFormat": "rmf",
       "notes": "Valve Hammer Editor 3.5 (valvedev.info archive)."
     },
     {
-      "id": "goldsrc-hammer-3.5-hllab",
+      "id": "goldsrc-hammer-3.5-b",
       "injectAdapter": "menu",
       "family": "goldsrc", "branch": "hammer-3.5", "arch": "x86",
       "match": { "dll": "hammer.exe", "sha256": "82f0d4413155c1ae71c95462ced1762f3d3500743837c16b1311bc324a7ff9ac", "linked": "2003-04-18" },
       "shell": { "present": false },
+      "settingsKey": "Software\\Valve\\Valve Hammer Editor",
       "mapFormat": "rmf",
-      "notes": "Valve Hammer Editor 3.5 as shipped in the HL-Lab SDK pack (differs from the valvedev.info build, same link date)."
+      "notes": "Valve Hammer Editor 3.5, a second genuine Valve build (same link date as the valvedev.info one, different bytes; origin unknown). Also used in the HL-Lab SDK pack."
     },
     {
       "id": "goldsrc-csm-hammer-3.5",
@@ -1466,6 +1476,7 @@
       "family": "goldsrc", "branch": "csm-hammer-3.5", "arch": "x86",
       "match": { "dll": "editor.exe", "sha256": "6bef0cd171d261bbc77792c071555e18774ab27848097e47a5d5326c66e8af84", "linked": "2003-04-18" },
       "shell": { "present": false },
+      "settingsKey": "Software\\Valve\\CSM Hammer Editor",
       "mapFormat": "rmf",
       "notes": "CSM Hammer Editor (0.3.8.1): community mod of Hammer 3.5."
     },
@@ -1475,6 +1486,7 @@
       "family": "goldsrc", "branch": "neo-hammer-3.5.1", "arch": "x86",
       "match": { "dll": "neo.exe", "sha256": "f414d425fb05de6b2c1994f6f75a34b71914b93fcd32afa6c417ccfc09893176", "linked": "2003-04-18" },
       "shell": { "present": false },
+      "settingsKey": "Software\\Valve\\Valve Hammer Editor",
       "mapFormat": "rmf",
       "notes": "Neo Hammer Editor 3.5.1: community mod of Hammer 3.5."
     },
@@ -1484,6 +1496,7 @@
       "family": "goldsrc", "branch": "neon-hammer-3.5", "arch": "x86",
       "match": { "dll": "neon.exe", "sha256": "3ab529ae9522b1175f6756efb2c6553b7b650e5fdab225e3ef1df9b0aad2d200", "linked": "2003-04-18" },
       "shell": { "present": false },
+      "settingsKey": "Software\\Valve\\Valve Hammer Editor Neon",
       "mapFormat": "rmf",
       "notes": "Neon Hammer Editor 3.5 (as named in the HL-Lab launcher): community mod of Valve Hammer Editor; its version resource says FileVersion 3.4."
     },
@@ -1493,6 +1506,7 @@
       "family": "goldsrc", "branch": "neon-hammer-3.5", "arch": "x86",
       "match": { "dll": "neon_rus.exe", "sha256": "1a165e3070c7ad396aa45a553f108b76e2035021467008c8a19c0267edce2f67", "linked": "2003-04-18" },
       "shell": { "present": false },
+      "settingsKey": "Software\\Valve\\Valve Hammer Editor Neon",
       "mapFormat": "rmf",
       "notes": "Neon Hammer Editor 3.5, Russian translation (HL-Lab launcher name); version resource says FileVersion 3.4."
     },

@@ -10,7 +10,7 @@ namespace HammerMcp.Server;
 /// hammerplusplus_gameconfig.txt, GameData0..N). Parsed FGDs are cached until a file changes.
 /// </summary>
 [SupportedOSPlatform("windows")]
-public sealed class GameData(HammerTarget target)
+public sealed class GameData(HammerTarget target, HammerMcp.Core.Registry.HammerRegistry registry)
 {
     private readonly Lock _lock = new();
     private string? _cacheKey;
@@ -26,7 +26,16 @@ public sealed class GameData(HammerTarget target)
         var process = target.Current();
         if (process is null)
             return new Selection(null, [], null, "no Hammer is attached");
-        var (file, configs) = HammerGameConfig.ForExe(process.ExePath);
+        string? file;
+        List<HammerGameConfig> configs;
+        try
+        {
+            (file, configs) = HammerGameConfig.ForExe(process.ExePath);
+        }
+        catch (Exception e) when (e is InvalidDataException or IOException or UnauthorizedAccessException)
+        {
+            return new Selection(null, [], null, $"game configs next to {process.ExePath} can not be read: {e.Message}");
+        }
         if (file is null && HammerGameConfig.Source2(process.ExePath) is { Count: > 0 } source2)
         {
             // Source 2: no config file; mods with their FGD, picked by the open map's content/<mod> folder
@@ -37,7 +46,9 @@ public sealed class GameData(HammerTarget target)
                 pick is null ? $"pick a Source 2 mod with configName: {string.Join(", ", source2.Select(c => c.Name))}" : null);
         }
         if (file is null)
-            return new Selection(null, [], null, $"no GameConfig.txt / hammerplusplus_gameconfig.txt next to {process.ExePath}");
+            return new Selection(null, [], null, $"no GameConfig.txt / hammerplusplus_gameconfig.txt / GameCfg.wc / VDKGameCfg.ini next to {process.ExePath}");
+        if (file.EndsWith(".wc", StringComparison.OrdinalIgnoreCase) && EditorTextureWads(process.ExePath) is { Count: > 0 } wads)
+            configs = [.. configs.Select(c => c.TextureWads is null ? c with { TextureWads = wads } : c)];
         var active = configName is not null
             ? configs.FirstOrDefault(c => c.Name.Equals(configName, StringComparison.OrdinalIgnoreCase))
             : HammerGameConfig.ForMap(configs, process.OpenMapPath) ?? HammerGameConfig.ForHammer(configs, process.ExePath);
@@ -47,6 +58,48 @@ public sealed class GameData(HammerTarget target)
                 : "several game configs and the open map is not under any MapDir: pass configName (see game_configs)"
             : null;
         return new Selection(file, configs, active, problem);
+    }
+
+    private string? _wadsKey;
+    private string? _settingsKey;
+
+    /// <summary>
+    /// GoldSrc Worldcraft / Hammer 3.x: the texture WAD list of Options > Textures, kept in the editor's own HKCU key
+    /// (<see cref="HammerMcp.Core.Registry.HammerBuild.SettingsKey"/>, found by the exe's sha256): General\TextureFileCount
+    /// and TextureFile0..N; relative names are resolved against the exe folder. Empty for unknown builds.
+    /// </summary>
+    public List<string> EditorTextureWads(string exePath)
+    {
+        // identifying the build hashes the exe: once per exe (and again if it changes); the registry is read every time
+        var key = $"{exePath}@{(File.Exists(exePath) ? File.GetLastWriteTimeUtc(exePath).Ticks : 0)}";
+        string? settingsKey;
+        lock (_lock)
+        {
+            if (_wadsKey != key)
+            {
+                _settingsKey = Tools.StatusTools.Identify(registry, exePath).Build?.SettingsKey;
+                _wadsKey = key;
+            }
+            settingsKey = _settingsKey;
+        }
+        return ReadTextureWads(settingsKey, exePath);
+    }
+
+    internal static List<string> ReadTextureWads(string? settingsKey, string exePath)
+    {
+        if (settingsKey is null || !OperatingSystem.IsWindows())
+            return [];
+        using var general = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(settingsKey + @"\General");
+        if (general?.GetValue("TextureFileCount") is not int count || count <= 0)
+            return [];
+        var dir = Path.GetDirectoryName(exePath) ?? ".";
+        var result = new List<string>();
+        for (var i = 0; i < Math.Min(count, 256); i++)
+        {
+            if (general.GetValue($"TextureFile{i}") is string { Length: > 0 } wad)
+                result.Add(Path.IsPathRooted(wad) ? wad : Path.GetFullPath(Path.Combine(dir, wad)));
+        }
+        return result;
     }
 
     /// <summary>
@@ -126,6 +179,29 @@ public sealed class GameData(HammerTarget target)
     /// <summary>Steam folder from HKCU\Software\Valve\Steam\SteamPath (for |appid_NNN| search paths).</summary>
     private static string? SteamRoot() =>
         Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Valve\Steam", "SteamPath", null) is string p && Directory.Exists(p) ? p : null;
+
+    private string? _goldSrcKey;
+    private GoldSrcContent? _goldSrc;
+
+    /// <summary>GoldSrc content of a config (mod + base game folders, their PAKs and WADs). Rebuilt when a folder or WAD changes.</summary>
+    public GoldSrcContent GoldSrcAssets(HammerGameConfig config)
+    {
+        var folders = GoldSrcContent.SearchFolders(config);
+        var key = string.Join('|', folders.Select(f => $"{f}@{Directory.GetLastWriteTimeUtc(f).Ticks}")
+            .Concat(folders.SelectMany(f => Directory.EnumerateFiles(f, "*.wad").Concat(GoldSrcContent.Paks(f)))
+                .Concat(config.TextureWads ?? [])
+                .Select(w => $"{w}@{(File.Exists(w) ? File.GetLastWriteTimeUtc(w).Ticks : 0)}")))
+            + $"|{config.GameDir}|{config.BaseGameDir}";
+        lock (_lock)
+        {
+            if (_goldSrcKey != key || _goldSrc is null)
+            {
+                _goldSrc = GoldSrcContent.ForConfig(config);
+                _goldSrcKey = key;
+            }
+            return _goldSrc;
+        }
+    }
 
     /// <summary>FGDs of a config, merged in Hammer's order.</summary>
     public FgdDocument Fgd(HammerGameConfig config)

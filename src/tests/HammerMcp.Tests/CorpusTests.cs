@@ -30,6 +30,25 @@ public class CorpusTests
     }
 
     [Fact]
+    public void EveryGameCfgWcReads()
+    {
+        Assert.SkipWhen(Root is null, "HAMMER_MCP_CORPUS not set");
+        // Worldcraft 2.0 ships an empty one (version 1.3, no configs); WC 1.6 (1.3) and Hammer 3.x (1.4) have configs
+        foreach (var f in Directory.EnumerateFiles(Root!, "gamecfg.wc", new EnumerationOptions { RecurseSubdirectories = true, MatchCasing = MatchCasing.CaseInsensitive }))
+            Assert.All(GameCfgWc.Load(f), c => Assert.False(string.IsNullOrEmpty(c.Name), f));
+    }
+
+    [Fact]
+    public void EveryJackConfigAndGoldSrcMapReads()
+    {
+        Assert.SkipWhen(Root is null, "HAMMER_MCP_CORPUS not set");
+        foreach (var f in Directory.EnumerateFiles(Root!, "vdkgamecfg.ini", new EnumerationOptions { RecurseSubdirectories = true, MatchCasing = MatchCasing.CaseInsensitive }))
+            Assert.All(JackGameCfg.Load(f), c => Assert.True(c.GoldSrc, f));
+        var maps = Files(".rmf", ".map", ".jmf").ToList();
+        Assert.All(maps, f => GoldSrcMapAssets.Collect(f));
+    }
+
+    [Fact]
     public void EveryMapReads()
     {
         Assert.SkipWhen(Root is null, "HAMMER_MCP_CORPUS not set");

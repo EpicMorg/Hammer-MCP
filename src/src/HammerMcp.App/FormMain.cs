@@ -469,14 +469,31 @@ public partial class FormMain : Form
         _trayStartStop.Enabled = canToggle;
     }
 
+    private bool _toggling;
+
+    /// <summary>
+    /// Start or stop. A second click while the first is still starting the host (a double click, or UI Automation
+    /// delivering Invoke twice) is ignored - before, it saw the half-started server and stopped it a second later.
+    /// </summary>
     private async Task ToggleServerAsync()
     {
-        if (_server is null && _target.AttachedPid is null)
+        if (_toggling || (_server is null && _target.AttachedPid is null))
             return;
-        if (_server is null)
-            await StartServerAsync();
-        else
-            await StopServerAsync();
+        _toggling = true;
+        buttonServerStartStop.Enabled = false;
+        _trayStartStop.Enabled = false;
+        try
+        {
+            if (_server is null)
+                await StartServerAsync();
+            else
+                await StopServerAsync();
+        }
+        finally
+        {
+            _toggling = false;
+            UpdateStartButton();
+        }
     }
 
     private async Task StartServerAsync()

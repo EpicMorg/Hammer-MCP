@@ -29,12 +29,27 @@ public static class MapEntities
         };
         var result = new List<VmfEntity>();
         var id = 0;
-        foreach (var e in map.Worldspawn.Children.OfType<Entity>())
+        foreach (var e in Entities(map.Worldspawn))
         {
             var kv = new Dictionary<string, string>(e.Properties, StringComparer.OrdinalIgnoreCase);
             result.Add(new VmfEntity(++id, e.ClassName, VmfEntities.ParseVector(kv.GetValueOrDefault("origin")), kv.GetValueOrDefault("targetname"),
                 Hidden: false, HasBrushes: e.Children.OfType<Solid>().Any(), kv));
         }
         return result;
+    }
+
+    /// <summary>Entities at any depth: .rmf / .jmf keep them inside groups (and visgroup folders).</summary>
+    private static IEnumerable<Entity> Entities(MapObject parent)
+    {
+        foreach (var child in parent.Children)
+        {
+            if (child is Entity e)
+                yield return e;
+            else
+            {
+                foreach (var nested in Entities(child))
+                    yield return nested;
+            }
+        }
     }
 }

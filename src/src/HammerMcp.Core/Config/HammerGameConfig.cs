@@ -2,7 +2,11 @@ using ValveKeyValue;
 
 namespace HammerMcp.Core.Config;
 
-/// <summary>One game configuration from Hammer's GameConfig.txt (stock) or hammerplusplus_gameconfig.txt (Hammer++).</summary>
+/// <summary>
+/// One game configuration from Hammer's GameConfig.txt (stock), hammerplusplus_gameconfig.txt (Hammer++) or the binary
+/// GameCfg.wc of GoldSrc editors, VDKGameCfg.ini of J.A.C.K. GoldSrc: <see cref="GameDir"/> is the mod folder (cstrike), <see cref="BaseGameDir"/>
+/// the game it falls back to (valve); <see cref="TextureWads"/> are the WADs the editor loads (J.A.C.K. "Parcel" list).
+/// </summary>
 public sealed record HammerGameConfig(
     string Name,
     IReadOnlyList<string> FgdFiles,
@@ -10,7 +14,10 @@ public sealed record HammerGameConfig(
     string? GameExeDir,
     string? MapDir,
     string? BspDir,
-    IReadOnlyDictionary<string, string> Tools)
+    IReadOnlyDictionary<string, string> Tools,
+    string? BaseGameDir = null,
+    bool GoldSrc = false,
+    IReadOnlyList<string>? TextureWads = null)
 {
     /// <summary>Config files next to a Hammer exe: Hammer++ first, then stock (bin/ or bin/x64/).</summary>
     public static IEnumerable<string> CandidateFiles(string exePath)
@@ -21,6 +28,10 @@ public sealed record HammerGameConfig(
         yield return Path.Combine(dir, "..", "GameConfig.txt");
         // Strata: <game>\bin\win64\hammer.exe, config in <game>\hammer\cfg\gameconfig.txt
         yield return Path.Combine(dir, "..", "..", "hammer", "cfg", "gameconfig.txt");
+        // GoldSrc Worldcraft / Hammer 3.x: binary GameCfg.wc next to the exe
+        yield return Path.Combine(dir, "GameCfg.wc");
+        // J.A.C.K. / Jackhammer
+        yield return Path.Combine(dir, "VDKGameCfg.ini");
     }
 
     /// <summary>All game configurations of the Hammer at <paramref name="exePath"/>, from the first config file that exists.</summary>
@@ -29,7 +40,8 @@ public sealed record HammerGameConfig(
         foreach (var file in CandidateFiles(exePath))
         {
             if (File.Exists(file))
-                return (Path.GetFullPath(file), Load(file));
+                return (Path.GetFullPath(file), file.EndsWith(".wc", StringComparison.OrdinalIgnoreCase) ? GameCfgWc.Load(file)
+                    : file.EndsWith(".ini", StringComparison.OrdinalIgnoreCase) ? JackGameCfg.Load(file) : Load(file));
         }
         return (null, []);
     }
