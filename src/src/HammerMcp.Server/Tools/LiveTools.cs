@@ -11,7 +11,7 @@ namespace HammerMcp.Server.Tools;
 public sealed class LiveTools(HammerTarget target)
 {
     [McpServerTool(Name = "hammer_selection", ReadOnly = true)]
-    [Description("What is selected in Hammer right now, read live from Hammer's memory by the injected adapter (Advanced mode, builds with a known memory layout - see hammer_status adapter.liveRead). Each item: kind (entity, solid, group, ...), entities with className, origin and keyValues, solids with their textures and owning entity, bounds (mins / maxs) of each and of the whole selection. Unsaved changes are included - no need to save. sent=true returns the selection the user last sent with MCP > Send selection to agent instead of the current one.")]
+    [Description("What is selected in Hammer right now, read live from Hammer's memory by the injected adapter (Advanced mode, builds with a known memory layout - see hammer_status adapter.liveRead). Each item: kind (entity, solid, group, ...), entities with className, origin and keyValues, solids with their textures and owning entity, bounds (mins / maxs) of each and of the whole selection. Unsaved changes are included - no need to save. sent=true returns the selection the user last sent with MCP > Send selection to agent instead of the current one. Selecting a large part of a big map (e.g. Select All) can freeze Hammer for a long time while it redraws: ask the user for confirmation before you select much on a big map. \"Hammer is busy\" = its window did not answer in 3 s; wait instead of retrying in a loop.")]
     public async Task<object> Selection(bool sent = false, CancellationToken cancellationToken = default)
     {
         if (target.Adapter is not { } adapter)
