@@ -42,10 +42,10 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
     }
 
     [McpServerTool(Name = "find_assets", ReadOnly = true)]
-    [Description("Find content by name in the game of the attached Hammer - loose files and VPKs from the game's search paths (Source 1: gameinfo.txt; Source 2: game/<mod>, content/<mod>, core): models, materials, textures, sounds, sprites, particles. Use it to pick a model for prop_*, a material, a sound for ambient_generic. Each hit has 'keyValue' = what to write in the entity's keyvalue, and the sources that have the file (the first one wins).")]
+    [Description("Find content by name in the game of the attached Hammer - loose files and VPKs from the game's search paths (Source 1: gameinfo.txt; Source 2: game/<mod>, content/<mod>, core; GoldSrc: the mod and valve folders, textures and decals by name from their WADs): models, materials, textures, sounds, sprites, particles, decals. Use it to pick a model for prop_*, a material, a sound for ambient_generic. Each hit has 'keyValue' = what to write in the entity's keyvalue, and the sources that have the file (the first one wins).")]
     public object FindAssets(
         [Description("Part of the path, e.g. cabinet, or a wildcard over the whole path, e.g. models/props_2fort/*locker*")] string query,
-        [Description("model, material, texture, sound, sprite, particle, or any")] string kind = "any",
+        [Description("model, material, texture, sound, sprite, particle (GoldSrc: model, sprite, sound, texture, decal), or any")] string kind = "any",
         int limit = 50,
         string? configName = null)
     {
@@ -57,6 +57,8 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
         var selection = gameData.Select(configName);
         if (selection.Active is not { } config)
             return new { error = selection.Problem ?? "no game config" };
+        if (config.GoldSrc)
+            return FindGoldSrcAssets(config, query, kind, limit);
         var source2 = process.IsSource2;
         var resolver = source2 ? gameData.Source2Assets(config) : gameData.Assets(config);
         if (resolver is null)
@@ -80,6 +82,36 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
             }),
             note = result.Total > result.Hits.Count ? "more matches: narrow the query or raise limit (max 500)" : null,
             searchPathProblems = resolver.Problems.Count > 0 ? resolver.Problems : null,
+        };
+    }
+
+    private object FindGoldSrcAssets(HammerGameConfig config, string query, string kind, int limit)
+    {
+        var kinds = AssetSearch.GoldSrc;
+        if (kind is not ("" or "any") && !kinds.Any(k => k.Name.Equals(kind, StringComparison.OrdinalIgnoreCase)))
+            return new { error = $"unknown kind '{kind}' for GoldSrc: {string.Join(", ", kinds.Select(k => k.Name))} or any" };
+        if (config.GameDir is null && config.BaseGameDir is null)
+            return new { error = $"game config '{config.Name}' has no Mod / Game directory (Hammer: Tools > Options > Game Configurations)" };
+        var content = gameData.GoldSrcAssets(config);
+        var result = AssetSearch.SearchGoldSrc(content.Files, content.Wads, query, kind, limit);
+        return new
+        {
+            game = config.Name,
+            total = result.Total,
+            shown = result.Hits.Count,
+            hits = result.Hits.Select(h => new
+            {
+                h.Kind,
+                h.Path,
+                h.KeyValue,
+                from = h.Sources.Select(Path.GetFileName).First(),
+                alsoIn = h.Sources.Count > 1 ? h.Sources.Skip(1).Select(Path.GetFileName) : null,
+            }),
+            note = result.Total > result.Hits.Count ? "more matches: narrow the query or raise limit (max 500)" : null,
+            texturesNote = "a texture is usable only if its WAD is in Hammer's texture list (Tools > Options > Textures) and in the map's worldspawn 'wad' key",
+            searchFolders = content.Folders,
+            wads = content.Wads.Select(w => Path.GetFileName(w.Path)),
+            searchPathProblems = content.Problems.Count > 0 ? content.Problems : null,
         };
     }
 

@@ -120,7 +120,7 @@ The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that
 | `set_keyvalue` · `rotate_entity` · `delete_entity` | Edit the entity of a class at an origin |
 | `save_map` · `undo` · `redo` | Hammer menu commands |
 | `open_run_map_dialog` · `open_check_for_problems` | Open those Hammer dialogs for the user |
-| `find_assets` | Find models, materials, textures, sounds, sprites, particles by name in the game's files and VPKs; returns what to write in the entity |
+| `find_assets` | Find models, materials, textures, sounds, sprites, particles by name in the game's files and VPKs (GoldSrc: files and WAD textures / decals); returns what to write in the entity |
 | `user_requests` · `wait_for_user` · `say_to_user` | The chat in Hammer (with the adapter): read the user's lines, wait for an answer (up to 10 min), answer them |
 | `pending_changes` | Approval mode: what is waiting for the user and what they decided |
 

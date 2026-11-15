@@ -4,6 +4,15 @@
 
 All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/); `-alpha` releases are pre-releases.
 
+## [Unreleased]
+
+### Added
+- **GoldSrc game configs**: the binary `GameCfg.wc` next to Worldcraft / Hammer 3.x (versions 1.3 and 1.4) is read, so `game_configs`, `fgd_*`, `compile_sequences` and `find_assets` work with GoldSrc editors too. A config gives the mod folder (`gameDir`), the game it falls back to (`valve`), FGDs (relative ones against the editor folder), map / bsp folders and the compile tools (`$csg_exe` included).
+- **`find_assets` for GoldSrc**: models (`models/scientist.mdl`; texture and sequence-group files like `scientistt.mdl`, `scientist01.mdl` are left out), sprites (`sprites/glow01.spr`), sounds (`ambience/wind1.wav`) from the mod and `valve` with their `_addon` / `_downloads` folders, plus textures by name from the WADs in those folders and decals from `decals.wad` (`{BLOOD1`; a wildcard matches names with or without the `{` `!` `+0` `-0` `~` prefix). Utility WADs (fonts, gfx, cached, spray / temp decals) are skipped.
+
+### Fixed
+- App: a second click on Start / Stop while the server was still starting (a double click) stopped it again a moment later.
+
 ## [0.7.0] - 2026-11-15
 
 ### Added

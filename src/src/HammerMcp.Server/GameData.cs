@@ -26,7 +26,16 @@ public sealed class GameData(HammerTarget target)
         var process = target.Current();
         if (process is null)
             return new Selection(null, [], null, "no Hammer is attached");
-        var (file, configs) = HammerGameConfig.ForExe(process.ExePath);
+        string? file;
+        List<HammerGameConfig> configs;
+        try
+        {
+            (file, configs) = HammerGameConfig.ForExe(process.ExePath);
+        }
+        catch (Exception e) when (e is InvalidDataException or IOException or UnauthorizedAccessException)
+        {
+            return new Selection(null, [], null, $"game configs next to {process.ExePath} can not be read: {e.Message}");
+        }
         if (file is null && HammerGameConfig.Source2(process.ExePath) is { Count: > 0 } source2)
         {
             // Source 2: no config file; mods with their FGD, picked by the open map's content/<mod> folder
@@ -37,7 +46,7 @@ public sealed class GameData(HammerTarget target)
                 pick is null ? $"pick a Source 2 mod with configName: {string.Join(", ", source2.Select(c => c.Name))}" : null);
         }
         if (file is null)
-            return new Selection(null, [], null, $"no GameConfig.txt / hammerplusplus_gameconfig.txt next to {process.ExePath}");
+            return new Selection(null, [], null, $"no GameConfig.txt / hammerplusplus_gameconfig.txt / GameCfg.wc next to {process.ExePath}");
         var active = configName is not null
             ? configs.FirstOrDefault(c => c.Name.Equals(configName, StringComparison.OrdinalIgnoreCase))
             : HammerGameConfig.ForMap(configs, process.OpenMapPath) ?? HammerGameConfig.ForHammer(configs, process.ExePath);
@@ -126,6 +135,27 @@ public sealed class GameData(HammerTarget target)
     /// <summary>Steam folder from HKCU\Software\Valve\Steam\SteamPath (for |appid_NNN| search paths).</summary>
     private static string? SteamRoot() =>
         Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Valve\Steam", "SteamPath", null) is string p && Directory.Exists(p) ? p : null;
+
+    private string? _goldSrcKey;
+    private GoldSrcContent? _goldSrc;
+
+    /// <summary>GoldSrc content of a config (mod + base game folders and their WADs). Rebuilt when a folder or WAD changes.</summary>
+    public GoldSrcContent GoldSrcAssets(HammerGameConfig config)
+    {
+        var folders = GoldSrcContent.SearchFolders(config);
+        var key = string.Join('|', folders.Select(f => $"{f}@{Directory.GetLastWriteTimeUtc(f).Ticks}")
+            .Concat(folders.SelectMany(f => Directory.EnumerateFiles(f, "*.wad")).Select(w => $"{w}@{File.GetLastWriteTimeUtc(w).Ticks}")))
+            + $"|{config.GameDir}|{config.BaseGameDir}";
+        lock (_lock)
+        {
+            if (_goldSrcKey != key || _goldSrc is null)
+            {
+                _goldSrc = GoldSrcContent.ForConfig(config);
+                _goldSrcKey = key;
+            }
+            return _goldSrc;
+        }
+    }
 
     /// <summary>FGDs of a config, merged in Hammer's order.</summary>
     public FgdDocument Fgd(HammerGameConfig config)
