@@ -208,10 +208,10 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
     }
 
     [McpServerTool(Name = "compile_log", ReadOnly = true)]
-    [Description("Parses the compile log of the open map (<map>.log next to the .vmf, or a given path): stages with timings, leaks, missing materials, model errors, limits, warnings, errors (deduplicated with counts).")]
+    [Description("Parses the compile log of the open map (<map>.log next to the map, or in the game's maps folder where J.A.C.K. compiles; or a given path): stages with timings, leaks, missing materials, model errors, limits, warnings, errors (deduplicated with counts).")]
     public object Log(string? logPath = null, int limit = 60)
     {
-        var path = logPath ?? (target.Current()?.OpenMapPath is { } map ? Path.ChangeExtension(map, ".log") : null);
+        var path = logPath ?? (target.Current()?.OpenMapPath is { } map ? CompileOutput(map, ".log") : null);
         if (path is null || !File.Exists(path))
             return new { error = $"compile log not found: {path ?? "(no map open)"}" };
         var parsed = CompileLog.Read(path);
@@ -228,13 +228,26 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
     }
 
     [McpServerTool(Name = "leak_trace", ReadOnly = true)]
-    [Description("The leak path from the pointfile (<map>.lin) written by vbsp when the map leaks: points from the void to the leaking entity. Use the open_run_map_dialog / menu Map > Load Pointfile to show it in Hammer.")]
+    [Description("The leak path from the pointfile (<map>.lin) written by vbsp / hlbsp when the map leaks (next to the map, or in the game's maps folder for J.A.C.K.): points from the void to the leaking entity. Use the open_run_map_dialog / menu Map > Load Pointfile to show it in Hammer.")]
     public object LeakTrace()
     {
         var map = target.Current()?.OpenMapPath;
-        var lin = map is null ? null : Path.ChangeExtension(map, ".lin");
+        var lin = map is null ? null : CompileOutput(map, ".lin");
         if (lin is null || !File.Exists(lin))
-            return new { leaked = false, note = "no .lin next to the map: the last compile did not leak (or vbsp was not run)" };
+            return new { leaked = false, note = "no .lin next to the map or in the game's maps folder: the last compile did not leak (or the bsp compiler was not run)" };
+        // compilers do not always remove an old pointfile: a newer compile log of the same folder without a leak proves it old
+        var log = Path.ChangeExtension(lin, ".log");
+        if (File.Exists(log) && File.GetLastWriteTimeUtc(log) > File.GetLastWriteTimeUtc(lin).AddSeconds(2) && !CompileLog.Read(log).Leaked)
+            return new
+            {
+                leaked = false,
+                path = lin,
+                note = $"{Path.GetFileName(lin)} is left from an earlier compile: the newer compile log {log} shows no leak",
+            };
+        // no log to tell: a .bsp written well after the pointfile means a later compile probably did not leak
+        var bsp = Path.ChangeExtension(lin, ".bsp");
+        var stale = File.Exists(bsp) && File.GetLastWriteTimeUtc(bsp) > File.GetLastWriteTimeUtc(lin).AddMinutes(30)
+            ? $"{Path.GetFileName(bsp)} is much newer than this pointfile: it may be left from an earlier compile" : null;
         var trace = HammerMcp.Core.Compile.LeakTrace.Read(lin);
         return new
         {
@@ -244,7 +257,21 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
             points = trace.Points.Select(p => new[] { p.X, p.Y, p.Z }),
             lengthUnits = Math.Round(trace.Length),
             leakEnd = trace.Points.LastOrDefault() is var e ? new[] { e.X, e.Y, e.Z } : null,
+            note = stale,
         };
+    }
+
+    /// <summary>
+    /// A compile output of the open map (.log, .lin): next to the map (vbsp) or in the active config's maps folder
+    /// (J.A.C.K. copies the map there and compiles the copy); the newest existing one, else the path next to the map.
+    /// </summary>
+    private string CompileOutput(string map, string extension)
+    {
+        var nextToMap = Path.ChangeExtension(map, extension);
+        if (gameData.Select(null).Active?.BspDir is not { } bspDir)
+            return nextToMap;
+        return new[] { nextToMap, Path.Combine(bspDir, Path.GetFileNameWithoutExtension(map) + extension) }
+            .Where(File.Exists).OrderByDescending(File.GetLastWriteTimeUtc).FirstOrDefault() ?? nextToMap;
     }
 
     internal static object Result(string sequence, List<object> steps, string map, DateTime started, string status, string? bspDir = null)
