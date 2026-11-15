@@ -75,6 +75,18 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
         }
     }
 
+    [McpServerTool(Name = "hammer_ui", ReadOnly = true)]
+    [Description("What is known about the attached Hammer's user interface, so you do not have to explore it: recipes verified live (how to create a block, make it hollow, place an entity, apply a texture... with the command ids, dialog control ids and the traps, e.g. what can freeze Hammer or needs real keyboard focus), menu items, command texts, accelerators and dialogs with every control id. query = words that must all occur (e.g. 'hollow', 'texture', 'Transformation'); no query = the recipe names and dialog titles. buildId = another build's knowledge. Read it before you drive Hammer's windows.")]
+    public object HammerUi(string? query = null, string? buildId = null)
+    {
+        var id = buildId ?? (target.Current() is { } p ? Identify(registry, p.ExePath).Build?.Id : null);
+        if (id is null)
+            return new { error = "no Hammer is attached - pass buildId", known = UiKnowledge.Known() };
+        return UiKnowledge.For(id) is { } ui
+            ? ui.Search(query)
+            : new { error = $"nothing is known about the UI of {id} yet", known = UiKnowledge.Known() };
+    }
+
     [McpServerTool(Name = "user_requests", ReadOnly = true)]
     [Description("What the user wrote to you in Hammer's chat (MCP > Chat) since you last looked, and whether they paused you. Answer with say_to_user. recentChat = the last 10 chat lines from both sides (already seen ones too), for context. Cheap: call it between steps of a longer task. Each request is returned once (hammer_status returns them too).")]
     public object UserRequests() => new
