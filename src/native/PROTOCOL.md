@@ -103,7 +103,7 @@ a flat object of `"name": "0x…"`:
 | `entity.vtable`, `.className`, `.classNameLength`, `.keyValues`, `.keyValueCount`, `.keyValueSize`, `.keyLength`, `.valueOffset`, `.valueLength` | entities: class name and the key/value array |
 | `solid.vtable`, `.faces`, `face.size`, `.texture`, `.textureLength` | solids: the face array (`new[]`, count right before it) and each face's texture |
 
-A feature is on only when every field it needs is named; otherwise it answers with an error. Every read goes through
+A feature is on only when every field it needs is named and lengths (`…Length`) are 1…4096, strides (`entity.keyValueSize`, `face.size`) 1…64 KB; otherwise it answers with an error that names the bad key (also in MCP > Status). Every read goes through
 `ReadProcessMemory` on the adapter's own process (a wrong address = an error, never a crash) and runs on Hammer's UI
 thread. Other objects in the selection are reported by their RTTI class name (`group`, `sprite`, …).
 

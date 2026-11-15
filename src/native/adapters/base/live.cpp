@@ -25,6 +25,13 @@ const char* const kSelectionKeys[] = { "doc.selection", "object.mins", "object.m
     "entity.valueOffset", "entity.valueLength", "solid.vtable", "solid.faces", "face.size", "face.texture" };
 const char* const kCameraKeys[] = { "doc.views", "view3d.vtable", "view3d.camera", "camera.position" };
 bool g_selection = false, g_camera = false;
+std::string g_reason;   // why live reading is off (shown in Status)
+
+// lengths and strides from the profile go into allocations and address arithmetic: a typo in a user's registry must
+// switch the feature off, not throw inside Hammer's window procedure
+const char* const kLengths[] = { "entity.classNameLength", "entity.keyLength", "entity.valueLength", "face.textureLength" };
+const char* const kStrides[] = { "entity.keyValueSize", "face.size" };
+constexpr uintptr_t kMaxLength = 4096, kMaxStride = 64 * 1024;
 
 constexpr size_t kMaxItems = 200, kMaxKeys = 128, kMaxFaces = 512, kMaxList = 100000;
 
@@ -70,8 +77,9 @@ uptr Ptr(uptr a) { uptr v = 0; return Rd(a, v) ? v : 0; }
 
 // a fixed char[] field (editor strings are ANSI) as UTF-8
 std::string Str(uptr a, size_t max) {
+    if (!max || max > kMaxLength) return {};
     std::vector<char> b(max + 1, 0);
-    if (!max || !Rd(a, b.data(), max)) return {};
+    if (!Rd(a, b.data(), max)) return {};
     size_t n = strnlen(b.data(), max);
     int wn = MultiByteToWideChar(CP_ACP, 0, b.data(), (int)n, nullptr, 0);
     std::wstring w(wn, L'\0');
@@ -216,14 +224,25 @@ bool Load(const std::string& profileLine) {
     g_layout = f;
     g_base = 0;
     g_selection = g_camera = false;
-    if (!f.count("activeDoc")) return false;
+    g_reason.clear();
+    if (!f.count("activeDoc")) { g_reason = "no memory layout for this build"; return false; }
     auto m = f.find("module");
     g_base = reinterpret_cast<uptr>(m == f.end() ? GetModuleHandleW(nullptr) : GetModuleHandleA(m->second.c_str()));
     g_selection = true;
     for (auto k : kSelectionKeys) g_selection = g_selection && f.count(k);
+    for (auto k : kLengths)
+        if (Has(k) && (Num(k) == 0 || Num(k) > kMaxLength)) { g_selection = false; g_reason = std::string("bad ") + k + " in the layout"; }
+    for (auto k : kStrides)
+        if (Has(k) && (Num(k) == 0 || Num(k) > kMaxStride)) { g_selection = false; g_reason = std::string("bad ") + k + " in the layout"; }
+    if (!g_selection && g_reason.empty()) g_reason = "the layout has no selection fields";
     g_camera = f.count("camera.matrix") || f.count("camera.forward");
     for (auto k : kCameraKeys) g_camera = g_camera && f.count(k);
     return g_base != 0;
+}
+
+std::string Reason() {
+    std::lock_guard l(g_lock);
+    return g_reason;
 }
 
 bool Ready() {
@@ -233,7 +252,7 @@ bool Ready() {
 
 std::string Selection(const std::string& id) {
     std::lock_guard l(g_lock);
-    if (!g_base || !g_selection) return Error(id, "live reading is not available for this Hammer build");
+    if (!g_base || !g_selection) return Error(id, "live reading is not available for this Hammer build" + (g_reason.empty() ? std::string() : ": " + g_reason));
     std::string why;
     uptr doc = Document(why);
     if (!doc) return Error(id, why);

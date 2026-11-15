@@ -12,6 +12,9 @@ bool Load(const std::string& profileLine);
 
 bool Ready();
 
+// why live reading is off (empty when it works or no profile came yet)
+std::string Reason();
+
 // whole JSON lines for the server: {"type":"selection",…} / {"type":"camera",…} or {"type":"error","message":…};
 // id (if not empty) is repeated in the answer
 std::string Selection(const std::string& id);

@@ -243,7 +243,10 @@ std::wstring StatusText() {
     { std::lock_guard l(g_lock); sha = g_sha; build = g_build; support = g_support; profile = g_profile; }
     std::wstring t = L"Adapter: " + W(kAdapterId) + L" " + W(HMCP_NATIVE_VERSION) + L" (support: " + W(support) +
                      (profile.empty() ? L", built-in profile" : L", profile from the server") + L")\n";
-    t += L"Hammer build: " + W(build) + L" (" + W(sha.substr(0, 12)) + L"…)\n\n";
+    t += L"Hammer build: " + W(build) + L" (" + W(sha.substr(0, 12)) + L"…)\n";
+    std::string why = live::Reason();
+    t += live::Ready() ? std::wstring(L"Live reading (selection, camera): on\n\n")
+                       : L"Live reading (selection, camera): off" + (why.empty() ? std::wstring() : L" - " + W(why)) + L"\n\n";
     if (!s.connected) return t + L"Hammer-MCP server: not connected";
     t += L"Hammer-MCP server: " + W(s.server) + L", mode " + W(s.mode) + L"\n";
     t += L"Agent: " + W(s.agent) + L", edits: " + W(s.approval == "ask" ? "ask me" : "automatic");
@@ -777,7 +780,8 @@ void OnCommand(UINT id) {
         Send("{\"type\":\"menu\",\"item\":\"pending\",\"id\":\"pending\"}");
         break;
     case ID_SELECTION: {
-        std::string line = live::Selection("");
+        std::string line;
+        try { line = live::Selection(""); } catch (...) { line = "{\"type\":\"error\",\"message\":\"the adapter failed to read the selection\"}"; }
         if (line.rfind("{\"type\":\"error\"", 0) == 0) Box(W(JStr(line, "message")), MB_OK | MB_ICONINFORMATION);
         else Send(line);
         break;
@@ -811,8 +815,13 @@ LRESULT CALLBACK HookProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp, UINT_PTR, D
     case WM_HMCP_UPDATE: OnStateChanged(); return 0;
     case WM_HMCP_LOG: FillLog(false); return 0;
     case WM_HMCP_LIVE: {
+        // an exception must never leave Hammer's window procedure: any failure becomes an error answer
         auto r = reinterpret_cast<LiveRequest*>(lp);
-        r->answer = r->camera ? live::Camera(r->id) : live::Selection(r->id);
+        try {
+            r->answer = r->camera ? live::Camera(r->id) : live::Selection(r->id);
+        } catch (...) {
+            r->answer = "{\"type\":\"error\",\"id\":\"" + JEsc(r->id) + "\",\"message\":\"the adapter failed to read it\"}";
+        }
         return 1;
     }
     case WM_HMCP_CHAT:
