@@ -1448,7 +1448,15 @@
       "shell": { "present": false },
       "settingsKey": "Software\\Valve\\Valve Hammer Editor",
       "mapFormat": "rmf",
-      "notes": "Valve Hammer Editor 3.4. Also in the HL-Lab SDK pack (hammer34.exe) and the Half-Life SDK on Steam."
+      "memory": {
+        "activeDoc": "0xdcf00", "doc.vtable": "0xb7aec", "doc.views": "0x28", "doc.selection": "0x4d0", "doc.selectionBounds": "0x3a0",
+        "view3d.vtable": "0xb896c", "view3d.camera": "0xa8", "camera.position": "0x10", "camera.matrix": "0x1c", "camera.fov": "0x5c",
+        "object.origin": "0x10", "object.mins": "0x1c", "object.maxs": "0x28", "object.parent": "0x6c",
+        "entity.vtable": "0xb3444", "entity.className": "0xac", "entity.classNameLength": "0x40", "entity.keyValues": "0x94", "entity.keyValueCount": "0x98",
+        "entity.keyValueSize": "0x304", "entity.keyLength": "0x104", "entity.valueOffset": "0x104", "entity.valueLength": "0x200",
+        "solid.vtable": "0xb37f4", "solid.faces": "0xa8", "face.size": "0x198", "face.texture": "0x14", "face.textureLength": "0x10"
+      },
+      "notes": "Valve Hammer Editor 3.4. Also in the HL-Lab SDK pack (hammer34.exe) and the Half-Life SDK on Steam. Memory layout: transferred statically from 3.5 (same fields; globals and vtables moved), not yet checked live."
     },
     {
       "id": "goldsrc-hammer-3.5",
@@ -1476,7 +1484,15 @@
       "shell": { "present": false },
       "settingsKey": "Software\\Valve\\Valve Hammer Editor",
       "mapFormat": "rmf",
-      "notes": "Valve Hammer Editor 3.5, a second genuine Valve build (same link date as the valvedev.info one, different bytes; origin unknown). Also used in the HL-Lab SDK pack."
+      "memory": {
+        "activeDoc": "0xddf18", "doc.vtable": "0xb8af4", "doc.views": "0x28", "doc.selection": "0x4d0", "doc.selectionBounds": "0x3a0",
+        "view3d.vtable": "0xb9974", "view3d.camera": "0xa8", "camera.position": "0x10", "camera.matrix": "0x1c", "camera.fov": "0x5c",
+        "object.origin": "0x10", "object.mins": "0x1c", "object.maxs": "0x28", "object.parent": "0x6c",
+        "entity.vtable": "0xb4444", "entity.className": "0xac", "entity.classNameLength": "0x40", "entity.keyValues": "0x94", "entity.keyValueCount": "0x98",
+        "entity.keyValueSize": "0x304", "entity.keyLength": "0x104", "entity.valueOffset": "0x104", "entity.valueLength": "0x200",
+        "solid.vtable": "0xb47f4", "solid.faces": "0xa8", "face.size": "0x198", "face.texture": "0x14", "face.textureLength": "0x10"
+      },
+      "notes": "Valve Hammer Editor 3.5, a second genuine Valve build (same link date as the valvedev.info one, different bytes; origin unknown). Also used in the HL-Lab SDK pack. Memory layout: the code, data and imports are byte-identical to goldsrc-hammer-3.5 (only resources differ), so its layout applies."
     },
     {
       "id": "goldsrc-csm-hammer-3.5",
@@ -1486,7 +1502,15 @@
       "shell": { "present": false },
       "settingsKey": "Software\\Valve\\CSM Hammer Editor",
       "mapFormat": "rmf",
-      "notes": "CSM Hammer Editor (0.3.8.1): community mod of Hammer 3.5."
+      "memory": {
+        "activeDoc": "0xddf18", "doc.vtable": "0xb8af4", "doc.views": "0x28", "doc.selection": "0x4d0", "doc.selectionBounds": "0x3a0",
+        "view3d.vtable": "0xb9974", "view3d.camera": "0xa8", "camera.position": "0x10", "camera.matrix": "0x1c", "camera.fov": "0x5c",
+        "object.origin": "0x10", "object.mins": "0x1c", "object.maxs": "0x28", "object.parent": "0x6c",
+        "entity.vtable": "0xb4444", "entity.className": "0xac", "entity.classNameLength": "0x40", "entity.keyValues": "0x94", "entity.keyValueCount": "0x98",
+        "entity.keyValueSize": "0x304", "entity.keyLength": "0x104", "entity.valueOffset": "0x104", "entity.valueLength": "0x200",
+        "solid.vtable": "0xb47f4", "solid.faces": "0xa8", "face.size": "0x198", "face.texture": "0x14", "face.textureLength": "0x10"
+      },
+      "notes": "CSM Hammer Editor (0.3.8.1): community mod of Hammer 3.5. Memory layout: code and read-only data byte-identical to goldsrc-hammer-3.5, so its layout applies."
     },
     {
       "id": "goldsrc-neo-hammer-3.5.1",
@@ -1496,7 +1520,15 @@
       "shell": { "present": false },
       "settingsKey": "Software\\Valve\\Valve Hammer Editor",
       "mapFormat": "rmf",
-      "notes": "Neo Hammer Editor 3.5.1: community mod of Hammer 3.5."
+      "memory": {
+        "activeDoc": "0xddf18", "doc.vtable": "0xb8af4", "doc.views": "0x28", "doc.selection": "0x4d0", "doc.selectionBounds": "0x3a0",
+        "view3d.vtable": "0xb9974", "view3d.camera": "0xa8", "camera.position": "0x10", "camera.matrix": "0x1c", "camera.fov": "0x5c",
+        "object.origin": "0x10", "object.mins": "0x1c", "object.maxs": "0x28", "object.parent": "0x6c",
+        "entity.vtable": "0xb4444", "entity.className": "0xac", "entity.classNameLength": "0x40", "entity.keyValues": "0x94", "entity.keyValueCount": "0x98",
+        "entity.keyValueSize": "0x304", "entity.keyLength": "0x104", "entity.valueOffset": "0x104", "entity.valueLength": "0x200",
+        "solid.vtable": "0xb47f4", "solid.faces": "0xa8", "face.size": "0x198", "face.texture": "0x14", "face.textureLength": "0x10"
+      },
+      "notes": "Neo Hammer Editor 3.5.1: community mod of Hammer 3.5. Memory layout: code and data byte-identical to goldsrc-hammer-3.5 (only resources differ), so its layout applies."
     },
     {
       "id": "goldsrc-neon-hammer-3.5",
@@ -1506,7 +1538,15 @@
       "shell": { "present": false },
       "settingsKey": "Software\\Valve\\Valve Hammer Editor Neon",
       "mapFormat": "rmf",
-      "notes": "Neon Hammer Editor 3.5 (as named in the HL-Lab launcher): community mod of Valve Hammer Editor; its version resource says FileVersion 3.4."
+      "memory": {
+        "activeDoc": "0xddf18", "doc.vtable": "0xb8af4", "doc.views": "0x28", "doc.selection": "0x4d0", "doc.selectionBounds": "0x3a0",
+        "view3d.vtable": "0xb9974", "view3d.camera": "0xa8", "camera.position": "0x10", "camera.matrix": "0x1c", "camera.fov": "0x5c",
+        "object.origin": "0x10", "object.mins": "0x1c", "object.maxs": "0x28", "object.parent": "0x6c",
+        "entity.vtable": "0xb4444", "entity.className": "0xac", "entity.classNameLength": "0x40", "entity.keyValues": "0x94", "entity.keyValueCount": "0x98",
+        "entity.keyValueSize": "0x304", "entity.keyLength": "0x104", "entity.valueOffset": "0x104", "entity.valueLength": "0x200",
+        "solid.vtable": "0xb47f4", "solid.faces": "0xa8", "face.size": "0x198", "face.texture": "0x14", "face.textureLength": "0x10"
+      },
+      "notes": "Neon Hammer Editor 3.5 (as named in the HL-Lab launcher): community mod of Valve Hammer Editor; its version resource says FileVersion 3.4. Memory layout: code and data byte-identical to goldsrc-hammer-3.5 (only resources differ), so its layout applies."
     },
     {
       "id": "goldsrc-neon-hammer-3.5-rus",
@@ -1516,7 +1556,15 @@
       "shell": { "present": false },
       "settingsKey": "Software\\Valve\\Valve Hammer Editor Neon",
       "mapFormat": "rmf",
-      "notes": "Neon Hammer Editor 3.5, Russian translation (HL-Lab launcher name); version resource says FileVersion 3.4."
+      "memory": {
+        "activeDoc": "0xddf18", "doc.vtable": "0xb8af4", "doc.views": "0x28", "doc.selection": "0x4d0", "doc.selectionBounds": "0x3a0",
+        "view3d.vtable": "0xb9974", "view3d.camera": "0xa8", "camera.position": "0x10", "camera.matrix": "0x1c", "camera.fov": "0x5c",
+        "object.origin": "0x10", "object.mins": "0x1c", "object.maxs": "0x28", "object.parent": "0x6c",
+        "entity.vtable": "0xb4444", "entity.className": "0xac", "entity.classNameLength": "0x40", "entity.keyValues": "0x94", "entity.keyValueCount": "0x98",
+        "entity.keyValueSize": "0x304", "entity.keyLength": "0x104", "entity.valueOffset": "0x104", "entity.valueLength": "0x200",
+        "solid.vtable": "0xb47f4", "solid.faces": "0xa8", "face.size": "0x198", "face.texture": "0x14", "face.textureLength": "0x10"
+      },
+      "notes": "Neon Hammer Editor 3.5, Russian translation (HL-Lab launcher name); version resource says FileVersion 3.4. Memory layout: code and data byte-identical to goldsrc-hammer-3.5 (only resources differ), so its layout applies."
     },
     {
       "id": "jack-jackhammer-1.1-x64",
