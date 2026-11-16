@@ -10,7 +10,14 @@
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt",
       "injectAdapter": "menu",
       "verified": { "liveShell": "2026-11-10" },
-      "notes": "Also shipped by TF2 Classified's toolslauncher. No 'modified' marker in the title."
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xc62c98", "doc.vtable": "0x978e90", "doc.selection": "0xb88", "selection.list": "0x18",
+        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x9aa540", "entity.className": "0x1c8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
+        "solid.vtable": "0x9adb60", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104"
+      },
+      "notes": "Also shipped by TF2 Classified's toolslauncher. No 'modified' marker in the title. Memory layout (Source reader): derived statically (Linux agent, 2026-11-16); camera not found yet; not checked live."
     },
     {
       "id": "hpp-2013sp-8873-x86",
