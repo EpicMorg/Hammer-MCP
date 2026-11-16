@@ -46,5 +46,25 @@ public class UiKnowledgeTests
     }
 
     [Fact]
+    public void SharedUiFilesResolveToAnExistingFile()
+    {
+        var files = typeof(UiKnowledge).Assembly.GetManifestResourceNames().Where(n => n.StartsWith("ui/", StringComparison.Ordinal)).ToHashSet();
+        Assert.NotEmpty(UiKnowledge.SameAs);
+        Assert.All(UiKnowledge.SameAs, kv =>
+        {
+            Assert.Contains($"ui/{kv.Value}.json", files);
+            Assert.DoesNotContain($"ui/{kv.Key}.json", files); // a build has its own file or shares one, not both
+            Assert.NotNull(UiKnowledge.For(kv.Key));
+        });
+    }
+
+    [Fact]
+    public void BuildsWithTheCodeOf35UseItsRecipes()
+    {
+        foreach (var id in new[] { "goldsrc-neon-hammer-3.5", "goldsrc-neo-hammer-3.5.1", "goldsrc-csm-hammer-3.5" })
+            Assert.Equal("goldsrc-hammer-3.5", UiKnowledge.For(id)!.RecipesBuild);
+    }
+
+    [Fact]
     public void UnknownBuildHasNoKnowledge() => Assert.Null(UiKnowledge.For("no-such-build"));
 }

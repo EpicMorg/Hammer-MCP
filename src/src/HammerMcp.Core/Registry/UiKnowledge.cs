@@ -7,7 +7,8 @@ namespace HammerMcp.Core.Registry;
 /// What is known about a Hammer build's user interface (registry/ui/&lt;build id&gt;.json, embedded): menus, accelerators,
 /// toolbars, dialogs with their control ids (dumped from the build's resources by registry/tools/dump_ui.py) and
 /// recipes verified live (how to create a block, which dialog field is the hollow thickness, what freezes Hammer...).
-/// A build with the same UI as another one points to its recipes with "recipesFrom".
+/// A build with the same UI as another one points to its recipes with "recipesFrom". Builds whose UI resources are
+/// byte-for-byte the same dump share one file: registry/ui/index.json "sameAs" maps such a build to it.
 /// </summary>
 public sealed class UiKnowledge
 {
@@ -27,11 +28,31 @@ public sealed class UiKnowledge
     /// <summary>The build whose live-verified recipes apply (this one or its "recipesFrom"); null = none yet.</summary>
     public string? RecipesBuild { get; }
 
-    /// <summary>Build ids that have a UI file.</summary>
+    /// <summary>Build ids that have UI knowledge (an own file or one shared through index.json).</summary>
     public static IReadOnlyList<string> Known() =>
         [.. typeof(UiKnowledge).Assembly.GetManifestResourceNames()
-            .Where(n => n.StartsWith("ui/", StringComparison.Ordinal) && n.EndsWith(".json", StringComparison.Ordinal))
-            .Select(n => n[3..^5]).Order(StringComparer.Ordinal)];
+            .Where(n => n.StartsWith("ui/", StringComparison.Ordinal) && n.EndsWith(".json", StringComparison.Ordinal) && n != IndexName)
+            .Select(n => n[3..^5]).Concat(SameAs.Keys).Distinct().Order(StringComparer.Ordinal)];
+
+    private const string IndexName = "ui/index.json";
+
+    /// <summary>build id -> the build id whose file has the same UI (index.json "sameAs").</summary>
+    public static IReadOnlyDictionary<string, string> SameAs => LazySameAs.Value;
+
+    private static readonly Lazy<Dictionary<string, string>> LazySameAs = new(() =>
+    {
+        var result = new Dictionary<string, string>(StringComparer.Ordinal);
+        using var stream = typeof(UiKnowledge).Assembly.GetManifestResourceStream(IndexName);
+        if (stream is not null && JsonNode.Parse(stream)?["sameAs"] is JsonObject map)
+        {
+            foreach (var (build, file) in map)
+            {
+                if ((string?)file is { } target)
+                    result[build] = target;
+            }
+        }
+        return result;
+    });
 
     /// <summary>The UI knowledge of a build, null if there is none.</summary>
     public static UiKnowledge? For(string buildId)
@@ -50,7 +71,8 @@ public sealed class UiKnowledge
 
     private static JsonObject? Read(string buildId)
     {
-        using var stream = typeof(UiKnowledge).Assembly.GetManifestResourceStream($"ui/{buildId}.json");
+        var file = SameAs.TryGetValue(buildId, out var shared) ? shared : buildId;
+        using var stream = typeof(UiKnowledge).Assembly.GetManifestResourceStream($"ui/{file}.json");
         return stream is null ? null : JsonNode.Parse(stream)?.AsObject();
     }
 
