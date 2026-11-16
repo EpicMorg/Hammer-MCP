@@ -117,3 +117,20 @@ thread. Other objects in the selection are reported by their RTTI class name (`g
 Items: `{"kind":"entity","className":…,"origin":[…],"mins":[…],"maxs":[…],"keyValues":{…}}`,
 `{"kind":"solid","mins":[…],"maxs":[…],"faces":6,"textures":[…],"entity":"func_door"?}` (`entity` = the owning brush entity).
 
+
+### Layer 2 — Source Hammer layouts (`"layout": "source"`)
+Source Hammer (stock Valve, Hammer++) keeps the same data in other containers, so its layouts carry `"layout": "source"`
+and `"module"` (addresses are relative to `hammer_dll.dll` / `hammerplusplus_dll.dll`, not to the exe):
+
+| key | meaning (Hammer++ 8862 x86 value) |
+|---|---|
+| `activeDoc`, `doc.vtable` | as for GoldSrc (`0x931280`, `0x74d8b4`) |
+| `doc.selection` | **pointer** to the document's `CSelection` (`0x9f0`) |
+| `selection.list` | the `CUtlVector<CMapClass*>` inside `CSelection` (`0xc`): memory pointer, then allocated, grow, size |
+| `object.origin`, `object.mins`, `object.maxs`, `object.parent` | `CMapClass` fields; mins/maxs = the box Hammer's own selection bounds use |
+| `entity.className` (+`Length`), `entity.keyValues` | in the `CEditGameClass` part of `CMapEntity` (`0x144`, `0x124`) |
+| `kv.nodes`, `kv.alloc`, `kv.root`, `kv.nodeSize`, `kv.left`, `kv.right`, `kv.key`(+`Length`), `kv.value`(+`Length`) | the keyvalue `CUtlDict` (a red-black tree with 16-bit indices): node array, its size, root index, node stride, child links, `MDkeyvalue` key / value |
+| `solid.faces`, `solid.faceCount`, `face.size`, `face.texture`(+`Length`) | `CUtlVector<CMapFace>` inside `CMapSolid`, stride, material name |
+
+The adapter walks the keyvalue tree from its root (never the raw node array), checks every index against the array
+size and stops after 128 nodes. Camera keys are optional for Source layouts until they are found.

@@ -23,14 +23,22 @@ uptr g_base = 0;                                // the module the addresses are 
 const char* const kSelectionKeys[] = { "doc.selection", "object.mins", "object.maxs", "object.origin", "object.parent",
     "entity.vtable", "entity.className", "entity.keyValues", "entity.keyValueCount", "entity.keyValueSize", "entity.keyLength",
     "entity.valueOffset", "entity.valueLength", "solid.vtable", "solid.faces", "face.size", "face.texture" };
+// Source Hammer ("layout": "source"): the document points to a CSelection whose CUtlVector lists the objects, an
+// entity's keyvalues are a CUtlDict (red-black tree of MDkeyvalue nodes), a solid's faces are a CUtlVector of CMapFace
+const char* const kSourceSelectionKeys[] = { "doc.selection", "selection.list", "object.mins", "object.maxs", "object.origin",
+    "object.parent", "entity.vtable", "entity.className", "entity.keyValues", "kv.nodes", "kv.alloc", "kv.root", "kv.nodeSize",
+    "kv.left", "kv.right", "kv.key", "kv.keyLength", "kv.value", "kv.valueLength", "solid.vtable", "solid.faces",
+    "solid.faceCount", "face.size", "face.texture" };
 const char* const kCameraKeys[] = { "doc.views", "view3d.vtable", "view3d.camera", "camera.position" };
+bool g_source = false;
 bool g_selection = false, g_camera = false;
 std::string g_reason;   // why live reading is off (shown in Status)
 
 // lengths and strides from the profile go into allocations and address arithmetic: a typo in a user's registry must
 // switch the feature off, not throw inside Hammer's window procedure
-const char* const kLengths[] = { "entity.classNameLength", "entity.keyLength", "entity.valueLength", "face.textureLength" };
-const char* const kStrides[] = { "entity.keyValueSize", "face.size" };
+const char* const kLengths[] = { "entity.classNameLength", "entity.keyLength", "entity.valueLength", "face.textureLength",
+    "kv.keyLength", "kv.valueLength" };
+const char* const kStrides[] = { "entity.keyValueSize", "face.size", "kv.nodeSize" };
 constexpr uintptr_t kMaxLength = 4096, kMaxStride = 64 * 1024;
 
 constexpr size_t kMaxItems = 200, kMaxKeys = 128, kMaxFaces = 512, kMaxList = 100000;
@@ -88,6 +96,17 @@ std::string Str(uptr a, size_t max) {
     std::string u(un, '\0');
     WideCharToMultiByte(CP_UTF8, 0, w.data(), wn, u.data(), un, nullptr, nullptr);
     return u;
+}
+
+// Valve CUtlVector<T*>: CUtlMemory { T* memory; int allocated; int grow; } then int size (x86 +0xc, x64 +0x10)
+std::vector<uptr> UtlVector(uptr vec) {
+    std::vector<uptr> out;
+    uptr mem = Ptr(vec);
+    int count = 0;
+    if (!mem || !Rd(vec + sizeof(uptr) + 8, count) || count < 0 || (size_t)count > kMaxList) return out;
+    out.resize(count);
+    if (count && !Rd(mem, out.data(), count * sizeof(uptr))) out.clear();
+    return out;
 }
 
 // MFC CPtrList: vtable, head, tail, count; node: next, prev, data
@@ -173,8 +192,66 @@ std::string Bounds(uptr obj) {
 
 std::string EntityClass(uptr e) { return Str(e + Num("entity.className"), Has("entity.classNameLength") ? Num("entity.classNameLength") : 64); }
 
+// Source: an entity's keyvalues - CUtlDict<MDkeyvalue, unsigned short>, a red-black tree over a node array.
+// Walks the tree from its root (every node reached is allocated), each index checked against the array size.
+std::string SourceKeyValues(uptr kv) {
+    uptr nodes = Ptr(kv + Num("kv.nodes"));
+    int alloc = 0;
+    uint16_t root = 0xFFFF;
+    if (!nodes || !Rd(kv + Num("kv.alloc"), alloc) || alloc <= 0 || !Rd(kv + Num("kv.root"), root)) return "{}";
+    size_t size = Num("kv.nodeSize");
+    std::string s = "{";
+    std::vector<uint16_t> stack{ root };
+    std::set<uint16_t> seen;
+    while (!stack.empty() && seen.size() < kMaxKeys) {
+        uint16_t i = stack.back();
+        stack.pop_back();
+        if (i == 0xFFFF || i >= alloc || !seen.insert(i).second) continue;
+        uptr node = nodes + (uptr)i * size;
+        uint16_t left = 0xFFFF, right = 0xFFFF;
+        Rd(node + Num("kv.left"), left);
+        Rd(node + Num("kv.right"), right);
+        if (left == i) continue;   // a free node points to itself
+        std::string key = Str(node + Num("kv.key"), Num("kv.keyLength"));
+        if (!key.empty()) {
+            if (s.size() > 1) s += ",";
+            s += "\"" + Esc(key) + "\":\"" + Esc(Str(node + Num("kv.value"), Num("kv.valueLength"))) + "\"";
+        }
+        stack.push_back(right);
+        stack.push_back(left);
+    }
+    return s + "}";
+}
+
+std::string FaceTextures(uptr faces, int n) {
+    std::string s;
+    if (!faces || n <= 0 || (size_t)n > kMaxFaces) return s;
+    std::vector<std::string> textures;
+    std::set<std::string> seen;
+    for (int i = 0; i < n; ++i) {
+        std::string t = Str(faces + (uptr)i * Num("face.size") + Num("face.texture"), Num("face.textureLength") ? Num("face.textureLength") : 16);
+        if (seen.insert(t).second) textures.push_back(t);
+    }
+    s += ",\"faces\":" + std::to_string(n) + ",\"textures\":[";
+    for (size_t i = 0; i < textures.size(); ++i) s += (i ? ",\"" : "\"") + Esc(textures[i]) + "\"";
+    return s + "]";
+}
+
 std::string Item(uptr obj) {
     uptr vt = Ptr(obj);
+    if (g_source) {
+        if (vt == Rva("entity.vtable"))
+            return "{\"kind\":\"entity\",\"className\":\"" + Esc(EntityClass(obj)) + "\",\"origin\":" + Vec(obj + Num("object.origin")) +
+                   Bounds(obj) + ",\"keyValues\":" + SourceKeyValues(obj + Num("entity.keyValues")) + "}";
+        if (vt == Rva("solid.vtable")) {
+            std::string s = "{\"kind\":\"solid\"" + Bounds(obj);
+            uptr parent = Ptr(obj + Num("object.parent"));
+            if (parent && Ptr(parent) == Rva("entity.vtable")) s += ",\"entity\":\"" + Esc(EntityClass(parent)) + "\"";
+            int n = 0;
+            Rd(obj + Num("solid.faceCount"), n);
+            return s + FaceTextures(Ptr(obj + Num("solid.faces")), n) + "}";
+        }
+    }
     if (Has("entity.vtable") && vt == Rva("entity.vtable")) {
         std::string s = "{\"kind\":\"entity\",\"className\":\"" + Esc(EntityClass(obj)) + "\",\"origin\":" + Vec(obj + Num("object.origin")) + Bounds(obj);
         uptr data = Ptr(obj + Num("entity.keyValues"));
@@ -228,8 +305,12 @@ bool Load(const std::string& profileLine) {
     if (!f.count("activeDoc")) { g_reason = "no memory layout for this build"; return false; }
     auto m = f.find("module");
     g_base = reinterpret_cast<uptr>(m == f.end() ? GetModuleHandleW(nullptr) : GetModuleHandleA(m->second.c_str()));
+    g_source = f.count("layout") && f.at("layout") == "source";
     g_selection = true;
-    for (auto k : kSelectionKeys) g_selection = g_selection && f.count(k);
+    if (g_source)
+        for (auto k : kSourceSelectionKeys) g_selection = g_selection && f.count(k);
+    else
+        for (auto k : kSelectionKeys) g_selection = g_selection && f.count(k);
     for (auto k : kLengths)
         if (Has(k) && (Num(k) == 0 || Num(k) > kMaxLength)) { g_selection = false; g_reason = std::string("bad ") + k + " in the layout"; }
     for (auto k : kStrides)
@@ -256,10 +337,11 @@ std::string Selection(const std::string& id) {
     std::string why;
     uptr doc = Document(why);
     if (!doc) return Error(id, why);
-    auto objs = PtrList(doc + Num("doc.selection"));
+    // GoldSrc: a CPtrList inside the document; Source: a pointer to CSelection, whose CUtlVector lists the objects
+    auto objs = g_source ? UtlVector(Ptr(doc + Num("doc.selection")) + Num("selection.list")) : PtrList(doc + Num("doc.selection"));
     std::string s = Head("selection", id) + ",\"count\":" + std::to_string(objs.size());
     if (Has("doc.selectionBounds") && !objs.empty()) {
-        uptr b = doc + Num("doc.selectionBounds");
+        uptr b = (g_source ? Ptr(doc + Num("doc.selection")) : doc) + Num("doc.selectionBounds");
         s += ",\"bounds\":{\"mins\":" + Vec(b) + ",\"maxs\":" + Vec(b + 12) + "}";
     }
     s += ",\"items\":[";

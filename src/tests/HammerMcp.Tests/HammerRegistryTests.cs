@@ -30,15 +30,25 @@ public class HammerRegistryTests
         string[] selection = ["activeDoc", "doc.selection", "object.mins", "object.maxs", "object.origin", "object.parent",
             "entity.vtable", "entity.className", "entity.keyValues", "entity.keyValueCount", "entity.keyValueSize", "entity.keyLength",
             "entity.valueOffset", "entity.valueLength", "solid.vtable", "solid.faces", "face.size", "face.texture"];
+        string[] source = ["activeDoc", "doc.selection", "selection.list", "object.mins", "object.maxs", "object.origin", "object.parent",
+            "entity.vtable", "entity.className", "entity.keyValues", "kv.nodes", "kv.alloc", "kv.root", "kv.nodeSize", "kv.left", "kv.right",
+            "kv.key", "kv.keyLength", "kv.value", "kv.valueLength", "solid.vtable", "solid.faces", "solid.faceCount", "face.size", "face.texture"];
         string[] camera = ["doc.views", "view3d.vtable", "view3d.camera", "camera.position"];
         var layouts = HammerRegistry.Load(RegistryPath).Builds.Where(b => b.Memory.Count > 0).ToList();
         Assert.Contains(layouts, b => b.Id == "goldsrc-hammer-3.5");
         foreach (var b in layouts)
         {
-            Assert.All(selection.Concat(camera), k => Assert.True(b.Memory.ContainsKey(k), $"{b.Id}: no {k}"));
-            Assert.True(b.Memory.ContainsKey("camera.matrix") || b.Memory.ContainsKey("camera.forward"), $"{b.Id}: no camera direction");
+            // GoldSrc layouts read the selection from MFC lists; "layout": "source" ones from CSelection / CUtlVector / CUtlDict
+            var isSource = b.Memory.TryGetValue("layout", out var kind) && kind == "source";
+            Assert.All(isSource ? source : selection, k => Assert.True(b.Memory.ContainsKey(k), $"{b.Id}: no {k}"));
+            // the camera is optional for Source layouts (found live, not statically), but all or nothing
+            if (!isSource || camera.Any(b.Memory.ContainsKey))
+            {
+                Assert.All(camera, k => Assert.True(b.Memory.ContainsKey(k), $"{b.Id}: no {k}"));
+                Assert.True(b.Memory.ContainsKey("camera.matrix") || b.Memory.ContainsKey("camera.forward"), $"{b.Id}: no camera direction");
+            }
             Assert.All(b.Memory, kv => Assert.True(
-                kv.Key == "module" || kv.Value.StartsWith("0x", StringComparison.Ordinal) &&
+                kv.Key is "module" or "layout" || kv.Value.StartsWith("0x", StringComparison.Ordinal) &&
                 ulong.TryParse(kv.Value[2..], System.Globalization.NumberStyles.HexNumber, null, out _), $"{b.Id}: {kv.Key} = {kv.Value}"));
         }
     }
