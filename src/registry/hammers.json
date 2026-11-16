@@ -25,6 +25,13 @@
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "7af77189243ea622aa722323a7dfa31a7eb8cf759b1c949b2c9631ac5e048754", "linked": "2026-10-27" },
       "shell": { "present": true },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt",
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa357d0", "doc.vtable": "0x84507c", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8657b4", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x8675fc", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "injectAdapter": "menu"
     },
     {
@@ -129,6 +136,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8851, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "0241967e1b4852917da780de66e6683183637912f089af9baba483bf484d0f8b", "linked": "2022-01-20" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8a0ac0", "doc.vtable": "0x6ec59c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x704f38", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x706ae8", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -137,6 +151,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8851, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "1718b54f5a36493482ee0abc5d0edccc89e51a1c02bfad626794bdc81c9a8d18", "linked": "2022-01-20" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8a0ad0", "doc.vtable": "0x6ec59c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x704f38", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x706ae8", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -145,6 +166,13 @@
       "family": "hammerplusplus", "branch": "csgo", "build": 8851, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "3bb852d394ad0ae7c8a041dc03e1ce0278d4f2ad40bf111dde4b916c10d071ce", "linked": "2022-01-20" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8dc890", "doc.vtable": "0x730114", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x749218", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x74ade8", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -153,6 +181,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8851, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "57f40d6ba01b9e2729afb7ca69cb5fd83f421237ff95b3eeb2570d1e4a0f705e", "linked": "2022-01-20" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x89fb40", "doc.vtable": "0x6eb58c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x703f28", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x705ad8", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -161,6 +196,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8852, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "5548b0d98b47a97c424eac975b709ce2da5ef8ac7fe7bd3e676ff4764ab3bf0a", "linked": "2022-01-21" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8a0ac0", "doc.vtable": "0x6ec59c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x704f38", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x706ae8", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -169,6 +211,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8852, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "42444a6c6c09ad4b51fad934d35efabf046360fb57a1e00f388bfa1281ce5a9a", "linked": "2022-01-21" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x89fad0", "doc.vtable": "0x6eb59c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x703f38", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x705ae8", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -177,6 +226,13 @@
       "family": "hammerplusplus", "branch": "csgo", "build": 8852, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "a01882256a0a5ec38a94948f20d02c1802f3a4075194ed22cba48095d06121a9", "linked": "2022-01-21" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8dc890", "doc.vtable": "0x730114", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x749218", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x74add8", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -185,6 +241,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8852, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "f9d8309d8280cd5b3d8d9772b96fccbeef83237dd0083444c5947103dd821821", "linked": "2022-01-21" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x89fb40", "doc.vtable": "0x6eb58c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x703f28", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x705ad8", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -193,6 +256,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8853, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "f0cf8926d3ffee2ba71a5f10568e7ea94e9a19dd3cae10b79e7df3c3f5493aa5", "linked": "2022-01-22" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8a0ac0", "doc.vtable": "0x6ec68c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x705028", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x706bd8", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -201,6 +271,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8853, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "76011f1dd70be735c6cae645af81d2daa232c495119cd762cf527bf1bfeb6268", "linked": "2022-01-22" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8a0ad0", "doc.vtable": "0x6ec69c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x705038", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x706be8", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -209,6 +286,13 @@
       "family": "hammerplusplus", "branch": "csgo", "build": 8853, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "e8dbc37e56846f90fd4a4013dd8566bfa70bf5554a5ad8a2e42ee512b3199c1c", "linked": "2022-01-22" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8dd890", "doc.vtable": "0x730224", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x749328", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x74aee8", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -217,6 +301,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8853, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "98079ba0a777fdbe3b5b9515e095297796adbc9c2007e716619d99bbdd41d1b2", "linked": "2022-01-22" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x89fb40", "doc.vtable": "0x6eb68c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x704028", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x705bd8", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -225,6 +316,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8854, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "690655d08f712cf185d0c4761b4206d33771a3c174cf4b8ccdfe9967a359ccd8", "linked": "2022-01-22" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8a0ac0", "doc.vtable": "0x6ec68c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x705028", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x706bd8", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -233,6 +331,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8854, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "6b60489cd58d4139f3ba57b5394d31548ebbad3ce5f759afa39e03970e207614", "linked": "2022-01-22" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8a0ad0", "doc.vtable": "0x6ec69c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x705038", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x706be8", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -241,6 +346,13 @@
       "family": "hammerplusplus", "branch": "csgo", "build": 8854, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "29e303957b21b6b0d1c84e2c3c938a10ee926bc4fe59ccf5a71de4b63ae1d90e", "linked": "2022-01-22" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8dd890", "doc.vtable": "0x730224", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x749328", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x74aee8", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -249,6 +361,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8854, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "762b926471993f7ddbfe6b8d87ef232edb4274090c31aa0f496ecc126f87095d", "linked": "2022-01-22" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x89fb40", "doc.vtable": "0x6eb68c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x704028", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x705bd8", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -257,6 +376,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8855, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "4f6421ddf48a43708353ccd6757b5719d27b5f781711e787928441f24952066e", "linked": "2022-01-23" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8a5b60", "doc.vtable": "0x6f169c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x70a0a8", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x70bc68", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -265,6 +391,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8855, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "6c275890c3b2644be36981b7577d549eee4df683365d6f6a38aff028e5259a8a", "linked": "2022-01-23" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8a5b70", "doc.vtable": "0x6f169c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x70a0a8", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x70bc68", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -273,6 +406,13 @@
       "family": "hammerplusplus", "branch": "csgo", "build": 8855, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "2ae6a47fc49d7719547333258fcc7dce85842298506440e021b2781f6951b66b", "linked": "2022-01-23" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8e2920", "doc.vtable": "0x735224", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x74e3a8", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x74ff78", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -281,6 +421,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8855, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "c990668c6df2829b730fbc547195e42f1c28285d5f146ed17a683076118fa8b2", "linked": "2022-01-23" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8a4bd0", "doc.vtable": "0x6f068c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x709098", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x70ac58", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -289,6 +436,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8856, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "1f8a681ebc02674070c6f4a3871b4b5ca351509b3c73021d72901a10d07154a2", "linked": "2022-01-25" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8a7350", "doc.vtable": "0x6f168c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x70a088", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x70bc48", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -297,6 +451,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8856, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "f1aaa0f4da7001599cb6013354b8aaf66834d9fa89226e66a5ea62783805c7fc", "linked": "2022-01-25" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8a6360", "doc.vtable": "0x6f069c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x709098", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x70ac58", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -305,6 +466,13 @@
       "family": "hammerplusplus", "branch": "csgo", "build": 8856, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "103c90abf24f0c06549b97f2d7e5acf5152b124b7ead0b86dd563127b437c069", "linked": "2022-01-25" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8e4110", "doc.vtable": "0x735224", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x74e398", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x74ff68", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -313,6 +481,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8856, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "355a157477c3f9a667025a9febe7c8720c6d822583d676efe6dd6cba74ae85e3", "linked": "2022-01-25" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8a63d0", "doc.vtable": "0x6f068c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x709088", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x70ac48", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -321,6 +496,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8857, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "bfa3b2861bfb3eaa11e207d5cfd7d222593d93db58d9b429fb1a1d7e239f6371", "linked": "2022-01-25" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8a7350", "doc.vtable": "0x6f169c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x70a048", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x70bc18", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -329,6 +511,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8857, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "2622dbffd10e7c72f7b2980b4bf0efb885ff86fd59cf2286e93e4f174a949170", "linked": "2022-01-25" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8a6360", "doc.vtable": "0x6f069c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x709048", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x70ac18", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -337,6 +526,13 @@
       "family": "hammerplusplus", "branch": "csgo", "build": 8857, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "ad44bc4af5cc064672be7d547268fe56c5fa887ce9c466d0b9d49f27ed1b9da2", "linked": "2022-01-25" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8e4110", "doc.vtable": "0x735224", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x74e338", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x74ff18", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -345,6 +541,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8857, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "934428e534fef2c54c442e5b6c72b6833189e3fe5a73454ea8d4488f1425bc7a", "linked": "2022-01-25" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8a63d0", "doc.vtable": "0x6f068c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x709038", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x70ac08", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -353,6 +556,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8858, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "1e13080de62e35167758c8350da5cc158c025f5cf6c1bf5651beaf4ce4ecbd0a", "linked": "2022-01-30" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8a9380", "doc.vtable": "0x6f276c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x70b518", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x70d0e8", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -361,6 +571,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8858, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "39e794b2ccb1b8ca70d137682b1ecf2ba9d2b3a34b925dacbd21e95bbb5835af", "linked": "2022-01-30" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8a9390", "doc.vtable": "0x6f276c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x70b518", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x70d0e8", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -369,6 +586,13 @@
       "family": "hammerplusplus", "branch": "csgo", "build": 8858, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "b7fd7bc538600a86c4a98f6a61d82929a70ff0da06b8587b5d7d9f5c128efb95", "linked": "2022-01-30" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8e6180", "doc.vtable": "0x737304", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x7508a8", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x752488", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -377,6 +601,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8858, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "5d2653d10ba311dcf0ae684847c59eed42b4be1cc7363d750fea540cb87ea1b1", "linked": "2022-01-30" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8a8400", "doc.vtable": "0x6f176c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x70a518", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x70c0e8", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -385,6 +616,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8859, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "477608679d9ad5893fb93bbff98133600a0ab8d1ebc58d08002bb9d2c39df7b7", "linked": "2022-02-08" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8b9720", "doc.vtable": "0x702184", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x71b3e0", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x71d030", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -393,6 +631,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8859, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "767db8eac6c600ce5f7f747aada8b1214f0ac55b584460ea6fb3e4f9e5c0c635", "linked": "2022-02-08" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8b9730", "doc.vtable": "0x702184", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x71b3e0", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x71d030", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -401,6 +646,13 @@
       "family": "hammerplusplus", "branch": "csgo", "build": 8859, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "8dcf1be8771cdbf40dcd353694eae99d3aab33b3fe3580c0fe9f473f7e5c37ff", "linked": "2022-02-08" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8f5520", "doc.vtable": "0x745d3c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x75f7a0", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x761400", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -409,6 +661,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8859, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "9b62cd62047b8df22545d8f49d014341516995e4268470c9d85c2cd405b58639", "linked": "2022-02-08" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8b8790", "doc.vtable": "0x701174", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x71a3d0", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x71c020", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -417,6 +676,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8860, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "af189a0a67fbb0e54fe9120f250be7fd449aa6ff45e779c05f9245d2d25e8e39", "linked": "2022-02-10" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8b9720", "doc.vtable": "0x702184", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x71b470", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x71d0c0", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -425,6 +691,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8860, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "33b2c163537c1da1e7d4308a63066269107d525226dcb4024806a6ee139978ec", "linked": "2022-02-10" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8b9730", "doc.vtable": "0x702184", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x71b470", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x71d0c0", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -433,6 +706,13 @@
       "family": "hammerplusplus", "branch": "csgo", "build": 8860, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "fe73c980d00930a4bfc1872fdcf874b662f640344459b21bb21eaa3bd32ec59b", "linked": "2022-02-10" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8f5520", "doc.vtable": "0x745d3c", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x75f830", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x761490", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -441,6 +721,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8860, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "8514337ff2807d9d4337129248669e89a5f3c046aa23c39614bf2420d2399951", "linked": "2022-02-10" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x8b8790", "doc.vtable": "0x701174", "doc.selection": "0x9e0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x71a460", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x71c0b0", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -449,6 +736,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8861, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "946f1fa830ed3be040c37f716ea20ceb2858080add12800916dd559181781d63", "linked": "2022-06-25" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x931260", "doc.vtable": "0x74d8a4", "doc.selection": "0x9f0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x76bb7c", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x76d7c0", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -457,6 +751,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8861, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "46a3011a1aa53e02d86bb7df0422275b692a857e734e5bb0d6d423e829095159", "linked": "2022-06-25" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x931280", "doc.vtable": "0x74d8a4", "doc.selection": "0x9f0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x76bb7c", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x76d7c0", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -465,6 +766,13 @@
       "family": "hammerplusplus", "branch": "csgo", "build": 8861, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "03de68bba4ae0e373453c284567f9e7aa4308f7196cf1db4e8f71b8164b9ff78", "linked": "2022-06-25" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x9a4ba0", "doc.vtable": "0x7c73bc", "doc.selection": "0x9f0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x7e5e68", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x7e7ad0", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -473,6 +781,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8861, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "41edbefd87a89600a812eaeb2d8937e6133909b39eba1c00640c1bd145bdf281", "linked": "2022-06-25" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x9302d0", "doc.vtable": "0x74c894", "doc.selection": "0x9f0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x76ab6c", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x76c7b0", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -481,6 +796,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8862, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "d8060b7dd3408e7274494c34f38dddd35cc6577dd0fd05d188fe1a4301dc9c8e", "linked": "2022-07-01" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x931270", "doc.vtable": "0x74d8b4", "doc.selection": "0x9f0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x76bb9c", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x76d7e0", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -505,6 +827,13 @@
       "family": "hammerplusplus", "branch": "csgo", "build": 8862, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "ebfdf8bf082d6fedab673ecfe98f7f06861104e4ec461a663941e814186363bc", "linked": "2022-07-01" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x9a4bb0", "doc.vtable": "0x7c73dc", "doc.selection": "0x9f0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x7e5e98", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x7e7b00", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -513,6 +842,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8862, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "9ea2910ac4a47e4aba6a331c0b209dcd1d84ad2e42ddda586f3849d3e0e6b9ad", "linked": "2022-07-01" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x9312e0", "doc.vtable": "0x74c8b4", "doc.selection": "0x9f0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x76ab9c", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x76c7e0", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -521,6 +857,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8863, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "f22eda8541cc85e623da4607014868a59387719481b3ff77729d28694d8cb204", "linked": "2022-10-30" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x93b330", "doc.vtable": "0x7558b4", "doc.selection": "0xa00", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x773ebc", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x775b00", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -529,6 +872,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8863, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "12682d40d95f14c00334f4db4719474f52c0781c03117be023a78e04989c7e58", "linked": "2022-10-30" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x93a330", "doc.vtable": "0x7548b4", "doc.selection": "0xa00", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x772ebc", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x774af0", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -537,6 +887,13 @@
       "family": "hammerplusplus", "branch": "csgo", "build": 8863, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "07a1d0a1be63f0c14dceac238bde77f38d057f393d330c90e1b4462853aadf5c", "linked": "2022-10-30" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x9addb0", "doc.vtable": "0x7cf43c", "doc.selection": "0xa00", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x7ee238", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x7efe90", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -545,6 +902,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8863, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "8dc4d3954f2d9112c59f23ade65232f9a5a00e9da7e4d4197e7294201e605fe6", "linked": "2022-10-31" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x949db0", "doc.vtable": "0x7638f4", "doc.selection": "0xa00", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x781f0c", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x783b50", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -553,6 +917,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8864, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "ab9bd4ec4ca1085d44e5177b43660c4b15d0491d53edc32158b85fb9b8970246", "linked": "2022-11-01" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x945390", "doc.vtable": "0x75f914", "doc.selection": "0xa00", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x77e21c", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x77fe50", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -561,6 +932,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8864, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "03113e8a2317c40d81169690f5623a0795f246b17732fd90955a366979e12c27", "linked": "2022-11-01" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x9443b0", "doc.vtable": "0x75e904", "doc.selection": "0xa00", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x77d20c", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x77ee30", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -569,6 +947,13 @@
       "family": "hammerplusplus", "branch": "csgo", "build": 8864, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "ca956af53c38e0569b2aa48828ebdac3ecdb187adb5112faaa1eb7ed4f3a808a", "linked": "2022-11-01" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x9b8e40", "doc.vtable": "0x7d9490", "doc.selection": "0xa00", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x7f8588", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x7fa1d0", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -577,6 +962,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8864, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "aa2de232427da2a129d75a7f4f02b9aa48387bdb0a09cf5111eaed0fdb872ff9", "linked": "2022-11-01" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x953e40", "doc.vtable": "0x76d944", "doc.selection": "0xa00", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x78c24c", "entity.className": "0x144",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x124", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x42c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x78de80", "solid.faces": "0x130", "solid.faceCount": "0x13c", "face.size": "0x2d8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -585,6 +977,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8865, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "727efddf7ab8923410afe81af2153a8ce87cf38a0659cb21a9d495ac989fa63a", "linked": "2024-04-21" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x9d1a78", "doc.vtable": "0x7e267c", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x801be4", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
+        "solid.vtable": "0x8038a4", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -593,6 +992,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8865, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "0cf808a68832787b7d96954a445c41daaf4980d7638ad4b0be98cf5b621e4679", "linked": "2024-04-21" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x9d1a78", "doc.vtable": "0x7e267c", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x801be4", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
+        "solid.vtable": "0x8038a4", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -601,6 +1007,13 @@
       "family": "hammerplusplus", "branch": "gmod", "build": 8865, "arch": "x64",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "0940c3597ca3707906456d0859083eff90230c890ca738fb87212a46bf161e39", "linked": "2024-04-21" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xbef2c8", "doc.vtable": "0x9100b0", "doc.selection": "0xb88", "selection.list": "0x18",
+        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x940528", "entity.className": "0x1c8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x438",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x28", "kv.value": "0x38", "kv.valueLength": "0x400",
+        "solid.vtable": "0x943868", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -609,6 +1022,13 @@
       "family": "hammerplusplus", "branch": "l4d2", "build": 8865, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "70d3c244c4c34817ef3ed7852e9d2bd73506930d9158fd980b319eb3e14f5d62", "linked": "2024-04-21" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa43824", "doc.vtable": "0x85e3dc", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x87d988", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
+        "solid.vtable": "0x87f664", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -617,6 +1037,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8865, "arch": "x64",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "c32e19b8db8b51d0c31369f5b57a81b2f890620cb494da7db9d8be540b089641", "linked": "2024-04-21" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xbe1aa8", "doc.vtable": "0x901000", "doc.selection": "0xb88", "selection.list": "0x18",
+        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x9314f0", "entity.className": "0x1c8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x438",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x28", "kv.value": "0x38", "kv.valueLength": "0x400",
+        "solid.vtable": "0x934830", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -625,6 +1052,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8866, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "9306e8ba7956f142ca26f44b98ea85d37e921589c98ceee2b3d46cdfbb71cb2e", "linked": "2024-05-19" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x95d09c", "doc.vtable": "0x7b584c", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x7d5fa4", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
+        "solid.vtable": "0x7d7c3c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -633,6 +1067,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8866, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "c30a1e9732c34eb8c0621e66bef4bc0e1981908a7789d80fafde959cf57c53e1", "linked": "2024-05-19" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x95d09c", "doc.vtable": "0x7b584c", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x7d5fa4", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
+        "solid.vtable": "0x7d7c3c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -641,6 +1082,13 @@
       "family": "hammerplusplus", "branch": "gmod", "build": 8866, "arch": "x64",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "b70df981ef14955d8cb9dd291237eed3cca483019a6077d44ae72b55341d188f", "linked": "2024-05-19" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xbda920", "doc.vtable": "0x8fe2d0", "doc.selection": "0xb88", "selection.list": "0x18",
+        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x92feb0", "entity.className": "0x1c8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x438",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x28", "kv.value": "0x38", "kv.valueLength": "0x400",
+        "solid.vtable": "0x9331c0", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -649,6 +1097,13 @@
       "family": "hammerplusplus", "branch": "l4d2", "build": 8866, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "88f8a5ec7153f2aa0d56bcee3db270a8986f0a3fdbbb7077895415a6656ab05a", "linked": "2024-05-19" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa426f4", "doc.vtable": "0x86068c", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x880f64", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
+        "solid.vtable": "0x882c1c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -657,6 +1112,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8866, "arch": "x64",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "e51fba42c957c2f9e7198a87c0473390bb21ae80520539de3a23b55b43e772fa", "linked": "2024-05-19" },
       "shell": { "present": false },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xbcd088", "doc.vtable": "0x8ef220", "doc.selection": "0xb88", "selection.list": "0x18",
+        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x920e68", "entity.className": "0x1c8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x438",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x28", "kv.value": "0x38", "kv.valueLength": "0x400",
+        "solid.vtable": "0x924178", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -665,6 +1127,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8867, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "0d51b10e104f00ec8bf61f851726d58e1e4b6b341a892913cc491b8a1d7891b0", "linked": "2024-07-02" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x95a1e0", "doc.vtable": "0x7b78bc", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x7d8254", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
+        "solid.vtable": "0x7d9eec", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -673,6 +1142,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8867, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "f2386ca14349010a69318fec16a9e39bce98f9c39a3ee886303b598c254008b2", "linked": "2024-07-02" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x95a1e0", "doc.vtable": "0x7b78bc", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x7d8254", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
+        "solid.vtable": "0x7d9eec", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -681,6 +1157,13 @@
       "family": "hammerplusplus", "branch": "gmod", "build": 8867, "arch": "x64",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "edf235e40fb2efe3c1b2a0cd7b3f18bc3e33a5769720eac352ac4eaa82594387", "linked": "2024-07-02" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xbd7b60", "doc.vtable": "0x9012c0", "doc.selection": "0xb88", "selection.list": "0x18",
+        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x933170", "entity.className": "0x1c8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x438",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x28", "kv.value": "0x38", "kv.valueLength": "0x400",
+        "solid.vtable": "0x936480", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -689,6 +1172,13 @@
       "family": "hammerplusplus", "branch": "l4d2", "build": 8867, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "448ffd972c566f986fabef7272595e63a1861cd069d46b393b97ef1adedcc4fe", "linked": "2024-07-02" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa3e874", "doc.vtable": "0x86269c", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8831e4", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
+        "solid.vtable": "0x884e9c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -697,6 +1187,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8867, "arch": "x64",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "9edfddbc10cec97f107338fdec19425ad0dcf71e91482a821d52de72409a5ecd", "linked": "2024-07-02" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xbca2c8", "doc.vtable": "0x8f2210", "doc.selection": "0xb88", "selection.list": "0x18",
+        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x924138", "entity.className": "0x1c8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x438",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x28", "kv.value": "0x38", "kv.valueLength": "0x400",
+        "solid.vtable": "0x927448", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -705,6 +1202,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8868, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "53aa7ae607afc49c489966dd6576c5d565c966681f82b733ba5f32d1c6a0b992", "linked": "2024-07-28" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa166b0", "doc.vtable": "0x82a9cc", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x84b754", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
+        "solid.vtable": "0x84d54c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -713,6 +1217,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8868, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "1d300362f444c3c02c810803a61055ea22bfaea2af7b50ac961ea6326e92c926", "linked": "2024-07-28" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa166b0", "doc.vtable": "0x82a9cc", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x84b744", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
+        "solid.vtable": "0x84d53c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -721,6 +1232,13 @@
       "family": "hammerplusplus", "branch": "gmod", "build": 8868, "arch": "x64",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "678f1cc5f7e1fba91d69747185fcfc6fbaf3809a9747408b1e102fe57bd48297", "linked": "2024-10-07" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xc442b8", "doc.vtable": "0x95f4b0", "doc.selection": "0xb88", "selection.list": "0x18",
+        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x991918", "entity.className": "0x1c8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
+        "solid.vtable": "0x994ee8", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -729,6 +1247,13 @@
       "family": "hammerplusplus", "branch": "l4d2", "build": 8868, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "724eae5d35dcff8f855976751df1fcf000ca289f4222760236e1ef1089d8b617", "linked": "2024-07-28" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa8ade4", "doc.vtable": "0x8a77ac", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8c86d4", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
+        "solid.vtable": "0x8ca4ec", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -737,6 +1262,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8868, "arch": "x64",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "81d4a0268c97454c030a8899000d0b4630a15815c6ed32e670ba3c3d5c82e054", "linked": "2024-10-19" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xc40718", "doc.vtable": "0x95c380", "doc.selection": "0xb88", "selection.list": "0x18",
+        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x98e870", "entity.className": "0x1c8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
+        "solid.vtable": "0x991e30", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt", "notes": "Release 8868_hotfix2."
     },
     {
@@ -745,6 +1277,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8869, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "acfed5d42a03d69b42691282dc1ce65490fdb753faf945951f61f147b4bfe0dc", "linked": "2024-11-18" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa1e2b0", "doc.vtable": "0x830cc4", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8512d4", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x8530dc", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f0", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -753,6 +1292,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8869, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "bd991ce935fb64efb5a7b3f4fd175e1eaaca368aace7df36660d271cdbff21b6", "linked": "2024-11-18" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa1e350", "doc.vtable": "0x830d14", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x851324", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x85312c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f0", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -761,6 +1307,13 @@
       "family": "hammerplusplus", "branch": "gmod", "build": 8869, "arch": "x64",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "f2b05d4a9d71e9030a11a081a35f4be83e04f4cfc5dab737424cbf900d41780b", "linked": "2024-11-18" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xc442b8", "doc.vtable": "0x95faf0", "doc.selection": "0xb88", "selection.list": "0x18",
+        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x991058", "entity.className": "0x1c8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
+        "solid.vtable": "0x994638", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -769,6 +1322,13 @@
       "family": "hammerplusplus", "branch": "l4d2", "build": 8869, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "3be71ff24ada72b937913f707cb1cd46f38614b0b96b3b014a11ba6e9cc4d2c1", "linked": "2024-11-18" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa8ce14", "doc.vtable": "0x8a9b24", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8ca2e4", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x8cc104", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f0", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -777,6 +1337,13 @@
       "family": "hammerplusplus", "branch": "portal2", "build": 8869, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "de57de17f5396a3dbb60bc31b54cdd6bedacf5888d067de3164d03c38d0ca6a4", "linked": "2024-11-18" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa90948", "doc.vtable": "0x8adb8c", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8ce384", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x8d01a4", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f0", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -785,6 +1352,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8869, "arch": "x64",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "0cb6f0be9b4cbe229bfef1eb2fcff1dd8b0b28b32f2cf1ceb4fc45efb1486eb4", "linked": "2025-03-21" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xc406a8", "doc.vtable": "0x95cb10", "doc.selection": "0xb88", "selection.list": "0x18",
+        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x98e070", "entity.className": "0x1c8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
+        "solid.vtable": "0x991630", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -793,6 +1367,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8870, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "f7c7fc20c8d2a7218cf33587712a71b2c01094f7af9c1e17e6e0c817baba4629", "linked": "2025-08-01" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa1f3c8", "doc.vtable": "0x82ee7c", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x84f504", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x85133c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -801,6 +1382,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8870, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "34bfea6aa96a85022d886a4b52283edb44d7a1b8626ea3eb036a495ac1b61412", "linked": "2025-08-01" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa1f458", "doc.vtable": "0x82eecc", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x84f554", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x85138c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -809,6 +1397,13 @@
       "family": "hammerplusplus", "branch": "gmod", "build": 8870, "arch": "x64",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "6783980594e18a36558292c328e4f085adafe4e189ee2beacc42831c5dcfed09", "linked": "2025-08-01" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xc47488", "doc.vtable": "0x95fcc0", "doc.selection": "0xb88", "selection.list": "0x18",
+        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x9912e8", "entity.className": "0x1c8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
+        "solid.vtable": "0x9948e0", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -817,6 +1412,13 @@
       "family": "hammerplusplus", "branch": "l4d2", "build": 8870, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "545d8595952668bc974420a1f7d800bee63d6a42d0497ec0a1e69ef35e2436ac", "linked": "2025-08-01" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa8e048", "doc.vtable": "0x8a7cdc", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8c84f4", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x8ca344", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -825,6 +1427,13 @@
       "family": "hammerplusplus", "branch": "portal2", "build": 8870, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "c6f4860c5bebc83bb4cf7d1eb3c2af82ff82d93deb56af3098369bfd9770b7bb", "linked": "2025-08-01" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa92bf8", "doc.vtable": "0x8acd44", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8cd5a4", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x8cf3f4", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -833,6 +1442,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8870, "arch": "x64",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "503ed77c48187a7b54bae7575b161d0529ba027471b991fc34943d8f6d7e1284", "linked": "2025-08-01" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xc458b8", "doc.vtable": "0x95ecb0", "doc.selection": "0xb88", "selection.list": "0x18",
+        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x990270", "entity.className": "0x1c8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
+        "solid.vtable": "0x993870", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -841,6 +1457,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8871, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "dadfb6dac03e227727bc1ae8f016bcddf69e0b5084f9f1b03a907b91b9f4a922", "linked": "2026-04-14" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa2a2c0", "doc.vtable": "0x839e6c", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x85a4f4", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x85c32c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -849,6 +1472,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8871, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "dcb387dd85e87b1fcbd0e1ab4863c40db736507423a853b1e2a5646f1f56da0b", "linked": "2026-04-14" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa29350", "doc.vtable": "0x838ebc", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x859544", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x85b37c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -857,6 +1487,13 @@
       "family": "hammerplusplus", "branch": "gmod", "build": 8871, "arch": "x64",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "1434d4b6969070ed2a79df4c4d342552c5e337204260f57612059afa7b4722fe", "linked": "2026-04-14" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xc523e8", "doc.vtable": "0x968ca0", "doc.selection": "0xb88", "selection.list": "0x18",
+        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x99a2f8", "entity.className": "0x1c8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
+        "solid.vtable": "0x99d908", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -865,6 +1502,13 @@
       "family": "hammerplusplus", "branch": "l4d2", "build": 8871, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "d0fffc08aaad4be75fa80ae5088d488aab16fc5efaef867361d26e6c62ba418c", "linked": "2026-04-14" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa98f70", "doc.vtable": "0x8b2d0c", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8d3524", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x8d5374", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -873,6 +1517,13 @@
       "family": "hammerplusplus", "branch": "mvz", "build": 8871, "arch": "x64",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "8560a185993c9440a508404ca8698daf741408d110e514a42e084c4fce1043b6", "linked": "2026-09-15" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xc66c78", "doc.vtable": "0x97bcf0", "doc.selection": "0xb88", "selection.list": "0x18",
+        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x9ad3a0", "entity.className": "0x1c8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
+        "solid.vtable": "0x9b09c0", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -881,6 +1532,13 @@
       "family": "hammerplusplus", "branch": "portal2", "build": 8871, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "ae176e1f027f7792c2b697c94d1b13f8725095884befcef943a6bb8ca2772b9b", "linked": "2026-04-14" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa9daa0", "doc.vtable": "0x8b7d74", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8d85d4", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x8da424", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -889,6 +1547,13 @@
       "family": "hammerplusplus", "branch": "tf2", "build": 8871, "arch": "x64",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "43334b440530fd1f73162aaeca437ac4689ca46dd98440971b333056943b21f5", "linked": "2026-04-14" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xc52798", "doc.vtable": "0x969c90", "doc.selection": "0xb88", "selection.list": "0x18",
+        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x99b290", "entity.className": "0x1c8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
+        "solid.vtable": "0x99e8a0", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -897,6 +1562,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8872, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "86c88bec344b95a6f7d6e21ce1d5d2e9f673cc8dc6035466eda1050aa3a9840d", "linked": "2026-10-01" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa35740", "doc.vtable": "0x84502c", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x865764", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x8675ac", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -905,6 +1577,13 @@
       "family": "hammerplusplus", "branch": "2013sp", "build": 8872, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "b4ecf459e8b4a761ac9a859c5649e2a21fc912b02b71bf838e7a71bf7130cccc", "linked": "2026-10-01" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa357d0", "doc.vtable": "0x84507c", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8657b4", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x8675fc", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -913,6 +1592,13 @@
       "family": "hammerplusplus", "branch": "gmod", "build": 8872, "arch": "x64",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "f463ba57f4b1795f73091ab2d314bfef0b7248eceb79af2f707a7286d041a27d", "linked": "2026-10-01" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xc62878", "doc.vtable": "0x977eb0", "doc.selection": "0xb88", "selection.list": "0x18",
+        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x9a95d8", "entity.className": "0x1c8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
+        "solid.vtable": "0x9acc08", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -921,6 +1607,13 @@
       "family": "hammerplusplus", "branch": "l4d2", "build": 8872, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "782dfab498614543a93cebf9b0a06bec2bb99730d8e31ae4c7517561579b22c6", "linked": "2026-10-01" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xaa4370", "doc.vtable": "0x8bde9c", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8de754", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x8e05b4", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -929,6 +1622,13 @@
       "family": "hammerplusplus", "branch": "mvz", "build": 8872, "arch": "x64",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "58c266c6576185922044031c7be8e24b567f4e2c341d85b0a3e8872c8a05686c", "linked": "2026-10-01" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xc62c98", "doc.vtable": "0x978e90", "doc.selection": "0xb88", "selection.list": "0x18",
+        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x9aa540", "entity.className": "0x1c8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
+        "solid.vtable": "0x9adb60", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -937,6 +1637,13 @@
       "family": "hammerplusplus", "branch": "portal2", "build": 8872, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "63b339825ab7a505d890a32b571e483588f5a1300925c049b872788f60a44e5c", "linked": "2026-10-01" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xaa8f20", "doc.vtable": "0x8c2f04", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8e3814", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x8e5674", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -945,6 +1652,13 @@
       "family": "hammerplusplus", "branch": "2013mp", "build": 8873, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "fd3343eb374bc2cdf599b697e4c5e9dd95d3d3937f5fe600f88213e3f58d3efd", "linked": "2026-10-27" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa35740", "doc.vtable": "0x84502c", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x865764", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x8675ac", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -953,6 +1667,13 @@
       "family": "hammerplusplus", "branch": "gmod", "build": 8873, "arch": "x64",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "6ea1d26b7f27ed90a91b98df76f9ff04a0d9fcdbef2a77c012bfc1af9de1d095", "linked": "2026-10-27" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xc62878", "doc.vtable": "0x977eb0", "doc.selection": "0xb88", "selection.list": "0x18",
+        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x9a95d8", "entity.className": "0x1c8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
+        "solid.vtable": "0x9acc08", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -961,6 +1682,13 @@
       "family": "hammerplusplus", "branch": "l4d2", "build": 8873, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "d272626bb4a0ccdd37ab870ed1e3dd38ceb72f51dfc6c8a47c428d227ca4e07a", "linked": "2026-10-27" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xaa4370", "doc.vtable": "0x8bde9c", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8de754", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x8e05b4", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
@@ -969,6 +1697,13 @@
       "family": "hammerplusplus", "branch": "portal2", "build": 8873, "arch": "x86",
       "match": { "dll": "hammerplusplus_dll.dll", "sha256": "81c086bc6e0fc4a54a0922027613b2518fe2cfb57e71bfca0e826e385e289f19", "linked": "2026-10-27" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xaa8f20", "doc.vtable": "0x8c2f04", "doc.selection": "0xa20", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8e3814", "entity.className": "0x154",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
+        "solid.vtable": "0x8e5674", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
