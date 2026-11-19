@@ -16,6 +16,8 @@ All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/)
 
 ### Fixed
 - `hammer_status` failed when a GoldSrc map (`.rmf`, `.map`, `.jmf`) was open.
+- App: the status bar was empty when its text was longer than the window (it now fills the bar, clipped, full text in the tooltip), and it still said "read-only" with a connected adapter - it now names what the adapter gives (live selection and camera) and whether there are live edits.
+- App: renamed Hammer executables (`hammer34.exe`, `hammer_3.5.exe`, `worldcraft16.exe`...) were listed only with **Show all processes**.
 
 ## [0.8.0] - 2026-11-15
 
