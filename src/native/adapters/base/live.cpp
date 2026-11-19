@@ -360,12 +360,15 @@ std::string Camera(const std::string& id) {
     for (uptr view : PtrList(doc + Num("doc.views"))) {
         if (Ptr(view) != Rva("view3d.vtable")) continue;
         uptr cam = Ptr(view + Num("view3d.camera"));
+        if (cam && Has("camera.indirect")) cam = Ptr(cam);  // Hammer++: the view points to a holder whose first field is the camera
         float fwd[3];
         if (Has("camera.matrix")) {
-            // OpenGL modelview, column-major: the eye looks along -z, so forward = -(third row of the rotation)
+            // view matrix: the eye looks along -z, so forward = -(third row of the rotation); OpenGL modelview is
+            // column-major (GoldSrc), a Source VMatrix is row-major ("camera.matrixRows")
             float m[16];
             if (!cam || !Rd(cam + Num("camera.matrix"), m, sizeof m)) return Error(id, "the 3D view has no camera");
-            fwd[0] = -m[2]; fwd[1] = -m[6]; fwd[2] = -m[10];
+            if (Has("camera.matrixRows")) { fwd[0] = -m[8]; fwd[1] = -m[9]; fwd[2] = -m[10]; }
+            else { fwd[0] = -m[2]; fwd[1] = -m[6]; fwd[2] = -m[10]; }
         } else if (!cam || !Rd(cam + Num("camera.forward"), fwd, sizeof fwd)) {
             return Error(id, "the 3D view has no camera");
         }
