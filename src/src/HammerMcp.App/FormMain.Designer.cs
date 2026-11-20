@@ -98,6 +98,7 @@ partial class FormMain
         statusStrip1.Size = new Size(637, 22);
         statusStrip1.TabIndex = 0;
         statusStrip1.Text = "statusStrip1";
+        statusStrip1.ShowItemToolTips = true;
         // 
         // toolStripStatusAttaching
         // 
@@ -105,6 +106,8 @@ partial class FormMain
         toolStripStatusAttaching.Name = "toolStripStatusAttaching";
         toolStripStatusAttaching.Size = new Size(130, 17);
         toolStripStatusAttaching.Text = "Process not selected";
+        toolStripStatusAttaching.Spring = true;
+        toolStripStatusAttaching.TextAlign = ContentAlignment.MiddleLeft;
         // 
         // menuStrip1
         // 

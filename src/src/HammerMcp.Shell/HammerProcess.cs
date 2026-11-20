@@ -26,7 +26,13 @@ public sealed record HammerProcess(int ProcessId, string Name, string ExePath, n
     public bool IsSource2 => Path.GetDirectoryName(ExePath) is { } dir && File.Exists(Path.Combine(dir, "tools", "hammer.dll"));
 
     /// <summary>Exe name is one of the known map editors (Hammer, Hammer++, Worldcraft, J.A.C.K., Sledge).</summary>
-    public bool IsKnownEditorName => EditorNames.Contains(Name);
+    public bool IsKnownEditorName => IsEditorName(Name);
+
+    /// <summary>A known editor name, or a renamed copy such as hammer34 / hammer_3.5 / worldcraft16 (not this app).</summary>
+    public static bool IsEditorName(string name) =>
+        EditorNames.Contains(name)
+        || ((name.StartsWith("hammer", StringComparison.OrdinalIgnoreCase) || name.StartsWith("worldcraft", StringComparison.OrdinalIgnoreCase))
+            && !name.StartsWith("hammer-mcp", StringComparison.OrdinalIgnoreCase));
 
     /// <summary>Map path from a title like "Hammer++ - 64 Bit - [B:\...\map.vmf - Textured Shaded]".</summary>
     /// <remarks>Source 2 Hammer shows only the file name; it is looked up in the install's content tree.
@@ -65,7 +71,7 @@ public sealed record HammerProcess(int ProcessId, string Name, string ExePath, n
             {
                 var pid = process.Id;
                 var interesting = shells.ContainsKey(pid)
-                                  || EditorNames.Contains(process.ProcessName)
+                                  || IsEditorName(process.ProcessName)
                                   || (Source2Games.Contains(process.ProcessName) && HasSource2Hammer(pid))
                                   || (allProcesses && SafeMainWindow(process) != 0);
                 if (!interesting)
