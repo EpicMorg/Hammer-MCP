@@ -146,7 +146,7 @@ public static class VmfEntities
         entities.Where(e => string.Equals(e.ClassName, className, StringComparison.OrdinalIgnoreCase)
                             && ((e.Origin is { } o && SameOrigin(o, origin)) || (e.Origin is null && e.BoundsCenter is { } c && SameOrigin(c, origin))));
 
-    private static IEnumerable<Vector3> PlanePoints(string plane)
+    internal static IEnumerable<Vector3> PlanePoints(string plane)
     {
         foreach (var part in plane.Split(['(', ')'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
             if (ParseVector(part) is { } v)
@@ -169,7 +169,7 @@ public static class VmfEntities
         return ok ? new Vector3(x, y, z) : null;
     }
 
-    private static bool TryKeyValue(string line, out string key, out string value)
+    internal static bool TryKeyValue(string line, out string key, out string value)
     {
         key = value = "";
         var k2 = line.IndexOf('"', 1);

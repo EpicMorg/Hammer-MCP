@@ -34,6 +34,11 @@ internal static class AgentInstructions
         - Reading reflects the SAVED .vmf. With Hammer++, read tools accept fromAutosave=true to use its newest autosave
           when that is newer (a few minutes old at most). After your edits, call save_map before reading the map again.
 
+        Live brushes (Source 1 Valve Hammer and Hammer++, Auto/Shell): list_live_brushes reads current geometry,
+        including unsaved edits. Pass one visible brush's ID to move_brush, scale_brush or delete_brush, or omit
+        brushId to edit one brush selected in Hammer. Keep the status bar visible and leave the open map and selection
+        alone during the call. These tools do not save the open map; save_map writes it to disk when requested.
+
         Compiling (edit modes only): compile_sequences shows Hammer's own Run Map sequences; run_compile runs one on the
         SAVED map (ask the user first), compile_log / leak_trace explain the result, bsp_entities shows what ended up
         in the compiled .bsp.
@@ -54,8 +59,8 @@ internal static class AgentInstructions
           When you finish a task or ask the user something there, either call wait_for_user (blocks until they write
           in Hammer, up to 10 minutes; call it again to keep listening) or tell them to answer in your own window.
 
-        - hammer_status.approval = "ask": the user reviews your edits. Each edit (create / set_keyvalue / rotate / delete,
-          save_map, undo, redo, run_compile) waits until they apply or reject it (up to 2 minutes per call). Rejected:
+        - hammer_status.approval = "ask": the user reviews edits to entities and brushes, saves, undo/redo and compiles.
+          A request waits until the user applies or rejects it (up to 2 minutes per call). Rejected:
           do not repeat it - ask what they want. Still waiting after 2 minutes: it stays in their list; check
           pending_changes later instead of repeating the edit. Describe your plan before a batch of edits.
 

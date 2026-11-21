@@ -27,8 +27,8 @@ public sealed class ShellSession : IDisposable
         IsOpen = true;
     }
 
-    /// <summary>Opens a session for the saved .vmf; returns null if Hammer refuses every candidate version.</summary>
-    public static ShellSession? Begin(ShellChannel channel, string vmfPath)
+    /// <summary>Tries the saved VMF version, then a version observed in Hammer's temporary export of this document.</summary>
+    public static ShellSession? Begin(ShellChannel channel, string vmfPath, Func<int?>? liveVersion = null)
     {
         var mapName = Path.GetFileNameWithoutExtension(vmfPath);
         var fileVersion = VmfVersionInfo.Read(vmfPath).MapVersion;
@@ -39,6 +39,15 @@ public sealed class ShellSession : IDisposable
             var version = fileVersion + offset;
             if (channel.Send(ShellCommands.SessionBegin(mapName, version)) == ShellResult.Ok)
                 return new ShellSession(channel, mapName, version);
+        }
+        if (liveVersion?.Invoke() is { } exported)
+        {
+            foreach (var offset in VersionOffsets)
+            {
+                var version = exported + offset;
+                if (channel.Send(ShellCommands.SessionBegin(mapName, version)) == ShellResult.Ok)
+                    return new ShellSession(channel, mapName, version);
+            }
         }
         return null;
     }

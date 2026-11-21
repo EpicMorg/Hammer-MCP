@@ -4,6 +4,12 @@
 
 All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/); `-alpha` releases are pre-releases.
 
+## [Unreleased]
+
+### Added
+- Live Source 1 brush discovery, movement, scaling and deletion in Valve Hammer and Hammer++, by current selection or VMF ID; no map reload.
+- Oh My Pi (OMP) Streamable HTTP configuration under **Copy client config** in the tray, with the bearer token when configured.
+
 ## [0.8.0] - 2026-11-15
 
 ### Added

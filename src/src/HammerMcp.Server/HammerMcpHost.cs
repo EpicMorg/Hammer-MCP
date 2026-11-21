@@ -36,6 +36,11 @@ public static class HammerMcpHost
             .WithTools<MapTools>();
         if (options.AllowsLiveEdits)
             mcp.WithTools<EntityTools>().WithTools<MenuTools>().WithTools<RunCompileTools>();
+        if (options.AllowsShell)
+        {
+            services.AddSingleton<BrushTools>();
+            mcp.WithTools<BrushTools>();
+        }
         mcp.WithTools<CompileTools>().WithTools<Source2Tools>();
         return mcp;
     }

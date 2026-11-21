@@ -26,6 +26,23 @@ internal static partial class NativeMethods
     [return: MarshalAs(UnmanagedType.Bool)]
     public static partial bool PostMessage(nint hwnd, uint msg, nint wParam, nint lParam);
 
+    [LibraryImport("user32.dll", EntryPoint = "SendMessageTimeoutW")]
+    public static partial nint SendMessageTimeout(nint hwnd, uint msg, nint wParam, nint lParam, uint flags, uint timeout,
+        out nint result);
+
+    [LibraryImport("user32.dll")]
+    public static partial nint GetWindow(nint hwnd, uint command);
+
+    [LibraryImport("user32.dll")]
+    public static partial nint GetDlgItem(nint dialog, int id);
+
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool IsWindowEnabled(nint hwnd);
+
+    [LibraryImport("user32.dll", EntryPoint = "GetClassNameW")]
+    public static unsafe partial int GetClassName(nint hwnd, char* buffer, int maxCount);
+
     [LibraryImport("user32.dll", EntryPoint = "FindWindowExA", StringMarshalling = StringMarshalling.Utf8)]
     public static partial nint FindWindowEx(nint parent, nint childAfter, string? className, string? windowName);
 

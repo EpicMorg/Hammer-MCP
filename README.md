@@ -91,6 +91,11 @@ Static analysis; live tests so far on Hammer++ 8873 (x64 and x86). Reports for o
    ```
 5. Open a map in Hammer and **save it** (sessions are bound to the saved `mapversion`). Ask away.
 
+**Oh My Pi (OMP):** choose **Copy client config → Oh My Pi** in the tray. Paste or merge the `mcpServers.hammer`
+entry into your project's `.omp/mcp.json` or your user config `~/.omp/agent/mcp.json`. Then run `/mcp reload`
+and `/mcp test hammer` in OMP. Keep the tray server running; the copied entry includes the bearer token if configured.
+For stdio instead, put the example below in the same file.
+
 ### Without the tray app: `hammer-mcp-cli`
 
 The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that start servers themselves (stdio):
@@ -118,6 +123,8 @@ The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that
 | `run_compile` | Runs one of those sequences (vbsp / vvis / vrad, copy .bsp); edit modes only |
 | `create_entity` | Point entity at x y z, with keyvalues |
 | `set_keyvalue` · `rotate_entity` · `delete_entity` | Edit the entity of a class at an origin |
+| `list_live_brushes` | Unsaved Source 1 geometry: brush IDs, owning entities, materials, and plane-point bounds |
+| `move_brush` · `scale_brush` · `delete_brush` | Edit one brush by live VMF ID or the current selection |
 | `save_map` · `undo` · `redo` | Hammer menu commands |
 | `open_run_map_dialog` · `open_check_for_problems` | Open those Hammer dialogs for the user |
 | `find_assets` | Find models, materials, textures, sounds, sound script names, sprites, particles by name in the game's files and VPKs (GoldSrc: files and WAD textures / decals); returns what to write in the entity |
@@ -126,6 +133,18 @@ The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that
 
 **Modes:** *Auto* (best available: the adapter if you connected it, otherwise the shell channel, otherwise read-only) ·
 *Basic* (read-only) · *Shell* (live edits + menu through the shell channel only) · *Advanced* (strict adapter-only mode, for debugging).
+
+### Live brushes (Valve Hammer and Hammer++)
+
+Use **Auto** or **Shell** mode. For manual targeting, select one solid in Hammer and omit `brushId`. For automatic
+targeting, call `list_live_brushes` (optionally filter by `material`), then pass a visible brush's `id` as `brushId`.
+`move_brush` takes a relative offset in Hammer units; `scale_brush` takes positive X/Y/Z factors.
+
+These tools use the standalone editor's standard English dialogs and status bar. Keep the status bar visible and
+don't switch documents or edit the selection while a call runs. Stock Hammer can refuse an ambiguous selection;
+pass an explicit ID in that case. With approval enabled, the original brush is checked again at apply time.
+Brush edits use Hammer's native Undo history when enabled. Listing exports a temporary snapshot of the live map;
+it does not save over or reload the open VMF. For the copy on disk, use `save_map` explicitly.
 
 ### The adapter (0.7+)
 **Connect adapter** in the app (Auto or Advanced) injects a small native adapter into the attached Hammer — only when

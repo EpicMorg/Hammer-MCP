@@ -105,15 +105,16 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
     {
         if (target.Control.Paused)
             return Refuse(AgentControl.PausedReason);
-        var now = target.Current()?.OpenMapPath;
-        if (!string.Equals(now, mapPath, StringComparison.OrdinalIgnoreCase))
+        var process = target.Current();
+        var now = process?.OpenMapPath;
+        if (process is null || !string.Equals(now, mapPath, StringComparison.OrdinalIgnoreCase))
             return Refuse($"another map is open in Hammer now ({now ?? "none"}) - not applied");
         if (!File.Exists(mapPath))
             return Refuse($"map file not found: {mapPath} (save the map first)");
         if (CheckAddress(mapPath, className, origin, expectExisting, out var count) is { } refusal)
             return Refuse(refusal);
 
-        using var session = ShellSession.Begin(target.Channel, mapPath);
+        using var session = ShellSession.Begin(target.Channel, mapPath, () => target.BrushSnapshotVersion(process, mapPath));
         if (session is null)
             return new EditResult(false, "Hammer refused the session: save the map (Ctrl+S) and retry", []);
         var commands = action(session, mapPath);
