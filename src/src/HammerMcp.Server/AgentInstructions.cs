@@ -39,6 +39,10 @@ internal static class AgentInstructions
         brushId to edit one brush selected in Hammer. Keep the status bar visible and leave the open map and selection
         alone during the call. These tools do not save the open map; save_map writes it to disk when requested.
 
+        Use viewport_capture for visual inspection in Source 1 Hammer and Hammer++: it returns the current 3D view
+        by default, or 2D/all with views. It does not aim the camera. If the 3D frame is unavailable, ask the user to
+        restore Hammer, bring it to the foreground and aim the camera at the area of interest.
+
         Compiling (edit modes only): compile_sequences shows Hammer's own Run Map sequences; run_compile runs one on the
         SAVED map (ask the user first), compile_log / leak_trace explain the result, bsp_entities shows what ended up
         in the compiled .bsp.

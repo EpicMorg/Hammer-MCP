@@ -34,6 +34,8 @@ public static class HammerMcpHost
             })
             .WithTools<StatusTools>()
             .WithTools<MapTools>();
+        if (options.Mode != McpMode.Advanced)
+            mcp.WithTools<ViewportTools>();
         if (options.AllowsLiveEdits)
             mcp.WithTools<EntityTools>().WithTools<MenuTools>().WithTools<RunCompileTools>();
         if (options.AllowsShell)

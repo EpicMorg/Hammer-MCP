@@ -112,6 +112,7 @@ The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that
 | Tool | What it does |
 |---|---|
 | `hammer_status` | Which Hammer is attached, its build, shell channel, open map, saved `mapversion`, allowed mode |
+| `viewport_capture` | PNG images of the active map's 3D view (default), `2d` panes, or `all` in Valve Hammer and Hammer++ |
 | `map_summary` | Saved `.vmf`: versions, entity/brush counts, classes, skybox, visgroups |
 | `list_entities` · `get_entity` · `find_io` | Saved map: entities with keyvalues and outputs, who triggers whom |
 | `game_configs` · `fgd_class` · `fgd_search` | Hammer's game config and the game's FGD as an entity reference (keyvalues, choices, inputs, outputs) |
@@ -133,6 +134,11 @@ The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that
 
 **Modes:** *Auto* (best available: the adapter if you connected it, otherwise the shell channel, otherwise read-only) ·
 *Basic* (read-only) · *Shell* (live edits + menu through the shell channel only) · *Advanced* (strict adapter-only mode, for debugging).
+
+For visual inspection in OMP or another image-capable client, call `viewport_capture` (for example with
+`{"views":"all","maxSize":1024}`). It shows unsaved changes from the current camera without changing the camera,
+map, or render mode. Keep Hammer restored; if stock Hammer shows no 3D frame, bring it to the foreground and aim
+at the map. Requires Windows 10 version 1607 or newer. The tool does not capture the desktop and is not available in Advanced mode.
 
 ### Live brushes (Valve Hammer and Hammer++)
 
