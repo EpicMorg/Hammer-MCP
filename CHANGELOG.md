@@ -7,6 +7,7 @@ All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/)
 ## [Unreleased]
 
 ### Added
+- Offline Source 1 BSP visibility audit: rank PVS hotspots and compare potentially visible world faces at fixed coordinates without launching the game.
 - `viewport_capture`: return 3D and 2D viewport screenshots as MCP PNG images in standalone Valve Hammer and Hammer++, without changing the camera or grabbing the desktop.
 - Live Source 1 brush discovery, movement, scaling and deletion in Valve Hammer and Hammer++, by current selection or VMF ID; no map reload.
 - Oh My Pi (OMP) Streamable HTTP configuration under **Copy client config** in the tray, with the bearer token when configured.

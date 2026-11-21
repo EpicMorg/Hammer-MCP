@@ -120,6 +120,7 @@ The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that
 | `check_assets` | Materials, models, overlays, decals, skybox, sounds and sound script names of the saved map vs the game's search paths (gameinfo.txt, folders, VPKs) |
 | `compile_sequences` · `compile_log` · `leak_trace` | Hammer's own Run Map sequences (CmdSeq.wc / Hammer++ / Strata / J.A.C.K.), parsed compile log, leak path from the .lin |
 | `bsp_entities` | Entities as vbsp wrote them into the compiled .bsp (entity lump), outputs included |
+| `bsp_visibility` · `bsp_compare` | Offline Source 1 BSP audit: rank visibility hotspots or compare two builds at identical world coordinates |
 | `source2_console` | Source 2 only: allowlisted developer console commands over VConsole2 (open maps, force autosave, help) |
 | `run_compile` | Runs one of those sequences (vbsp / vvis / vrad, copy .bsp); edit modes only |
 | `create_entity` | Point entity at x y z, with keyvalues |
@@ -134,6 +135,11 @@ The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that
 
 **Modes:** *Auto* (best available: the adapter if you connected it, otherwise the shell channel, otherwise read-only) ·
 *Basic* (read-only) · *Shell* (live edits + menu through the shell channel only) · *Advanced* (strict adapter-only mode, for debugging).
+
+For offline optimization, run `bsp_visibility` against an uncompressed Source 1 BSP built with VVIS. The ranking can
+include exterior or unreachable clusters; use known playable coordinates for point queries. Call `bsp_compare` with
+`beforePath`, `afterPath` and the same `points` (`{x,y,z}`) in both builds. Use identical compile settings. Counts cover
+distinct world-model faces in the PVS, not props, brush entities, or FPS. Neither tool writes files or launches the game.
 
 For visual inspection in OMP or another image-capable client, call `viewport_capture` (for example with
 `{"views":"all","maxSize":1024}`). It shows unsaved changes from the current camera without changing the camera,
