@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Numerics;
 
-namespace HammerMcp.Shell;
+namespace HammerShell.Client;
 
 /// <summary>Formats shell commands exactly like Source SDK editor_sendcommand.cpp.</summary>
 public static class ShellCommands

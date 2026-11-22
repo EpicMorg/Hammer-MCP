@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HammerMcp.Tests", "tests\Ha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HammerMcp.Cli", "src\HammerMcp.Cli\HammerMcp.Cli.csproj", "{BB0C32A1-CAE5-445E-AF03-17210A221005}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HammerShell.Client", "src\HammerShell.Client\HammerShell.Client.csproj", "{7C04E488-5B86-4113-8F97-4450B28B77B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +103,18 @@ Global
 		{BB0C32A1-CAE5-445E-AF03-17210A221005}.Release|x64.Build.0 = Release|Any CPU
 		{BB0C32A1-CAE5-445E-AF03-17210A221005}.Release|x86.ActiveCfg = Release|Any CPU
 		{BB0C32A1-CAE5-445E-AF03-17210A221005}.Release|x86.Build.0 = Release|Any CPU
+		{7C04E488-5B86-4113-8F97-4450B28B77B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C04E488-5B86-4113-8F97-4450B28B77B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C04E488-5B86-4113-8F97-4450B28B77B6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7C04E488-5B86-4113-8F97-4450B28B77B6}.Debug|x64.Build.0 = Debug|Any CPU
+		{7C04E488-5B86-4113-8F97-4450B28B77B6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7C04E488-5B86-4113-8F97-4450B28B77B6}.Debug|x86.Build.0 = Debug|Any CPU
+		{7C04E488-5B86-4113-8F97-4450B28B77B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C04E488-5B86-4113-8F97-4450B28B77B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C04E488-5B86-4113-8F97-4450B28B77B6}.Release|x64.ActiveCfg = Release|Any CPU
+		{7C04E488-5B86-4113-8F97-4450B28B77B6}.Release|x64.Build.0 = Release|Any CPU
+		{7C04E488-5B86-4113-8F97-4450B28B77B6}.Release|x86.ActiveCfg = Release|Any CPU
+		{7C04E488-5B86-4113-8F97-4450B28B77B6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

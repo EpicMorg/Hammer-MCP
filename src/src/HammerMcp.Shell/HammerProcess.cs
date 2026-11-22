@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.Versioning;
 using HammerMcp.Core.Maps;
+using HammerShell.Client;
 
 namespace HammerMcp.Shell;
 

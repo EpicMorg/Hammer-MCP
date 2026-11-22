@@ -1,7 +1,6 @@
 using System.Runtime.Versioning;
-using HammerMcp.Core.Maps;
 
-namespace HammerMcp.Shell;
+namespace HammerShell.Client;
 
 /// <summary>
 /// An edit session on the map open in Hammer. Rules found live (H++ 8873 x64, 2026-11-10):
@@ -28,11 +27,8 @@ public sealed class ShellSession : IDisposable
     }
 
     /// <summary>Opens a session for the saved .vmf; returns null if Hammer refuses every candidate version.</summary>
-    public static ShellSession? Begin(ShellChannel channel, string vmfPath)
+    public static ShellSession? Begin(ShellChannel channel, string mapName, int fileVersion)
     {
-        var mapName = Path.GetFileNameWithoutExtension(vmfPath);
-        var fileVersion = VmfVersionInfo.Read(vmfPath).MapVersion;
-
         channel.Send(ShellCommands.SessionEnd()); // close a session left open by someone else
         foreach (var offset in VersionOffsets)
         {

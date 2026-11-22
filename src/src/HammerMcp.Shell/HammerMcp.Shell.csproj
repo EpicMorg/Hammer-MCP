@@ -9,5 +9,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HammerMcp.Core\HammerMcp.Core.csproj" />
+    <ProjectReference Include="..\HammerShell.Client\HammerShell.Client.csproj" />
   </ItemGroup>
 </Project>

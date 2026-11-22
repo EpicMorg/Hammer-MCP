@@ -1,5 +1,6 @@
 using System.Runtime.Versioning;
 using HammerMcp.Shell;
+using HammerShell.Client;
 
 namespace HammerMcp.Server;
 

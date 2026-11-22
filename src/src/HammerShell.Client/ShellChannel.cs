@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Text;
 
-namespace HammerMcp.Shell;
+namespace HammerShell.Client;
 
 public enum ShellResult
 {

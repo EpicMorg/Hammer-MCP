@@ -6,21 +6,11 @@ namespace HammerMcp.Shell;
 [SupportedOSPlatform("windows")]
 internal static partial class NativeMethods
 {
-    public const uint WM_COPYDATA = 0x004A;
     public const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct COPYDATASTRUCT
-    {
-        public nuint dwData;
-        public uint cbData;
-        public nint lpData;
-    }
 
     public delegate bool EnumWindowsProc(nint hwnd, nint lParam);
 
-    [LibraryImport("user32.dll", EntryPoint = "FindWindowA", StringMarshalling = StringMarshalling.Utf8)]
-    public static partial nint FindWindow(string? className, string? windowName);
 
     [LibraryImport("user32.dll", EntryPoint = "PostMessageW")]
     [return: MarshalAs(UnmanagedType.Bool)]
@@ -29,8 +19,6 @@ internal static partial class NativeMethods
     [LibraryImport("user32.dll", EntryPoint = "FindWindowExA", StringMarshalling = StringMarshalling.Utf8)]
     public static partial nint FindWindowEx(nint parent, nint childAfter, string? className, string? windowName);
 
-    [LibraryImport("user32.dll", EntryPoint = "SendMessageW")]
-    public static partial nint SendMessage(nint hwnd, uint msg, nint wParam, ref COPYDATASTRUCT lParam);
 
     [LibraryImport("user32.dll")]
     public static partial uint GetWindowThreadProcessId(nint hwnd, out uint processId);

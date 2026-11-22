@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.Numerics;
 using System.Runtime.Versioning;
 using HammerMcp.Core.Maps;
-using HammerMcp.Shell;
+using HammerShell.Client;
 using ModelContextProtocol.Server;
 
 namespace HammerMcp.Server.Tools;
@@ -113,7 +113,7 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
         if (CheckAddress(mapPath, className, origin, expectExisting, out var count) is { } refusal)
             return Refuse(refusal);
 
-        using var session = ShellSession.Begin(target.Channel, mapPath);
+        using var session = ShellSession.Begin(target.Channel, Path.GetFileNameWithoutExtension(mapPath), VmfVersionInfo.Read(mapPath).MapVersion);
         if (session is null)
             return new EditResult(false, "Hammer refused the session: save the map (Ctrl+S) and retry", []);
         var commands = action(session, mapPath);
