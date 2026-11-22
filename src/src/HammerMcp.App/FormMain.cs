@@ -297,7 +297,7 @@ public partial class FormMain : Form
             // the adapter is connected: say what it gives instead of the "read-only" warning of the channel check
             var parts = new List<string> { $"adapter {a.Adapter} connected" };
             if (_adapter.CanReadLive)
-                parts.Add("live selection and camera");
+                parts.Add(_adapter.CanReadCamera ? "live selection and camera" : "live selection");
             parts.Add(process.HasShellChannel ? "shell channel OK" : "no shell channel: no live edits");
             if (_target.Control.Paused)
                 parts.Add("agent PAUSED");
@@ -310,8 +310,12 @@ public partial class FormMain : Form
             SetStatus($"Attached to {who}: Source 2 Hammer - read-only (maps and game files; live channel via VConsole planned)",
                 Properties.Resources.warning_circle_16);
         else if (dll is not null || process.IsKnownEditorName)
-            SetStatus($"Attached to {who}: no shell channel - read-only + menu{(_attachedBuild is { Memory.Count: > 0 } ? "; adapter: live selection, camera" : "")}",
-                Properties.Resources.warning_circle_16);
+        {
+            string adapterHint = "";
+            if (build is { Memory.Count: > 0 })
+                adapterHint = build.Memory.ContainsKey("doc.views") ? "; adapter: live selection, camera" : "; adapter: live selection";
+            SetStatus($"Attached to {who}: no shell channel - read-only + menu{adapterHint}", Properties.Resources.warning_circle_16);
+        }
         else
             SetStatus($"Attached to {who}: not a Hammer editor", Properties.Resources.deny_circle_16);
         ShowMetaInfo(process, build, dll);

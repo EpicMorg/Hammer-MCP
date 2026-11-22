@@ -34,7 +34,7 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
             UserRequests: Requests(),
             Approval: target.Changes.AskUser ? "ask" : "auto",
             PendingChanges: target.Changes.Count,
-            Adapter: target.Adapter?.Hello is { } a ? new AdapterStatus(a.Adapter, a.Version, a.Build, target.Adapter.CanReadLive) : null,
+            Adapter: target.Adapter?.Hello is { } a ? new AdapterStatus(a.Adapter, a.Version, a.Build, target.Adapter.CanReadLive, target.Adapter.CanReadCamera) : null,
             ProcessId: process.ProcessId,
             ExePath: process.ExePath,
             Arch: PeHeader.TryRead(process.ExePath)?.Arch,
@@ -270,5 +270,5 @@ public sealed record HammerStatus(
     int PendingChanges = 0);
 
 /// <summary>The injected adapter the server is connected to (Hammer shows an MCP menu).</summary>
-/// <summary>LiveRead = hammer_selection / hammer_camera work with this build (layer 2).</summary>
-public sealed record AdapterStatus(string Id, string Version, string Build, bool LiveRead = false);
+/// <summary>LiveRead and LiveCamera report whether the connected build supports live selection and camera reads.</summary>
+public sealed record AdapterStatus(string Id, string Version, string Build, bool LiveRead = false, bool LiveCamera = false);

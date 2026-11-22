@@ -128,8 +128,15 @@ public sealed class AdapterLink
 
     public Task NotifyAsync(string text) => Send(c => c.SendNotifyAsync(text));
 
-    /// <summary>The adapter can read the live selection / camera: connected, and this build has a layer 2 memory layout.</summary>
-    public bool CanReadLive => _client is { Connected: true } c && registry.Builds.FirstOrDefault(b => b.Id == c.Hello.Build) is { Memory.Count: > 0 };
+    private HammerBuild? ConnectedBuild => _client is { Connected: true } c
+        ? registry.Builds.FirstOrDefault(b => b.Id == c.Hello.Build)
+        : null;
+
+    /// <summary>The connected build has a live selection layout.</summary>
+    public bool CanReadLive => ConnectedBuild is { Memory.Count: > 0 };
+
+    /// <summary>The connected build has a live camera layout.</summary>
+    public bool CanReadCamera => ConnectedBuild?.Memory.ContainsKey("doc.views") == true;
 
     /// <summary>The selection the user last sent with MCP > Send selection to agent (null = never), and when.</summary>
     public (JsonObject Selection, DateTime At)? SentSelection { get; private set; }
