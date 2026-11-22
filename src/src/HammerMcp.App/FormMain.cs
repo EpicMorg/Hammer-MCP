@@ -312,7 +312,7 @@ public partial class FormMain : Form
         else if (dll is not null || process.IsKnownEditorName)
         {
             string adapterHint = "";
-            if (build is { Memory.Count: > 0 })
+            if (build is { Memory.Count: > 0, InjectAdapter: not null })
                 adapterHint = build.Memory.ContainsKey("doc.views") ? "; adapter: live selection, camera" : "; adapter: live selection";
             SetStatus($"Attached to {who}: no shell channel - read-only + menu{adapterHint}", Properties.Resources.warning_circle_16);
         }

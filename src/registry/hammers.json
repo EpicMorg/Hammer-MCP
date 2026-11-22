@@ -1926,8 +1926,17 @@
       "family": "sle", "branch": "sdk2013", "arch": "x86",
       "match": { "dll": "level_editor_dll.dll", "sha256": "85039dd73298e562bdbc8be4dc324a83eb3215abbb658c5f0e2e21ac733ae8ef", "linked": "2026-07-02" },
       "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "level_editor_dll.dll", "activeDoc": "0x5a1d78", "doc.vtable": "0x45f104", "doc.selection": "0x1d0", "selection.list": "0xc",
+        "object.origin": "0x20", "object.mins": "0x70", "object.maxs": "0x7c", "object.parent": "0x8",
+        "entity.vtable": "0x478800", "entity.className": "0x104", "entity.classNameLength": "0x40", "entity.keyValues": "0xe4",
+        "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x25c",
+        "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x47a210", "solid.faceBlocks": "0xe0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x23c",
+        "face.size": "0x1c8", "face.texture": "0x20", "face.textureLength": "0x104"
+      },
       "gameConfig": "bin/level_editor/cfg/GameConfig.txt",
-      "notes": "Source Level Editor 3.129. Standard and nomanifest releases share the editor DLL. Shell window and command strings found statically. Live shell operation awaits verification."
+      "notes": "Source Level Editor 3.129. Standard and nomanifest releases share the editor DLL. Shell window and command strings found statically. Live shell operation awaits verification. The selection layout was derived statically. The adapter remains disabled until live validation."
     },
     {
       "id": "valve-sdk2013sp-upcoming-2014",
