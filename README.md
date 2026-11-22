@@ -136,6 +136,9 @@ OpenCode session, so the agent there wakes up and answers. **Disconnect** unload
 camera and geometry through the adapter comes next. The `native` folder of the zip must stay next to `hammer-mcp.exe`.
 
 ### Limits of the shell channel
+
+[Shell channel reference](docs/shell-channel.md) covers the Windows transport, edit sessions, and command syntax.
+
 It is write-only and entity-level: entities are addressed by **class + origin** (no ids), brushes and brush entities
 can't be created, there is no "move", and unsaved state can't be read back — the server reads the saved `.vmf`.
 Outputs set with `set_keyvalue` are stored by Hammer as plain keyvalues: they are not shown on the Outputs tab, but
