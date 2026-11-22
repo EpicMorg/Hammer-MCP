@@ -1072,7 +1072,8 @@
         "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x940528", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x438",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x28", "kv.value": "0x38", "kv.valueLength": "0x400",
-        "solid.vtable": "0x943868", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+        "solid.vtable": "0x943868", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x915d08", "view3d.camera": "0x108", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -1103,7 +1104,8 @@
         "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x9314f0", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x438",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x28", "kv.value": "0x38", "kv.valueLength": "0x400",
-        "solid.vtable": "0x934830", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+        "solid.vtable": "0x934830", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x906c58", "view3d.camera": "0x108", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -1150,7 +1152,8 @@
         "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x92feb0", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x438",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x28", "kv.value": "0x38", "kv.valueLength": "0x400",
-        "solid.vtable": "0x9331c0", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+        "solid.vtable": "0x9331c0", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x904350", "view3d.camera": "0x108", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -1181,7 +1184,8 @@
         "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x920e68", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x438",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x28", "kv.value": "0x38", "kv.valueLength": "0x400",
-        "solid.vtable": "0x924178", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+        "solid.vtable": "0x924178", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x8f52a0", "view3d.camera": "0x108", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -1228,7 +1232,8 @@
         "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x933170", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x438",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x28", "kv.value": "0x38", "kv.valueLength": "0x400",
-        "solid.vtable": "0x936480", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+        "solid.vtable": "0x936480", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x907348", "view3d.camera": "0x108", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -1259,7 +1264,8 @@
         "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x924138", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x438",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x28", "kv.value": "0x38", "kv.valueLength": "0x400",
-        "solid.vtable": "0x927448", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+        "solid.vtable": "0x927448", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x8f8298", "view3d.camera": "0x108", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -1306,7 +1312,8 @@
         "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x991918", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
-        "solid.vtable": "0x994ee8", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+        "solid.vtable": "0x994ee8", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x9655d8", "view3d.camera": "0x108", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -1337,7 +1344,8 @@
         "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x98e870", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
-        "solid.vtable": "0x991e30", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+        "solid.vtable": "0x991e30", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x9624a8", "view3d.camera": "0x108", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt", "notes": "Release 8868_hotfix2."
     },
@@ -1384,7 +1392,8 @@
         "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x991058", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
-        "solid.vtable": "0x994638", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+        "solid.vtable": "0x994638", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x965468", "view3d.camera": "0x108", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -1431,7 +1440,8 @@
         "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x98e070", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
-        "solid.vtable": "0x991630", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104"
+        "solid.vtable": "0x991630", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x962488", "view3d.camera": "0x108", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -1478,7 +1488,8 @@
         "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x9912e8", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
-        "solid.vtable": "0x9948e0", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104"
+        "solid.vtable": "0x9948e0", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x965638", "view3d.camera": "0x108", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -1525,7 +1536,8 @@
         "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x990270", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
-        "solid.vtable": "0x993870", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104"
+        "solid.vtable": "0x993870", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x964628", "view3d.camera": "0x108", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -1572,7 +1584,8 @@
         "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x99a2f8", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
-        "solid.vtable": "0x99d908", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104"
+        "solid.vtable": "0x99d908", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x96e628", "view3d.camera": "0x108", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -1603,7 +1616,8 @@
         "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x9ad3a0", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
-        "solid.vtable": "0x9b09c0", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104"
+        "solid.vtable": "0x9b09c0", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x981678", "view3d.camera": "0x108", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -1634,7 +1648,8 @@
         "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x99b290", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
-        "solid.vtable": "0x99e8a0", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104"
+        "solid.vtable": "0x99e8a0", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x96f618", "view3d.camera": "0x108", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -1681,7 +1696,8 @@
         "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x9a95d8", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
-        "solid.vtable": "0x9acc08", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104"
+        "solid.vtable": "0x9acc08", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x97d838", "view3d.camera": "0x108", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -1712,7 +1728,8 @@
         "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x9aa540", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
-        "solid.vtable": "0x9adb60", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104"
+        "solid.vtable": "0x9adb60", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x97e818", "view3d.camera": "0x108", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -1759,7 +1776,8 @@
         "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x9a95d8", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x460",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x400",
-        "solid.vtable": "0x9acc08", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104"
+        "solid.vtable": "0x9acc08", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x360", "face.texture": "0x58", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x97d838", "view3d.camera": "0x108", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
