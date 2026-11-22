@@ -32,7 +32,7 @@ public class HammerRegistryTests
             "entity.valueOffset", "entity.valueLength", "solid.vtable", "solid.faces", "face.size", "face.texture"];
         string[] source = ["activeDoc", "doc.selection", "selection.list", "object.mins", "object.maxs", "object.origin", "object.parent",
             "entity.vtable", "entity.className", "entity.keyValues", "kv.nodes", "kv.alloc", "kv.root", "kv.nodeSize", "kv.left", "kv.right",
-            "kv.key", "kv.keyLength", "kv.value", "kv.valueLength", "solid.vtable", "solid.faces", "solid.faceCount", "face.size", "face.texture"];
+            "kv.key", "kv.keyLength", "kv.value", "kv.valueLength", "solid.vtable", "face.size", "face.texture"];
         string[] camera = ["doc.views", "view3d.vtable", "view3d.camera", "camera.position"];
         var layouts = HammerRegistry.Load(RegistryPath).Builds.Where(b => b.Memory.Count > 0).ToList();
         Assert.Contains(layouts, b => b.Id == "goldsrc-hammer-3.5");
@@ -41,6 +41,18 @@ public class HammerRegistryTests
             // GoldSrc layouts read the selection from MFC lists; "layout": "source" ones from CSelection / CUtlVector / CUtlDict
             var isSource = b.Memory.TryGetValue("layout", out var kind) && kind == "source";
             Assert.All(isSource ? source : selection, k => Assert.True(b.Memory.ContainsKey(k), $"{b.Id}: no {k}"));
+            if (isSource)
+            {
+                string[] blocks = ["solid.faceBlocks", "solid.faceBlockSize", "solid.faceCount16"];
+                string[] vector = ["solid.faces", "solid.faceCount"];
+                bool chunked = blocks.Any(b.Memory.ContainsKey);
+                Assert.All(chunked ? blocks : vector, k => Assert.True(b.Memory.ContainsKey(k), $"{b.Id}: no {k}"));
+                if (chunked)
+                {
+                    Assert.All(vector, k => Assert.False(b.Memory.ContainsKey(k)));
+                    Assert.InRange(Convert.ToInt32(b.Memory["solid.faceBlockSize"], 16), 1, 512);
+                }
+            }
             // the camera is optional for Source layouts (found live, not statically), but all or nothing
             if (!isSource || camera.Any(b.Memory.ContainsKey))
             {

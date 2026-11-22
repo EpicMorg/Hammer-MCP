@@ -130,7 +130,9 @@ and `"module"` (addresses are relative to `hammer_dll.dll` / `hammerplusplus_dll
 | `object.origin`, `object.mins`, `object.maxs`, `object.parent` | `CMapClass` fields; mins/maxs = the box Hammer's own selection bounds use |
 | `entity.className` (+`Length`), `entity.keyValues` | in the `CEditGameClass` part of `CMapEntity` (`0x144`, `0x124`) |
 | `kv.nodes`, `kv.alloc`, `kv.root`, `kv.nodeSize`, `kv.left`, `kv.right`, `kv.key`(+`Length`), `kv.value`(+`Length`) | the keyvalue `CUtlDict` (a red-black tree with 16-bit indices): node array, its size, root index, node stride, child links, `MDkeyvalue` key / value |
-| `solid.faces`, `solid.faceCount`, `face.size`, `face.texture`(+`Length`) | `CUtlVector<CMapFace>` inside `CMapSolid`, stride, material name |
+| `solid.faces`, `solid.faceCount` | Contiguous face array pointer and 32-bit count in Hammer++ |
+| `solid.faceBlocks`, `solid.faceBlockSize`, `solid.faceCount16` | Alternative used by stock SDK 2013 SP. The solid contains an inline table of block pointers, with a fixed number of faces per block and a signed 16-bit total count |
+| `face.size`, `face.texture`(+`Length`) | Face stride and material name within each face |
 
 The adapter walks the keyvalue tree from its root (never the raw node array), checks every index against the array
 size and stops after 128 nodes. Camera keys are optional for Source layouts until they are found.

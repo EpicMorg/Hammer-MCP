@@ -24,11 +24,10 @@ const char* const kSelectionKeys[] = { "doc.selection", "object.mins", "object.m
     "entity.vtable", "entity.className", "entity.keyValues", "entity.keyValueCount", "entity.keyValueSize", "entity.keyLength",
     "entity.valueOffset", "entity.valueLength", "solid.vtable", "solid.faces", "face.size", "face.texture" };
 // Source Hammer ("layout": "source"): the document points to a CSelection whose CUtlVector lists the objects, an
-// entity's keyvalues are a CUtlDict (red-black tree of MDkeyvalue nodes), a solid's faces are a CUtlVector of CMapFace
+// entity's keyvalues are a CUtlDict (red-black tree of MDkeyvalue nodes), solid faces use a vector or an inline table of blocks
 const char* const kSourceSelectionKeys[] = { "doc.selection", "selection.list", "object.mins", "object.maxs", "object.origin",
     "object.parent", "entity.vtable", "entity.className", "entity.keyValues", "kv.nodes", "kv.alloc", "kv.root", "kv.nodeSize",
-    "kv.left", "kv.right", "kv.key", "kv.keyLength", "kv.value", "kv.valueLength", "solid.vtable", "solid.faces",
-    "solid.faceCount", "face.size", "face.texture" };
+    "kv.left", "kv.right", "kv.key", "kv.keyLength", "kv.value", "kv.valueLength", "solid.vtable", "face.size", "face.texture" };
 const char* const kCameraKeys[] = { "doc.views", "view3d.vtable", "view3d.camera", "camera.position" };
 bool g_source = false;
 bool g_selection = false, g_camera = false;
@@ -223,13 +222,32 @@ std::string SourceKeyValues(uptr kv) {
     return s + "}";
 }
 
-std::string FaceTextures(uptr faces, int n) {
+std::string FaceTextures(uptr solid) {
+    const size_t blockSize = Num("solid.faceBlockSize");
+    int n = 0;
+    uptr faces = 0;
+    if (blockSize) {
+        int16_t count = 0;
+        if (!Rd(solid + Num("solid.faceCount16"), count)) return {};
+        n = count;
+        faces = solid + Num("solid.faceBlocks");
+    } else {
+        Rd(solid + Num("solid.faceCount"), n);
+        faces = Ptr(solid + Num("solid.faces"));
+    }
     std::string s;
     if (!faces || n <= 0 || (size_t)n > kMaxFaces) return s;
     std::vector<std::string> textures;
     std::set<std::string> seen;
     for (int i = 0; i < n; ++i) {
-        std::string t = Str(faces + (uptr)i * Num("face.size") + Num("face.texture"), Num("face.textureLength") ? Num("face.textureLength") : 16);
+        uptr base = faces;
+        size_t index = i;
+        if (blockSize) {
+            base = Ptr(faces + (index / blockSize) * sizeof(uptr));
+            if (!base) return {};
+            index %= blockSize;
+        }
+        std::string t = Str(base + index * Num("face.size") + Num("face.texture"), Num("face.textureLength") ? Num("face.textureLength") : 16);
         if (seen.insert(t).second) textures.push_back(t);
     }
     s += ",\"faces\":" + std::to_string(n) + ",\"textures\":[";
@@ -247,9 +265,7 @@ std::string Item(uptr obj) {
             std::string s = "{\"kind\":\"solid\"" + Bounds(obj);
             uptr parent = Ptr(obj + Num("object.parent"));
             if (parent && Ptr(parent) == Rva("entity.vtable")) s += ",\"entity\":\"" + Esc(EntityClass(parent)) + "\"";
-            int n = 0;
-            Rd(obj + Num("solid.faceCount"), n);
-            return s + FaceTextures(Ptr(obj + Num("solid.faces")), n) + "}";
+            return s + FaceTextures(obj) + "}";
         }
     }
     if (Has("entity.vtable") && vt == Rva("entity.vtable")) {
@@ -307,9 +323,14 @@ bool Load(const std::string& profileLine) {
     g_base = reinterpret_cast<uptr>(m == f.end() ? GetModuleHandleW(nullptr) : GetModuleHandleA(m->second.c_str()));
     g_source = f.count("layout") && f.at("layout") == "source";
     g_selection = true;
-    if (g_source)
+    if (g_source) {
+        const bool blocks = Has("solid.faceBlocks") || Has("solid.faceCount16") || Has("solid.faceBlockSize");
+        g_selection = blocks
+            ? Has("solid.faceBlocks") && Has("solid.faceCount16") && Num("solid.faceBlockSize") > 0 &&
+              Num("solid.faceBlockSize") <= kMaxFaces && !Has("solid.faces") && !Has("solid.faceCount")
+            : Has("solid.faces") && Has("solid.faceCount");
         for (auto k : kSourceSelectionKeys) g_selection = g_selection && f.count(k);
-    else
+    } else
         for (auto k : kSelectionKeys) g_selection = g_selection && f.count(k);
     for (auto k : kLengths)
         if (Has(k) && (Num(k) == 0 || Num(k) > kMaxLength)) { g_selection = false; g_reason = std::string("bad ") + k + " in the layout"; }
