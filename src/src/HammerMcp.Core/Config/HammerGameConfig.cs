@@ -23,6 +23,12 @@ public sealed record HammerGameConfig(
     public static IEnumerable<string> CandidateFiles(string exePath)
     {
         var dir = Path.GetDirectoryName(exePath) ?? ".";
+        if (Path.GetFileNameWithoutExtension(exePath).Equals("level_editor", StringComparison.OrdinalIgnoreCase))
+        {
+            yield return Path.Combine(dir, "level_editor", "cfg", "GameConfig.txt");
+            yield return Path.Combine(dir, "GameConfig.txt");
+            yield break;
+        }
         yield return Path.Combine(dir, "hammerplusplus", "hammerplusplus_gameconfig.txt");
         yield return Path.Combine(dir, "GameConfig.txt");
         yield return Path.Combine(dir, "..", "GameConfig.txt");

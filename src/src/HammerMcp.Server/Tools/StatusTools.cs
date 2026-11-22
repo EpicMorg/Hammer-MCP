@@ -228,7 +228,10 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
     /// </summary>
     public static IEnumerable<string> EditorDllCandidates(string exePath, string dir)
     {
-        if (Path.GetFileNameWithoutExtension(exePath).StartsWith("hammerplusplus", StringComparison.OrdinalIgnoreCase))
+        var name = Path.GetFileNameWithoutExtension(exePath);
+        if (name.Equals("level_editor", StringComparison.OrdinalIgnoreCase))
+            return [Path.Combine(dir, "level_editor_dll.dll")];
+        if (name.StartsWith("hammerplusplus", StringComparison.OrdinalIgnoreCase))
             return [Path.Combine(dir, EditorDlls[0]), Path.Combine(dir, "hammerplusplus", "bin", EditorDlls[0])];
         // stock / Slammin / Black Mesa / Strata: hammer_dll.dll next to the exe; Source 2: bin/win64/tools/hammer.dll
         return [Path.Combine(dir, EditorDlls[1]), Path.Combine(dir, EditorDlls[2]), Path.Combine(dir, "tools", EditorDlls[2])];

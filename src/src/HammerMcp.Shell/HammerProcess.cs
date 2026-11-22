@@ -11,7 +11,7 @@ public sealed record HammerProcess(int ProcessId, string Name, string ExePath, n
     /// <summary>Process names of known editors (without .exe), used besides shell-window owners.</summary>
     private static readonly HashSet<string> EditorNames = new(StringComparer.OrdinalIgnoreCase)
     {
-        "hammer", "hammerplusplus", "wc", "jack", "jackhammer", "Sledge.Editor",
+        "hammer", "hammerplusplus", "level_editor", "wc", "jack", "jackhammer", "Sledge.Editor",
     };
 
     /// <summary>Source 2 games whose Workshop Tools run Hammer inside the game process (game/bin/win64/tools/hammer.dll).</summary>

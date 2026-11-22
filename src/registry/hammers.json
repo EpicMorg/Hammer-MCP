@@ -1814,6 +1814,14 @@
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
     {
+      "id": "sle-3.129-x86",
+      "family": "sle", "branch": "sdk2013", "arch": "x86",
+      "match": { "dll": "level_editor_dll.dll", "sha256": "85039dd73298e562bdbc8be4dc324a83eb3215abbb658c5f0e2e21ac733ae8ef", "linked": "2026-07-02" },
+      "shell": { "present": true },
+      "gameConfig": "bin/level_editor/cfg/GameConfig.txt",
+      "notes": "Source Level Editor 3.129. Standard and nomanifest releases share the editor DLL. Shell window and command strings found statically. Live shell operation awaits verification."
+    },
+    {
       "id": "valve-sdk2013sp-upcoming-2014",
       "injectAdapter": "menu",
       "family": "valve", "branch": "sdk2013sp", "arch": "x86",
