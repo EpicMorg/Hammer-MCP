@@ -1,11 +1,11 @@
 # Поддержка редакторов
 
-[English version](editors.md) · [Shell-канал](shell-channel.ru.md)
+[English version](editors.md) · [Shell-канал](https://github.com/EpicMorg/HammerShell/blob/master/docs/shell-channel.ru.md)
 
 Hammer-MCP узнаёт редактор по хешу его exe/DLL и ищет его в [реестре сборок](../src/registry/hammers.json)
 (183 сборки). Что он умеет дальше, зависит от редактора:
 
-- **Правки через канал**: создание, изменение и удаление сущностей через [shell-канал](shell-channel.ru.md) Hammer.
+- **Правки через канал**: создание, изменение и удаление сущностей через [shell-канал](https://github.com/EpicMorg/HammerShell/blob/master/docs/shell-channel.ru.md) Hammer.
 - **Команды меню**: Save, Undo, Redo, Run Map, Check for Problems как сообщения `WM_COMMAND` главному окну.
 - **Адаптер**: необязательная DLL, которая загружается в Hammer по кнопке *Connect adapter* (никогда в игру, в Source 2
   или в неизвестную сборку). Добавляет меню *MCP* (пауза, ожидающие правки, чат) и читает живое выделение и 3D-камеру.
