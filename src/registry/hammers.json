@@ -1953,7 +1953,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c", "kv.left": "0x0", "kv.right": "0x2",
         "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
         "solid.vtable": "0x3a671c", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c",
-        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104"
+        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x394a38", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Source SDK Base 2013 Singleplayer, 'upcoming' beta. Also shipped by many SP mods (Entropy: Zero, Prospekt, ...)."
@@ -1971,7 +1972,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c", "kv.left": "0x0", "kv.right": "0x2",
         "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
         "solid.vtable": "0x3a670c", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c",
-        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104"
+        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x3949e8", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/GameConfig.txt"
     },
@@ -1988,7 +1990,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c", "kv.left": "0x0", "kv.right": "0x2",
         "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
         "solid.vtable": "0x3a74ac", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c",
-        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104"
+        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x395818", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Half-Life 2 20th anniversary; also Portal, Portal: Revolution (bin/), Lost in Aperture."
@@ -2006,7 +2009,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x25c",
         "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
         "solid.vtable": "0x3dee94", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c",
-        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104"
+        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x3ccce4", "view3d.camera": "0x98", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/GameConfig.txt"
     },
@@ -2023,7 +2027,8 @@
         "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x260",
         "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x200",
         "solid.vtable": "0x46a760", "solid.faceBlocks": "0x120", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x3d8",
-        "face.size": "0x1f0", "face.texture": "0x20", "face.textureLength": "0x104"
+        "face.size": "0x1f0", "face.texture": "0x20", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x44be68", "view3d.camera": "0x110", "camera.position": "0x48", "camera.matrix": "0x8", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/GameConfig.txt"
     },
@@ -2040,7 +2045,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x25c",
         "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
         "solid.vtable": "0x3e9ba4", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c",
-        "face.size": "0x1b4", "face.texture": "0x14", "face.textureLength": "0x104"
+        "face.size": "0x1b4", "face.texture": "0x14", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x3d5630", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Slammin' Hammer 5.2 (Slammin' Source Map Tools, Slartibarty)."
@@ -2067,7 +2073,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x25c",
         "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
         "solid.vtable": "0x56556c", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c",
-        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104"
+        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x5522d0", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: Black Mesa"
@@ -2112,7 +2119,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c", "kv.left": "0x0", "kv.right": "0x2",
         "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
         "solid.vtable": "0x3a5714", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c",
-        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104"
+        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x393a98", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: Portal Prelude RTX, hl2-vr, portal-rtx"
@@ -2147,7 +2155,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x25c",
         "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
         "solid.vtable": "0x3dde94", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c",
-        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104"
+        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x3cbce4", "view3d.camera": "0x98", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: Source SDK Base 2013 Dedicated Server"
@@ -2165,7 +2174,8 @@
         "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x260",
         "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x200",
         "solid.vtable": "0x469750", "solid.faceBlocks": "0x120", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x3d8",
-        "face.size": "0x1f0", "face.texture": "0x20", "face.textureLength": "0x104"
+        "face.size": "0x1f0", "face.texture": "0x20", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x44ae68", "view3d.camera": "0x110", "camera.position": "0x48", "camera.matrix": "0x8", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/GameConfig.txt",
       "notes": "Seen in: Source SDK Base 2013 Dedicated Server"
@@ -2207,7 +2217,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x25c",
         "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
         "solid.vtable": "0x3dee94", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c",
-        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104"
+        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x3ccce4", "view3d.camera": "0x98", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: css, dod-source"
@@ -2225,7 +2236,8 @@
         "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x260",
         "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x200",
         "solid.vtable": "0x46a760", "solid.faceBlocks": "0x120", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x3d8",
-        "face.size": "0x1f0", "face.texture": "0x20", "face.textureLength": "0x104"
+        "face.size": "0x1f0", "face.texture": "0x20", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x44be68", "view3d.camera": "0x110", "camera.position": "0x48", "camera.matrix": "0x8", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/GameConfig.txt",
       "notes": "Seen in: css, dod-source"
@@ -2259,7 +2271,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x25c",
         "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
         "solid.vtable": "0x5642fc", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c",
-        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104"
+        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x550044", "view3d.camera": "0x98", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: gmod"
@@ -2277,7 +2290,8 @@
         "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x260",
         "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x200",
         "solid.vtable": "0x6510a0", "solid.faceBlocks": "0x120", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x3d8",
-        "face.size": "0x1f0", "face.texture": "0x20", "face.textureLength": "0x104"
+        "face.size": "0x1f0", "face.texture": "0x20", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x62f110", "view3d.camera": "0x110", "camera.position": "0x48", "camera.matrix": "0x8", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/win64/GameConfig.txt",
       "notes": "Seen in: gmod"
@@ -2295,7 +2309,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x25c",
         "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
         "solid.vtable": "0x3dde94", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c",
-        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104"
+        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x3cbce4", "view3d.camera": "0x98", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: hl1sourcedm, hl2dm"
@@ -2313,7 +2328,8 @@
         "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x260",
         "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x200",
         "solid.vtable": "0x46a760", "solid.faceBlocks": "0x120", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x3d8",
-        "face.size": "0x1f0", "face.texture": "0x20", "face.textureLength": "0x104"
+        "face.size": "0x1f0", "face.texture": "0x20", "face.textureLength": "0x104",
+        "doc.views": "0x58", "view3d.vtable": "0x44be68", "view3d.camera": "0x110", "camera.position": "0x48", "camera.matrix": "0x8", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/x64/GameConfig.txt",
       "notes": "Seen in: hl1sourcedm, hl2dm"
@@ -2403,7 +2419,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c", "kv.left": "0x0", "kv.right": "0x2",
         "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
         "solid.vtable": "0x3a671c", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c",
-        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104"
+        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x394a80", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: sdk2013-dc, sdk2013mp-legacy"
@@ -2511,7 +2528,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c", "kv.left": "0x0", "kv.right": "0x2",
         "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
         "solid.vtable": "0x3a7744", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c",
-        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104"
+        "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x395aa8", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: zps"
