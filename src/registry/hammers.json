@@ -1953,6 +1953,125 @@
       "notes": "Standard and nomanifest releases share the editor DLL. Standard edition tested on Windows: shell session, version check, entity create/delete, x86 adapter connection, selection and Send selection for four point entities. Re-checked live 2026-11-23: shell create / set keyvalue / delete, adapter + MCP menu, selection incl. a brush (faces, texture, bounds); camera found by a memory diff: doc views at 0x2c, camera = [view3d + 0x8c] (direct, the camera has a vtable), row-major view matrix at 0x4, position at 0x44; mouse wheel = +60 along forward."
     },
     {
+      "id": "sle-2.104-x86",
+      "family": "sle", "branch": "sdk2013", "arch": "x86",
+      "match": { "dll": "level_editor_dll.dll", "sha256": "25b91a26e63b33e1b0ae71413082812466bd3805cdf67d00d01c2999844a3954", "linked": "2025-10-09" },
+      "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "level_editor_dll.dll", "activeDoc": "0x5897e8", "doc.vtable": "0x449bb0", "doc.selection": "0x1cc", "selection.list": "0xc",
+        "object.origin": "0x18", "object.mins": "0x68", "object.maxs": "0x74", "object.parent": "0x8", "entity.vtable": "0x4624b4", "entity.className": "0xfc",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xdc", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0",
+        "kv.right": "0x2", "kv.nodeSize": "0x25c", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x463de0", "solid.faceBlocks": "0xd8", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x234", "face.size": "0x1c0", "face.texture": "0x18",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x44eeac", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
+      "gameConfig": "bin/level_editor/cfg/GameConfig.txt",
+      "notes": "Source Level Editor 2.104 (GitHub release SLE-2.104). Shell window string present. Memory layout derived statically (Linux agent, 2026-11-23); the adapter stays off until a live check."
+    },
+    {
+      "id": "sle-2.104-hotfix-x86",
+      "family": "sle", "branch": "sdk2013", "arch": "x86",
+      "match": { "dll": "level_editor_dll.dll", "sha256": "d9a34229a39e4a118e6f3aa83ab941ee8a267c74331d164f8b82a70216e3d87e", "linked": "2025-10-11" },
+      "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "level_editor_dll.dll", "activeDoc": "0x5897e8", "doc.vtable": "0x449bb0", "doc.selection": "0x1cc", "selection.list": "0xc",
+        "object.origin": "0x18", "object.mins": "0x68", "object.maxs": "0x74", "object.parent": "0x8", "entity.vtable": "0x4624b4", "entity.className": "0xfc",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xdc", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0",
+        "kv.right": "0x2", "kv.nodeSize": "0x25c", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x463de0", "solid.faceBlocks": "0xd8", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x234", "face.size": "0x1c0", "face.texture": "0x18",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x44eeac", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
+      "gameConfig": "bin/level_editor/cfg/GameConfig.txt",
+      "notes": "Source Level Editor 2.104 Hotfix (GitHub release SLE-2.104-Hotfix). Shell window string present. Memory layout derived statically (Linux agent, 2026-11-23); the adapter stays off until a live check."
+    },
+    {
+      "id": "sle-2.104-hotfix2-x86",
+      "family": "sle", "branch": "sdk2013", "arch": "x86",
+      "match": { "dll": "level_editor_dll.dll", "sha256": "d85dac4337d6ca7362477201d5e36bce2ce9a50d536f4fb63989858301528c5a", "linked": "2025-10-13" },
+      "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "level_editor_dll.dll", "activeDoc": "0x5897e8", "doc.vtable": "0x449bb0", "doc.selection": "0x1cc", "selection.list": "0xc",
+        "object.origin": "0x18", "object.mins": "0x68", "object.maxs": "0x74", "object.parent": "0x8", "entity.vtable": "0x4624b4", "entity.className": "0xfc",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xdc", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0",
+        "kv.right": "0x2", "kv.nodeSize": "0x25c", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x463de0", "solid.faceBlocks": "0xd8", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x234", "face.size": "0x1c0", "face.texture": "0x18",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x44eeac", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
+      "gameConfig": "bin/level_editor/cfg/GameConfig.txt",
+      "notes": "Source Level Editor 2.104 Hotfix 2 (GitHub release SLE-2.104-Hotfix-2). Shell window string present. Memory layout derived statically (Linux agent, 2026-11-23); the adapter stays off until a live check."
+    },
+    {
+      "id": "sle-2.108-x86",
+      "family": "sle", "branch": "sdk2013", "arch": "x86",
+      "match": { "dll": "level_editor_dll.dll", "sha256": "02f5f7d1fe676f52f67118907cae1d3ff2bd014655ff95ba9c4ef854c7d5a06e", "linked": "2025-12-08" },
+      "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "level_editor_dll.dll", "activeDoc": "0x6286a4", "doc.vtable": "0x4df0d8", "doc.selection": "0x1cc", "selection.list": "0xc",
+        "object.origin": "0x20", "object.mins": "0x70", "object.maxs": "0x7c", "object.parent": "0x8", "entity.vtable": "0x4f7ed4", "entity.className": "0x104",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xe4", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0",
+        "kv.right": "0x2", "kv.nodeSize": "0x25c", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x4f9880", "solid.faceBlocks": "0xe0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x23c", "face.size": "0x1c8", "face.texture": "0x20",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x4e45d4", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
+      "gameConfig": "bin/level_editor/cfg/GameConfig.txt",
+      "notes": "Source Level Editor 2.108 (GitHub release SLE-2.108). Shell window string present. Memory layout derived statically (Linux agent, 2026-11-23); the adapter stays off until a live check."
+    },
+    {
+      "id": "sle-2.108-nomanifest-x86",
+      "family": "sle", "branch": "sdk2013", "arch": "x86",
+      "match": { "dll": "level_editor_dll.dll", "sha256": "dd7d1d1f6b061c90bae7db9ce4f6e789f68c476bc2b9ac92e0be37f83c4d09df", "linked": "2025-12-08" },
+      "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "level_editor_dll.dll", "activeDoc": "0x6286a4", "doc.vtable": "0x4df0d8", "doc.selection": "0x1cc", "selection.list": "0xc",
+        "object.origin": "0x20", "object.mins": "0x70", "object.maxs": "0x7c", "object.parent": "0x8", "entity.vtable": "0x4f7ed4", "entity.className": "0x104",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xe4", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0",
+        "kv.right": "0x2", "kv.nodeSize": "0x25c", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x4f9880", "solid.faceBlocks": "0xe0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x23c", "face.size": "0x1c8", "face.texture": "0x20",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x4e45d4", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
+      "gameConfig": "bin/level_editor/cfg/GameConfig.txt",
+      "notes": "Source Level Editor 2.108 Nomanifest (GitHub release SLE-2.108-Nomanifest). Shell window string present. Memory layout derived statically (Linux agent, 2026-11-23); the adapter stays off until a live check."
+    },
+    {
+      "id": "sle-2.117-x86",
+      "family": "sle", "branch": "sdk2013", "arch": "x86",
+      "match": { "dll": "level_editor_dll.dll", "sha256": "137a63cabec3d11f83754d5a0a52700771ef0ffac884fbb73491ba0bdb78109b", "linked": "2026-03-24" },
+      "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "level_editor_dll.dll", "activeDoc": "0x59ed74", "doc.vtable": "0x45c01c", "doc.selection": "0x1d0", "selection.list": "0xc",
+        "object.origin": "0x20", "object.mins": "0x70", "object.maxs": "0x7c", "object.parent": "0x8", "entity.vtable": "0x47548c", "entity.className": "0x104",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xe4", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0",
+        "kv.right": "0x2", "kv.nodeSize": "0x25c", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x476ea0", "solid.faceBlocks": "0xe0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x23c", "face.size": "0x1c8", "face.texture": "0x20",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x461b74", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
+      "gameConfig": "bin/level_editor/cfg/GameConfig.txt",
+      "notes": "Source Level Editor 2.117 (GitHub release SLE-2.117). Shell window string present. Memory layout derived statically (Linux agent, 2026-11-23); the adapter stays off until a live check."
+    },
+    {
+      "id": "sle-2.117-nomanifest-x86",
+      "family": "sle", "branch": "sdk2013", "arch": "x86",
+      "match": { "dll": "level_editor_dll.dll", "sha256": "2724ab127f134b290a6e482fb2879572c86b507e38c16f76df349e3e5bb4950f", "linked": "2026-03-24" },
+      "shell": { "present": true },
+      "memory": {
+        "layout": "source", "module": "level_editor_dll.dll", "activeDoc": "0x59ed74", "doc.vtable": "0x45c01c", "doc.selection": "0x1d0", "selection.list": "0xc",
+        "object.origin": "0x20", "object.mins": "0x70", "object.maxs": "0x7c", "object.parent": "0x8", "entity.vtable": "0x47548c", "entity.className": "0x104",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xe4", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0",
+        "kv.right": "0x2", "kv.nodeSize": "0x25c", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x476ea0", "solid.faceBlocks": "0xe0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x23c", "face.size": "0x1c8", "face.texture": "0x20",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x461b74", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
+      "gameConfig": "bin/level_editor/cfg/GameConfig.txt",
+      "notes": "Source Level Editor 2.117 Nomanifest (GitHub release SLE-2.117-Nomanifest). Shell window string present. Memory layout derived statically (Linux agent, 2026-11-23); the adapter stays off until a live check."
+    },
+    {
       "id": "valve-sdk2013sp-upcoming-2014",
       "injectAdapter": "menu",
       "family": "valve", "branch": "sdk2013sp", "arch": "x86",
