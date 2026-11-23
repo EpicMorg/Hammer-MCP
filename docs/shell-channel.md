@@ -1,59 +1,118 @@
 # Hammer shell channel
 
-[Русская версия](shell-channel.ru.md)
+[Русская версия](shell-channel.ru.md) · [Editor support matrix](editors.md)
 
-The shell channel lets a Windows program send edit commands to a running Source 1 Hammer editor. Valve's public Source SDK includes the sender used by the game's map-editing code. Hammer-MCP uses the same Windows message to update the open map from a separate process. [SDK sender][sdk-sender] · [SDK game-side code][sdk-game]
+Source 1 Hammer has a small built-in remote control: a hidden window that accepts text commands from other programs
+and applies them to the open map — create, change and delete entities, edit AI nodes. Valve uses it so that a running
+game can push changes back into the editor. Hammer-MCP uses the same channel to let an agent make small edits to the
+map that is open in Hammer, without patching the editor.
+
+## Where it comes from
+
+- **The sending side is public Valve code.** Every public Source SDK since 2006 (Episode One, Orange Box, Alien
+  Swarm, 2013) ships `public/editor_sendcommand.cpp`, which finds the window and sends the commands
+  ([SDK 2013 source][sdk-sender]).
+- **The game uses it.** `game/server/wcedit.cpp` ([source][sdk-game]) implements the console commands `map_edit` and
+  `hammer_update_entity`, which send entity positions and angles from the running game to Hammer; the AI network code
+  (`ai_networkmanager.cpp`, `ai_dynamiclink.cpp`) sends node edits the same way.
+- **Hammer's side was never published.** No public SDK contains the editor's handler, so everything below about how
+  Hammer reacts comes from the SDK's sender and from testing real Hammer builds.
+- In the older engine branches (2006/2007 up to Left 4 Dead 2 and Portal 2) the launcher can also load Hammer into the
+  game process with `-edit`; on the current Left 4 Dead 2 `hammer_dll.dll` does get loaded, but no longer starts
+  properly. The 2013 branch dropped that path; the shell channel stayed in the standalone Hammer.
 
 ## Sending a command
 
-1. Find the hidden window whose class and title are both `Worldcraft_ShellMessageWnd`. If several editors are running, match the window's process ID to the editor you want to edit.
-2. Encode one command as a NUL-terminated byte string. Hammer-MCP uses the Windows system ANSI code page and formats numbers with a decimal point.
-3. Set `COPYDATASTRUCT.dwData` to zero, `cbData` to the byte count including the NUL, and `lpData` to the buffer. Send `WM_COPYDATA` (`0x004A`) with `SendMessage`, `wParam = 0`, and a pointer to the structure in `lParam`. Keep the buffer valid until the call returns.
-4. A nonzero result means the editor accepted the command. A zero result carries no diagnostic text. If no window was found, check that the selected build exposes the channel. Also check the sender and editor's Windows privilege levels if delivery fails.
+1. Find the window whose class name and title are both `Worldcraft_ShellMessageWnd` (`FindWindow`). With several
+   editors running, enumerate the windows and pick the one that belongs to the editor's process.
+2. Encode one command as a NUL-terminated byte string in the system ANSI code page. Numbers use a decimal point.
+3. Send it with `SendMessage(hwnd, WM_COPYDATA, 0, &cds)`, where `cds.dwData = 0`, `cds.cbData` is the byte count
+   including the NUL and `cds.lpData` points to the bytes.
+4. A non-zero result means Hammer accepted the command; zero means it was rejected. There is no error text and no
+   data in the reply.
 
-[SDK sender][sdk-sender] · [Hammer-MCP sender](../src/src/HammerMcp.Shell/ShellChannel.cs) · [WM_COPYDATA][copydata] · [SendMessage and UIPI][sendmessage]
+`SendMessage` waits until Hammer has processed the command. The sender must run at the same or a higher Windows
+integrity level as Hammer (UIPI), otherwise the message is dropped.
 
-## Edit sessions
+## Sessions and map version
 
-Open and save a copy of the map in Hammer. Use the file name without its path or `.vmf` extension and read `mapversion` from the VMF's `versioninfo` block. For a map named `shell_test.vmf` with `mapversion` 12, and a free spot at `0 0 64`, send these lines separately. Proceed with the entity commands after Hammer accepts `session_begin`.
+Edits are only accepted inside a session that is bound to the open map:
 
 ```text
-session_begin shell_test 12
-entity_create info_target 0 0 64
-entity_set_keyvalue info_target 0 0 64 "targetname" "shell_test_target"
-entity_delete info_target 0 0 64
+session_begin <mapname> <mapversion>
+  ... edit commands ...
 session_end
 ```
 
-Close an opened session even if an edit fails. On Hammer++ TF2 build 8873 x64, a nested `session_begin` was rejected, a session left open survived the sender's exit, and saving with Ctrl+S during a session kept it open. In those tests, `map_check_version` succeeded only inside an open session. Closing the session leaves accepted edits in the editor. Save separately if you want to write the edits to disk.
+- `mapname` is the VMF file name without path and extension, `mapversion` the `versioninfo.mapversion` of the open
+  map. Hammer rejects the session if they don't match, so save the map once after opening it and read the version
+  from the file.
+- The version in Hammer's memory can move ahead of the file: after edits made through the channel the next session
+  may need `mapversion + 1`. Hammer-MCP tries the saved version, then +1 and −1.
+- Only one session can be open; a second `session_begin` is rejected. A session left open by a crashed sender stays
+  open, so a client should send `session_end` before its own `session_begin`.
+- `map_check_version <mapname> <mapversion>` checks the binding; in our tests it only succeeds inside a session.
+- Closing a session does not save the map. Saving with Ctrl+S during a session keeps the session open.
 
-Hammer-MCP sends `session_end` before opening its own session to clear a stale one. It tries the saved version, then version +1 and version −1. Those retries are client behavior. For a manual test, first save the map and try the version found in the file. Coordinate access with any other sender using the same editor. [Hammer-MCP session code](../src/src/HammerMcp.Shell/ShellSession.cs)
+## Commands
 
-## Command reference
+| Command | Arguments | Effect |
+| --- | --- | --- |
+| `session_begin` | `mapname mapversion` | open an edit session for the open map |
+| `session_end` | | close it |
+| `map_check_version` | `mapname mapversion` | check that the session matches the map |
+| `entity_create` | `classname x y z` | create a point entity |
+| `entity_delete` | `classname x y z` | delete the entity of that class at that origin |
+| `entity_set_keyvalue` | `classname x y z "key" "value"` | set a keyvalue (also on brush entities, addressed by the centre of their brushes) |
+| `entity_rotate_incremental` | `classname x y z pitch yaw roll` | rotate by the given angles, in degrees |
+| `node_create` | `nodeclass id x y z` | create an AI node |
+| `node_delete` | `id` | delete an AI node |
+| `nodelink_create`, `nodelink_delete` | `start_id end_id` | link or unlink two AI nodes |
 
-The public SDK sender formats the following commands. Availability and behavior in a given editor build can be checked with a saved test map.
+Entities are found by class name and origin. Two entities of the same class at the same spot cannot be told apart.
+Keys and values are quoted and have no escaping, so they must not contain `"`.
 
-| Command | Arguments |
-| --- | --- |
-| `session_begin` | `mapname mapversion` |
-| `map_check_version` | `mapname mapversion` |
-| `session_end` | |
-| `entity_create`, `entity_delete` | `classname x y z` |
-| `entity_set_keyvalue` | `classname x y z "key" "value"` |
-| `entity_rotate_incremental` | `classname x y z pitch yaw roll` |
-| `node_create` | `nodeclass id x y z` |
-| `node_delete` | `id` |
-| `nodelink_create`, `nodelink_delete` | `start_id end_id` |
+## What it cannot do
 
-Coordinates are in map units, and incremental rotations are in degrees. Entity commands identify an object by class and origin. If two entities share both, the command cannot select one by its VMF ID. Hammer-MCP rejects embedded double quotes in keys and values because its command format has no escaping for them. [SDK sender][sdk-sender] · [Hammer-MCP command formatting](../src/src/HammerMcp.Shell/ShellCommands.cs)
+- Read anything: no map data, no selection, no camera. Hammer-MCP reads the saved VMF, Hammer's autosaves and, with
+  the optional adapter, the selection and camera.
+- Create or change brushes, or move entities.
+- Outputs: setting them as keyvalues works in game, but they do not appear on the Outputs tab.
+- Undo: creating, deleting and rotating entities can be undone in Hammer; keyvalue changes are not in the Undo
+  history.
+- Stock Hammer rotates only entities that have a model; for others set `angles`.
+- Hammer's views are not redrawn until the editor gets focus again. Hammer++ does not mark the map as modified.
+- Menu actions such as Save or Run Map are not shell commands; they are ordinary `WM_COMMAND` messages to the main
+  window.
 
-The channel returns an acknowledgment and provides no map or selection data. Hammer-MCP reads the saved VMF for file-based queries. The public command set supports entity and node edits. Creating brush geometry needs a separate workflow. Menu actions such as Save use a separate window message. In the Hammer++ live test, views caught up when focus returned to the editor.
+## Which editors have it
 
-## Editor support
+Every stock Source 1 Hammer examined (Episode One 2007 and later, x86 and x64), Hammer++ from build 8867, Source
+Level Editor, Slammin' Hammer, Black Mesa and Nuclear Dawn. Not in Hammer++ up to 8866, Strata Hammer, Source 2 Hammer,
+GoldSrc editors or J.A.C.K. Details per build: [editor support matrix](editors.md) and the `shell.present` field of
+the [build registry](../src/registry/hammers.json).
 
-The channel has been identified in the stock Source 1 builds examined by this project, including the Episode One, SDK 2013, and later branches. In the Hammer++ builds examined, it appears from build 8867 onward. Entity edits and sessions were exercised live on Hammer++ TF2 8873 x64. The examined GoldSrc editors, Strata Hammer, and Source 2 Hammer lack this channel. The registry's `shell.present` records per-build findings. For the running process, check for the window or use `hammer_status` in Hammer-MCP. [Build registry](../src/registry/hammers.json)
+## Using it from C#
 
-[sdk-sender]: https://github.com/ValveSoftware/source-sdk-2013/blob/3e957b70b167929f120360115d359d1ecb4c1699/src/public/editor_sendcommand.cpp
-[sdk-game]: https://github.com/ValveSoftware/source-sdk-2013/blob/3e957b70b167929f120360115d359d1ecb4c1699/src/game/server/wcedit.cpp
-[copydata]: https://learn.microsoft.com/en-us/windows/win32/dataxchg/wm-copydata
-[sendmessage]: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendmessage
+`HammerShell.Client` is the channel code of Hammer-MCP as a standalone .NET library (Windows only): finding the
+window, sessions with the version retries described above, and command formatting. It is being moved to its own
+repository, [EpicMorg/HammerShell](https://github.com/EpicMorg/HammerShell), and will be published on NuGet; the API
+looks like this:
+
+```csharp
+using HammerShell.Client;
+
+var channel = new ShellChannel();                         // first Worldcraft_ShellMessageWnd on each send
+using var session = ShellSession.Begin(channel, "my_map", 12);  // map name and saved mapversion
+if (session is null) return;                              // no version accepted
+
+var at = new System.Numerics.Vector3(0, 0, 64);
+if (session.Send(ShellCommands.EntityCreate("info_target", at)) == ShellResult.Ok)
+    session.Send(ShellCommands.EntitySetKeyValue("info_target", at, "targetname", "from_shell"));
+```
+
+`Send` returns `Ok`, `Rejected` (Hammer returned zero) or `NotRunning` (no window). With several editors running,
+pass `ShellChannel` a function that returns the window of the process you want.
+
+[sdk-sender]: https://github.com/ValveSoftware/source-sdk-2013/blob/master/src/public/editor_sendcommand.cpp#L188
+[sdk-game]: https://github.com/ValveSoftware/source-sdk-2013/blob/master/src/game/server/wcedit.cpp
