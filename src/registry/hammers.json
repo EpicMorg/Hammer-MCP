@@ -1934,10 +1934,11 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x25c",
         "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
         "solid.vtable": "0x47a210", "solid.faceBlocks": "0xe0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x23c",
-        "face.size": "0x1c8", "face.texture": "0x20", "face.textureLength": "0x104"
+        "face.size": "0x1c8", "face.texture": "0x20", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x464c84", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/level_editor/cfg/GameConfig.txt",
-      "notes": "Standard and nomanifest releases share the editor DLL. Standard edition tested on Windows: shell session, version check, entity create/delete, x86 adapter connection, selection and Send selection for four point entities. Brush payloads and camera were not verified."
+      "notes": "Standard and nomanifest releases share the editor DLL. Standard edition tested on Windows: shell session, version check, entity create/delete, x86 adapter connection, selection and Send selection for four point entities. Re-checked live 2026-11-23: shell create / set keyvalue / delete, adapter + MCP menu, selection incl. a brush (faces, texture, bounds); camera found by a memory diff: doc views at 0x2c, camera = [view3d + 0x8c] (direct, the camera has a vtable), row-major view matrix at 0x4, position at 0x44; mouse wheel = +60 along forward."
     },
     {
       "id": "valve-sdk2013sp-upcoming-2014",
