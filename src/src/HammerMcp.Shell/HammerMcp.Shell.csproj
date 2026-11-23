@@ -9,6 +9,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HammerMcp.Core\HammerMcp.Core.csproj" />
-    <ProjectReference Include="..\HammerShell.Client\HammerShell.Client.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- the shell channel client: github.com/EpicMorg/HammerShell -->
+    <PackageReference Include="EpicMorg.HammerShell.Client" Version="0.1.0" />
   </ItemGroup>
 </Project>

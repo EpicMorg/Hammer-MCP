@@ -1,11 +1,11 @@
 # Editor support
 
-[Русская версия](editors.ru.md) · [Shell channel](shell-channel.md)
+[Русская версия](editors.ru.md) · [Shell channel](https://github.com/EpicMorg/HammerShell/blob/master/docs/shell-channel.md)
 
 Hammer-MCP recognises the editor by the hash of its exe/DLL and looks it up in the
 [build registry](../src/registry/hammers.json) (183 builds). What it can do then depends on the editor:
 
-- **Shell edits**: create / change / delete entities through Hammer's [shell channel](shell-channel.md).
+- **Shell edits**: create / change / delete entities through Hammer's [shell channel](https://github.com/EpicMorg/HammerShell/blob/master/docs/shell-channel.md).
 - **Menu commands**: Save, Undo, Redo, Run Map, Check for Problems as `WM_COMMAND` messages to the main window.
 - **Adapter**: the optional DLL loaded into Hammer on *Connect adapter* (never into a game, Source 2 or an unknown
   build). It adds the *MCP* menu (pause, pending changes, chat) and reads the live selection and 3D camera.

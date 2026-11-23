@@ -150,7 +150,7 @@ with a known memory layout the adapter also reads the **live selection** and the
 
 ### Limits of the shell channel
 
-The **[shell channel reference](docs/shell-channel.md)** explains where the channel comes from (public Source SDK code
+The **[shell channel reference](https://github.com/EpicMorg/HammerShell/blob/master/docs/shell-channel.md)** explains where the channel comes from (public Source SDK code
 since 2006), how to send commands, edit sessions, every command and what it cannot do — useful for any tool author,
 not only for Hammer-MCP.
 
@@ -193,8 +193,7 @@ dotnet test --solution HammerMcp.sln
 src/src/HammerMcp.Core      formats (VMF with outputs, RMF/MAP via Sledge, tolerant FGD parser incl. Hammer++/GMod
                             extensions, VMT, Hammer game configs), map validation, build registry, menu ids
 src/src/HammerMcp.Shell     menu commands (WM_COMMAND), process discovery; the shell channel (WM_COPYDATA, sessions)
-                            is here in 0.8 and moves to the standalone HammerShell.Client library in 0.9
-                            (see docs/shell-channel.md)
+                            comes from the EpicMorg.HammerShell.Client package (github.com/EpicMorg/HammerShell)
 src/src/HammerMcp.Server    MCP server (Streamable HTTP, Bearer token) and tools
 src/src/HammerMcp.App       hammer-mcp.exe — WinForms window + tray
 src/src/HammerMcp.Cli       hammer-mcp-cli.exe — the server without the tray app (stdio / HTTP)

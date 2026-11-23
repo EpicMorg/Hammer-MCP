@@ -150,7 +150,7 @@ OpenCode, и агент там просыпается и отвечает. **Dis
 
 ### Ограничения shell-канала
 
-**[Справочник по shell-каналу](docs/shell-channel.ru.md)** рассказывает, откуда канал взялся (открытый код Source SDK с
+**[Справочник по shell-каналу](https://github.com/EpicMorg/HammerShell/blob/master/docs/shell-channel.ru.md)** рассказывает, откуда канал взялся (открытый код Source SDK с
 2006 года), как отправлять команды, про сессии, все команды и чего канал не умеет — пригодится любому автору
 инструментов, не только Hammer-MCP.
 
@@ -192,9 +192,8 @@ dotnet test --solution HammerMcp.sln
 ```
 src/src/HammerMcp.Core      форматы (VMF с outputs, RMF/MAP через Sledge, терпимый парсер FGD с расширениями
                             Hammer++/GMod, VMT, игровые конфиги Hammer), проверка карт, реестр сборок, id меню
-src/src/HammerMcp.Shell     команды меню (WM_COMMAND), поиск процессов; shell-канал (WM_COPYDATA, сессии) в 0.8
-                            находится здесь, а в 0.9 переезжает в отдельную библиотеку HammerShell.Client
-                            (см. docs/shell-channel.ru.md)
+src/src/HammerMcp.Shell     команды меню (WM_COMMAND), поиск процессов; shell-канал (WM_COPYDATA, сессии)
+                            берётся из пакета EpicMorg.HammerShell.Client (github.com/EpicMorg/HammerShell)
 src/src/HammerMcp.Server    MCP-сервер (Streamable HTTP, Bearer-токен) и инструменты
 src/src/HammerMcp.App       hammer-mcp.exe — окно WinForms + трей
 src/src/HammerMcp.Cli       hammer-mcp-cli.exe — сервер без приложения в трее (stdio / HTTP)
