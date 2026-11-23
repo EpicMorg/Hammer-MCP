@@ -73,14 +73,14 @@ adapter also reads the live selection and 3D camera on builds with a known memor
 | Hammer++ ≤ 8866 | — | ✅ | ✅ | ✅ |
 | [Source Level Editor](https://developer.valvesoftware.com/wiki/Source_Level_Editor_(SLE)) 3.129 | ✅ | ✅ | ✅ | ✅ |
 | Stock Hammer, 2013 branch and newer — SDK 2013 SP/MP, HL2, TF2, CS:S, HL1, GMod, … (x86 & x64) | ✅ | ✅ | ✅ ² | ✅ |
-| Stock Hammer, older branches — EP1, Orange Box, L4D/L4D2, Portal 2, Alien Swarm, CS:GO, … | ✅ | ✅ | in progress | ✅ |
+| Stock Hammer, older branches — Orange Box, L4D/L4D2, Portal 2, Alien Swarm, CS:GO, … (EP1: selection in progress) | ✅ | ✅ | ✅ ² | ✅ |
 | [Slammin' Hammer 5.2](https://developer.valvesoftware.com/wiki/Slammin'_Source_Map_Tools), Black Mesa, Nuclear Dawn | ✅ | ✅ | ✅ ¹ ² | ✅ |
 | [Strata](https://github.com/StrataSource) Hammer (Portal: Revolution, P2CE, …) | — | ✅ | — | ✅ |
 | Source 2 Hammer (CS2, Dota 2, …) — recognised, `.vmap` and FGD read, unsaved state via VConsole2 | — | — | — | ✅ read |
 | GoldSrc: Hammer 3.4 / 3.5 and its mods (Neon, Neo, CSM) | — | ✅ | ✅ | RMF / MAP read |
 | GoldSrc: Worldcraft 1.1–3.3; [J.A.C.K.](https://store.steampowered.com/app/496450/) | — | partly | — | RMF / MAP read |
 
-¹ Slammin' and Black Mesa only; Nuclear Dawn is in progress.
+¹ Nuclear Dawn included.
 ² Memory layout derived from the binaries; live check pending.
 
 Checked live so far (0.9 development builds): Hammer++ 8873 (x64 and x86) and 8862, Source Level Editor 3.129, Valve Hammer Editor 3.4 and 3.5,
@@ -210,8 +210,8 @@ src/native/                 C++ injector and adapter (CMake; MSVC or clang-cl), 
 - [x] Compile pipeline: Hammer's Run Map sequences, run_compile, parsed logs, leak tracing; asset checks via gameinfo.txt + VPK
 - [x] Releases 0.1 – 0.8: single-file `win-x64` and `win-x86` builds — see [CHANGELOG.md](CHANGELOG.md)
 - [x] Adapter, layer 1 (0.7): MCP menu in Hammer, chat, live activity log, approval list
-- [x] Adapter, layer 2 (0.9): live read of the selection and the 3D camera (per-build memory layouts; Hammer++, stock 2013+, SLE, GoldSrc 3.4 / 3.5)
-- [ ] Layer 2 for the older stock branches (EP1 … CS:GO); docked panels in Hammer
+- [x] Adapter, layer 2 (0.9): live read of the selection and the 3D camera (per-build memory layouts; Hammer++, stock Source Hammer of every branch since Orange Box, SLE, GoldSrc 3.4 / 3.5)
+- [ ] Layer 2 for Episode One; live checks of the static layouts; docked panels in Hammer
 - [ ] Viewport images, live brush edits, BSP visibility audit (from the [HammerOMP-MCP fork](https://github.com/EpicMorg/Hammer-MCP/issues/1))
 - [ ] Cubemap and model clipping checks with a look through the camera
 

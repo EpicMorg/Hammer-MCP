@@ -73,14 +73,14 @@ Shell-канал есть во **всех стоковых Source-Hammer с 2006
 | Hammer++ ≤ 8866 | — | ✅ | ✅ | ✅ |
 | [Source Level Editor](https://developer.valvesoftware.com/wiki/Source_Level_Editor_(SLE)) 3.129 | ✅ | ✅ | ✅ | ✅ |
 | Стоковый Hammer, ветка 2013 и новее — Source SDK 2013 SP/MP, HL2, TF2, CS:S, HL1, GMod, … (x86 и x64) | ✅ | ✅ | ✅ ² | ✅ |
-| Стоковый Hammer, старые ветки — EP1, Orange Box, L4D/L4D2, Portal 2, Alien Swarm, CS:GO, … | ✅ | ✅ | в работе | ✅ |
+| Стоковый Hammer, старые ветки — Orange Box, L4D/L4D2, Portal 2, Alien Swarm, CS:GO, … (EP1: выделение в работе) | ✅ | ✅ | ✅ ² | ✅ |
 | [Slammin' Hammer 5.2](https://developer.valvesoftware.com/wiki/Slammin'_Source_Map_Tools), Black Mesa, Nuclear Dawn | ✅ | ✅ | ✅ ¹ ² | ✅ |
 | [Strata](https://github.com/StrataSource) Hammer (Portal: Revolution, P2CE, …) | — | ✅ | — | ✅ |
 | Hammer Source 2 (CS2, Dota 2, …) — распознаётся, `.vmap` и FGD читаются, несохранённое состояние через VConsole2 | — | — | — | ✅ чтение |
 | GoldSrc: Hammer 3.4 / 3.5 и его моды (Neon, Neo, CSM) | — | ✅ | ✅ | чтение RMF / MAP |
 | GoldSrc: Worldcraft 1.1–3.3; [J.A.C.K.](https://store.steampowered.com/app/496450/) | — | частично | — | чтение RMF / MAP |
 
-¹ Только Slammin' и Black Mesa; Nuclear Dawn в работе.
+¹ Включая Nuclear Dawn.
 ² Раскладка памяти выведена из бинарников, живая проверка впереди.
 
 Вживую пока проверены (сборки 0.9 в разработке) Hammer++ 8873 (x64 и x86) и 8862, Source Level Editor 3.129, Valve Hammer Editor 3.4 и 3.5,
@@ -210,8 +210,8 @@ src/native/                 C++ инжектор и адаптер (CMake; MSVC 
 - [x] Компиляция: Run Map-последовательности Hammer, run_compile, разбор логов, путь утечки; проверка ассетов по gameinfo.txt + VPK
 - [x] Релизы 0.1 – 0.8: однофайловые сборки `win-x64` и `win-x86` — см. [CHANGELOG.ru.md](CHANGELOG.ru.md)
 - [x] Адаптер, слой 1 (0.7): меню MCP в Hammer, чат, живой журнал, список подтверждения
-- [x] Адаптер, слой 2 (0.9): живое чтение выделения и 3D-камеры (раскладки памяти по сборкам; Hammer++, сток 2013+, SLE, GoldSrc 3.4 / 3.5)
-- [ ] Слой 2 для старых стоковых веток (EP1 … CS:GO); док-панели в Hammer
+- [x] Адаптер, слой 2 (0.9): живое чтение выделения и 3D-камеры (раскладки памяти по сборкам; Hammer++, стоковый Source Hammer всех веток начиная с Orange Box, SLE, GoldSrc 3.4 / 3.5)
+- [ ] Слой 2 для Episode One; живые проверки статических раскладок; док-панели в Hammer
 - [ ] Картинки вьюпортов, живая правка брашей, аудит видимости BSP (из [форка HammerOMP-MCP](https://github.com/EpicMorg/Hammer-MCP/issues/1))
 - [ ] Проверки кубмапов и проникновения моделей с осмотром через камеру
 

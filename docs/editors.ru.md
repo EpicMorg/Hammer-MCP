@@ -22,8 +22,9 @@ Hammer-MCP узнаёт редактор по хешу его exe/DLL и ище�
 | Hammer++ 8846–8866, x86 и x64 | 78 | — | ● | ● | ● | ● ¹ |
 | Source Level Editor 3.129 | 1 | ● | ● | ● | ● | ● |
 | Стоковый Hammer, ветка 2013 и новее: SDK 2013 SP / MP, HL2, TF2, CS:S, HL1 Source, GMod, ZPS, Portal Prelude RTX, выделенный сервер; x86 и x64 | 16 | ○ | ○ | ○ | ○ | ○ |
-| Стоковый Hammer, старые ветки: Episode One, Orange Box, Source 2007 / 2009, L4D, L4D2, Alien Swarm, Portal 2, CS:GO, Insurgency, Nuclear Dawn, PVKII и другие | 17 | ○ | ○ | ○ | — ² | — ² |
-| Репак SDK от Psycho-A (старые SDK-Hammer) | 8 | ○ | ○ | ○ | — ² | — ² |
+| Стоковый Hammer, старые ветки: Orange Box, Source 2007 / 2009, L4D, L4D2, Alien Swarm, Portal 2, CS:GO, Insurgency, Nuclear Dawn, PVKII и другие | 16 | ○ | ○ | ○ | ○ | ○ |
+| Репак SDK от Psycho-A (старые SDK-Hammer) | 7 | ○ | ○ | ○ | ○ | ○ |
+| Стоковый Hammer из Episode One (Valve и Psycho-A) | 2 | ○ | ○ | ○ | — ² | — ² |
 | Slammin' Hammer 5.2, Hammer из Black Mesa | 2 | ○ | ○ | ○ | ○ | ○ |
 | Strata Hammer (Portal: Revolution), x64 | 1 | — | ○ | — | — | — |
 | Hammer для Source 2 (CS2, Dota 2) | 3 | — | — | — | — | — ³ |
@@ -32,7 +33,7 @@ Hammer-MCP узнаёт редактор по хешу его exe/DLL и ище�
 | J.A.C.K. / Jackhammer, x64 | 2 | — | — | — | — | — |
 
 ¹ Кроме 8846–8849 (12 сборок); вживую проверено на 8862 x86.
-² В этих ветках выделение устроено иначе; раскладки в работе.
+² В Episode One выделение устроено иначе; раскладка в работе.
 ³ Source 2: карты читаются из файлов `.vmap`, а несохранённое состояние открытой карты — через консоль разработчика
 игры (VConsole2). Вживую проверено на CS2.
 

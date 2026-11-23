@@ -22,8 +22,9 @@ Hammer-MCP recognises the editor by the hash of its exe/DLL and looks it up in t
 | Hammer++ 8846–8866, x86 and x64 | 78 | — | ● | ● | ● | ● ¹ |
 | Source Level Editor 3.129 | 1 | ● | ● | ● | ● | ● |
 | Stock Hammer, 2013 branch and newer: SDK 2013 SP / MP, HL2, TF2, CS:S, HL1 Source, GMod, ZPS, Portal Prelude RTX, dedicated server; x86 and x64 | 16 | ○ | ○ | ○ | ○ | ○ |
-| Stock Hammer, older branches: Episode One, Orange Box, Source 2007 / 2009, L4D, L4D2, Alien Swarm, Portal 2, CS:GO, Insurgency, Nuclear Dawn, PVKII and others | 17 | ○ | ○ | ○ | — ² | — ² |
-| Psycho-A's SDK repack (old SDK Hammers) | 8 | ○ | ○ | ○ | — ² | — ² |
+| Stock Hammer, older branches: Orange Box, Source 2007 / 2009, L4D, L4D2, Alien Swarm, Portal 2, CS:GO, Insurgency, Nuclear Dawn, PVKII and others | 16 | ○ | ○ | ○ | ○ | ○ |
+| Psycho-A's SDK repack (old SDK Hammers) | 7 | ○ | ○ | ○ | ○ | ○ |
+| Stock Hammer from Episode One (Valve and Psycho-A) | 2 | ○ | ○ | ○ | — ² | — ² |
 | Slammin' Hammer 5.2, Black Mesa Hammer | 2 | ○ | ○ | ○ | ○ | ○ |
 | Strata Hammer (Portal: Revolution), x64 | 1 | — | ○ | — | — | — |
 | Source 2 Hammer (CS2, Dota 2) | 3 | — | — | — | — | — ³ |
@@ -32,7 +33,7 @@ Hammer-MCP recognises the editor by the hash of its exe/DLL and looks it up in t
 | J.A.C.K. / Jackhammer, x64 | 2 | — | — | — | — | — |
 
 ¹ All except 8846–8849 (12 builds); live-checked on 8862 x86.
-² The selection is stored differently in these branches; layouts are in progress.
+² Episode One stores the selection differently; its layout is in progress.
 ³ Source 2: maps are read from `.vmap` files, and the unsaved state of the open map through the game's developer
 console (VConsole2). Live-checked on CS2.
 
