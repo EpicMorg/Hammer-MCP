@@ -2955,7 +2955,15 @@
       "shell": { "present": false },
       "settingsKey": "Software\\Valve\\Worldcraft",
       "mapFormat": "rmf",
-      "notes": "Worldcraft 3.3 (Half-Life). Also in the HL-Lab SDK pack."
+      "memory": {
+        "activeDoc": "0xddd04", "doc.vtable": "0xb98e4", "doc.views": "0x28", "doc.selection": "0x4c0", "doc.selectionBounds": "0x390",
+        "view3d.vtable": "0xba784", "view3d.camera": "0xa8", "camera.position": "0x10", "camera.matrix": "0x1c", "camera.fov": "0x5c",
+        "object.origin": "0xc", "object.mins": "0x18", "object.maxs": "0x24", "object.parent": "0x68",
+        "entity.vtable": "0xb5444", "entity.className": "0xa8", "entity.classNameLength": "0x40", "entity.keyValues": "0x90", "entity.keyValueCount": "0x94",
+        "entity.keyValueSize": "0x304", "entity.keyLength": "0x104", "entity.valueOffset": "0x104", "entity.valueLength": "0x200",
+        "solid.vtable": "0xb57ec", "solid.faces": "0xa4", "face.size": "0x19c", "face.texture": "0x10", "face.textureLength": "0x10"
+      },
+      "notes": "Worldcraft 3.3 (Half-Life). Also in the HL-Lab SDK pack. Memory layout: derived statically against Hammer 3.5 (constructor-by-constructor: CMapClass fields from 0x30 moved -4 and the colour moved, CEditGameClass identical, CMapFace 0x19c with the texture name at 0x10, CCamera identical); not yet checked live."
     },
     {
       "id": "goldsrc-hammer-3.4",
