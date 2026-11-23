@@ -52,7 +52,7 @@ Verified live on **[Hammer++](https://github.com/ficool2/HammerPlusPlus-Website)
 | ✅ Create point entities with keyvalues (`light`, `info_target`, `prop_dynamic` with a model, …) | ✅ Rotate entities (a spinning locker at ~28 edits/s, Hammer stays responsive) |
 | ✅ Set keyvalues, delete entities | ✅ Edits land in Hammer's **undo** history — Ctrl+Z works |
 | ✅ Save / undo / redo / Run Map / Check for Problems via menu commands | ✅ Map summary from the saved `.vmf` (entities, brushes, classes, skybox…) |
-| ✅ Recognises the running Hammer build by hash (registry of 179 known builds) | ✅ Token auth, localhost by default |
+| ✅ Recognises the running Hammer build by hash (registry of 183 known builds) | ✅ Token auth, localhost by default |
 | ✅ Map knowledge: entities, outputs, I/O graph, validation against the game's FGD | ✅ Compile with Hammer's own Run Map sequences, parsed log, leak trace, compiled `.bsp` entities |
 
 ### Screenshots
@@ -64,19 +64,28 @@ Verified live on **[Hammer++](https://github.com/ficool2/HammerPlusPlus-Website)
 ## Supported editors
 
 The shell channel exists in **every stock Source Hammer since 2006** and in **Hammer++ since build 8867**;
-menu command ids are identical across **all 152 Source Hammer builds** we analysed.
+menu command ids are identical across **all 152 Source Hammer builds** we analysed. From the next release (0.9) the
+adapter also reads the live selection and 3D camera on builds with a known memory layout.
 
-| Editor | Live edits (shell) | Menu commands | Map files |
-|---|:---:|:---:|:---:|
-| Stock Hammer — Source SDK 2013 SP/MP, HL2, Portal, TF2, CS:S, DoD:S, L4D/L4D2, Portal 2, GMod, … (x86 & x64) | ✅ | ✅ | ✅ |
-| [Hammer++](https://github.com/ficool2/HammerPlusPlus-Website) 8867+ (all games) | ✅ | ✅ | ✅ |
-| [Slammin' Hammer 5.2](https://developer.valvesoftware.com/wiki/Slammin'_Source_Map_Tools), Black Mesa, Nuclear Dawn | ✅ | ✅ | ✅ |
-| Hammer++ ≤ 8866 | — | ✅ | ✅ |
-| [Strata](https://github.com/StrataSource) Hammer (Portal: Revolution, P2CE, …) | — | ✅ | ✅ |
-| Source 2 Hammer (CS2, Dota 2, …) — recognised, `.vmap` and FGD read | — | — | ✅ read |
-| GoldSrc: Worldcraft 1.1–3.3, Hammer 3.4 / 3.5 and its mods (Neon, Neo, CSM) — recognised; [J.A.C.K.](https://store.steampowered.com/app/496450/) | — | partly | RMF / MAP read |
+| Editor | Live edits (shell) | Menu commands | Selection & camera (adapter, 0.9) | Map files |
+|---|:---:|:---:|:---:|:---:|
+| [Hammer++](https://github.com/ficool2/HammerPlusPlus-Website) 8867+ (all games, x86 & x64) | ✅ | ✅ | ✅ | ✅ |
+| Hammer++ ≤ 8866 | — | ✅ | ✅ | ✅ |
+| [Source Level Editor](https://developer.valvesoftware.com/wiki/Source_Level_Editor_(SLE)) 3.129 | ✅ | ✅ | ✅ | ✅ |
+| Stock Hammer, 2013 branch and newer — SDK 2013 SP/MP, HL2, TF2, CS:S, HL1, GMod, … (x86 & x64) | ✅ | ✅ | ✅ ² | ✅ |
+| Stock Hammer, older branches — Orange Box, L4D/L4D2, Portal 2, Alien Swarm, CS:GO, … (EP1: selection in progress) | ✅ | ✅ | ✅ ² | ✅ |
+| [Slammin' Hammer 5.2](https://developer.valvesoftware.com/wiki/Slammin'_Source_Map_Tools), Black Mesa, Nuclear Dawn | ✅ | ✅ | ✅ ¹ ² | ✅ |
+| [Strata](https://github.com/StrataSource) Hammer (Portal: Revolution, P2CE, …) | — | ✅ | — | ✅ |
+| Source 2 Hammer (CS2, Dota 2, …) — recognised, `.vmap` and FGD read, unsaved state via VConsole2 | — | — | — | ✅ read |
+| GoldSrc: Hammer 3.4 / 3.5 and its mods (Neon, Neo, CSM) | — | ✅ | ✅ | RMF / MAP read |
+| GoldSrc: Worldcraft 1.1–3.3; [J.A.C.K.](https://store.steampowered.com/app/496450/) | — | partly | — | RMF / MAP read |
 
-Static analysis; live tests so far on Hammer++ 8873 (x64 and x86). Reports for other builds are very welcome.
+¹ Nuclear Dawn included.
+² Memory layout derived from the binaries; live check pending.
+
+Checked live so far (0.9 development builds): Hammer++ 8873 (x64 and x86) and 8862, Source Level Editor 3.129, Valve Hammer Editor 3.4 and 3.5,
+CS2; the rest comes from static analysis of the binaries. Per-build details, what is live-checked and what is not:
+**[editor support matrix](docs/editors.md)**. Reports for other builds are very welcome.
 
 ## Quick start
 
@@ -123,6 +132,9 @@ The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that
 | `find_assets` | Find models, materials, textures, sounds, sound script names, sprites, particles by name in the game's files and VPKs (GoldSrc: files and WAD textures / decals); returns what to write in the entity |
 | `user_requests` · `wait_for_user` · `say_to_user` | The chat in Hammer (with the adapter): read the user's lines, wait for an answer (up to 10 min), answer them |
 | `pending_changes` | Approval mode: what is waiting for the user and what they decided |
+| `hammer_selection` · `hammer_camera` (0.9) | With the adapter: what is selected in Hammer right now (entities with keyvalues, brushes with faces and textures) and where the 3D view looks |
+| `hammer_ui` (0.9) | What is known about the attached Hammer's UI: menu and dialog ids, verified step-by-step recipes |
+| `check_model_clipping` · `check_cubemaps` (0.9) | Saved map: props whose model boxes overlap brushes or other props (candidates to look at), `env_cubemap` projection settings |
 
 **Modes:** *Auto* (best available: the adapter if you connected it, otherwise the shell channel, otherwise read-only) ·
 *Basic* (read-only) · *Shell* (live edits + menu through the shell channel only) · *Advanced* (strict adapter-only mode, for debugging).
@@ -132,15 +144,21 @@ The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that
 you press the button, only into a standalone Hammer exe of a known build. It adds an **MCP** menu to Hammer: pause the
 agent, **chat with the agent**, live **activity log**, **pending changes** with check boxes (approval mode), undo the
 agent's step, status, disconnect. Working in OpenCode? The app's **OpenCode** tab sends your chat lines into the
-OpenCode session, so the agent there wakes up and answers. **Disconnect** unloads it; Hammer keeps running. Live reading of the selection,
-camera and geometry through the adapter comes next. The `native` folder of the zip must stay next to `hammer-mcp.exe`.
+OpenCode session, so the agent there wakes up and answers. **Disconnect** unloads it; Hammer keeps running. From 0.9, on builds
+with a known memory layout the adapter also reads the **live selection** and the **3D camera** (`hammer_selection`,
+`hammer_camera`) — see the [editor support matrix](docs/editors.md). The `native` folder of the zip must stay next to `hammer-mcp.exe`.
 
 ### Limits of the shell channel
+
+The **[shell channel reference](docs/shell-channel.md)** explains where the channel comes from (public Source SDK code
+since 2006), how to send commands, edit sessions, every command and what it cannot do — useful for any tool author,
+not only for Hammer-MCP.
+
 It is write-only and entity-level: entities are addressed by **class + origin** (no ids), brushes and brush entities
 can't be created, there is no "move", and unsaved state can't be read back — the server reads the saved `.vmf`.
 Outputs set with `set_keyvalue` are stored by Hammer as plain keyvalues: they are not shown on the Outputs tab, but
 vbsp writes them into the `.bsp` as real outputs and they fire in game.
-The adapter is meant to lift these limits for selected builds (next releases). It is only ever injected into a standalone
+From 0.9 the adapter lifts part of these limits (live selection and camera). It is only ever injected into a standalone
 Hammer executable of a known build (`hammer.exe`, `hammerplusplus.exe`) — **never into a game process**: Source 2
 Hammer runs inside `cs2.exe` / `dota2.exe`, and touching a VAC-protected process can get a Steam account banned.
 
@@ -174,7 +192,9 @@ dotnet test --solution HammerMcp.sln
 ```
 src/src/HammerMcp.Core      formats (VMF with outputs, RMF/MAP via Sledge, tolerant FGD parser incl. Hammer++/GMod
                             extensions, VMT, Hammer game configs), map validation, build registry, menu ids
-src/src/HammerMcp.Shell     shell channel (WM_COPYDATA), menu commands (WM_COMMAND), sessions, process discovery
+src/src/HammerMcp.Shell     menu commands (WM_COMMAND), process discovery; the shell channel (WM_COPYDATA, sessions)
+                            is here in 0.8 and moves to the standalone HammerShell.Client library in 0.9
+                            (see docs/shell-channel.md)
 src/src/HammerMcp.Server    MCP server (Streamable HTTP, Bearer token) and tools
 src/src/HammerMcp.App       hammer-mcp.exe — WinForms window + tray
 src/src/HammerMcp.Cli       hammer-mcp-cli.exe — the server without the tray app (stdio / HTTP)
@@ -190,7 +210,10 @@ src/native/                 C++ injector and adapter (CMake; MSVC or clang-cl), 
 - [x] Compile pipeline: Hammer's Run Map sequences, run_compile, parsed logs, leak tracing; asset checks via gameinfo.txt + VPK
 - [x] Releases 0.1 – 0.8: single-file `win-x64` and `win-x86` builds — see [CHANGELOG.md](CHANGELOG.md)
 - [x] Adapter, layer 1 (0.7): MCP menu in Hammer, chat, live activity log, approval list
-- [ ] Adapter, layer 2: live read of the selection, camera, geometry (per-build profiles); docked panels in Hammer
+- [x] Adapter, layer 2 (0.9): live read of the selection and the 3D camera (per-build memory layouts; Hammer++, stock Source Hammer of every branch since Orange Box, SLE, GoldSrc 3.4 / 3.5)
+- [ ] Layer 2 for Episode One; live checks of the static layouts; docked panels in Hammer
+- [ ] Viewport images, live brush edits, BSP visibility audit (from the [HammerOMP-MCP fork](https://github.com/EpicMorg/Hammer-MCP/issues/1))
+- [ ] Cubemap and model clipping checks with a look through the camera
 
 ## Releases
 
