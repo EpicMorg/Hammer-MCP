@@ -95,7 +95,8 @@ Strata Hammer, Hammer для Source 2, редакторах GoldSrc и J.A.C.K. 
 ## Использование из C#
 
 `HammerShell.Client` — код канала из Hammer-MCP в виде отдельной .NET-библиотеки (только Windows): поиск окна, сессии
-с перебором версий, описанным выше, и форматирование команд.
+с перебором версий, описанным выше, и форматирование команд. Она переезжает в собственный репозиторий
+[EpicMorg/HammerShell](https://github.com/EpicMorg/HammerShell) и будет опубликована в NuGet; API выглядит так:
 
 ```csharp
 using HammerShell.Client;
@@ -110,10 +111,7 @@ if (session.Send(ShellCommands.EntityCreate("info_target", at)) == ShellResult.O
 ```
 
 `Send` возвращает `Ok`, `Rejected` (Hammer вернул ноль) или `NotRunning` (окна нет). Если запущено несколько
-редакторов, передайте в `ShellChannel` функцию, которая возвращает окно нужного процесса. Исходники:
-[ShellChannel](../src/src/HammerShell.Client/ShellChannel.cs),
-[ShellSession](../src/src/HammerShell.Client/ShellSession.cs),
-[ShellCommands](../src/src/HammerShell.Client/ShellCommands.cs).
+редакторов, передайте в `ShellChannel` функцию, которая возвращает окно нужного процесса.
 
 [sdk-sender]: https://github.com/ValveSoftware/source-sdk-2013/blob/master/src/public/editor_sendcommand.cpp#L188
 [sdk-game]: https://github.com/ValveSoftware/source-sdk-2013/blob/master/src/game/server/wcedit.cpp

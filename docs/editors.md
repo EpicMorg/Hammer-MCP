@@ -10,7 +10,7 @@ Hammer-MCP recognises the editor by the hash of its exe/DLL and looks it up in t
 - **Adapter**: the optional DLL loaded into Hammer on *Connect adapter* (never into a game, Source 2 or an unknown
   build). It adds the *MCP* menu (pause, pending changes, chat) and reads the live selection and 3D camera.
 - **Selection / Camera**: what is selected right now, and where the 3D view looks (needs the adapter and a memory
-  layout for the exact build).
+  layout for the exact build). Ships with Hammer-MCP 0.9.
 - **Map files**: reading the saved map, Hammer's autosaves, game configs, FGDs and compile logs. This works for every
   editor below.
 
@@ -36,7 +36,7 @@ Hammer-MCP recognises the editor by the hash of its exe/DLL and looks it up in t
 ³ Source 2: maps are read from `.vmap` files, and the unsaved state of the open map through the game's developer
 console (VConsole2). Live-checked on CS2.
 
-Live checks so far: Hammer++ 8873 TF2 x64 (shell, menu, adapter, selection, camera), Hammer++ 8862 x86 (adapter,
+Live checks so far (0.9 development builds): Hammer++ 8873 TF2 x64 (shell, menu, adapter, selection, camera), Hammer++ 8862 x86 (adapter,
 selection, camera), Source Level Editor 3.129 (shell, adapter, selection, camera), Valve Hammer Editor 3.4 and 3.5
 (menu, adapter, selection, camera), CS2 (map reading incl. unsaved state). Static rows become live ones as they are
 checked; the registry records the details per build.

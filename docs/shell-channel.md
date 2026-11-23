@@ -95,7 +95,9 @@ the [build registry](../src/registry/hammers.json).
 ## Using it from C#
 
 `HammerShell.Client` is the channel code of Hammer-MCP as a standalone .NET library (Windows only): finding the
-window, sessions with the version retries described above, and command formatting.
+window, sessions with the version retries described above, and command formatting. It is being moved to its own
+repository, [EpicMorg/HammerShell](https://github.com/EpicMorg/HammerShell), and will be published on NuGet; the API
+looks like this:
 
 ```csharp
 using HammerShell.Client;
@@ -110,10 +112,7 @@ if (session.Send(ShellCommands.EntityCreate("info_target", at)) == ShellResult.O
 ```
 
 `Send` returns `Ok`, `Rejected` (Hammer returned zero) or `NotRunning` (no window). With several editors running,
-pass `ShellChannel` a function that returns the window of the process you want. Sources:
-[ShellChannel](../src/src/HammerShell.Client/ShellChannel.cs),
-[ShellSession](../src/src/HammerShell.Client/ShellSession.cs),
-[ShellCommands](../src/src/HammerShell.Client/ShellCommands.cs).
+pass `ShellChannel` a function that returns the window of the process you want.
 
 [sdk-sender]: https://github.com/ValveSoftware/source-sdk-2013/blob/master/src/public/editor_sendcommand.cpp#L188
 [sdk-game]: https://github.com/ValveSoftware/source-sdk-2013/blob/master/src/game/server/wcedit.cpp
