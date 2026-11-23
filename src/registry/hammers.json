@@ -28,10 +28,10 @@
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt",
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa357d0", "doc.vtable": "0x84507c", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8657b4", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x8657b4", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x8675fc", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x8675fc", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x8496e0", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "injectAdapter": "menu"
@@ -1145,10 +1145,10 @@
       "shell": { "present": false },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x9d1a78", "doc.vtable": "0x7e267c", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x801be4", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x84", "object.maxs": "0x90", "object.parent": "0x20", "entity.vtable": "0x801be4", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
-        "solid.vtable": "0x8038a4", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x8038a4", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x7e6c90", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1161,10 +1161,10 @@
       "shell": { "present": false },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x9d1a78", "doc.vtable": "0x7e267c", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x801be4", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x84", "object.maxs": "0x90", "object.parent": "0x20", "entity.vtable": "0x801be4", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
-        "solid.vtable": "0x8038a4", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x8038a4", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x7e6c90", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1177,7 +1177,7 @@
       "shell": { "present": false },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xbef2c8", "doc.vtable": "0x9100b0", "doc.selection": "0xb88", "selection.list": "0x18",
-        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x940528", "entity.className": "0x1c8",
+        "object.origin": "0x50", "object.mins": "0xb8", "object.maxs": "0xc4", "object.parent": "0x40", "entity.vtable": "0x940528", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x438",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x28", "kv.value": "0x38", "kv.valueLength": "0x400",
         "solid.vtable": "0x943868", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104",
@@ -1193,10 +1193,10 @@
       "shell": { "present": false },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa43824", "doc.vtable": "0x85e3dc", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x87d988", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x84", "object.maxs": "0x90", "object.parent": "0x20", "entity.vtable": "0x87d988", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
-        "solid.vtable": "0x87f664", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x87f664", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x862a00", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1209,7 +1209,7 @@
       "shell": { "present": false },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xbe1aa8", "doc.vtable": "0x901000", "doc.selection": "0xb88", "selection.list": "0x18",
-        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x9314f0", "entity.className": "0x1c8",
+        "object.origin": "0x50", "object.mins": "0xb8", "object.maxs": "0xc4", "object.parent": "0x40", "entity.vtable": "0x9314f0", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x438",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x28", "kv.value": "0x38", "kv.valueLength": "0x400",
         "solid.vtable": "0x934830", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104",
@@ -1225,10 +1225,10 @@
       "shell": { "present": false },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x95d09c", "doc.vtable": "0x7b584c", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x7d5fa4", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x84", "object.maxs": "0x90", "object.parent": "0x20", "entity.vtable": "0x7d5fa4", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
-        "solid.vtable": "0x7d7c3c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x7d7c3c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x7ba208", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1241,10 +1241,10 @@
       "shell": { "present": false },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x95d09c", "doc.vtable": "0x7b584c", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x7d5fa4", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x84", "object.maxs": "0x90", "object.parent": "0x20", "entity.vtable": "0x7d5fa4", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
-        "solid.vtable": "0x7d7c3c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x7d7c3c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x7ba208", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1257,7 +1257,7 @@
       "shell": { "present": false },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xbda920", "doc.vtable": "0x8fe2d0", "doc.selection": "0xb88", "selection.list": "0x18",
-        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x92feb0", "entity.className": "0x1c8",
+        "object.origin": "0x50", "object.mins": "0xb8", "object.maxs": "0xc4", "object.parent": "0x40", "entity.vtable": "0x92feb0", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x438",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x28", "kv.value": "0x38", "kv.valueLength": "0x400",
         "solid.vtable": "0x9331c0", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104",
@@ -1273,10 +1273,10 @@
       "shell": { "present": false },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa426f4", "doc.vtable": "0x86068c", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x880f64", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x84", "object.maxs": "0x90", "object.parent": "0x20", "entity.vtable": "0x880f64", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
-        "solid.vtable": "0x882c1c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x882c1c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x865080", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1289,7 +1289,7 @@
       "shell": { "present": false },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xbcd088", "doc.vtable": "0x8ef220", "doc.selection": "0xb88", "selection.list": "0x18",
-        "object.origin": "0x50", "object.mins": "0xb0", "object.maxs": "0xbc", "object.parent": "0x40", "entity.vtable": "0x920e68", "entity.className": "0x1c8",
+        "object.origin": "0x50", "object.mins": "0xb8", "object.maxs": "0xc4", "object.parent": "0x40", "entity.vtable": "0x920e68", "entity.className": "0x1c8",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x198", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x438",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x28", "kv.value": "0x38", "kv.valueLength": "0x400",
         "solid.vtable": "0x924178", "solid.faces": "0x1a0", "solid.faceCount": "0x1b0", "face.size": "0x358", "face.texture": "0x58", "face.textureLength": "0x104",
@@ -1305,10 +1305,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x95a1e0", "doc.vtable": "0x7b78bc", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x7d8254", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x7d8254", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
-        "solid.vtable": "0x7d9eec", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x7d9eec", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x7bc278", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1321,10 +1321,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0x95a1e0", "doc.vtable": "0x7b78bc", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x7d8254", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x7d8254", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
-        "solid.vtable": "0x7d9eec", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x7d9eec", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x7bc278", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1353,10 +1353,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa3e874", "doc.vtable": "0x86269c", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8831e4", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x8831e4", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
-        "solid.vtable": "0x884e9c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x884e9c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x867090", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1385,10 +1385,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa166b0", "doc.vtable": "0x82a9cc", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x84b754", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x84b754", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
-        "solid.vtable": "0x84d54c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x84d54c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x82f3f8", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1401,10 +1401,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa166b0", "doc.vtable": "0x82a9cc", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x84b744", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x84b744", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
-        "solid.vtable": "0x84d53c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x84d53c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x82f3f8", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1433,10 +1433,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa8ade4", "doc.vtable": "0x8a77ac", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8c86d4", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x8c86d4", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x434",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x28", "kv.value": "0x34", "kv.valueLength": "0x400",
-        "solid.vtable": "0x8ca4ec", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x8ca4ec", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f4", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x8ac210", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1465,10 +1465,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa1e2b0", "doc.vtable": "0x830cc4", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8512d4", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x8512d4", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x8530dc", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f0", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x8530dc", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f0", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x835320", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1481,10 +1481,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa1e350", "doc.vtable": "0x830d14", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x851324", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x851324", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x85312c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f0", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x85312c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f0", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x835370", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1513,10 +1513,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa8ce14", "doc.vtable": "0x8a9b24", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8ca2e4", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x8ca2e4", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x8cc104", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f0", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x8cc104", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f0", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x8ae1c0", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1529,10 +1529,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa90948", "doc.vtable": "0x8adb8c", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8ce384", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x8ce384", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x8d01a4", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f0", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x8d01a4", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f0", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x8b2220", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1561,10 +1561,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa1f3c8", "doc.vtable": "0x82ee7c", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x84f504", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x84f504", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x85133c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x85133c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x8334e0", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1577,10 +1577,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa1f458", "doc.vtable": "0x82eecc", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x84f554", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x84f554", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x85138c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x85138c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x833530", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1609,10 +1609,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa8e048", "doc.vtable": "0x8a7cdc", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8c84f4", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x8c84f4", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x8ca344", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x8ca344", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x8ac370", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1625,10 +1625,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa92bf8", "doc.vtable": "0x8acd44", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8cd5a4", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x8cd5a4", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x8cf3f4", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x8cf3f4", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x8b13e0", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1657,10 +1657,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa2a2c0", "doc.vtable": "0x839e6c", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x85a4f4", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x85a4f4", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x85c32c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x85c32c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x83e4d0", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1673,10 +1673,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa29350", "doc.vtable": "0x838ebc", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x859544", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x859544", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x85b37c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x85b37c", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x83d520", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1705,10 +1705,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa98f70", "doc.vtable": "0x8b2d0c", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8d3524", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x8d3524", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x8d5374", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x8d5374", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x8b73a0", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1737,10 +1737,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa9daa0", "doc.vtable": "0x8b7d74", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8d85d4", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x8d85d4", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x8da424", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x8da424", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x8bc410", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1769,10 +1769,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa35740", "doc.vtable": "0x84502c", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x865764", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x865764", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x8675ac", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x8675ac", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x849690", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1785,10 +1785,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa357d0", "doc.vtable": "0x84507c", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8657b4", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x8657b4", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x8675fc", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x8675fc", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x8496e0", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1817,10 +1817,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xaa4370", "doc.vtable": "0x8bde9c", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8de754", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x8de754", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x8e05b4", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x8e05b4", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x8c2530", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1849,10 +1849,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xaa8f20", "doc.vtable": "0x8c2f04", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8e3814", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x8e3814", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x8e5674", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x8e5674", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x8c75a0", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1865,10 +1865,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xa35740", "doc.vtable": "0x84502c", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x865764", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x865764", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x8675ac", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x8675ac", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x849690", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1897,10 +1897,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xaa4370", "doc.vtable": "0x8bde9c", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8de754", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x8de754", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x8e05b4", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x8e05b4", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x8c2530", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -1913,10 +1913,10 @@
       "shell": { "present": true },
       "memory": {
         "layout": "source", "module": "hammerplusplus_dll.dll", "activeDoc": "0xaa8f20", "doc.vtable": "0x8c2f04", "doc.selection": "0xa20", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x6c", "object.maxs": "0x78", "object.parent": "0x8", "entity.vtable": "0x8e3814", "entity.className": "0x154",
+        "object.origin": "0x2c", "object.mins": "0x7c", "object.maxs": "0x88", "object.parent": "0x20", "entity.vtable": "0x8e3814", "entity.className": "0x154",
         "entity.classNameLength": "0x40", "entity.keyValues": "0x134", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x45c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x400",
-        "solid.vtable": "0x8e5674", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x18", "face.textureLength": "0x104",
+        "solid.vtable": "0x8e5674", "solid.faces": "0x140", "solid.faceCount": "0x14c", "face.size": "0x2f8", "face.texture": "0x30", "face.textureLength": "0x104",
         "doc.views": "0x2c", "view3d.vtable": "0x8c75a0", "view3d.camera": "0x98", "camera.indirect": "0x1", "camera.position": "0x0", "camera.matrix": "0x3c", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
@@ -2056,6 +2056,15 @@
       "injectAdapter": "menu",
       "family": "valve", "branch": "alien-swarm-reactive-drop", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "41ff2aa74aa55766d00f50a9215a7cb1e45dafd261f161e836ccb992fded7acf", "linked": "2017-02-06" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x63e074", "doc.vtable": "0x4cb554", "doc.selection": "0x134", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x64", "object.maxs": "0x70", "object.parent": "0x8", "entity.vtable": "0x4d3cec", "entity.className": "0xf8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xd8", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x4d5764", "solid.faceBlocks": "0xd4", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x230", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x4ce114", "view3d.camera": "0x68", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: Alien Swarm Reactive Drop"
@@ -2084,6 +2093,15 @@
       "injectAdapter": "menu",
       "family": "valve", "branch": "counter-strike-global-offensive-745", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "38f52d5c0a6f99bb07cd624bedd5321f5598e8f1b83c559e78b774ec97ca47ff", "linked": "2023-02-02" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x7543a8", "doc.vtable": "0x60eccc", "doc.selection": "0x1b8", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x64", "object.maxs": "0x70", "object.parent": "0x8", "entity.vtable": "0x629178", "entity.className": "0xfc",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xdc", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x62aa5c", "solid.faceBlocks": "0xd8", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x234", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x612ab8", "view3d.camera": "0x98", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: Counter-Strike Global Offensive 745"
@@ -2093,6 +2111,15 @@
       "injectAdapter": "menu",
       "family": "valve", "branch": "nuclear-dawn", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "85f7654200da40089733fabf81c8aea59aaa741c0cd900aee8d06ca7bcfc784d", "linked": "2018-08-30" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x887e64", "doc.vtable": "0x6be898", "doc.selection": "0x1a4", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x98", "object.maxs": "0xa4", "object.parent": "0x8", "entity.vtable": "0x6d3f68", "entity.className": "0xf4",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xd4", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x6d56ec", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x6c0688", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: Nuclear Dawn"
@@ -2102,6 +2129,15 @@
       "injectAdapter": "menu",
       "family": "valve", "branch": "portal-forbidden-testing-tracks", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "692c67a7766702e30811c2e8ee5c733f85d59a6e0a9dc003f0c945ae28d9e1d2", "linked": "2021-04-29" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x7b66d8", "doc.vtable": "0x5fdabc", "doc.selection": "0x1b8", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x64", "object.maxs": "0x70", "object.parent": "0x8", "entity.vtable": "0x615fd4", "entity.className": "0xfc",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xdc", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x617a14", "solid.faceBlocks": "0xd8", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x234", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x6009f4", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: Portal Forbidden Testing Tracks, Portal Reloaded"
@@ -2138,6 +2174,15 @@
       "injectAdapter": "menu",
       "family": "valve", "branch": "portal-stories-mel", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "db8a1bdf3fff60f4a93e6c5e77992662b578f0ef2c8319381d1eedf2d975fe03", "linked": "2014-06-04" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x7b5f78", "doc.vtable": "0x5fd9cc", "doc.selection": "0x1b8", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x64", "object.maxs": "0x70", "object.parent": "0x8", "entity.vtable": "0x615eec", "entity.className": "0xfc",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xdc", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x61792c", "solid.faceBlocks": "0xd8", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x234", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x600904", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: Portal Stories Mel, aperturetag"
@@ -2185,6 +2230,15 @@
       "injectAdapter": "menu",
       "family": "valve", "branch": "alien-swarm", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "6db9f2ffdf60a59cea50da194733a9ffdacf740223c50c7fe1b4d1bae2ccbc76", "linked": "2020-09-24" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x63c9e4", "doc.vtable": "0x4cb404", "doc.selection": "0x134", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x64", "object.maxs": "0x70", "object.parent": "0x8", "entity.vtable": "0x4d3b6c", "entity.className": "0xf8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xd8", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x4d55e4", "solid.faceBlocks": "0xd4", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x230", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x4cdfc4", "view3d.camera": "0x68", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: alien-swarm"
@@ -2339,6 +2393,14 @@
       "injectAdapter": "menu",
       "family": "valve", "branch": "insurgency2", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "6dbd53f974969012c0a695f088ee3f2894a08b0236b1e76b2d523153845e8bba", "linked": "2018-05-05" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x7023b4", "doc.vtable": "0x58bbc4", "doc.selection": "0x1b8", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x64", "object.maxs": "0x70", "object.parent": "0x8", "entity.vtable": "0x5a504c", "entity.className": "0xfc",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xdc", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x5a67a8", "solid.faces": "0x1134", "solid.faceCount": "0x1140", "face.size": "0x1bc", "face.texture": "0x14", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x58fc74", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: insurgency2"
@@ -2348,6 +2410,15 @@
       "injectAdapter": "menu",
       "family": "valve", "branch": "l4d1", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "f193d1f00b1eb0cf4dcb2324d8311215c26d716a748e95034bce0f9ebffd4d1c", "linked": "2024-06-09" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x367d9c", "doc.vtable": "0x28e74c", "doc.selection": "0x104", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x48", "object.maxs": "0x54", "object.parent": "0x8", "entity.vtable": "0x2968bc", "entity.className": "0xd8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xb8", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x297d2c", "solid.faceBlocks": "0x5c", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0xb0", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x29148c", "view3d.camera": "0x68", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: l4d1"
@@ -2357,6 +2428,15 @@
       "injectAdapter": "menu",
       "family": "valve", "branch": "l4d2-beta", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "472300533328b7e12cfeebacf48ace3d58c05d4665cb3b4da9e9bd0c0f47f653", "linked": "2017-01-09" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x75dabc", "doc.vtable": "0x5ced6c", "doc.selection": "0x1a4", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x64", "object.maxs": "0x70", "object.parent": "0x8", "entity.vtable": "0x5e67b4", "entity.className": "0xf4",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xd4", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x5e80a4", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x5d208c", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: l4d2-beta"
@@ -2366,6 +2446,15 @@
       "injectAdapter": "menu",
       "family": "valve", "branch": "l4d2", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "3ac9fb17e9f6b9a9a55d5914b4c8b31541ea208ee6329be6287f73fb53843f35", "linked": "2024-06-04" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x75fc44", "doc.vtable": "0x5cfdbc", "doc.selection": "0x1a4", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x64", "object.maxs": "0x70", "object.parent": "0x8", "entity.vtable": "0x5e7804", "entity.className": "0xf4",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xd4", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x5e90f4", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x5d30dc", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: l4d2"
@@ -2375,6 +2464,15 @@
       "injectAdapter": "menu",
       "family": "valve", "branch": "orangebox", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "d6624779025fca96e8db50f6663ea5c57ad309b5b9e78f41a18a623b0280f0a3", "linked": "2012-11-01" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x45fc88", "doc.vtable": "0x367b3c", "doc.selection": "0x1b0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x64", "object.maxs": "0x70", "object.parent": "0x8", "entity.vtable": "0x37b63c", "entity.className": "0xf4",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xd4", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x37cce4", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x36addc", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: orangebox"
@@ -2384,6 +2482,15 @@
       "injectAdapter": "menu",
       "family": "valve", "branch": "pirates-vikings-and-knights-ii", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "cc2572b2f17098c173e644ff6a59bf8fb3514be9fadbab5042b63663eab42b70", "linked": "2010-01-01" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x4dc390", "doc.vtable": "0x3d0d24", "doc.selection": "0x1b0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x64", "object.maxs": "0x70", "object.parent": "0x8", "entity.vtable": "0x3e6a90", "entity.className": "0xf4",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xd4", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x3e808c", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x3d49d4", "view3d.camera": "0x94", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: pirates, vikings and knights ii"
@@ -2393,6 +2500,15 @@
       "injectAdapter": "menu",
       "family": "valve", "branch": "pirates-vikings-and-knights-ii", "arch": "x64",
       "match": { "dll": "hammer_dll.dll", "sha256": "04b2e3aa7a396518a5d5965d5228c39f210f3372fbcc3e94c620cb605e4800d1", "linked": "2026-06-04" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x589be8", "doc.vtable": "0x438a28", "doc.selection": "0x2c8", "selection.list": "0x18",
+        "object.origin": "0x20", "object.mins": "0x88", "object.maxs": "0x94", "object.parent": "0x10", "entity.vtable": "0x45ae38", "entity.className": "0x158",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0x128", "kv.nodes": "0x8", "kv.alloc": "0x10", "kv.root": "0x18", "kv.nodeSize": "0x260",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0x10", "kv.keyLength": "0x50", "kv.value": "0x60", "kv.valueLength": "0x200",
+        "solid.vtable": "0x45d690", "solid.faceBlocks": "0x120", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x3d8", "face.size": "0x1f0", "face.texture": "0x20",
+        "face.textureLength": "0x104", "doc.views": "0x58", "view3d.vtable": "0x43db40", "view3d.camera": "0x108", "camera.position": "0x48", "camera.matrix": "0x8",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/x64/GameConfig.txt",
       "notes": "Seen in: pirates, vikings and knights ii"
@@ -2402,6 +2518,15 @@
       "injectAdapter": "menu",
       "family": "valve", "branch": "portal2", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "baaee6d3e3c80fc8d531b233c26f8a7099d90ca55d5915473ea5724f4039ab81", "linked": "2023-04-25" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x7b97d8", "doc.vtable": "0x600ac4", "doc.selection": "0x1b8", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x64", "object.maxs": "0x70", "object.parent": "0x8", "entity.vtable": "0x618ff4", "entity.className": "0xfc",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xdc", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x61aa34", "solid.faceBlocks": "0xd8", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x234", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x6039fc", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: portal2"
@@ -2430,6 +2555,15 @@
       "injectAdapter": "menu",
       "family": "psycho-a", "branch": "asw", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "4e74e4a330195042ea6bcc2c99958db06e414e73b4b7e9c9da0059113f7ce152", "linked": "2010-08-05" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x63ca24", "doc.vtable": "0x4cb3fc", "doc.selection": "0x134", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x64", "object.maxs": "0x70", "object.parent": "0x8", "entity.vtable": "0x4d3b6c", "entity.className": "0xf8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xd8", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x4d55e4", "solid.faceBlocks": "0xd4", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x230", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x4cdfbc", "view3d.camera": "0x68", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: Psycho-A tools pack (string edits only), asw"
@@ -2439,6 +2573,15 @@
       "injectAdapter": "menu",
       "family": "psycho-a", "branch": "csgo", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "ea1d2a164c95cc68e7a139f004d779f225f41ca7223f26c7d73a618868e8eac7", "linked": "2012-12-12" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x7993ac", "doc.vtable": "0x5e4ebc", "doc.selection": "0x1b8", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x64", "object.maxs": "0x70", "object.parent": "0x8", "entity.vtable": "0x5fccb4", "entity.className": "0xfc",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xdc", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x5fe6d4", "solid.faceBlocks": "0xd8", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x234", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x5e7c64", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: Psycho-A tools pack (string edits only), csgo"
@@ -2457,6 +2600,15 @@
       "injectAdapter": "menu",
       "family": "psycho-a", "branch": "left4dead2", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "baa86b3b33e1a8cf5c67c6f7d0a6a5b6fb0e284cb77edfc737f509e6a251f3bf", "linked": "2012-08-29" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x586a54", "doc.vtable": "0x43f6ac", "doc.selection": "0x120", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x64", "object.maxs": "0x70", "object.parent": "0x8", "entity.vtable": "0x447e64", "entity.className": "0xf4",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xd4", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x44975c", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x4421c4", "view3d.camera": "0x68", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: Psycho-A tools pack (string edits only), left4dead2"
@@ -2466,6 +2618,15 @@
       "injectAdapter": "menu",
       "family": "psycho-a", "branch": "orangebox", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "033701e3cc988599c7036034cae7711c6ae49d4091542b4b8ee48e27312017e5", "linked": "2012-11-01" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x45fc88", "doc.vtable": "0x367b3c", "doc.selection": "0x1b0", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x64", "object.maxs": "0x70", "object.parent": "0x8", "entity.vtable": "0x37b63c", "entity.className": "0xf4",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xd4", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x37cce4", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x36addc", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: Psycho-A tools pack (string edits only), orangebox"
@@ -2475,6 +2636,15 @@
       "injectAdapter": "menu",
       "family": "psycho-a", "branch": "portal2", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "0601ea9f9aa5dedde398c1d4e84ecbfc235efe10f35712f3a05184950f16e3f8", "linked": "2012-08-14" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x7b5f68", "doc.vtable": "0x5fd94c", "doc.selection": "0x1b8", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x64", "object.maxs": "0x70", "object.parent": "0x8", "entity.vtable": "0x615e34", "entity.className": "0xfc",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xdc", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x617874", "solid.faceBlocks": "0xd8", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x234", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x60088c", "view3d.camera": "0x8c", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: Psycho-A tools pack (string edits only), portal2"
@@ -2484,6 +2654,15 @@
       "injectAdapter": "menu",
       "family": "psycho-a", "branch": "source2007", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "9b6d1c8be94091a570d10eacb65a3b849d2f0310d58aa6439ff77ae6fa68c6aa", "linked": "2009-09-21" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x2e4db4", "doc.vtable": "0x2286ec", "doc.selection": "0x104", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x48", "object.maxs": "0x54", "object.parent": "0x8", "entity.vtable": "0x2307bc", "entity.className": "0xd8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xb8", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x231c04", "solid.faceBlocks": "0x60", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x15c", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x22b474", "view3d.camera": "0x68", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: Psycho-A tools pack (string edits only), source2007"
@@ -2493,6 +2672,15 @@
       "injectAdapter": "menu",
       "family": "psycho-a", "branch": "source2009", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "682b91829616065f3d8d9286f5211a04d25f78bb4bc957624ffffd67d6d5d0d3", "linked": "2011-09-15" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x2feee0", "doc.vtable": "0x240b84", "doc.selection": "0x118", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x64", "object.maxs": "0x70", "object.parent": "0x8", "entity.vtable": "0x248fa4", "entity.className": "0xf4",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xd4", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x24a624", "solid.faceBlocks": "0x60", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x15c", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x243bcc", "view3d.camera": "0x68", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: Psycho-A tools pack (string edits only), source2009"
@@ -2502,6 +2690,15 @@
       "injectAdapter": "menu",
       "family": "valve", "branch": "source2007", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "e86a36667a01a732d2285a19b5d1d6fa757384ac8116e2c19340549760087e00", "linked": "2009-09-21" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x2e4db4", "doc.vtable": "0x2286ec", "doc.selection": "0x104", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x48", "object.maxs": "0x54", "object.parent": "0x8", "entity.vtable": "0x2307bc", "entity.className": "0xd8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xb8", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x231c04", "solid.faceBlocks": "0x60", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x15c", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x22b474", "view3d.camera": "0x68", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: source2007"
@@ -2511,6 +2708,15 @@
       "injectAdapter": "menu",
       "family": "valve", "branch": "source2009", "arch": "x86",
       "match": { "dll": "hammer_dll.dll", "sha256": "97d3d84af0cd1b431322cec30f980e1ecafa70957ba2e3ca61b229b41348d016", "linked": "2011-09-15" },
+      "memory": {
+        "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x2feee0", "doc.vtable": "0x240b84", "doc.selection": "0x118", "selection.list": "0xc",
+        "object.origin": "0x14", "object.mins": "0x64", "object.maxs": "0x70", "object.parent": "0x8", "entity.vtable": "0x248fa4", "entity.className": "0xf4",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xd4", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
+        "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
+        "solid.vtable": "0x24a624", "solid.faceBlocks": "0x60", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x15c", "face.size": "0x1bc", "face.texture": "0x14",
+        "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x243bcc", "view3d.camera": "0x68", "camera.position": "0x44", "camera.matrix": "0x4",
+        "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: source2009"
