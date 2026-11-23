@@ -49,7 +49,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x42c",
         "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
         "solid.vtable": "0x5d811c", "solid.faces": "0x110", "solid.faceCount": "0x11c",
-        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104"
+        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x5c3c20", "view3d.camera": "0x94", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -66,7 +67,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x42c",
         "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
         "solid.vtable": "0x5d6dc0", "solid.faces": "0x110", "solid.faceCount": "0x11c",
-        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104"
+        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x5c28b0", "view3d.camera": "0x94", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -83,7 +85,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x42c",
         "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
         "solid.vtable": "0x5d811c", "solid.faces": "0x110", "solid.faceCount": "0x11c",
-        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104"
+        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x5c3c20", "view3d.camera": "0x94", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -100,7 +103,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x42c",
         "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
         "solid.vtable": "0x5d79f8", "solid.faces": "0x110", "solid.faceCount": "0x11c",
-        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104"
+        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x5c3260", "view3d.camera": "0x94", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -117,7 +121,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x42c",
         "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
         "solid.vtable": "0x5d790c", "solid.faces": "0x110", "solid.faceCount": "0x11c",
-        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104"
+        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x5c3160", "view3d.camera": "0x94", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -134,7 +139,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x42c",
         "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
         "solid.vtable": "0x5d8988", "solid.faces": "0x110", "solid.faceCount": "0x11c",
-        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104"
+        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x5c41f0", "view3d.camera": "0x94", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -151,7 +157,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x42c",
         "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
         "solid.vtable": "0x5daa58", "solid.faces": "0x110", "solid.faceCount": "0x11c",
-        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104"
+        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x5c63a0", "view3d.camera": "0x94", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -168,7 +175,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x42c",
         "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
         "solid.vtable": "0x5da97c", "solid.faces": "0x110", "solid.faceCount": "0x11c",
-        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104"
+        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x5c62b0", "view3d.camera": "0x94", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -185,7 +193,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x42c",
         "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
         "solid.vtable": "0x5da9f8", "solid.faces": "0x110", "solid.faceCount": "0x11c",
-        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104"
+        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x5c6340", "view3d.camera": "0x94", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -202,7 +211,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x42c",
         "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
         "solid.vtable": "0x5daa18", "solid.faces": "0x110", "solid.faceCount": "0x11c",
-        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104"
+        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x5c6380", "view3d.camera": "0x94", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -219,7 +229,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x42c",
         "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
         "solid.vtable": "0x5da94c", "solid.faces": "0x110", "solid.faceCount": "0x11c",
-        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104"
+        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x5c62a0", "view3d.camera": "0x94", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
@@ -236,7 +247,8 @@
         "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.left": "0x0", "kv.right": "0x2", "kv.nodeSize": "0x42c",
         "kv.key": "0xc", "kv.keyLength": "0x20", "kv.value": "0x2c", "kv.valueLength": "0x400",
         "solid.vtable": "0x5da9b8", "solid.faces": "0x110", "solid.faceCount": "0x11c",
-        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104"
+        "face.size": "0x200", "face.texture": "0x18", "face.textureLength": "0x104",
+        "doc.views": "0x2c", "view3d.vtable": "0x5c6320", "view3d.camera": "0x94", "camera.position": "0x44", "camera.matrix": "0x4", "camera.matrixRows": "0x1"
       },
       "gameConfig": "bin/hammerplusplus/hammerplusplus_gameconfig.txt"
     },
