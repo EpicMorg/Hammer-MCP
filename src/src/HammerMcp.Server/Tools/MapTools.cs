@@ -84,6 +84,53 @@ public sealed class MapTools(HammerTarget target, GameData gameData)
         };
     }
 
+    [McpServerTool(Name = "check_model_clipping", ReadOnly = true)]
+    [Description("Find candidates for visual inspection in a saved Source 1 VMF: positive-volume overlaps of prop model view boxes (hull bounds when the view box is empty) with brush boxes or other props. Uses world-axis bounds, not mesh collision. Brush indices are traversal order; coordinates locate each brush.")]
+    public object CheckModelClipping(string? configName = null, int limit = 100)
+    {
+        var (path, _) = target.MapSource(false);
+        if (!string.Equals(Path.GetExtension(path), ".vmf", StringComparison.OrdinalIgnoreCase) || path is null)
+            return new { error = "open a saved Source 1 VMF" };
+        var selection = gameData.Select(configName);
+        if (selection.Active is null || gameData.Assets(selection.Active) is not {} assets)
+            return new { error = selection.Problem ?? "could not resolve model search paths for this game config" };
+        return ModelClipping.Check(path, assets, Math.Clamp(limit, 1, 1000));
+    }
+
+    [McpServerTool(Name = "check_cubemaps", ReadOnly = true)]
+    [Description("Inspect env_cubemap projection settings in the saved map using Black Mesa conventions. Reports disabled correction, missing explicit box bounds, malformed vectors and inverted or empty boxes.")]
+    public object CheckCubemaps(bool fromAutosave = false)
+    {
+        var (entities, error) = LoadMap(fromAutosave);
+        if (entities is null) return new { error };
+        var probes = entities.Where(e => e.ClassName.Equals("env_cubemap", StringComparison.OrdinalIgnoreCase))
+            .Select(e =>
+            {
+                var mode = e.KeyValues.GetValueOrDefault("parallax") ?? "0";
+                var issues = new List<string>();
+                var min = e.KeyValues.GetValueOrDefault("boxmin");
+                var max = e.KeyValues.GetValueOrDefault("boxmax");
+                if (mode == "1")
+                {
+                    var lo = ReadBound("boxmin", min, issues);
+                    var hi = ReadBound("boxmax", max, issues);
+                    if (lo is {} a && hi is {} b && (a.X >= b.X || a.Y >= b.Y || a.Z >= b.Z))
+                        issues.Add("boxmin must be below boxmax on every axis");
+                }
+                else if (mode != "0") issues.Add("parallax must be 0 or 1");
+                return new { e.Id, parallax = mode, boxmin = min, boxmax = max, issues };
+            }).ToList();
+        return new { source = _source, total = probes.Count, probes };
+    }
+
+    private static System.Numerics.Vector3? ReadBound(string key, string? raw, List<string> issues)
+    {
+        if (VmfEntities.ParseVector(raw) is {} v && float.IsFinite(v.X) && float.IsFinite(v.Y) && float.IsFinite(v.Z))
+            return v;
+        issues.Add(raw is null ? $"{key} is missing from the map" : $"{key} must contain three finite coordinates");
+        return null;
+    }
+
     [McpServerTool(Name = "get_entity", ReadOnly = true)]
     [Description("One entity of the SAVED map by id (from list_entities): all keyvalues, its outputs, and outputs of other entities that target it by name.")]
     public object GetEntity(int id, [Description("Read the newest autosave if it is newer than the saved map (Hammer++, stock, Strata); Source 2: forces an autosave first, i.e. reads Hammer's current unsaved state")] bool fromAutosave = false)
