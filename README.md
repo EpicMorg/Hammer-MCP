@@ -150,7 +150,7 @@ with a known memory layout the adapter also reads the **live selection** and the
 
 ### Limits of the shell channel
 
-The **[shell channel reference](docs/shell-channel.md)** explains where the channel comes from (public Source SDK code
+The **[shell channel reference](https://github.com/EpicMorg/HammerShell/blob/master/docs/shell-channel.md)** explains where the channel comes from (public Source SDK code
 since 2006), how to send commands, edit sessions, every command and what it cannot do — useful for any tool author,
 not only for Hammer-MCP.
 
