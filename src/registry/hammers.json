@@ -2320,6 +2320,14 @@
       "injectAdapter": "menu",
       "family": "valve", "branch": "ep1", "arch": "x86",
       "match": { "dll": "hammer.dll", "sha256": "8f74df92f2d565c8f820e58c1394c7219687207f0db7085b93b6249702b4573e", "linked": "2007-11-14" },
+      "memory": {
+        "layout": "source", "module": "hammer.dll", "activeDoc": "0x2d22dc", "doc.vtable": "0x2562d4", "doc.selection": "0xfc", "selection.list": "0x24",
+        "object.origin": "0x10", "object.mins": "0x40", "object.maxs": "0x4c", "object.parent": "0x4", "entity.vtable": "0x25cf24", "entity.className": "0xc8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xb0", "entity.keyValueCount": "0xbc", "entity.keyValueSize": "0x250", "entity.keyLength": "0x50", "entity.valueOffset": "0x50",
+        "entity.valueLength": "0x200", "solid.vtable": "0x25e164", "solid.faceBlocks": "0xac", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x15c", "face.size": "0x1b4",
+        "face.texture": "0x10", "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x258224", "view3d.camera": "0x64", "camera.position": "0x44",
+        "camera.matrix": "0x4", "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: ep1"
@@ -2603,6 +2611,14 @@
       "injectAdapter": "menu",
       "family": "psycho-a", "branch": "ep1", "arch": "x86",
       "match": { "dll": "hammer.dll", "sha256": "1d1619736c300301144938423443eb5f5ea5e7f9ac7814ed11aaa724cdc1f080", "linked": "2007-11-14" },
+      "memory": {
+        "layout": "source", "module": "hammer.dll", "activeDoc": "0x2d22dc", "doc.vtable": "0x2562d4", "doc.selection": "0xfc", "selection.list": "0x24",
+        "object.origin": "0x10", "object.mins": "0x40", "object.maxs": "0x4c", "object.parent": "0x4", "entity.vtable": "0x25cf24", "entity.className": "0xc8",
+        "entity.classNameLength": "0x40", "entity.keyValues": "0xb0", "entity.keyValueCount": "0xbc", "entity.keyValueSize": "0x250", "entity.keyLength": "0x50", "entity.valueOffset": "0x50",
+        "entity.valueLength": "0x200", "solid.vtable": "0x25e164", "solid.faceBlocks": "0xac", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x15c", "face.size": "0x1b4",
+        "face.texture": "0x10", "face.textureLength": "0x104", "doc.views": "0x2c", "view3d.vtable": "0x258224", "view3d.camera": "0x64", "camera.position": "0x44",
+        "camera.matrix": "0x4", "camera.matrixRows": "0x1"
+      },
       "shell": { "present": true },
       "gameConfig": "bin/GameConfig.txt",
       "notes": "Seen in: Psycho-A tools pack (string edits only), ep1"

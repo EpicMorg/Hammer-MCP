@@ -25,9 +25,15 @@ const char* const kSelectionKeys[] = { "doc.selection", "object.mins", "object.m
     "entity.valueOffset", "entity.valueLength", "solid.vtable", "solid.faces", "face.size", "face.texture" };
 // Source Hammer ("layout": "source"): the document points to a CSelection whose CUtlVector lists the objects, an
 // entity's keyvalues are a CUtlDict (red-black tree of MDkeyvalue nodes), solid faces use a vector or an inline table of blocks
+// keyvalues: a CUtlDict tree (kv.*) in most builds; Episode One (2007) keeps a flat CUtlVector<MDkeyvalue> instead, read
+// like GoldSrc's array (entity.keyValueCount / keyValueSize / keyLength / valueOffset / valueLength)
+const char* const kSourceTreeKeys[] = { "kv.nodes", "kv.alloc", "kv.root", "kv.nodeSize", "kv.left", "kv.right", "kv.key",
+    "kv.keyLength", "kv.value", "kv.valueLength" };
+const char* const kSourceArrayKeys[] = { "entity.keyValueCount", "entity.keyValueSize", "entity.keyLength", "entity.valueOffset",
+    "entity.valueLength" };
 const char* const kSourceSelectionKeys[] = { "doc.selection", "selection.list", "object.mins", "object.maxs", "object.origin",
-    "object.parent", "entity.vtable", "entity.className", "entity.keyValues", "kv.nodes", "kv.alloc", "kv.root", "kv.nodeSize",
-    "kv.left", "kv.right", "kv.key", "kv.keyLength", "kv.value", "kv.valueLength", "solid.vtable", "face.size", "face.texture" };
+    "object.parent", "entity.vtable", "entity.className", "entity.keyValues",
+    "solid.vtable", "face.size", "face.texture" };
 const char* const kCameraKeys[] = { "doc.views", "view3d.vtable", "view3d.camera", "camera.position" };
 bool g_source = false;
 bool g_selection = false, g_camera = false;
@@ -255,12 +261,28 @@ std::string FaceTextures(uptr solid) {
     return s + "]";
 }
 
+// an entity's keyvalues kept as a flat array: data pointer, count, stride, key / value text fields
+std::string ArrayKeyValues(uptr obj) {
+    uptr data = Ptr(obj + Num("entity.keyValues"));
+    int n = 0;
+    Rd(obj + Num("entity.keyValueCount"), n);
+    std::string s = "{";
+    size_t size = Num("entity.keyValueSize"), keyLen = Num("entity.keyLength"), valAt = Num("entity.valueOffset"), valLen = Num("entity.valueLength");
+    for (int i = 0; data && i < n && (size_t)i < kMaxKeys; ++i) {
+        uptr kv = data + (uptr)i * size;
+        if (i) s += ",";
+        s += "\"" + Esc(Str(kv, keyLen)) + "\":\"" + Esc(Str(kv + valAt, valLen)) + "\"";
+    }
+    return s + "}";
+}
+
 std::string Item(uptr obj) {
     uptr vt = Ptr(obj);
     if (g_source) {
         if (vt == Rva("entity.vtable"))
             return "{\"kind\":\"entity\",\"className\":\"" + Esc(EntityClass(obj)) + "\",\"origin\":" + Vec(obj + Num("object.origin")) +
-                   Bounds(obj) + ",\"keyValues\":" + SourceKeyValues(obj + Num("entity.keyValues")) + "}";
+                   Bounds(obj) + ",\"keyValues\":" +
+                   (Has("entity.keyValueCount") ? ArrayKeyValues(obj) : SourceKeyValues(obj + Num("entity.keyValues"))) + "}";
         if (vt == Rva("solid.vtable")) {
             std::string s = "{\"kind\":\"solid\"" + Bounds(obj);
             uptr parent = Ptr(obj + Num("object.parent"));
@@ -269,18 +291,8 @@ std::string Item(uptr obj) {
         }
     }
     if (Has("entity.vtable") && vt == Rva("entity.vtable")) {
-        std::string s = "{\"kind\":\"entity\",\"className\":\"" + Esc(EntityClass(obj)) + "\",\"origin\":" + Vec(obj + Num("object.origin")) + Bounds(obj);
-        uptr data = Ptr(obj + Num("entity.keyValues"));
-        int n = 0;
-        Rd(obj + Num("entity.keyValueCount"), n);
-        s += ",\"keyValues\":{";
-        size_t size = Num("entity.keyValueSize"), keyLen = Num("entity.keyLength"), valAt = Num("entity.valueOffset"), valLen = Num("entity.valueLength");
-        for (int i = 0; data && i < n && (size_t)i < kMaxKeys; ++i) {
-            uptr kv = data + (uptr)i * size;
-            if (i) s += ",";
-            s += "\"" + Esc(Str(kv, keyLen)) + "\":\"" + Esc(Str(kv + valAt, valLen)) + "\"";
-        }
-        return s + "}}";
+        return "{\"kind\":\"entity\",\"className\":\"" + Esc(EntityClass(obj)) + "\",\"origin\":" + Vec(obj + Num("object.origin")) +
+               Bounds(obj) + ",\"keyValues\":" + ArrayKeyValues(obj) + "}";
     }
     if (Has("solid.vtable") && vt == Rva("solid.vtable")) {
         std::string s = "{\"kind\":\"solid\"" + Bounds(obj);
@@ -330,6 +342,10 @@ bool Load(const std::string& profileLine) {
               Num("solid.faceBlockSize") <= kMaxFaces && !Has("solid.faces") && !Has("solid.faceCount")
             : Has("solid.faces") && Has("solid.faceCount");
         for (auto k : kSourceSelectionKeys) g_selection = g_selection && f.count(k);
+        bool tree = true, array = true;
+        for (auto k : kSourceTreeKeys) tree = tree && f.count(k);
+        for (auto k : kSourceArrayKeys) array = array && f.count(k);
+        g_selection = g_selection && (tree || array);
     } else
         for (auto k : kSelectionKeys) g_selection = g_selection && f.count(k);
     for (auto k : kLengths)

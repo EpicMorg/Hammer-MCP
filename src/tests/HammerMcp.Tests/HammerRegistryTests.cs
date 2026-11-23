@@ -40,7 +40,12 @@ public class HammerRegistryTests
         {
             // GoldSrc layouts read the selection from MFC lists; "layout": "source" ones from CSelection / CUtlVector / CUtlDict
             var isSource = b.Memory.TryGetValue("layout", out var kind) && kind == "source";
-            Assert.All(isSource ? source : selection, k => Assert.True(b.Memory.ContainsKey(k), $"{b.Id}: no {k}"));
+            // Source keyvalues: a CUtlDict tree (kv.*) or, in Episode One, a flat array (entity.keyValueCount ...)
+            var flatKeyValues = isSource && b.Memory.ContainsKey("entity.keyValueCount");
+            string[] sourceKeys = flatKeyValues
+                ? [.. source.Where(k => !k.StartsWith("kv.", StringComparison.Ordinal)), "entity.keyValueCount", "entity.keyValueSize", "entity.keyLength", "entity.valueOffset", "entity.valueLength"]
+                : source;
+            Assert.All(isSource ? sourceKeys : selection, k => Assert.True(b.Memory.ContainsKey(k), $"{b.Id}: no {k}"));
             if (isSource)
             {
                 string[] blocks = ["solid.faceBlocks", "solid.faceBlockSize", "solid.faceCount16"];

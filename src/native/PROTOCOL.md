@@ -136,3 +136,8 @@ and `"module"` (addresses are relative to `hammer_dll.dll` / `hammerplusplus_dll
 
 The adapter walks the keyvalue tree from its root (never the raw node array), checks every index against the array
 size and stops after 128 nodes. Camera keys are optional for Source layouts until they are found.
+
+Episode One (2007) Hammer keeps an entity's keyvalues as a flat `CUtlVector<MDkeyvalue>` instead of a `CUtlDict`: its Source
+layout carries the GoldSrc-style array keys (`entity.keyValueCount`, `entity.keyValueSize`, `entity.keyLength`,
+`entity.valueOffset`, `entity.valueLength`; `entity.keyValues` is the vector, whose first field is the data pointer)
+instead of the `kv.*` tree keys. A Source layout needs one of the two sets complete.
