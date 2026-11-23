@@ -47,6 +47,7 @@ inline std::wstring EditorDll(const std::wstring& exe, const char* dllName) {
     std::wstring dir = Dir(exe), name = Widen(dllName), exeName = FileName(exe);
     bool hpp = _wcsnicmp(exeName.c_str(), L"hammerplusplus", 14) == 0;
     bool hppDll = IEquals(name, L"hammerplusplus_dll.dll");
+    if (IEquals(exeName, L"level_editor.exe") != IEquals(name, L"level_editor_dll.dll")) return {};
     if (hpp != hppDll) return {};
     std::vector<std::wstring> candidates{ dir + L"\\" + name };
     if (hpp) candidates.push_back(dir + L"\\hammerplusplus\\bin\\" + name);
@@ -66,7 +67,7 @@ inline PolicyResult CheckPolicy(const std::wstring& exe, bool targetIs64) {
     std::wstring name = FileName(exe);
     if (Exists(Dir(exe) + L"\\tools\\hammer.dll"))
         return { nullptr, "Source 2 Hammer runs inside the game process (VAC / anti-cheat): never injected", {} };
-    bool standaloneHammer = IEquals(name, L"hammer.exe") || IEquals(name, L"hammerplusplus.exe");
+    bool standaloneHammer = IEquals(name, L"hammer.exe") || IEquals(name, L"hammerplusplus.exe") || IEquals(name, L"level_editor.exe");
     // ~180 allowed builds but only a few editor files: hash each file once
     std::vector<std::pair<std::wstring, std::string>> hashed;
     auto hash = [&](const std::wstring& path) {

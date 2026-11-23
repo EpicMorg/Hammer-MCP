@@ -1923,6 +1923,7 @@
     },
     {
       "id": "sle-3.129-x86",
+      "injectAdapter": "menu",
       "family": "sle", "branch": "sdk2013", "arch": "x86",
       "match": { "dll": "level_editor_dll.dll", "sha256": "85039dd73298e562bdbc8be4dc324a83eb3215abbb658c5f0e2e21ac733ae8ef", "linked": "2026-07-02" },
       "shell": { "present": true },
@@ -1936,7 +1937,7 @@
         "face.size": "0x1c8", "face.texture": "0x20", "face.textureLength": "0x104"
       },
       "gameConfig": "bin/level_editor/cfg/GameConfig.txt",
-      "notes": "Source Level Editor 3.129. Standard and nomanifest releases share the editor DLL. Shell window and command strings found statically. Live shell operation awaits verification. The selection layout was derived statically. The adapter remains disabled until live validation."
+      "notes": "Standard and nomanifest releases share the editor DLL. Standard edition tested on Windows: shell session, version check, entity create/delete, x86 adapter connection, selection and Send selection for four point entities. Brush payloads and camera were not verified."
     },
     {
       "id": "valve-sdk2013sp-upcoming-2014",

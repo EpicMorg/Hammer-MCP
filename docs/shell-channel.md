@@ -92,6 +92,14 @@ The channel returns an acknowledgment and provides no map or selection data. Ham
 
 ## Editor support
 
+| Editor tested on Windows | Shell window | Commands observed live |
+| --- | --- | --- |
+| Hammer++ TF2 8873 x64 | Present | Session, version check inside the session and entity edits |
+| Hammer++ SDK 2013 SP 8873 x86 | Present | Opened a session on a saved VMF, checked version 9 and closed the session |
+| Source Level Editor 3.129 x86 | Present | On a VMF saved at version 1, a repeat session accepted version 2. Version check, entity creation and deletion returned `Ok`. An earlier version check returned `Rejected`. |
+| Stock SDK 2013 SP x86 and TF2 x64 | Present | Window detection verified. Shell edit commands were outside these runs. |
+| Hammer++ SDK 2013 SP 8846 x86 and GoldSrc Hammer 3.4 / 3.5-b | Absent | No shell window in the tested processes |
+
 The channel has been identified in the stock Source 1 builds examined by this project, including the Episode One, SDK 2013, and later branches. In the Hammer++ builds examined, it appears from build 8867 onward. Entity edits and sessions were exercised live on Hammer++ TF2 8873 x64. The examined GoldSrc editors, Strata Hammer, and Source 2 Hammer lack this channel. The registry's `shell.present` records per-build findings. For the running process, check for the window or use `hammer_status` in Hammer-MCP. [Build registry](../src/registry/hammers.json)
 
 [sdk-sender]: https://github.com/ValveSoftware/source-sdk-2013/blob/3e957b70b167929f120360115d359d1ecb4c1699/src/public/editor_sendcommand.cpp

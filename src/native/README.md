@@ -4,12 +4,12 @@ Clean-room work on shipped binaries only: no Valve source code, no Source SDK he
 
 - `injector/` — `hmcp-injector32.exe` / `hmcp-injector64.exe --pid N --adapter <dir>`. Started by the Hammer-MCP server
   only after the user pressed **Connect adapter**; the C# `InjectPolicy` decides first, the injector checks again before
-  opening the process for writing: standalone `hammer.exe` / `hammerplusplus.exe` only, never a game process (VAC),
+  opening the process for writing: standalone Hammer editors, including SLE's `level_editor.exe` matched to its own `level_editor_dll.dll`, never a game process (VAC),
   never Source 2, only builds whose editor-DLL sha256 has an `injectAdapter` in `src/registry/hammers.json`
   (the list is generated from the registry at build time — `tools/gen_allowed_builds.py`).
 - `adapters/base/` — the adapter: **one DLL per bitness**, `hmcp-adapter-x86.dll` / `hmcp-adapter-x64.dll`, for every
   registry build with an `injectAdapter` support level (stock Valve, Hammer++, Slammin', Black Mesa, Psycho-A, GoldSrc
-  Worldcraft / Hammer 3.x and mods: 176 builds, level `menu` = layers 0-1). It finds out itself which build it runs in
+  Worldcraft / Hammer 3.x and mods: 177 builds, level `menu` = layers 0-1). It finds out itself which build it runs in
   (sha256 of the editor file) and says so in hello. Build-specific knowledge for later layers (signatures, offsets) will
   be data per build, not separate DLLs. Never injected: Source 2 (game process), Strata and J.A.C.K. (Qt).
 - Injector exit code 5: an adapter is already running in that process (its pipe answers); if one is still unloading,

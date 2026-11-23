@@ -28,7 +28,9 @@ public static class InjectPolicy
         // (match.dll = hammer.exe, wc.exe, neon.exe...), so the build passed here already proves this exe is the editor,
         // whatever it is called (hammer34.exe is hammer.exe 3.4); a game exe never hashes to an editor build
         var exeIsEditor = build is not null && build.Match.Dll.EndsWith(".exe", StringComparison.OrdinalIgnoreCase);
-        if (!EditorExes.Contains(name) && !exeIsEditor)
+        var sleExe = name.Equals("level_editor.exe", StringComparison.OrdinalIgnoreCase);
+        var sleBuild = build?.Family == "sle" && build.Match.Dll.Equals("level_editor_dll.dll", StringComparison.OrdinalIgnoreCase);
+        if (sleExe != sleBuild || (!sleExe && !EditorExes.Contains(name) && !exeIsEditor))
             return new(false, $"{name} is not a standalone Hammer executable: injection into other (game) processes is never allowed");
         if (build is null)
             return new(false, "unknown Hammer build: injection is never allowed");
