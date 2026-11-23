@@ -2244,7 +2244,7 @@
       "match": { "dll": "hammer_dll.dll", "sha256": "85f7654200da40089733fabf81c8aea59aaa741c0cd900aee8d06ca7bcfc784d", "linked": "2018-08-30" },
       "memory": {
         "layout": "source", "module": "hammer_dll.dll", "activeDoc": "0x887e64", "doc.vtable": "0x6be898", "doc.selection": "0x1a4", "selection.list": "0xc",
-        "object.origin": "0x14", "object.mins": "0x98", "object.maxs": "0xa4", "object.parent": "0x8", "entity.vtable": "0x6d3f68", "entity.className": "0xf4",
+        "object.origin": "0x14", "object.mins": "0x64", "object.maxs": "0x70", "object.parent": "0x8", "entity.vtable": "0x6d3f68", "entity.className": "0xf4",
         "entity.classNameLength": "0x40", "entity.keyValues": "0xd4", "kv.nodes": "0x4", "kv.alloc": "0x8", "kv.root": "0x10", "kv.nodeSize": "0x25c",
         "kv.left": "0x0", "kv.right": "0x2", "kv.key": "0xc", "kv.keyLength": "0x50", "kv.value": "0x5c", "kv.valueLength": "0x200",
         "solid.vtable": "0x6d56ec", "solid.faceBlocks": "0xd0", "solid.faceBlockSize": "0x6", "solid.faceCount16": "0x22c", "face.size": "0x1bc", "face.texture": "0x14",
