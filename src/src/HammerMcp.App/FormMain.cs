@@ -19,7 +19,7 @@ public partial class FormMain : Form
     private static readonly Dictionary<McpMode, string> ModeHelp = new()
     {
         [McpMode.Auto] = "Best available for the attached Hammer: the adapter when you connected it (Connect adapter - Auto "
-                         + "never injects by itself), live edits through the shell channel and menu commands "
+                         + "never injects by itself; it reads the live selection and camera where the build's memory layout is known), live edits through the shell channel and menu commands "
                          + "where a shell channel exists, otherwise read-only. Source 2 (CS2, Dota 2, HL:A): read-only "
                          + "from the .vmap and game files - its Hammer has no shell channel and no Win32 menus.",
         [McpMode.Basic] = "Read-only: the agent sees Hammer status and map files, but cannot change anything in Hammer "
@@ -29,7 +29,7 @@ public partial class FormMain : Form
                           + "and menu commands (save, undo, redo, run map, check for problems). The map must be saved. "
                           + "Shell channel only: no adapter.",
         [McpMode.Advanced] = "Strict adapter mode, for debugging: everything that changes Hammer goes through the injected "
-                             + "adapter only, an error without it. The adapter cannot edit yet, so edits, menu commands and "
+                             + "adapter only, an error without it. The adapter reads the live selection and camera but cannot edit yet, so edits, menu commands and "
                              + "compiles are refused - use Auto for work. The adapter goes only into a standalone Hammer exe "
                              + "of a known build, never into a game process (VAC / anti-cheat), so never for Source 2, and "
                              + "only when you press Connect adapter; it adds an MCP menu to Hammer (pause the agent, chat, activity log).",
@@ -113,6 +113,9 @@ public partial class FormMain : Form
         RefreshProcessList();
         UpdateAttachUi();
         _log.Write($"registry: {_registry.Builds.Count} known Hammer builds");
+        if (_settings.LostSecrets.Count > 0)
+            _log.Write($"settings: {string.Join(" and ", _settings.LostSecrets)} could not be decrypted (settings.json from another Windows user or machine) - set a new one"
+                       + (_settings.LostSecrets.Contains("the server token") ? " (Settings tab: Generate, then copy the client config again); beyond localhost the server will not start without a token" : ""));
     }
 
     /// <summary>Right-click menu on a read-only grid: Copy (cell), Copy row ("key: value"), Copy all. Right-click selects the cell first.</summary>
@@ -289,17 +292,28 @@ public partial class FormMain : Form
         labelProcessName.Text = process.MainTitle;
         UpdateProcessImage(process);
         var who = $"{process.Name} ({process.ProcessId})";
-        if (process.HasShellChannel)
+        if (_adapter.Hello is { } a)
+        {
+            // the adapter is connected: say what it gives instead of the "read-only" warning of the channel check
+            var parts = new List<string> { $"adapter {a.Adapter} connected" };
+            if (_adapter.CanReadLive)
+                parts.Add("live selection and camera");
+            parts.Add(process.HasShellChannel ? "shell channel OK" : "no shell channel: no live edits");
+            if (_target.Control.Paused)
+                parts.Add("agent PAUSED");
+            SetStatus($"Attached to {who}: {string.Join(", ", parts)}",
+                _target.Control.Paused ? Properties.Resources.warning_circle_16 : Properties.Resources.check_circle_16);
+        }
+        else if (process.HasShellChannel)
             SetStatus($"Attached to {who}, shell channel OK", Properties.Resources.check_circle_16);
         else if (process.IsSource2)
             SetStatus($"Attached to {who}: Source 2 Hammer - read-only (maps and game files; live channel via VConsole planned)",
                 Properties.Resources.warning_circle_16);
         else if (dll is not null || process.IsKnownEditorName)
-            SetStatus($"Attached to {who}: map editor without shell channel (read-only + menu)", Properties.Resources.warning_circle_16);
+            SetStatus($"Attached to {who}: no shell channel - read-only + menu{(_attachedBuild is { Memory.Count: > 0 } ? "; adapter: live selection, camera" : "")}",
+                Properties.Resources.warning_circle_16);
         else
             SetStatus($"Attached to {who}: not a Hammer editor", Properties.Resources.deny_circle_16);
-        if (_adapter.Hello is { } a)
-            toolStripStatusAttaching.Text += $"; adapter {a.Adapter} connected (MCP menu in Hammer){(_target.Control.Paused ? ", agent PAUSED" : "")}";
         ShowMetaInfo(process, build, dll);
         UpdateAdapterButton(process);
     }
@@ -457,6 +471,7 @@ public partial class FormMain : Form
     private void SetStatus(string text, Image icon)
     {
         toolStripStatusAttaching.Text = text;
+        toolStripStatusAttaching.ToolTipText = text; // the label is clipped to the window width
         toolStripStatusAttaching.Image = icon;
     }
 

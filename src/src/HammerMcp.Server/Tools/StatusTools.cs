@@ -24,8 +24,7 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
                 Note: $"no Hammer is attached - {target.AttachHint}");
 
         var mapPath = process.OpenMapPath;
-        int? mapVersion = mapPath is not null && File.Exists(mapPath) && !mapPath.EndsWith(".vmap", StringComparison.OrdinalIgnoreCase)
-            ? VmfVersionInfo.Read(mapPath).MapVersion : null;
+        int? mapVersion = MapVersion(mapPath);
         var (build, dll) = Identify(registry, process.ExePath);
         return new HammerStatus(
             Running: true,
@@ -35,7 +34,7 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
             UserRequests: Requests(),
             Approval: target.Changes.AskUser ? "ask" : "auto",
             PendingChanges: target.Changes.Count,
-            Adapter: target.Adapter?.Hello is { } a ? new AdapterStatus(a.Adapter, a.Version, a.Build) : null,
+            Adapter: target.Adapter?.Hello is { } a ? new AdapterStatus(a.Adapter, a.Version, a.Build, target.Adapter.CanReadLive) : null,
             ProcessId: process.ProcessId,
             ExePath: process.ExePath,
             Arch: PeHeader.TryRead(process.ExePath)?.Arch,
@@ -60,6 +59,33 @@ public sealed class StatusTools(HammerRegistry registry, HammerTarget target, Ha
 
     /// <summary>Lines the user wrote in Hammer (MCP > Chat) since the last call; each is delivered once.</summary>
     private IReadOnlyList<string>? Requests() => target.Control.TakeRequests() is { Count: > 0 } r ? r : null;
+
+    // only .vmf has a versioninfo block (not .rmf / .map / .jmf / .vmap); a file without one is not a reason to fail
+    private static int? MapVersion(string? mapPath)
+    {
+        if (mapPath is null || !mapPath.EndsWith(".vmf", StringComparison.OrdinalIgnoreCase) || !File.Exists(mapPath))
+            return null;
+        try
+        {
+            return VmfVersionInfo.Read(mapPath).MapVersion;
+        }
+        catch (Exception e) when (e is IOException or InvalidDataException or UnauthorizedAccessException)
+        {
+            return null;
+        }
+    }
+
+    [McpServerTool(Name = "hammer_ui", ReadOnly = true)]
+    [Description("What is known about the attached Hammer's user interface, so you do not have to explore it: recipes verified live (how to create a block, make it hollow, place an entity, apply a texture... with the command ids, dialog control ids and the traps, e.g. what can freeze Hammer or needs real keyboard focus), menu items, command texts, accelerators and dialogs with every control id. query = words that must all occur (e.g. 'hollow', 'texture', 'Transformation'); no query = the recipe names and dialog titles. buildId = another build's knowledge. Read it before you drive Hammer's windows.")]
+    public object HammerUi(string? query = null, string? buildId = null)
+    {
+        var id = buildId ?? (target.Current() is { } p ? Identify(registry, p.ExePath).Build?.Id : null);
+        if (id is null)
+            return new { error = "no Hammer is attached - pass buildId", known = UiKnowledge.Known() };
+        return UiKnowledge.For(id) is { } ui
+            ? ui.Search(query)
+            : new { error = $"nothing is known about the UI of {id} yet", known = UiKnowledge.Known() };
+    }
 
     [McpServerTool(Name = "user_requests", ReadOnly = true)]
     [Description("What the user wrote to you in Hammer's chat (MCP > Chat) since you last looked, and whether they paused you. Answer with say_to_user. recentChat = the last 10 chat lines from both sides (already seen ones too), for context. Cheap: call it between steps of a longer task. Each request is returned once (hammer_status returns them too).")]
@@ -241,4 +267,5 @@ public sealed record HammerStatus(
     int PendingChanges = 0);
 
 /// <summary>The injected adapter the server is connected to (Hammer shows an MCP menu).</summary>
-public sealed record AdapterStatus(string Id, string Version, string Build);
+/// <summary>LiveRead = hammer_selection / hammer_camera work with this build (layer 2).</summary>
+public sealed record AdapterStatus(string Id, string Version, string Build, bool LiveRead = false);
