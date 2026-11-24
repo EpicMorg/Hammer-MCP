@@ -11,6 +11,17 @@ All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/)
 - `viewport_capture`: return 3D and 2D viewport screenshots as MCP PNG images in standalone Valve Hammer and Hammer++, without changing the camera or grabbing the desktop.
 - Live Source 1 brush discovery, movement, scaling and deletion in Valve Hammer and Hammer++, by current selection or VMF ID; no map reload.
 - Oh My Pi (OMP) Streamable HTTP configuration under **Copy client config** in the tray, with the bearer token when configured.
+- **`hammer_ui`: what is known about the attached Hammer's interface**, so an agent does not explore it from scratch: recipes verified live (create a block, make it hollow, place an entity, apply a texture, Run Map... with command ids, dialog control ids and traps such as what needs real keyboard focus or can freeze Hammer), menu items, accelerators, short command tooltips and every dialog with its control ids. First: Valve Hammer Editor 3.4 / 3.5 (the menus and dialogs are dumped from the build's resources by `registry/tools/dump_ui.py --public`: ids, classes, keys and short labels only, none of Valve's own prose such as status texts, message boxes or the About box).
+- **Live selection and camera (adapter layer 2), first for Valve Hammer Editor 3.5**: `hammer_selection` returns what is selected in Hammer right now, unsaved changes included (entities with class, origin and keys; solids with textures and owning entity; bounds), `hammer_camera` returns where the 3D view looks. **MCP > Send selection to agent** in Hammer sends the selection to the agent. Needs the adapter (Advanced mode); `hammer_status` shows `adapter.liveRead`. The memory layout of each build lives in the registry. Selecting a large part of a big map can freeze Hammer: the tool description tells the agent to ask the user first.
+
+### Changed
+- **The server token and the OpenCode password are stored encrypted** in `settings.json` (Windows DPAPI, current user): another Windows user or a copy of the file cannot read them. Plain values written by older versions are encrypted on the first start. **After the update, older versions no longer find the token**: if you go back to 0.8.0 or earlier, generate a token again and copy the client config again. A saved secret that cannot be decrypted (settings from another user or machine) is reported in the log; set it again. `HAMMER_MCP_SETTINGS` points the app to another settings file.
+- `compile_log` and `leak_trace` also look in the game's maps folder, where J.A.C.K. compiles (the newest file wins; `path` tells which one). A pointfile older than a compile log in its folder that shows no leak is reported as left from an earlier compile (`leaked: false`).
+
+### Fixed
+- `hammer_status` failed when a GoldSrc map (`.rmf`, `.map`, `.jmf`) was open.
+- App: the status bar was empty when its text was longer than the window (it now fills the bar, clipped, full text in the tooltip), and it still said "read-only" with a connected adapter - it now names what the adapter gives (live selection and camera) and whether there are live edits.
+- App: renamed Hammer executables (`hammer34.exe`, `hammer_3.5.exe`, `worldcraft16.exe`...) were listed only with **Show all processes**.
 
 ## [0.8.0] - 2026-11-15
 
