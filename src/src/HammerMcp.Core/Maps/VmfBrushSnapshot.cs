@@ -5,7 +5,10 @@ namespace HammerMcp.Core.Maps;
 
 public readonly record struct BrushPoint(float X, float Y, float Z);
 
-public readonly record struct VmfBrushFace(int Id, string Plane, string Material);
+public readonly record struct VmfBrushFace(int Id, string Plane, string Material)
+{
+    public bool HasDisplacement { get; init; }
+}
 
 public sealed record VmfBrush(int Id, int? EntityId, string ClassName, bool Hidden, VmfBrushFace[] Faces,
     BrushPoint PlanePointMin, BrushPoint PlanePointMax)
@@ -84,6 +87,8 @@ public sealed record VmfBrushSnapshot(int MapVersion, IReadOnlyList<VmfBrush> Br
                     faceDepth = depth;
                     face = default;
                 }
+                else if (faceDepth != 0 && depth == faceDepth + 1 && block == "dispinfo")
+                    face = face with { HasDisplacement = true };
                 continue;
             }
             if (line != "}")

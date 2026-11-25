@@ -9,6 +9,24 @@ internal static class VmfBrushBounds
     private const double WindingRadius = 131072;
     private const double PlaneEpsilon = 1e-7;
 
+    internal static bool IsAxisAlignedBox(ReadOnlySpan<VmfBrushFace> faces)
+    {
+        if (faces.Length != 6)
+            return false;
+        foreach (var face in faces)
+        {
+            var text = face.Plane.AsSpan();
+            if (face.HasDisplacement)
+                return false;
+            if (!TryReadPoint(ref text, out var a) || !TryReadPoint(ref text, out var b) ||
+                !TryReadPoint(ref text, out var c))
+                return false;
+            if (!(a.X == b.X && a.X == c.X || a.Y == b.Y && a.Y == c.Y || a.Z == b.Z && a.Z == c.Z))
+                return false;
+        }
+        return true;
+    }
+
     public static (BrushPoint Min, BrushPoint Max)? FromFaces(ReadOnlySpan<VmfBrushFace> faces)
     {
         if (faces.Length < 4)
