@@ -9,6 +9,14 @@ internal static class VmfBrushBounds
     private const double WindingRadius = 131072;
     private const double PlaneEpsilon = 1e-7;
 
+    internal static bool IsTopFace(string plane, float z)
+    {
+        var text = plane.AsSpan();
+        return TryReadPoint(ref text, out var a) && TryReadPoint(ref text, out var b) &&
+            TryReadPoint(ref text, out var c) && a.Z == z && b.Z == z && c.Z == z &&
+            Point.Cross(a - b, c - b).Z > 0;
+    }
+
     internal static bool IsAxisAlignedBox(ReadOnlySpan<VmfBrushFace> faces)
     {
         if (faces.Length != 6)
@@ -16,8 +24,6 @@ internal static class VmfBrushBounds
         foreach (var face in faces)
         {
             var text = face.Plane.AsSpan();
-            if (face.HasDisplacement)
-                return false;
             if (!TryReadPoint(ref text, out var a) || !TryReadPoint(ref text, out var b) ||
                 !TryReadPoint(ref text, out var c))
                 return false;

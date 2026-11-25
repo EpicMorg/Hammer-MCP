@@ -8,6 +8,7 @@ public readonly record struct BrushPoint(float X, float Y, float Z);
 public readonly record struct VmfBrushFace(int Id, string Plane, string Material)
 {
     public bool HasDisplacement { get; init; }
+    internal string? Displacement { get; init; }
 }
 
 public sealed record VmfBrush(int Id, int? EntityId, string ClassName, bool Hidden, VmfBrushFace[] Faces,
@@ -28,6 +29,7 @@ public sealed record VmfBrushSnapshot(int MapVersion, IReadOnlyList<VmfBrush> Br
         var ownerBrushes = new List<Solid>();
         Solid? solid = null;
         var face = default(VmfBrushFace);
+        System.Text.StringBuilder? displacement = null;
         string? pending = null;
         int ownerDepth = 0, solidDepth = 0, faceDepth = 0, ownerId = 0, mapVersion = -1;
         var ownerClass = "";
@@ -38,6 +40,16 @@ public sealed record VmfBrushSnapshot(int MapVersion, IReadOnlyList<VmfBrush> Br
             var line = raw.Trim();
             if (line.Length == 0 || line.StartsWith("//", StringComparison.Ordinal))
                 continue;
+            if (displacement is not null)
+            {
+                if (stack.Count == faceDepth + 1 && line == "}")
+                {
+                    face = face with { Displacement = displacement.ToString() };
+                    displacement = null;
+                }
+                else
+                    displacement.AppendLine(line);
+            }
             if (line[0] == '"')
             {
                 if (!VmfEntities.TryKeyValue(line, out var key, out var value))
@@ -88,7 +100,10 @@ public sealed record VmfBrushSnapshot(int MapVersion, IReadOnlyList<VmfBrush> Br
                     face = default;
                 }
                 else if (faceDepth != 0 && depth == faceDepth + 1 && block == "dispinfo")
+                {
                     face = face with { HasDisplacement = true };
+                    displacement = new();
+                }
                 continue;
             }
             if (line != "}")

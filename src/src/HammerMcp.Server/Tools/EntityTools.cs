@@ -17,7 +17,7 @@ namespace HammerMcp.Server.Tools;
 public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJournal journal, HammerMcpServerOptions options, GameData gameData)
 {
     [McpServerTool(Name = "place_prop_on_surface", Destructive = false)]
-    [Description("Place a Source 1 prop_static on a visible rectangular world brush by live VMF ID. The model's rotated footprint must fit entirely on the brush. Uses the live VMF export and mounted MDL/VVD files.")]
+    [Description("Place a Source 1 prop_static by live VMF brush ID. Supports rectangular world brushes and their top displacements with vertical offsets. The rotated footprint must fit entirely on the surface. On uneven ground the highest point under the footprint sets the height; the tool does not align the prop to the slope.")]
     public EditResult PlacePropOnSurface(int supportBrushId, string model, float x, float y,
         float pitch = 0, float yaw = 0, float roll = 0, string? configName = null)
     {

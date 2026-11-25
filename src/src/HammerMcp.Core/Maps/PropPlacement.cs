@@ -21,6 +21,8 @@ public static class PropPlacement
         const float radians = MathF.PI / 180;
         var rotation = Matrix4x4.CreateRotationX(angles.Z * radians) * Matrix4x4.CreateRotationY(angles.X * radians) * Matrix4x4.CreateRotationZ(angles.Y * radians);
         float lowest = float.PositiveInfinity;
+        var footprintMin = new Vector2(float.PositiveInfinity);
+        var footprintMax = new Vector2(float.NegativeInfinity);
         for (int i = 0; i < count; i++)
         {
             int at = start + i * 48 + 16;
@@ -29,8 +31,23 @@ public static class PropPlacement
                                          y + v.Y >= surface.Min.Y && y + v.Y <= surface.Max.Y))
                 throw new InvalidDataException("The model footprint does not fit on the support brush.");
             lowest = MathF.Min(lowest, v.Z);
+            var xy = new Vector2(x + v.X, y + v.Y);
+            footprintMin = Vector2.Min(footprintMin, xy);
+            footprintMax = Vector2.Max(footprintMax, xy);
         }
-        float z = surface.Max.Z - lowest;
+        float height = surface.Max.Z;
+        bool displacement = false;
+        foreach (var face in brush.Faces)
+        {
+            if (!face.HasDisplacement)
+                continue;
+            if (displacement || face.Displacement is not { } data ||
+                !VmfBrushBounds.IsTopFace(face.Plane, surface.Max.Z))
+                throw new InvalidDataException("Support must have a single displacement on its upper face.");
+            height = DisplacementSupport.Height(data, surface, footprintMin, footprintMax);
+            displacement = true;
+        }
+        float z = height - lowest;
         if (!float.IsFinite(z))
             throw new InvalidDataException("The computed placement height is invalid.");
         return new(x, y, z);
