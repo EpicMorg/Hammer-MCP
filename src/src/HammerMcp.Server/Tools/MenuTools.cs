@@ -31,6 +31,10 @@ public sealed class MenuTools(HammerTarget target, ActivityLog log, HammerMcpSer
     [Description("Opens Hammer's Map > Check for Problems dialog for the user.")]
     public MenuResult CheckForProblems() => Post("check for problems", MenuCommands.CheckForProblems);
 
+    [McpServerTool(Name = "focus_3d_on_selection", Destructive = false)]
+    [Description("Ask Hammer to center its 3D views on the current selection. Select a prop or brush first, then use viewport_capture to inspect the new view. Does not edit the map.")]
+    public MenuResult Focus3DOnSelection() => Post("center 3D views on selection", MenuCommands.Center3DViewsOnSelection);
+
     /// <param name="approval">Plain text for approval mode; null = only opens a dialog for the user, no approval needed.</param>
     private MenuResult Post(string name, int id, string? approval = null)
     {
