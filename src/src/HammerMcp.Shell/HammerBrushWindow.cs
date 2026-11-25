@@ -40,6 +40,8 @@ public sealed class HammerBrushWindow
             throw new InvalidOperationException("Open a map in Hammer before using live brush tools.");
     }
 
+    private HammerBrushWindow(HammerProcess process, nint document) : this(process) => Document = document;
+
     public static nint ActiveDocument(nint frame)
     {
         if (frame == 0)
@@ -105,6 +107,45 @@ public sealed class HammerBrushWindow
         SetText(Edit(dialog, 115), values.Y.ToString("G9", CultureInfo.InvariantCulture));
         SetText(Edit(dialog, 116), values.Z.ToString("G9", CultureInfo.InvariantCulture));
     });
+
+    public VmfBrushSnapshot InspectSection(HammerProcess process, string path, bool copy)
+    {
+        EnsureReady();
+        if (!process.TryGetStandaloneSource1(out var plusPlus) || !plusPlus)
+            throw new InvalidOperationException("Section insertion requires Hammer++.");
+        var mdi = NativeMethods.FindWindowEx(Frame, 0, "MDIClient", null);
+        var child = NativeMethods.GetWindow(mdi, GwChild);
+        while (child != 0 && (child == Document ||
+               !WindowText(child).StartsWith(path + " - ", StringComparison.OrdinalIgnoreCase)))
+            child = NativeMethods.GetWindow(child, GwNext);
+        if (child == 0)
+            throw new InvalidOperationException("Open the saved section VMF in another document in the same Hammer++ window.");
+        var source = new HammerBrushWindow(process, child);
+        try
+        {
+            Send(mdi, 0x0222, child); // WM_MDIACTIVATE
+            var snapshot = source.Snapshot();
+            if (copy)
+            {
+                source.EnsureReady();
+                Send(Frame, WmCommand, MenuCommands.SelectAll);
+                source.EnsureReady();
+                Send(Frame, WmCommand, 32942); // Edit > Copy
+            }
+            return snapshot;
+        }
+        finally
+        {
+            Send(mdi, 0x0222, Document);
+        }
+    }
+
+    public void PasteSelection()
+    {
+        EnsureReady();
+        Send(Frame, WmCommand, 32938); // Edit > Paste
+        EnsureReady();
+    }
 
     public void DeleteSelection(BrushSelection expected)
     {

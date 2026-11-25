@@ -62,6 +62,141 @@ public sealed class BrushTools(HammerTarget target, ActivityLog log)
     [Description("Delete one brush by its live VMF ID, or omit brushId to delete the single currently selected brush. Hammer records the edit in Undo. A brush entity may be removed if this is its last brush.")]
     public BrushEditResult DeleteBrush(int? brushId = null) => Edit(Operation.Delete, default, brushId);
 
+    [McpServerTool(Name = "insert_brush_section", Destructive = false)]
+    [Description("Insert a brush-only VMF open in another document of the same Hammer++ instance. Position it by its minimum X/Y/Z plane-point bounds. Replaces the clipboard when explicitly allowed.")]
+    public BrushEditResult InsertBrushSection(string sourcePath, float minX, float minY, float minZ,
+        bool allowClipboardOverwrite = false)
+    {
+        var requested = new Vector3(minX, minY, minZ);
+        if (!allowClipboardOverwrite || !Path.IsPathFullyQualified(sourcePath) ||
+            !sourcePath.EndsWith(".vmf", StringComparison.OrdinalIgnoreCase) ||
+            !float.IsFinite(minX) || !float.IsFinite(minY) || !float.IsFinite(minZ))
+            return Refuse("Specify an absolute section VMF path, finite minimum bounds, and allowClipboardOverwrite.");
+        Editor expected;
+        VmfBrushSnapshot section;
+        lock (_gate)
+        {
+            try
+            {
+                expected = Open();
+                section = Inspect(expected, copy: false);
+                if (section.EntityCount != 0 || section.Brushes.Count == 0 ||
+                    section.Brushes.Any(b => b.Hidden || b.Faces.Any(f => f.HasDisplacement)))
+                    return Refuse("The section must contain visible world brushes only, without displacements.");
+            }
+            catch (Exception ex) when (IsEditorError(ex))
+            {
+                return Refuse(ex.Message);
+            }
+        }
+
+        int count = section.Brushes.Count;
+        var preview = FormattableString.Invariant($"insert {count} brushes from {Path.GetFileName(sourcePath)} at minimum bounds ({minX}, {minY}, {minZ}); replaces the clipboard");
+        return target.Changes.Run(preview, ApplySection, r => (r.Ok, r.Message), Refuse);
+
+        VmfBrushSnapshot Inspect(Editor editor, bool copy) => editor.Window.InspectSection(
+            target.Current() ?? throw new InvalidOperationException("Hammer closed."), sourcePath, copy);
+
+        BrushEditResult ApplySection()
+        {
+            lock (_gate)
+            {
+                int undo = 0;
+                try
+                {
+                    var editor = Open();
+                    if (editor.Window.ProcessId != expected.Window.ProcessId || editor.Window.Document != expected.Window.Document ||
+                        !string.Equals(editor.Path, expected.Path, StringComparison.OrdinalIgnoreCase))
+                        return Refuse("The destination document changed while waiting for approval.");
+                    var before = Snapshot(editor);
+                    var liveSource = Inspect(editor, copy: true);
+                    if (liveSource.Brushes.Count != count || !Preserved(section, liveSource))
+                        return Refuse("The source section changed while waiting for approval.");
+                    CheckTarget(editor);
+                    undo = 1;
+                    editor.Window.PasteSelection();
+                    var pasted = Snapshot(editor);
+                    var ids = before.Brushes.Select(b => b.Id).ToHashSet();
+                    var added = pasted.Brushes.Where(b => !ids.Contains(b.Id)).ToArray();
+                    if (added.Length != count || pasted.Brushes.Count != before.Brushes.Count + count ||
+                        !Preserved(before, pasted) || !SameSection(section.Brushes, added))
+                        throw new InvalidOperationException("Hammer did not paste the expected brush section.");
+                    var anchor = Minimum(added);
+                    var offset = requested - anchor;
+                    if (offset != Vector3.Zero)
+                    {
+                        CheckTarget(editor);
+                        undo = 2;
+                        editor.Window.TransformSelection(false, offset);
+                        var moved = Snapshot(editor);
+                        var byId = moved.Brushes.ToLookup(b => b.Id);
+                        if (!Preserved(before, moved) || moved.Brushes.Count != pasted.Brushes.Count ||
+                            !added.All(b => byId[b.Id].Count() == 1 && Shape(byId[b.Id].First(), requested) == Shape(b, anchor)))
+                            throw new InvalidOperationException("Hammer did not move only the pasted brushes to the requested coordinates.");
+                    }
+                    return new(true, $"Inserted {count} brushes. Undo: {undo} step(s).");
+                }
+                catch (Exception ex) when (IsEditorError(ex))
+                {
+                    return Refuse(undo == 0 ? ex.Message : $"{ex.Message} Inspect Hammer's Undo history ({undo} command(s) attempted).");
+                }
+            }
+        }
+    }
+
+    private void CheckTarget(Editor editor)
+    {
+        if (target.Control.Paused || target.AttachedPid != editor.Window.ProcessId)
+            throw new InvalidOperationException("The agent was paused or the editor changed.");
+    }
+
+    private static bool Preserved(VmfBrushSnapshot original, VmfBrushSnapshot current)
+    {
+        var byId = current.Brushes.ToLookup(b => b.Id);
+        return original.EntityCount == current.EntityCount && original.Brushes.All(b =>
+            byId[b.Id].Count() == 1 && byId[b.Id].First() is { } now &&
+            b.Hidden == now.Hidden && b.EntityId == now.EntityId && b.SameGeometry(now));
+    }
+
+    private static Vector3 Minimum(IReadOnlyList<VmfBrush> brushes)
+    {
+        var result = new Vector3(float.PositiveInfinity);
+        foreach (var b in brushes)
+            result = Vector3.Min(result, new(b.PlanePointMin.X, b.PlanePointMin.Y, b.PlanePointMin.Z));
+        return result;
+    }
+
+    private static bool SameSection(IReadOnlyList<VmfBrush> a, IReadOnlyList<VmfBrush> b)
+    {
+        var am = Minimum(a);
+        var bm = Minimum(b);
+        return a.Select(x => Shape(x, am)).Order(StringComparer.Ordinal)
+            .SequenceEqual(b.Select(x => Shape(x, bm)).Order(StringComparer.Ordinal));
+    }
+
+    private static string Shape(VmfBrush brush, Vector3 anchor) => string.Join("|",
+        brush.Faces.Select(face => PlaneKey(face, anchor)).Order(StringComparer.Ordinal));
+
+    private static string PlaneKey(VmfBrushFace face, Vector3 anchor)
+    {
+        var points = face.Plane.Split(['(', ')'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (points.Length != 3 || VmfEntities.ParseVector(points[0]) is not { } a ||
+            VmfEntities.ParseVector(points[1]) is not { } b || VmfEntities.ParseVector(points[2]) is not { } c)
+            throw new InvalidDataException("Hammer exported an invalid brush plane.");
+        var normal = Vector3.Normalize(Vector3.Cross(a - b, c - b));
+        if (!float.IsFinite(normal.X) || !float.IsFinite(normal.Y) || !float.IsFinite(normal.Z))
+            throw new InvalidDataException("Hammer exported a degenerate brush plane.");
+        // Hammer can choose different points on the same plane after Paste.
+        return face.Material.ToUpperInvariant() + FormattableString.Invariant(
+            $":{Rounded(normal.X, 5):0.#####},{Rounded(normal.Y, 5):0.#####},{Rounded(normal.Z, 5):0.#####},{Rounded(Vector3.Dot(normal, a - anchor), 3):0.###}");
+    }
+
+    private static float Rounded(float value, int digits)
+    {
+        var rounded = MathF.Round(value, digits);
+        return rounded == 0 ? 0 : rounded;
+    }
+
     private BrushEditResult Edit(Operation operation, Vector3 values, int? id)
     {
         if (id is <= 0)

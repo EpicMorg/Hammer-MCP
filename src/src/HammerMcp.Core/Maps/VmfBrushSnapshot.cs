@@ -21,6 +21,7 @@ public sealed record VmfBrush(int Id, int? EntityId, string ClassName, bool Hidd
 public sealed record VmfBrushSnapshot(int MapVersion, IReadOnlyList<VmfBrush> Brushes)
 {
     public VmfBrush? FindUnique(int id) => Unique(Brushes.Where(brush => brush.Id == id));
+    public int EntityCount { get; init; }
 
     public static VmfBrushSnapshot Parse(TextReader reader)
     {
@@ -34,6 +35,7 @@ public sealed record VmfBrushSnapshot(int MapVersion, IReadOnlyList<VmfBrush> Br
         int ownerDepth = 0, solidDepth = 0, faceDepth = 0, ownerId = 0, mapVersion = -1;
         var ownerClass = "";
         bool ownerIsEntity = false, hasWorld = false;
+        int entityCount = 0;
 
         while (reader.ReadLine() is { } raw)
         {
@@ -85,6 +87,7 @@ public sealed record VmfBrushSnapshot(int MapVersion, IReadOnlyList<VmfBrush> Br
                     ownerDepth = depth;
                     ownerId = 0;
                     ownerIsEntity = block == "entity";
+                    if (ownerIsEntity) entityCount++;
                     ownerClass = ownerIsEntity ? "?" : "worldspawn";
                     hasWorld |= !ownerIsEntity;
                 }
@@ -139,7 +142,7 @@ public sealed record VmfBrushSnapshot(int MapVersion, IReadOnlyList<VmfBrush> Br
         }
         if (stack.Count != 0 || !hasWorld || mapVersion < 0)
             throw InvalidSnapshot();
-        return new(mapVersion, brushes);
+        return new(mapVersion, brushes) { EntityCount = entityCount };
     }
 
     private static VmfBrush? Unique(IEnumerable<VmfBrush> brushes)
