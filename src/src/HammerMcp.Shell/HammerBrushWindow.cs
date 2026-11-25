@@ -28,11 +28,10 @@ public sealed class HammerBrushWindow
 
     public HammerBrushWindow(HammerProcess process)
     {
-        if (process.IsSource2 || !(process.Name.Equals("hammer", StringComparison.OrdinalIgnoreCase) ||
-                                   process.Name.Equals("hammerplusplus", StringComparison.OrdinalIgnoreCase)))
+        if (!process.TryGetStandaloneSource1(out var hammerPlusPlus))
             throw new InvalidOperationException("Live brush editing requires standalone Source 1 Valve Hammer or Hammer++.");
         ProcessId = process.ProcessId;
-        _recoveryKey = process.Name.Equals("hammerplusplus", StringComparison.OrdinalIgnoreCase)
+        _recoveryKey = hammerPlusPlus
             ? @"Software\Valve\Hammer\HPP"
             : @"Software\Valve\Hammer\General";
         Frame = process.MainWindow;

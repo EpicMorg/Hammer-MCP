@@ -22,10 +22,7 @@ public static partial class HammerViewportCapture
         if (!OperatingSystem.IsWindowsVersionAtLeast(10, 0, 14393))
             throw new InvalidOperationException("Viewport capture requires Windows 10 version 1607 or newer.");
         var frame = editor.MainWindow;
-        if (editor.IsSource2 || frame == 0 ||
-            !Path.GetFileName(editor.ExePath).Equals(editor.Name + ".exe", StringComparison.OrdinalIgnoreCase) ||
-            !(editor.Name.Equals("hammer", StringComparison.OrdinalIgnoreCase) ||
-              editor.Name.Equals("hammerplusplus", StringComparison.OrdinalIgnoreCase)))
+        if (frame == 0 || !editor.TryGetStandaloneSource1(out _))
             throw new InvalidOperationException("Viewport capture requires standalone Source 1 Valve Hammer or Hammer++.");
         if (IsIconic(frame))
             throw new InvalidOperationException("Restore Hammer from the taskbar before capturing a viewport.");

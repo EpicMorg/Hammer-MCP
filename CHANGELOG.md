@@ -20,6 +20,7 @@ All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/)
 
 ### Fixed
 - Live brush edits in stock Hammer now identify the selected solid by reconstructed bounds, so VMF plane points outside the solid no longer cause the approval prompt to name a different brush.
+- Viewport capture and live brush tools also accept renamed Source 1 Hammer and Hammer++ launchers when their editor DLL is loaded.
 - `hammer_status` failed when a GoldSrc map (`.rmf`, `.map`, `.jmf`) was open.
 - App: the status bar was empty when its text was longer than the window (it now fills the bar, clipped, full text in the tooltip), and it still said "read-only" with a connected adapter - it now names what the adapter gives (live selection and camera) and whether there are live edits.
 - App: renamed Hammer executables (`hammer34.exe`, `hammer_3.5.exe`, `worldcraft16.exe`...) were listed only with **Show all processes**.

@@ -34,6 +34,36 @@ public sealed record HammerProcess(int ProcessId, string Name, string ExePath, n
         || ((name.StartsWith("hammer", StringComparison.OrdinalIgnoreCase) || name.StartsWith("worldcraft", StringComparison.OrdinalIgnoreCase))
             && !name.StartsWith("hammer-mcp", StringComparison.OrdinalIgnoreCase));
 
+    internal bool TryGetStandaloneSource1(out bool hammerPlusPlus)
+    {
+        hammerPlusPlus = false;
+        if (IsSource2)
+            return false;
+        if (Name.Equals("hammer", StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (Name.Equals("hammerplusplus", StringComparison.OrdinalIgnoreCase))
+            return hammerPlusPlus = true;
+
+        // A renamed launcher still loads the editor DLL. Inspect the running process rather
+        // than neighboring files: stock Hammer and Hammer++ can share the same install.
+        try
+        {
+            using var process = Process.GetProcessById(ProcessId);
+            foreach (ProcessModule module in process.Modules)
+            {
+                if (string.Equals(module.ModuleName, "hammerplusplus_dll.dll", StringComparison.OrdinalIgnoreCase))
+                    return hammerPlusPlus = true;
+                if (string.Equals(module.ModuleName, "hammer_dll.dll", StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+        }
+        catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or System.ComponentModel.Win32Exception)
+        {
+            // The process exited or Windows did not allow module enumeration.
+        }
+        return false;
+    }
+
     /// <summary>Map path from a title like "Hammer++ - 64 Bit - [B:\...\map.vmf - Textured Shaded]".</summary>
     /// <remarks>Source 2 Hammer shows only the file name; it is looked up in the install's content tree.
     /// When the title has no map, Source 2 is asked through its developer console (hammer_map_files).
