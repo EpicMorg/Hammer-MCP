@@ -33,7 +33,12 @@ public sealed record BrushSelection(int Faces, int? Id, BrushPoint Center, Brush
         VmfBrush? result = null;
         foreach (var brush in snapshot.Brushes)
         {
-            if (!Matches(brush))
+            if (!IsCandidate(brush))
+                continue;
+            // Unusable geometry could belong to the selection; don't infer a different ID.
+            if (VmfBrushBounds.FromFaces(brush.Faces) is not { } bounds)
+                return null;
+            if (!MatchesBounds(bounds.Min, bounds.Max))
                 continue;
             if (result is not null)
                 return null;
@@ -42,16 +47,20 @@ public sealed record BrushSelection(int Faces, int? Id, BrushPoint Center, Brush
         return result is null ? null : snapshot.FindUnique(result.Id);
     }
 
-    public bool Matches(VmfBrush brush) => !brush.Hidden && brush.Faces.Length == Faces &&
+    public bool Matches(VmfBrush brush) => IsCandidate(brush) &&
         (Id is { } id ? id == brush.Id :
-            Inside(brush.PlanePointMin.X, brush.PlanePointMax.X, Center.X, Size.X) &&
-            Inside(brush.PlanePointMin.Y, brush.PlanePointMax.Y, Center.Y, Size.Y) &&
-            Inside(brush.PlanePointMin.Z, brush.PlanePointMax.Z, Center.Z, Size.Z));
+            VmfBrushBounds.FromFaces(brush.Faces) is { } bounds && MatchesBounds(bounds.Min, bounds.Max));
 
-    // VMF plane samples are on the solid, but need not include all its vertices. The status bar rounds
-    // its center and dimensions; only accept the selection if exactly one solid can fit the displayed box.
-    private static bool Inside(float min, float max, float center, float size) =>
-        min >= center - size / 2 - 0.75f && max <= center + size / 2 + 0.75f;
+    private bool IsCandidate(VmfBrush brush) => !brush.Hidden && brush.Faces.Length == Faces;
+
+    private bool MatchesBounds(BrushPoint min, BrushPoint max) =>
+        MatchesAxis(min.X, max.X, Center.X, Size.X) &&
+        MatchesAxis(min.Y, max.Y, Center.Y, Size.Y) &&
+        MatchesAxis(min.Z, max.Z, Center.Z, Size.Z);
+
+    // Hammer rounds the status bar's center and size independently.
+    private static bool MatchesAxis(float min, float max, float center, float size) =>
+        MathF.Abs((min + max) * 0.5f - center) <= 0.51f && MathF.Abs(max - min - size) <= 0.51f;
 
     private static bool Point(GroupCollection groups, int first, out BrushPoint point)
     {

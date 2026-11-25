@@ -165,8 +165,9 @@ targeting, call `list_live_brushes` (optionally filter by `material`), then pass
 `move_brush` takes a relative offset in Hammer units; `scale_brush` takes positive X/Y/Z factors.
 
 These tools use the standalone editor's standard English dialogs and status bar. Keep the status bar visible and
-don't switch documents or edit the selection while a call runs. Stock Hammer can refuse an ambiguous selection;
-pass an explicit ID in that case. With approval enabled, the original brush is checked again at apply time.
+don't switch documents or edit the selection while a call runs. Stock Hammer doesn't report the selected brush ID,
+so the server matches the status bar's face count, center and size against bounds reconstructed from the VMF planes.
+If the match can't be established uniquely, pass an explicit ID. With approval enabled, the original brush is checked again at apply time.
 Brush edits use Hammer's native Undo history when enabled. Listing exports a temporary snapshot of the live map;
 it does not save over or reload the open VMF. For the copy on disk, use `save_map` explicitly.
 
