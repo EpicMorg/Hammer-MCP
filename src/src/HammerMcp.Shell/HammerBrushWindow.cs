@@ -147,6 +147,42 @@ public sealed class HammerBrushWindow
         EnsureReady();
     }
 
+    public unsafe bool UndoSectionAction(bool transformation)
+    {
+        EnsureReady();
+        nint menu = GetMenu(Frame);
+        char* buffer = stackalloc char[128];
+        for (int i = 0, count = GetMenuItemCount(menu); i < count; i++)
+        {
+            nint popup = GetSubMenu(menu, i);
+            if (popup == 0 || GetMenuState(popup, MenuCommands.Undo, 0) == uint.MaxValue)
+                continue;
+            Send(Frame, 0x0117, popup, i); // WM_INITMENUPOPUP refreshes the Undo caption and state.
+            EnsureReady();
+            int length = GetMenuString(popup, MenuCommands.Undo, buffer, 128, 0);
+            var caption = new ReadOnlySpan<char>(buffer, length);
+            int tab = caption.IndexOf('\t');
+            if ((GetMenuState(popup, MenuCommands.Undo, 0) & 3) != 0 ||
+                !caption[..(tab < 0 ? length : tab)].SequenceEqual(transformation ? "Undo Transformation" : "Undo Paste"))
+                return false;
+            Send(Frame, WmCommand, MenuCommands.Undo);
+            EnsureReady();
+            return true;
+        }
+        return false;
+    }
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern nint GetMenu(nint window);
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern nint GetSubMenu(nint menu, int position);
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern int GetMenuItemCount(nint menu);
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern uint GetMenuState(nint menu, uint id, uint flags);
+    [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint = "GetMenuStringW")]
+    private static extern unsafe int GetMenuString(nint menu, uint id, char* text, int capacity, uint flags);
+
     public void DeleteSelection(BrushSelection expected)
     {
         if (ReadSelection() != expected)

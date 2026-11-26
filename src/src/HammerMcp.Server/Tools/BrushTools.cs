@@ -122,20 +122,22 @@ public sealed class BrushTools(HammerTarget target, ActivityLog log)
             lock (_gate)
             {
                 int undo = 0;
+                Editor? editor = null;
+                VmfBrushSnapshot? before = null, pasted = null;
                 try
                 {
-                    var editor = Open();
+                    editor = Open();
                     if (editor.Window.ProcessId != expected.Window.ProcessId || editor.Window.Document != expected.Window.Document ||
                         !string.Equals(editor.Path, expected.Path, StringComparison.OrdinalIgnoreCase))
                         return Refuse("The destination document changed while waiting for approval.");
-                    var before = Snapshot(editor);
+                    before = Snapshot(editor);
                     var liveSource = Inspect(editor, copy: true);
                     if (liveSource.Brushes.Count != count || !Preserved(section, liveSource))
                         return Refuse("The source section changed while waiting for approval.");
                     CheckTarget(editor);
                     undo = 1;
                     editor.Window.PasteSelection();
-                    var pasted = Snapshot(editor);
+                    pasted = Snapshot(editor);
                     var ids = before.Brushes.Select(b => b.Id).ToHashSet();
                     var added = pasted.Brushes.Where(b => !ids.Contains(b.Id)).ToArray();
                     if (added.Length != count || pasted.Brushes.Count != before.Brushes.Count + count ||
@@ -158,11 +160,43 @@ public sealed class BrushTools(HammerTarget target, ActivityLog log)
                 }
                 catch (Exception ex) when (IsEditorError(ex))
                 {
-                    return Refuse(undo == 0 ? ex.Message : $"{ex.Message} Inspect Hammer's Undo history ({undo} command(s) attempted).");
+                    if (undo == 0 || editor is null || before is null)
+                        return Refuse(ex.Message);
+                    try
+                    {
+                        CheckTarget(editor);
+                        var now = Snapshot(editor);
+                        if (SameSnapshot(before, now))
+                            return Refuse($"{ex.Message} The original brushes are unchanged.");
+                        if (undo == 2 && pasted is not null && !SameSnapshot(pasted, now))
+                        {
+                            if (!Preserved(before, now) || !SameBrushIds(pasted, now) ||
+                                !editor.Window.UndoSectionAction(transformation: true))
+                                throw new InvalidOperationException("Cannot identify the transformation in Undo history.");
+                            now = Snapshot(editor);
+                            if (!SameSnapshot(pasted, now))
+                                throw new InvalidOperationException("Undo did not restore the pasted section.");
+                        }
+                        if (!Preserved(before, now) || now.Brushes.Count != before.Brushes.Count + count ||
+                            !editor.Window.UndoSectionAction(transformation: false) ||
+                            !SameSnapshot(before, Snapshot(editor)))
+                            throw new InvalidOperationException("Could not confirm that Undo restored the original brushes.");
+                        return Refuse($"{ex.Message} Rolled back the section and verified the original brushes.");
+                    }
+                    catch (Exception rollback) when (IsEditorError(rollback))
+                    {
+                        return Refuse($"{ex.Message} Rollback not verified: {rollback.Message} Inspect Hammer before retrying.");
+                    }
                 }
             }
         }
     }
+
+    private static bool SameSnapshot(VmfBrushSnapshot a, VmfBrushSnapshot b) =>
+        a.Brushes.Count == b.Brushes.Count && Preserved(a, b);
+
+    private static bool SameBrushIds(VmfBrushSnapshot a, VmfBrushSnapshot b) =>
+        a.Brushes.Count == b.Brushes.Count && a.Brushes.Select(x => x.Id).ToHashSet().SetEquals(b.Brushes.Select(x => x.Id));
 
     [McpServerTool(Name = "check_brush_clearance", ReadOnly = true)]
     [Description("Check one straight, level, axis-aligned passage for brush obstacles in the active Hammer++ document and optionally a section open in another document. Coordinates are player center XY and feet Z. Results are conservative: props and displacements are not collision-tested.")]

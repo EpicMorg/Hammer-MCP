@@ -67,6 +67,9 @@ internal static class AgentInstructions
         against both existing and inserted geometry. Include trim strips, props and collision-only brushes;
         even thin pieces crossing the opening count. On a copy, trim only the parts that cross the opening
         or reposition the join; do not delete unrelated objects. Verify passage clearance before reporting success.
+        Around an arch, check that the wall above the curve reaches the ceiling and joins the walls on both
+        sides. Inspect from both sides and verify that only the intended opening remains. Do not automatically
+        fill gaps without determining whether they are intentional.
 
         Compiling (edit modes only): compile_sequences shows Hammer's own Run Map sequences; run_compile runs one on the
         SAVED map (ask the user first), compile_log / leak_trace explain the result, bsp_entities shows what ended up
