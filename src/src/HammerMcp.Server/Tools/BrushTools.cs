@@ -372,6 +372,71 @@ public sealed class BrushTools(HammerTarget target, ActivityLog log)
             : throw new InvalidOperationException($"Brush #{id} is absent, hidden or ambiguous in the live map; refresh list_live_brushes.");
     }
 
+    [McpServerTool(Name = "preview_generated_section", ReadOnly = true)]
+    [Description("Inspect a generated section before saving or inserting it. Reports total brushes, counts by owner class and material, and repeated stepped strips on straight runs that may be replaceable by a sloped brush. Does not modify the VMF.")]
+    public object PreviewGeneratedSection(string vmf)
+    {
+        try
+        {
+            using var reader = new StringReader(vmf);
+            var snapshot = VmfBrushSnapshot.Parse(reader);
+            var strips = new List<(int Axis, float Width, float Depth, float Cross, float Bottom, float Start, float Top, string Material, int Id)>();
+            foreach (var brush in snapshot.Brushes)
+            {
+                if (brush.Hidden || brush.EntityId is not null || brush.Faces.Any(f => f.HasDisplacement) ||
+                    VmfBrushBounds.FromFaces(brush.Faces) is not { } bounds)
+                    continue;
+                var (min, max) = bounds;
+                float dx = max.X - min.X, dy = max.Y - min.Y;
+                if (dx > 32 || dy > 32 || max.Z - min.Z < 32 ||
+                    brush.Faces.Select(f => f.Plane).Any(p => !IsAxial(p)))
+                    continue;
+                var material = string.Join("|", brush.Faces.Select(f => f.Material.ToUpperInvariant()).Order(StringComparer.Ordinal));
+                strips.Add((0, dx, dy, min.Y, min.Z, min.X, max.Z, material, brush.Id));
+                strips.Add((1, dy, dx, min.X, min.Z, min.Y, max.Z, material, brush.Id));
+            }
+            var runs = new List<int[]>();
+            foreach (var group in strips.GroupBy(s => (s.Axis, s.Width, s.Depth, s.Cross, s.Bottom, s.Material)))
+            {
+                var ordered = group.OrderBy(s => s.Start).ToArray();
+                for (int i = 0; i + 3 < ordered.Length;)
+                {
+                    int j = i + 1;
+                    float rise = ordered[j].Top - ordered[i].Top;
+                    while (rise != 0 && j < ordered.Length &&
+                           MathF.Abs(ordered[j].Start - ordered[j - 1].Start - group.Key.Width) < 0.01f &&
+                           MathF.Abs(ordered[j].Top - ordered[j - 1].Top - rise) < 0.01f)
+                        j++;
+                    if (j - i >= 4)
+                    {
+                        runs.Add(ordered[i..j].Select(s => s.Id).ToArray());
+                        i = j;
+                    }
+                    else i++;
+                }
+            }
+            return new { ok = true, brushCount = snapshot.Brushes.Count,
+                byClass = snapshot.Brushes.GroupBy(b => b.ClassName).ToDictionary(g => g.Key, g => g.Count()),
+                byMaterial = snapshot.Brushes.SelectMany(b => b.Faces.Select(f => f.Material)
+                    .Distinct(StringComparer.OrdinalIgnoreCase)).GroupBy(m => m, StringComparer.OrdinalIgnoreCase)
+                    .ToDictionary(g => g.Key, g => g.Count()),
+                steppedStripCandidates = runs };
+        }
+        catch (Exception ex) when (IsEditorError(ex))
+        {
+            return new { ok = false, message = ex.Message };
+        }
+    }
+
+    private static bool IsAxial(string plane)
+    {
+        var points = plane.Split(['(', ')'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (points.Length != 3 || VmfEntities.ParseVector(points[0]) is not { } a ||
+            VmfEntities.ParseVector(points[1]) is not { } b || VmfEntities.ParseVector(points[2]) is not { } c)
+            return false;
+        return a.X == b.X && a.X == c.X || a.Y == b.Y && a.Y == c.Y || a.Z == b.Z && a.Z == c.Z;
+    }
+
     [McpServerTool(Name = "save_generated_section", Destructive = false)]
     [Description("Save VMF text as a new .vmf in generated/ beside the active saved map. Pass a filename only, not a path. Never overwrites a file. Open the returned path in Hammer++ before insertion.")]
     public GeneratedSectionResult SaveGeneratedSection(string fileName, string vmf)

@@ -49,6 +49,11 @@ internal static class AgentInstructions
         Use save_generated_section for generated VMF sections. It creates a new file under generated/ beside
         the saved destination map and refuses to overwrite existing files. Open the returned absolute path in
         another document of the same Hammer++ instance and pass it to insert_brush_section.
+        Before saving a generated section, call preview_generated_section and review the brush counts and
+        stepped-strip candidates. Build stair treads separately from the enclosure: on straight runs use
+        continuous convex sloped side walls and ceiling where the profile permits, not one wall or ceiling
+        strip per tread. Split at landings, turns, openings or changes of profile. Do not auto-merge flagged
+        brushes; preserve openings and collision, and check headroom along the slope and at the landings.
         For continuous surfaces, read the neighboring brush with get_live_brush_faces. Use a touching coplanar
         face of the same material and copy both its U and V scales, axes and offsets independently. Do not Fit
         a repeating wall or floor texture to the brush. At a turn keep the texture density and reproject it.
