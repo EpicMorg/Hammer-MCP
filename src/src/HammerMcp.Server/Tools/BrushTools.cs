@@ -144,6 +144,68 @@ public sealed class BrushTools(HammerTarget target, ActivityLog log)
         }
     }
 
+    [McpServerTool(Name = "check_brush_clearance", ReadOnly = true)]
+    [Description("Check one straight, level, axis-aligned passage for brush obstacles in the active Hammer++ document and optionally a section open in another document. Coordinates are player center XY and feet Z. Results are conservative: props and displacements are not collision-tested.")]
+    public BrushClearanceResult CheckBrushClearance(float startX, float startY, float endX, float endY, float feetZ,
+        string? sourcePath = null, float sectionMinX = 0, float sectionMinY = 0, float sectionMinZ = 0)
+    {
+        if (!(float.IsFinite(startX) && float.IsFinite(startY) && float.IsFinite(endX) &&
+            float.IsFinite(endY) && float.IsFinite(feetZ) && float.IsFinite(sectionMinX) &&
+            float.IsFinite(sectionMinY) && float.IsFinite(sectionMinZ)) ||
+            (startX == endX) == (startY == endY))
+            return new("error", [], "Supply a finite, nonzero, straight axis-aligned segment.");
+        lock (_gate)
+        {
+            try
+            {
+                var editor = Open();
+                var hits = new List<BrushClearanceHit>();
+                var unknown = false;
+                var min = new Vector3(MathF.Min(startX, endX) - 16, MathF.Min(startY, endY) - 16, feetZ);
+                var max = new Vector3(MathF.Max(startX, endX) + 16, MathF.Max(startY, endY) + 16, feetZ + 72);
+                Scan(Snapshot(editor), "destination", Vector3.Zero);
+                if (sourcePath is not null)
+                {
+                    if (!Path.IsPathFullyQualified(sourcePath))
+                        return new("error", [], "Supply the absolute path of the open source VMF.");
+                    var process = target.Current() ?? throw new InvalidOperationException("Hammer closed.");
+                    var section = editor.Window.InspectSection(process, sourcePath, copy: false);
+                    if (section.Brushes.Count == 0)
+                        return new("error", [], "The source has no brushes.");
+                    Scan(section, "source", new Vector3(sectionMinX, sectionMinY, sectionMinZ) - Minimum(section.Brushes));
+                }
+                return new(hits.Count > 0 ? "brush_candidates" : unknown ? "unknown" : "no_brush_obstacle",
+                    hits, unknown ? "Some geometry could not be verified (point entities, displacements or invalid brush bounds). This does not certify a walkable route."
+                        : "Conservative brush bounds only; does not test floor support or in-game movement.");
+
+                void Scan(VmfBrushSnapshot map, string document, Vector3 offset)
+                {
+                    unknown |= map.EntityCount != 0;
+                    foreach (var brush in map.Brushes)
+                    {
+                        if (brush.Faces.Any(f => f.HasDisplacement))
+                            unknown = true;
+                        if (VmfBrushBounds.FromFaces(brush.Faces) is not { } bounds)
+                        {
+                            unknown = true;
+                            continue;
+                        }
+                        var low = new Vector3(bounds.Min.X, bounds.Min.Y, bounds.Min.Z) + offset;
+                        var high = new Vector3(bounds.Max.X, bounds.Max.Y, bounds.Max.Z) + offset;
+                        if (low.X < max.X && high.X > min.X && low.Y < max.Y && high.Y > min.Y &&
+                            low.Z < max.Z && high.Z > min.Z)
+                            hits.Add(new(document, brush.Id, brush.EntityId, brush.Hidden,
+                                new(low.X, low.Y, low.Z), new(high.X, high.Y, high.Z)));
+                    }
+                }
+            }
+            catch (Exception ex) when (IsEditorError(ex))
+            {
+                return new("error", [], ex.Message);
+            }
+        }
+    }
+
     private void CheckTarget(Editor editor)
     {
         if (target.Control.Paused || target.AttachedPid != editor.Window.ProcessId)
@@ -322,3 +384,6 @@ public sealed record LiveBrushList(bool Ok, string Message, int Total, IReadOnly
 public sealed record LiveBrushInfo(int Id, int? EntityId, string ClassName, bool Hidden, BrushPoint PlanePointMin,
     BrushPoint PlanePointMax, IReadOnlyList<string> Materials);
 public sealed record BrushEditResult(bool Ok, string Message, int? BrushId = null);
+
+public sealed record BrushClearanceHit(string Document, int BrushId, int? EntityId, bool Hidden, BrushPoint Min, BrushPoint Max);
+public sealed record BrushClearanceResult(string Status, IReadOnlyList<BrushClearanceHit> Candidates, string Message);

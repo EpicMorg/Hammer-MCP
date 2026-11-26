@@ -8,6 +8,7 @@ All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/)
 
 ### Added
 - `insert_brush_section`: paste a brush-only section from another open Hammer++ VMF at explicit coordinates. Requires permission to replace the clipboard; Undo takes two steps if the paste needs repositioning.
+- `check_brush_clearance`: report brush bounds intersecting a straight player-sized corridor in the live map and optionally a proposed section. Does not certify prop or displacement collisions.
 - `place_prop_on_surface`: place a Source 1 static model on a rectangular world brush using the lowest point of its rotated mesh.
 - Prop placement on a rectangular upper displacement with vertical offsets uses the highest point under the rotated model's bounding footprint, keeping the prop level.
 - Offline Source 1 BSP visibility audit: rank PVS hotspots and compare potentially visible world faces at fixed coordinates without launching the game.

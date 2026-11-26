@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace HammerMcp.Core.Maps;
 
-internal static class VmfBrushBounds
+public static class VmfBrushBounds
 {
     // The starting square must enclose the Source 1 map. If a winding still reaches it,
     // its bounds depend on this arbitrary limit rather than on the brush planes.
