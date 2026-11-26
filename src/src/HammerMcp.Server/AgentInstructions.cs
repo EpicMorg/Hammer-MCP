@@ -54,6 +54,10 @@ internal static class AgentInstructions
         visible face; do not tile it. If the ceiling grid is unknown, verify it before placing the panels.
         These are section authoring steps, not effects of insert_brush_section: it places prepared brushes, does
         not fit textures or cut the surrounding map. Inspect the result from both sides of the join.
+        For a door or passage, check a player-sized clearance volume through the full join and its approaches
+        against both existing and inserted geometry. Include trim strips, props and collision-only brushes;
+        even thin pieces crossing the opening count. On a copy, trim only the parts that cross the opening
+        or reposition the join; do not delete unrelated objects. Verify passage clearance before reporting success.
 
         Compiling (edit modes only): compile_sequences shows Hammer's own Run Map sequences; run_compile runs one on the
         SAVED map (ask the user first), compile_log / leak_trace explain the result, bsp_entities shows what ended up
