@@ -26,6 +26,7 @@ All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/)
 
 ### Fixed
 - Failed Hammer++ section insertions roll back verified Paste and Transformation actions rather than leaving a misplaced section. If Undo cannot be verified, the tool tells the user to inspect the map before retrying.
+- Compare translated brush planes in double precision to avoid rejecting curved sections due to rounding noise after Paste.
 - Live brush edits in stock Hammer now identify the selected solid by reconstructed bounds, so VMF plane points outside the solid no longer cause the approval prompt to name a different brush.
 - Viewport capture and live brush tools also accept renamed Source 1 Hammer and Hammer++ launchers when their editor DLL is loaded.
 - `hammer_status` failed when a GoldSrc map (`.rmf`, `.map`, `.jmf`) was open.

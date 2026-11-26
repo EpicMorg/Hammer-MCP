@@ -299,17 +299,24 @@ public sealed class BrushTools(HammerTarget target, ActivityLog log)
         if (points.Length != 3 || VmfEntities.ParseVector(points[0]) is not { } a ||
             VmfEntities.ParseVector(points[1]) is not { } b || VmfEntities.ParseVector(points[2]) is not { } c)
             throw new InvalidDataException("Hammer exported an invalid brush plane.");
-        var normal = Vector3.Normalize(Vector3.Cross(a - b, c - b));
-        if (!float.IsFinite(normal.X) || !float.IsFinite(normal.Y) || !float.IsFinite(normal.Z))
+        double ax = (double)a.X - b.X, ay = (double)a.Y - b.Y, az = (double)a.Z - b.Z;
+        double cx = (double)c.X - b.X, cy = (double)c.Y - b.Y, cz = (double)c.Z - b.Z;
+        double nx = ay * cz - az * cy, ny = az * cx - ax * cz, nz = ax * cy - ay * cx;
+        double length = Math.Sqrt(nx * nx + ny * ny + nz * nz);
+        if (!(length > 0) || !double.IsFinite(length))
             throw new InvalidDataException("Hammer exported a degenerate brush plane.");
+        nx /= length;
+        ny /= length;
+        nz /= length;
+        var distance = nx * ((double)a.X - anchor.X) + ny * ((double)a.Y - anchor.Y) + nz * ((double)a.Z - anchor.Z);
         // Hammer can choose different points on the same plane after Paste.
         return face.Material.ToUpperInvariant() + FormattableString.Invariant(
-            $":{Rounded(normal.X, 5):0.#####},{Rounded(normal.Y, 5):0.#####},{Rounded(normal.Z, 5):0.#####},{Rounded(Vector3.Dot(normal, a - anchor), 3):0.###}");
+            $":{Rounded(nx, 5):0.#####},{Rounded(ny, 5):0.#####},{Rounded(nz, 5):0.#####},{Rounded(distance, 3):0.###}");
     }
 
-    private static float Rounded(float value, int digits)
+    private static double Rounded(double value, int digits)
     {
-        var rounded = MathF.Round(value, digits);
+        var rounded = Math.Round(value, digits);
         return rounded == 0 ? 0 : rounded;
     }
 
