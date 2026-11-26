@@ -372,6 +372,38 @@ public sealed class BrushTools(HammerTarget target, ActivityLog log)
             : throw new InvalidOperationException($"Brush #{id} is absent, hidden or ambiguous in the live map; refresh list_live_brushes.");
     }
 
+    [McpServerTool(Name = "save_generated_section", Destructive = false)]
+    [Description("Save VMF text as a new .vmf in generated/ beside the active saved map. Pass a filename only, not a path. Never overwrites a file. Open the returned path in Hammer++ before insertion.")]
+    public GeneratedSectionResult SaveGeneratedSection(string fileName, string vmf)
+    {
+        var stem = Path.GetFileNameWithoutExtension(fileName);
+        if (!fileName.EndsWith(".vmf", StringComparison.OrdinalIgnoreCase) || stem.Length is < 1 or > 100 ||
+            !stem.All(c => char.IsAsciiLetterOrDigit(c) || c is '_' or '-') || fileName.Length != stem.Length + 4)
+            return new(false, null, "Use a simple .vmf filename with letters, digits, underscores or hyphens.");
+        try
+        {
+            var process = target.Current();
+            if (target.Control.Paused || process?.OpenMapPath is not { } map || !Path.IsPathFullyQualified(map) ||
+                !map.EndsWith(".vmf", StringComparison.OrdinalIgnoreCase) || !File.Exists(map))
+                return new(false, null, "Attach to an unpaused editor with a saved VMF open.");
+            using var reader = new StringReader(vmf);
+            if (VmfBrushSnapshot.Parse(reader).Brushes.Count == 0)
+                return new(false, null, "The section must contain at least one brush.");
+            var directory = Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(map)!, "generated"));
+            if ((directory.Attributes & FileAttributes.ReparsePoint) != 0)
+                return new(false, null, "The generated folder must not be a redirect or symlink.");
+            string path = Path.Combine(directory.FullName, fileName);
+            using var stream = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None);
+            using var writer = new StreamWriter(stream);
+            writer.Write(vmf);
+            return new(true, path, "Saved generated section.");
+        }
+        catch (Exception ex) when (IsEditorError(ex))
+        {
+            return new(false, null, ex.Message);
+        }
+    }
+
     private Editor Open()
     {
         if (target.Control.Paused)
@@ -409,3 +441,5 @@ public sealed record BrushClearanceHit(string Document, int BrushId, int? Entity
 public sealed record BrushClearanceResult(string Status, IReadOnlyList<BrushClearanceHit> Candidates, string Message);
 
 public sealed record LiveBrushFaces(bool Ok, string Message, IReadOnlyList<VmfBrushFace> Faces);
+
+public sealed record GeneratedSectionResult(bool Ok, string? Path, string Message);

@@ -46,10 +46,9 @@ internal static class AgentInstructions
         When adding a room or corridor, inspect the site with viewport_capture (use focus_3d_on_selection in
         Hammer++ for a selected landmark), then use live geometry for coordinates and clearance. Do not place
         geometry from a screenshot alone. Preview the section on a copy before inserting into the working map.
-        Save generated VMF sections in a generated/ subdirectory beside the saved destination map (for example,
-        maps/generated/office-hall.vmf). Create the directory if needed and use a new filename rather than
-        overwriting any existing file. Open the section in another document of the same Hammer++ instance and
-        pass its absolute path to insert_brush_section. Never save generated geometry over the destination VMF.
+        Use save_generated_section for generated VMF sections. It creates a new file under generated/ beside
+        the saved destination map and refuses to overwrite existing files. Open the returned absolute path in
+        another document of the same Hammer++ instance and pass it to insert_brush_section.
         For continuous surfaces, read the neighboring brush with get_live_brush_faces. Use a touching coplanar
         face of the same material and copy both its U and V scales, axes and offsets independently. Do not Fit
         a repeating wall or floor texture to the brush. At a turn keep the texture density and reproject it.
