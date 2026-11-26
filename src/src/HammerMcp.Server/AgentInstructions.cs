@@ -46,8 +46,9 @@ internal static class AgentInstructions
         When adding a room or corridor, inspect the site with viewport_capture (use focus_3d_on_selection in
         Hammer++ for a selected landmark), then use live geometry for coordinates and clearance. Do not place
         geometry from a screenshot alone. Preview the section on a copy before inserting into the working map.
-        For continuous surfaces, carry the material and UV axes, scale and offsets from a touching coplanar face
-        of the same material. At a turn keep the texture density and reproject onto the new face.
+        For continuous surfaces, read the neighboring brush with get_live_brush_faces. Use a touching coplanar
+        face of the same material and copy both its U and V scales, axes and offsets independently. Do not Fit
+        a repeating wall or floor texture to the brush. At a turn keep the texture density and reproject it.
         For ceiling light panels, read the ceiling face UVs and locate the tile seams within the texture: a
         texture can contain several tiles. Align the panel to the requested whole tiles (e.g. 1 by 2). Keep the
         ceiling intact and use a separate thin brush directly below it. Fit one copy of the light texture to its

@@ -48,6 +48,26 @@ public sealed class BrushTools(HammerTarget target, ActivityLog log)
         }
     }
 
+    [McpServerTool(Name = "get_live_brush_faces", ReadOnly = true)]
+    [Description("Read face planes, materials and VMF uaxis/vaxis (direction, shift and scale for each axis) of one live brush. Find a neighboring brush with list_live_brushes and choose a touching coplanar face with the same material as a UV reference. This tool does not apply textures.")]
+    public LiveBrushFaces GetLiveBrushFaces(int brushId)
+    {
+        lock (_gate)
+        {
+            try
+            {
+                var brush = Snapshot(Open()).FindUnique(brushId);
+                return brush is { Hidden: false }
+                    ? new(true, "Live VMF face mapping", brush.Faces)
+                    : new(false, "Brush ID is absent, hidden or ambiguous.", []);
+            }
+            catch (Exception ex) when (IsEditorError(ex))
+            {
+                return new(false, ex.Message, []);
+            }
+        }
+    }
+
     [McpServerTool(Name = "move_brush", Destructive = false)]
     [Description("Translate a brush by x/y/z Hammer units and record it in Hammer's Undo history. Omit brushId to use the single currently selected brush; otherwise use an ID from list_live_brushes.")]
     public BrushEditResult MoveBrush(float x, float y, float z, int? brushId = null) =>
@@ -387,3 +407,5 @@ public sealed record BrushEditResult(bool Ok, string Message, int? BrushId = nul
 
 public sealed record BrushClearanceHit(string Document, int BrushId, int? EntityId, bool Hidden, BrushPoint Min, BrushPoint Max);
 public sealed record BrushClearanceResult(string Status, IReadOnlyList<BrushClearanceHit> Candidates, string Message);
+
+public sealed record LiveBrushFaces(bool Ok, string Message, IReadOnlyList<VmfBrushFace> Faces);

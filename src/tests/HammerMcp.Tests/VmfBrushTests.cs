@@ -76,6 +76,16 @@ public class VmfBrushTests
         Assert.Equal(new BrushPoint(64, 64, 64), brush.PlanePointMax);
     }
 
+    [Fact]
+    public void SnapshotKeepsIndependentTextureAxesAndScales()
+    {
+        var vmf = Brush(12, 14).Replace("\"material\" \"tools/toolsnodraw\"",
+            "\"material\" \"custom/plaster\"\n\"uaxis\" \"[0 -1 0 -32] 0.125\"\n\"vaxis\" \"[0 0 -1 16] 0.5\"");
+        var face = Assert.Single(Read(vmf).FindUnique(12)!.Faces);
+        Assert.Equal("[0 -1 0 -32] 0.125", face.UAxis);
+        Assert.Equal("[0 0 -1 16] 0.5", face.VAxis);
+    }
+
     private static VmfBrushSnapshot Read(string world, string entities = "") => VmfBrushSnapshot.Parse(new StringReader(
         "versioninfo\n{\n\"mapversion\" \"7\"\n}\nworld\n{\n\"id\" \"1\"\n\"classname\" \"worldspawn\"\n" + world + "}\n" + entities));
 

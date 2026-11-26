@@ -7,6 +7,8 @@ public readonly record struct BrushPoint(float X, float Y, float Z);
 
 public readonly record struct VmfBrushFace(int Id, string Plane, string Material)
 {
+    public string? UAxis { get; init; }
+    public string? VAxis { get; init; }
     public bool HasDisplacement { get; init; }
     internal string? Displacement { get; init; }
 }
@@ -72,6 +74,8 @@ public sealed record VmfBrushSnapshot(int MapVersion, IReadOnlyList<VmfBrush> Br
                         "id" => face with { Id = ParseNumber(value) },
                         "plane" => face with { Plane = value },
                         "material" => face with { Material = value },
+                        "uaxis" => face with { UAxis = value },
+                        "vaxis" => face with { VAxis = value },
                         _ => face,
                     };
                 continue;
