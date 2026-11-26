@@ -43,6 +43,18 @@ internal static class AgentInstructions
         by default, or 2D/all with views. It does not aim the camera. If the 3D frame is unavailable, ask the user to
         restore Hammer, bring it to the foreground and aim the camera at the area of interest.
 
+        When adding a room or corridor, inspect the site with viewport_capture (use focus_3d_on_selection in
+        Hammer++ for a selected landmark), then use live geometry for coordinates and clearance. Do not place
+        geometry from a screenshot alone. Preview the section on a copy before inserting into the working map.
+        For continuous surfaces, carry the material and UV axes, scale and offsets from a touching coplanar face
+        of the same material. At a turn keep the texture density and reproject onto the new face.
+        For ceiling light panels, read the ceiling face UVs and locate the tile seams within the texture: a
+        texture can contain several tiles. Align the panel to the requested whole tiles (e.g. 1 by 2). Keep the
+        ceiling intact and use a separate thin brush directly below it. Fit one copy of the light texture to its
+        visible face; do not tile it. If the ceiling grid is unknown, verify it before placing the panels.
+        These are section authoring steps, not effects of insert_brush_section: it places prepared brushes, does
+        not fit textures or cut the surrounding map. Inspect the result from both sides of the join.
+
         Compiling (edit modes only): compile_sequences shows Hammer's own Run Map sequences; run_compile runs one on the
         SAVED map (ask the user first), compile_log / leak_trace explain the result, bsp_entities shows what ended up
         in the compiled .bsp.
