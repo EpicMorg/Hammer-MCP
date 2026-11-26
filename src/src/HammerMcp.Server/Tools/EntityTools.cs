@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Numerics;
+using System.Globalization;
 using System.Runtime.Versioning;
 using HammerMcp.Core.Maps;
 using HammerMcp.Shell;
@@ -73,6 +74,118 @@ public sealed class EntityTools(HammerTarget target, ActivityLog log, EditJourna
         catch (Exception e) when (e is InvalidOperationException or InvalidDataException or IOException or UnauthorizedAccessException)
         {
             return Refuse(e.Message);
+        }
+    }
+
+    [McpServerTool(Name = "place_prop_on_prop", Destructive = false)]
+    [Description("Place a Source 1 prop_static on a visible live prop ID (list_entities supplies saved IDs). XY is the new model's origin. surfaceZ selects the nearest horizontal layer within 8 Hammer units; omit it for the top layer under the footprint center. Uses render triangles with rotation and scale. Refuses incomplete support or intersection with the support, conservatively using the placed model's footprint and envelope. Does not verify in-game physics.")]
+    public EditResult PlacePropOnProp(int supportEntityId, string model, float x, float y, float? surfaceZ = null,
+        float pitch = 0, float yaw = 0, float roll = 0, string? configName = null)
+    {
+        if (target.Control.Paused || options.AdapterOnlyRefusal is not null)
+            return Refuse(options.AdapterOnlyRefusal ?? AgentControl.PausedReason);
+        var process = target.Current();
+        if (process is not { HasShellChannel: true, OpenMapPath: { } path })
+            return Refuse("Attach to Source 1 Hammer with a saved map and a shell channel.");
+        try
+        {
+            var config = gameData.Select(configName);
+            if (config.Active is not { } active || gameData.Assets(active) is not { } assets)
+                return Refuse(config.Problem ?? "No Source 1 asset search paths are available.");
+            var window = new HammerBrushWindow(process);
+            var support = FindSupport(window, out _);
+            model = ModelPath(model);
+            var angles = new Vector3(pitch, yaw, roll);
+            var placed = Mesh(model, StudioMesh.Transform(default, angles, 1), 0, true);
+            var surface = Mesh(ModelPath(support.Model), StudioMesh.Transform(support.Position, support.Angles, support.Scale),
+                support.Body, false);
+            var origin = PropContact.Place(surface, placed, new(x, y), surfaceZ);
+            return CreatePoint("prop_static", origin,
+                new Dictionary<string, string> { ["model"] = model, ["angles"] = Xyz(angles) }, Guard);
+
+            string? Guard()
+            {
+                try
+                {
+                    var current = target.Current();
+                    if (current?.ProcessId != process.ProcessId ||
+                        !string.Equals(current.OpenMapPath, path, StringComparison.OrdinalIgnoreCase))
+                        return "The active Hammer document changed.";
+                    var editor = new HammerBrushWindow(current);
+                    if (editor.Document != window.Document)
+                        return "The active Hammer document changed.";
+                    if (FindSupport(editor, out var entities) != support)
+                        return "The supporting prop changed; recalculate placement.";
+                    if (entities.At("prop_static", origin).Any())
+                        return "A prop_static already occupies the computed origin.";
+                    return null;
+                }
+                catch (Exception e) when (e is InvalidOperationException or InvalidDataException or IOException or UnauthorizedAccessException)
+                {
+                    return e.Message;
+                }
+            }
+
+            PropSupport FindSupport(HammerBrushWindow editor, out List<VmfEntity> entities)
+            {
+                var snapshot = editor.SnapshotEntities();
+                entities = snapshot.Entities;
+                target.NoteBrushSnapshotVersion(editor, path, snapshot.MapVersion);
+                VmfEntity? prop = null;
+                foreach (var entity in entities)
+                {
+                    if (entity.Id != supportEntityId)
+                        continue;
+                    if (prop is not null)
+                        throw new InvalidDataException("Support entity ID is ambiguous.");
+                    prop = entity;
+                }
+                return PropSupport.Read(prop);
+            }
+
+            Vector3[] Mesh(string file, Matrix4x4 transform, int body, bool requireStatic)
+            {
+                if (assets.Read(file) is not { } mdl || assets.Read(file[..^4] + ".vvd") is not { } vvd ||
+                    assets.Read(file[..^4] + ".dx90.vtx") is not { } vtx)
+                    throw new InvalidDataException($"Missing MDL, VVD or DX90 VTX for {file} in the active game paths.");
+                return StudioMesh.Read(mdl.Data, vvd.Data, vtx.Data, transform, body, requireStatic);
+            }
+        }
+        catch (Exception e) when (e is InvalidOperationException or InvalidDataException or IOException or UnauthorizedAccessException)
+        {
+            return Refuse(e.Message);
+        }
+    }
+
+    private static string ModelPath(string model)
+    {
+        model = model.Replace('\\', '/');
+        if (!model.StartsWith("models/", StringComparison.OrdinalIgnoreCase) ||
+            !model.EndsWith(".mdl", StringComparison.OrdinalIgnoreCase) ||
+            model.Split('/').Any(part => part is "" or "." or "..") ||
+            model.IndexOfAny([':', '"', '\r', '\n', '\0']) >= 0)
+            throw new InvalidDataException("Supply a relative models/...mdl path.");
+        return model;
+    }
+
+    private sealed record PropSupport(string Model, Vector3 Position, Vector3 Angles, float Scale, int Body)
+    {
+        public static PropSupport Read(VmfEntity? prop)
+        {
+            if (prop is not { Hidden: false, HasBrushes: false, Origin: { } position } ||
+                !prop.ClassName.StartsWith("prop_", StringComparison.OrdinalIgnoreCase) ||
+                prop.KeyValues.GetValueOrDefault("model") is not { } model)
+                throw new InvalidDataException("Support ID must identify a visible live point prop with a model.");
+            var kv = prop.KeyValues;
+            if (!string.IsNullOrWhiteSpace(kv.GetValueOrDefault("parentname")) ||
+                !string.IsNullOrWhiteSpace(kv.GetValueOrDefault("DefaultAnim")))
+                throw new InvalidDataException("The transform of a parented or animated prop cannot be verified.");
+            var angles = VmfEntities.ParseVector(kv.GetValueOrDefault("angles") ?? "0 0 0");
+            if (angles is null ||
+                !float.TryParse(kv.GetValueOrDefault("modelscale") ?? "1", NumberStyles.Float, CultureInfo.InvariantCulture, out var scale) ||
+                !int.TryParse(kv.GetValueOrDefault("body") ?? "0", NumberStyles.Integer, CultureInfo.InvariantCulture, out var body))
+                throw new InvalidDataException("The supporting prop has invalid angles, scale or body.");
+            return new(model, position, angles.Value, scale, body);
         }
     }
 

@@ -52,6 +52,16 @@ public sealed class HammerBrushWindow
     }
 
     public VmfBrushSnapshot Snapshot()
+        => ExportVmf(path =>
+        {
+            using var reader = File.OpenText(path);
+            return VmfBrushSnapshot.Parse(reader);
+        });
+
+    public (int MapVersion, List<VmfEntity> Entities) SnapshotEntities()
+        => ExportVmf(path => (VmfVersionInfo.Read(path).MapVersion, VmfEntities.Read(path)));
+
+    private T ExportVmf<T>(Func<string, T> read)
     {
         // The common dialog may keep its destination as the current directory. Delete only the file.
         var path = Path.Combine(Path.GetTempPath(), $"hammer-mcp-brush-{Guid.NewGuid():N}.vmf");
@@ -71,8 +81,7 @@ public sealed class HammerBrushWindow
             });
             if (!File.Exists(path))
                 throw new InvalidOperationException("Hammer did not export a VMF. Check that the export file type is Valve Map Files (*.vmf).");
-            using var reader = File.OpenText(path);
-            return VmfBrushSnapshot.Parse(reader);
+            return read(path);
         }
         finally
         {
