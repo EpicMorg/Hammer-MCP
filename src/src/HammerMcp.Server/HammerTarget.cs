@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Runtime.Versioning;
 using HammerMcp.Shell;
 
@@ -11,6 +12,7 @@ namespace HammerMcp.Server;
 public sealed class HammerTarget
 {
     private int? _attachedPid;
+    private readonly ConcurrentDictionary<nint, (int Pid, string? Path, int Version)> _brushVersions = new();
 
     public int? AttachedPid => _attachedPid;
 
@@ -38,9 +40,31 @@ public sealed class HammerTarget
     /// <summary>What the agent should ask the user for when nothing is attached (the app and the CLI differ).</summary>
     public string AttachHint { get; init; } = "ask the user to pick the Hammer process in Hammer-MCP and press Attach";
 
-    public void Attach(int pid) => _attachedPid = pid;
+    public void Attach(int pid)
+    {
+        _brushVersions.Clear();
+        _attachedPid = pid;
+    }
 
-    public void Detach() => _attachedPid = null;
+    public void Detach()
+    {
+        _attachedPid = null;
+        _brushVersions.Clear();
+    }
+
+    // Hammer increments the in-memory mapversion for Export without updating the open VMF.
+    // Keep the exact version for that document so subsequent shell operations still work.
+    internal void NoteBrushSnapshotVersion(HammerBrushWindow editor, string? path, int version)
+    {
+        if (_attachedPid == editor.ProcessId)
+            _brushVersions[editor.Document] = (editor.ProcessId, path, version);
+    }
+
+    internal int? BrushSnapshotVersion(HammerProcess process, string path) =>
+        !_brushVersions.IsEmpty &&
+        _brushVersions.TryGetValue(HammerBrushWindow.ActiveDocument(process.MainWindow), out var snapshot) &&
+        snapshot.Pid == process.ProcessId && string.Equals(snapshot.Path, path, StringComparison.OrdinalIgnoreCase)
+            ? snapshot.Version : null;
 
     /// <summary>Fresh info about the target (windows, open map); null if it is not running.</summary>
     public HammerProcess? Current() =>

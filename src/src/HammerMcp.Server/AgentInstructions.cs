@@ -34,6 +34,43 @@ internal static class AgentInstructions
         - Reading reflects the SAVED .vmf. With Hammer++, read tools accept fromAutosave=true to use its newest autosave
           when that is newer (a few minutes old at most). After your edits, call save_map before reading the map again.
 
+        Live brushes (Source 1 Valve Hammer and Hammer++, Auto/Shell): list_live_brushes reads current geometry,
+        including unsaved edits. Pass one visible brush's ID to move_brush, scale_brush or delete_brush, or omit
+        brushId to edit one brush selected in Hammer. Keep the status bar visible and leave the open map and selection
+        alone during the call. These tools do not save the open map; save_map writes it to disk when requested.
+
+        Use viewport_capture for visual inspection in Source 1 Hammer and Hammer++: it returns the current 3D view
+        by default, or 2D/all with views. It does not aim the camera. If the 3D frame is unavailable, ask the user to
+        restore Hammer, bring it to the foreground and aim the camera at the area of interest.
+
+        When adding a room or corridor, inspect the site with viewport_capture (use focus_3d_on_selection in
+        Hammer++ for a selected landmark), then use live geometry for coordinates and clearance. Do not place
+        geometry from a screenshot alone. Preview the section on a copy before inserting into the working map.
+        Use save_generated_section for generated VMF sections. It creates a new file under generated/ beside
+        the saved destination map and refuses to overwrite existing files. Open the returned absolute path in
+        another document of the same Hammer++ instance and pass it to insert_brush_section.
+        Before saving a generated section, call preview_generated_section and review the brush counts and
+        stepped-strip candidates. Build stair treads separately from the enclosure: on straight runs use
+        continuous convex sloped side walls and ceiling where the profile permits, not one wall or ceiling
+        strip per tread. Split at landings, turns, openings or changes of profile. Do not auto-merge flagged
+        brushes; preserve openings and collision, and check headroom along the slope and at the landings.
+        For continuous surfaces, read the neighboring brush with get_live_brush_faces. Use a touching coplanar
+        face of the same material and copy both its U and V scales, axes and offsets independently. Do not Fit
+        a repeating wall or floor texture to the brush. At a turn keep the texture density and reproject it.
+        For ceiling light panels, read the ceiling face UVs and locate the tile seams within the texture: a
+        texture can contain several tiles. Align the panel to the requested whole tiles (e.g. 1 by 2). Keep the
+        ceiling intact and use a separate thin brush directly below it. Fit one copy of the light texture to its
+        visible face; do not tile it. If the ceiling grid is unknown, verify it before placing the panels.
+        These are section authoring steps, not effects of insert_brush_section: it places prepared brushes, does
+        not fit textures or cut the surrounding map. Inspect the result from both sides of the join.
+        For a door or passage, check a player-sized clearance volume through the full join and its approaches
+        against both existing and inserted geometry. Include trim strips, props and collision-only brushes;
+        even thin pieces crossing the opening count. On a copy, trim only the parts that cross the opening
+        or reposition the join; do not delete unrelated objects. Verify passage clearance before reporting success.
+        Around an arch, check that the wall above the curve reaches the ceiling and joins the walls on both
+        sides. Inspect from both sides and verify that only the intended opening remains. Do not automatically
+        fill gaps without determining whether they are intentional.
+
         Compiling (edit modes only): compile_sequences shows Hammer's own Run Map sequences; run_compile runs one on the
         SAVED map (ask the user first), compile_log / leak_trace explain the result, bsp_entities shows what ended up
         in the compiled .bsp.
@@ -54,8 +91,8 @@ internal static class AgentInstructions
           When you finish a task or ask the user something there, either call wait_for_user (blocks until they write
           in Hammer, up to 10 minutes; call it again to keep listening) or tell them to answer in your own window.
 
-        - hammer_status.approval = "ask": the user reviews your edits. Each edit (create / set_keyvalue / rotate / delete,
-          save_map, undo, redo, run_compile) waits until they apply or reject it (up to 2 minutes per call). Rejected:
+        - hammer_status.approval = "ask": the user reviews edits to entities and brushes, saves, undo/redo and compiles.
+          A request waits until the user applies or rejects it (up to 2 minutes per call). Rejected:
           do not repeat it - ask what they want. Still waiting after 2 minutes: it stays in their list; check
           pending_changes later instead of repeating the edit. Describe your plan before a batch of edits.
 

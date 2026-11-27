@@ -7,6 +7,17 @@ All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/)
 ## [Unreleased]
 
 ### Added
+- `insert_brush_section`: paste a brush-only section from another open Hammer++ VMF at explicit coordinates. Requires permission to replace the clipboard; Undo takes two steps if the paste needs repositioning.
+- `check_brush_clearance`: report brush bounds intersecting a straight player-sized corridor in the live map and optionally a proposed section. Does not certify prop or displacement collisions.
+- `get_live_brush_faces`: read per-face material and U/V projection values from a nearby live brush to match texture density across a join.
+- `save_generated_section`: save a new VMF under `generated/` next to the active saved map without overwriting existing files.
+- `place_prop_on_surface`: place a Source 1 static model on a rectangular world brush using the lowest point of its rotated mesh.
+- Prop placement on a rectangular upper displacement with vertical offsets uses the highest point under the rotated model's bounding footprint, keeping the prop level.
+- `place_prop_on_prop`: place a Source 1 static prop on a live prop's rendered mesh, with an optional height hint for shelves. Refuses edges, gaps and intersections that cannot be ruled out using the rotated footprint and envelope. Does not certify physics collision.
+- Offline Source 1 BSP visibility audit: rank PVS hotspots and compare potentially visible world faces at fixed coordinates without launching the game.
+- `viewport_capture`: return 3D and 2D viewport screenshots as MCP PNG images in standalone Valve Hammer and Hammer++, without changing the camera or grabbing the desktop.
+- Live Source 1 brush discovery, movement, scaling and deletion in Valve Hammer and Hammer++, by current selection or VMF ID; no map reload.
+- Oh My Pi (OMP) Streamable HTTP configuration under **Copy client config** in the tray, with the bearer token when configured.
 - **`hammer_ui`: what is known about the attached Hammer's interface**, so an agent does not explore it from scratch: recipes verified live (create a block, make it hollow, place an entity, apply a texture, Run Map... with command ids, dialog control ids and traps such as what needs real keyboard focus or can freeze Hammer), menu items, accelerators, short command tooltips and every dialog with its control ids. First: Valve Hammer Editor 3.4 / 3.5 (the menus and dialogs are dumped from the build's resources by `registry/tools/dump_ui.py --public`: ids, classes, keys and short labels only, none of Valve's own prose such as status texts, message boxes or the About box).
 - **Live selection and camera (adapter layer 2), first for Valve Hammer Editor 3.5**: `hammer_selection` returns what is selected in Hammer right now, unsaved changes included (entities with class, origin and keys; solids with textures and owning entity; bounds), `hammer_camera` returns where the 3D view looks. **MCP > Send selection to agent** in Hammer sends the selection to the agent. Needs the adapter (Advanced mode); `hammer_status` shows `adapter.liveRead`. The memory layout of each build lives in the registry. Selecting a large part of a big map can freeze Hammer: the tool description tells the agent to ask the user first.
 
@@ -15,6 +26,10 @@ All notable changes to Hammer-MCP. Versions follow [SemVer](https://semver.org/)
 - `compile_log` and `leak_trace` also look in the game's maps folder, where J.A.C.K. compiles (the newest file wins; `path` tells which one). A pointfile older than a compile log in its folder that shows no leak is reported as left from an earlier compile (`leaked: false`).
 
 ### Fixed
+- Failed Hammer++ section insertions roll back verified Paste and Transformation actions rather than leaving a misplaced section. If Undo cannot be verified, the tool tells the user to inspect the map before retrying.
+- Compare translated brush planes in double precision to avoid rejecting curved sections due to rounding noise after Paste.
+- Live brush edits in stock Hammer now identify the selected solid by reconstructed bounds, so VMF plane points outside the solid no longer cause the approval prompt to name a different brush.
+- Viewport capture and live brush tools also accept renamed Source 1 Hammer and Hammer++ launchers when their editor DLL is loaded.
 - `hammer_status` failed when a GoldSrc map (`.rmf`, `.map`, `.jmf`) was open.
 - App: the status bar was empty when its text was longer than the window (it now fills the bar, clipped, full text in the tooltip), and it still said "read-only" with a connected adapter - it now names what the adapter gives (live selection and camera) and whether there are live edits.
 - App: renamed Hammer executables (`hammer34.exe`, `hammer_3.5.exe`, `worldcraft16.exe`...) were listed only with **Show all processes**.

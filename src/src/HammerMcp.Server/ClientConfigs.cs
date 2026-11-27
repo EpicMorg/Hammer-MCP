@@ -5,8 +5,8 @@ namespace HammerMcp.Server;
 /// <summary>
 /// Ready-to-paste MCP client settings for the running server (tray: Copy client config). The token, if any, is put in
 /// as a bearer header. Formats follow each client's docs: Claude Code (claude mcp add), Codex (config.toml),
-/// OpenCode (opencode.json), Gemini CLI (settings.json, httpUrl = streamable HTTP), Cursor (mcp.json),
-/// VS Code (.vscode/mcp.json), Claude Desktop (through mcp-remote: it does not take a local HTTP url itself).
+/// OpenCode (opencode.json), Oh My Pi (.omp/mcp.json), Gemini CLI (settings.json, httpUrl = streamable HTTP),
+/// Cursor (mcp.json), VS Code (.vscode/mcp.json), Claude Desktop (through mcp-remote).
 /// </summary>
 public static class ClientConfigs
 {
@@ -24,6 +24,16 @@ public static class ClientConfigs
                   "type": "remote",
                   "url": "{{o.Url}}",
                   "oauth": false{{Headers(o, 6)}}
+                }
+              }
+            }
+            """)),
+        ("Oh My Pi (.omp/mcp.json)", o => Json($$"""
+            {
+              "mcpServers": {
+                "hammer": {
+                  "type": "http",
+                  "url": "{{o.Url}}"{{Headers(o, 6)}}
                 }
               }
             }

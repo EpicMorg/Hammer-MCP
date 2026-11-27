@@ -15,6 +15,7 @@ public static class MenuCommands
     public const int LoadPointfile = 33021;
     public const int UnloadPointfile = 33022;
     public const int CenterViewsOnSelection = 32918;
+    public const int Center3DViewsOnSelection = 33172;
     public const int GoToBrushNumber = 33061;
     public const int SelectAll = 32875;
     public const int EntityReport = 32996;

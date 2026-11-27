@@ -31,4 +31,16 @@ public class ClientConfigsTests
         Assert.StartsWith("[mcp_servers.hammer]\nurl = \"http://127.0.0.1:47800/mcp\"\n", codex);
         Assert.Contains("http_headers = { \"Authorization\" = \"Bearer t\" }", codex);
     }
+
+    [Fact]
+    public void OhMyPiUsesTheNativeHttpServerShape()
+    {
+        var config = ClientConfigs.All.Single(c => c.Client.StartsWith("Oh My Pi")).Text(
+            new HammerMcpServerOptions { Port = 47801, Token = "local_token" });
+        using var doc = JsonDocument.Parse(config);
+        var hammer = doc.RootElement.GetProperty("mcpServers").GetProperty("hammer");
+        Assert.Equal("http", hammer.GetProperty("type").GetString());
+        Assert.Equal("http://127.0.0.1:47801/mcp", hammer.GetProperty("url").GetString());
+        Assert.Equal("Bearer local_token", hammer.GetProperty("headers").GetProperty("Authorization").GetString());
+    }
 }

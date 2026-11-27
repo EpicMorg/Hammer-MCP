@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.Versioning;
 using System.Text;
 using HammerMcp.Core.Assets;
@@ -442,16 +443,9 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
     [Description("Entities as they ended up in a COMPILED map (.bsp entity lump): what vbsp actually wrote, with outputs as repeated keys. Default file: the open map's .bsp next to the .vmf, else <GameDir>/maps/<name>.bsp. Filter by classname / targetname (prefix with *), or pass a .bsp path.")]
     public object BspEntitiesTool(string? className = null, string? targetName = null, string? bspPath = null, int limit = 50, string? configName = null)
     {
-        var path = bspPath;
+        var path = bspPath ?? DefaultBspPath(configName);
         if (path is null)
-        {
-            var map = target.Current()?.OpenMapPath;
-            if (map is null)
-                return new { error = "no map open in the attached Hammer; pass bspPath" };
-            path = Path.ChangeExtension(map, ".bsp");
-            if (!File.Exists(path) && gameData.Select(configName).Active is { GameDir: { } gameDir })
-                path = Path.Combine(gameDir, "maps", Path.GetFileName(path));
-        }
+            return new { error = "no map open in the attached Hammer; pass bspPath" };
         if (!File.Exists(path))
             return new { error = $"no {path}" };
         BspEntities.Result bsp;
@@ -482,6 +476,91 @@ public sealed class CompileTools(HammerTarget target, GameData gameData)
             }),
         };
     }
+
+    [McpServerTool(Name = "bsp_visibility", ReadOnly = true)]
+    [Description("Offline Source 1 BSP visibility audit. Omit point for top clusters ranked by distinct potentially visible world faces; pass a world-space point {x,y,z} for its leaf and PVS counts. Leaf bounds are representative, not guaranteed walkable positions. Does not measure FPS or count props and brush entities.")]
+    public object BspVisibilityTool(string? bspPath = null, BspVisibility.Point? point = null, int limit = 20,
+        string? configName = null, CancellationToken cancellationToken = default)
+    {
+        var path = bspPath ?? DefaultBspPath(configName);
+        if (path is null)
+            return new { error = "no map open in the attached Hammer; pass bspPath" };
+        if (point is { } p && !Finite(p))
+            return new { error = "point coordinates must be finite" };
+        try
+        {
+            var bsp = BspVisibility.Read(path);
+            if (point is { } position)
+            {
+                var sample = bsp.At(Vector(position));
+                return new { path, bspVersion = bsp.Version, point, sample, error = sample is null ? NoVisibilityAtPoint : null };
+            }
+            var samples = bsp.Rank(Math.Clamp(limit, 1, 100), cancellationToken);
+            return new { path, bspVersion = bsp.Version, clusters = bsp.Clusters, worldFaces = bsp.WorldFaces, samples };
+        }
+        catch (Exception e) when (IsBspReadError(e))
+        {
+            return new { path, error = e.Message };
+        }
+    }
+
+    [McpServerTool(Name = "bsp_compare", ReadOnly = true)]
+    [Description("Compare two explicit compiled Source 1 BSP paths at the same world-space points {x,y,z}. Deltas are after minus before for potentially visible clusters and distinct world faces. Use the same compile settings; this does not predict FPS.")]
+    public object BspCompare(string beforePath, string afterPath, BspVisibility.Point[] points)
+    {
+        if (points is not { Length: >= 1 and <= 128 } || points.Any(p => !Finite(p)))
+            return new { error = "provide 1–128 points with finite x, y and z coordinates" };
+        var reading = beforePath;
+        try
+        {
+            var before = BspVisibility.Read(beforePath);
+            reading = afterPath;
+            var after = BspVisibility.Read(afterPath);
+            var comparisons = points.Select(p =>
+            {
+                reading = beforePath;
+                var a = before.At(Vector(p));
+                reading = afterPath;
+                var b = after.At(Vector(p));
+                return new
+                {
+                    point = p, before = a, after = b,
+                    beforeError = a is null ? NoVisibilityAtPoint : null,
+                    afterError = b is null ? NoVisibilityAtPoint : null,
+                    deltaVisibleClusters = b?.VisibleClusters - a?.VisibleClusters,
+                    deltaVisibleWorldFaces = b?.VisibleWorldFaces - a?.VisibleWorldFaces,
+                };
+            }).ToArray();
+            return new
+            {
+                beforePath, afterPath, beforeVersion = before.Version, afterVersion = after.Version, comparisons,
+                note = "Compile settings are not inferred from a BSP. Compare builds made with the same settings; deltas are visibility proxies, not FPS.",
+            };
+        }
+        catch (Exception e) when (IsBspReadError(e))
+        {
+            return new { beforePath, afterPath, error = $"{reading}: {e.Message}" };
+        }
+    }
+
+    private string? DefaultBspPath(string? configName)
+    {
+        if (target.Current()?.OpenMapPath is not { } map)
+            return null;
+        var path = Path.ChangeExtension(map, ".bsp");
+        return !File.Exists(path) && gameData.Select(configName).Active is { GameDir: { } gameDir }
+            ? Path.Combine(gameDir, "maps", Path.GetFileName(path)) : path;
+    }
+
+    private const string NoVisibilityAtPoint = "point is in a solid or unclustered BSP leaf";
+
+    private static bool Finite(BspVisibility.Point point) =>
+        float.IsFinite(point.X) && float.IsFinite(point.Y) && float.IsFinite(point.Z);
+
+    private static Vector3 Vector(BspVisibility.Point point) => new(point.X, point.Y, point.Z);
+
+    private static bool IsBspReadError(Exception e) =>
+        e is IOException or InvalidDataException or NotSupportedException or UnauthorizedAccessException or ArgumentException;
 
     internal (string? Map, HammerGameConfig? Config, string? Error) MapAndConfig(string? configName)
     {

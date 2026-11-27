@@ -100,6 +100,11 @@ CS2; the rest comes from static analysis of the binaries. Per-build details, wha
    ```
 5. Open a map in Hammer and **save it** (sessions are bound to the saved `mapversion`). Ask away.
 
+**Oh My Pi (OMP):** choose **Copy client config → Oh My Pi** in the tray. Paste or merge the `mcpServers.hammer`
+entry into your project's `.omp/mcp.json` or your user config `~/.omp/agent/mcp.json`. Then run `/mcp reload`
+and `/mcp test hammer` in OMP. Keep the tray server running; the copied entry includes the bearer token if configured.
+For stdio instead, put the example below in the same file.
+
 ### Without the tray app: `hammer-mcp-cli`
 
 The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that start servers themselves (stdio):
@@ -116,6 +121,7 @@ The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that
 | Tool | What it does |
 |---|---|
 | `hammer_status` | Which Hammer is attached, its build, shell channel, open map, saved `mapversion`, allowed mode |
+| `viewport_capture` | PNG images of the active map's 3D view (default), `2d` panes, or `all` in Valve Hammer and Hammer++ |
 | `map_summary` | Saved `.vmf`: versions, entity/brush counts, classes, skybox, visgroups |
 | `list_entities` · `get_entity` · `find_io` | Saved map: entities with keyvalues and outputs, who triggers whom |
 | `game_configs` · `fgd_class` · `fgd_search` | Hammer's game config and the game's FGD as an entity reference (keyvalues, choices, inputs, outputs) |
@@ -123,10 +129,13 @@ The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that
 | `check_assets` | Materials, models, overlays, decals, skybox, sounds and sound script names of the saved map vs the game's search paths (gameinfo.txt, folders, VPKs) |
 | `compile_sequences` · `compile_log` · `leak_trace` | Hammer's own Run Map sequences (CmdSeq.wc / Hammer++ / Strata / J.A.C.K.), parsed compile log, leak path from the .lin |
 | `bsp_entities` | Entities as vbsp wrote them into the compiled .bsp (entity lump), outputs included |
+| `bsp_visibility` · `bsp_compare` | Offline Source 1 BSP audit: rank visibility hotspots or compare two builds at identical world coordinates |
 | `source2_console` | Source 2 only: allowlisted developer console commands over VConsole2 (open maps, force autosave, help) |
 | `run_compile` | Runs one of those sequences (vbsp / vvis / vrad, copy .bsp); edit modes only |
 | `create_entity` | Point entity at x y z, with keyvalues |
 | `set_keyvalue` · `rotate_entity` · `delete_entity` | Edit the entity of a class at an origin |
+| `list_live_brushes` | Unsaved Source 1 geometry: brush IDs, owning entities, materials, and plane-point bounds |
+| `move_brush` · `scale_brush` · `delete_brush` | Edit one brush by live VMF ID or the current selection |
 | `save_map` · `undo` · `redo` | Hammer menu commands |
 | `open_run_map_dialog` · `open_check_for_problems` | Open those Hammer dialogs for the user |
 | `find_assets` | Find models, materials, textures, sounds, sound script names, sprites, particles by name in the game's files and VPKs (GoldSrc: files and WAD textures / decals); returns what to write in the entity |
@@ -138,6 +147,29 @@ The release also has `hammer-mcp-cli.exe` - the same server for MCP clients that
 
 **Modes:** *Auto* (best available: the adapter if you connected it, otherwise the shell channel, otherwise read-only) ·
 *Basic* (read-only) · *Shell* (live edits + menu through the shell channel only) · *Advanced* (strict adapter-only mode, for debugging).
+
+For offline optimization, run `bsp_visibility` against an uncompressed Source 1 BSP built with VVIS. The ranking can
+include exterior or unreachable clusters; use known playable coordinates for point queries. Call `bsp_compare` with
+`beforePath`, `afterPath` and the same `points` (`{x,y,z}`) in both builds. Use identical compile settings. Counts cover
+distinct world-model faces in the PVS, not props, brush entities, or FPS. Neither tool writes files or launches the game.
+
+For visual inspection in OMP or another image-capable client, call `viewport_capture` (for example with
+`{"views":"all","maxSize":1024}`). It shows unsaved changes from the current camera without changing the camera,
+map, or render mode. Keep Hammer restored; if stock Hammer shows no 3D frame, bring it to the foreground and aim
+at the map. Requires Windows 10 version 1607 or newer. The tool does not capture the desktop and is not available in Advanced mode.
+
+### Live brushes (Valve Hammer and Hammer++)
+
+Use **Auto** or **Shell** mode. For manual targeting, select one solid in Hammer and omit `brushId`. For automatic
+targeting, call `list_live_brushes` (optionally filter by `material`), then pass a visible brush's `id` as `brushId`.
+`move_brush` takes a relative offset in Hammer units; `scale_brush` takes positive X/Y/Z factors.
+
+These tools use the standalone editor's standard English dialogs and status bar. Keep the status bar visible and
+don't switch documents or edit the selection while a call runs. Stock Hammer doesn't report the selected brush ID,
+so the server matches the status bar's face count, center and size against bounds reconstructed from the VMF planes.
+If the match can't be established uniquely, pass an explicit ID. With approval enabled, the original brush is checked again at apply time.
+Brush edits use Hammer's native Undo history when enabled. Listing exports a temporary snapshot of the live map;
+it does not save over or reload the open VMF. For the copy on disk, use `save_map` explicitly.
 
 ### The adapter (0.7+)
 **Connect adapter** in the app (Auto or Advanced) injects a small native adapter into the attached Hammer — only when
